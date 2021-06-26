@@ -1,0 +1,27 @@
+{
+    "name": "decancer",
+    "version": "1.0.0",
+    "description": "Node.js module that decancers a string from zalgos, emojified texts, fancy unicode fonts, foreign characters, and so much more.",
+    "main": "decancer.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "string",
+      "unicode",
+      "regex",
+      "zalgo",
+      "regexp"
+    ],
+    "author": "vierofernando",
+    "bugs": {
+      "url": "https://github.com/vierofernando/decancer/issues"
+    },
+    "homepage": "https://github.com/vierofernando/decancer",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/vierofernando/decancer"
+    },
+    "license": "MIT",
+    "dependencies": {}
+}
