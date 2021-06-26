@@ -1,0 +1,7 @@
+node_modules/
+package-lock.json
+Cargo.lock
+**/*.node
+target/
+index.js
+index.d.ts

@@ -1,0 +1,32 @@
+{
+  "name": "@vierofernando/decancer-linux-arm64-musl",
+  "version": "1.1.4",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "decancer.linux-arm64-musl.node",
+  "files": [
+    "decancer.linux-arm64-musl.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "author": "vierofernando",
+  "homepage": "https://github.com/vierofernando/decancer",
+  "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes. (Binary port for linux-arm64-musl)",
+  "bugs": {
+    "url": "https://github.com/vierofernando/decancer/issues"
+  },
+  "keywords": [
+    "string",
+    "unicode",
+    "zalgo",
+    "regexp",
+    "confusables",
+    "moderation"
+  ]
+}

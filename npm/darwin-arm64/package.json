@@ -1,0 +1,32 @@
+{
+  "name": "@vierofernando/decancer-darwin-arm64",
+  "version": "1.1.4",
+  "os": [
+    "darwin"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "decancer.darwin-arm64.node",
+  "files": [
+    "decancer.darwin-arm64.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "author": "vierofernando",
+  "homepage": "https://github.com/vierofernando/decancer",
+  "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes. (Binary port for darwin-arm64)",
+  "bugs": {
+    "url": "https://github.com/vierofernando/decancer/issues"
+  },
+  "keywords": [
+    "string",
+    "unicode",
+    "zalgo",
+    "regexp",
+    "confusables",
+    "moderation"
+  ]
+}
