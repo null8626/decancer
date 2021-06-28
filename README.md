@@ -1,17 +1,5 @@
 # decancer
-Node.js module that decancers a string. Cleans everything back to lowercased, clean, alphanumeric state. Covers a large range of unicode groups, including:
-
-- Zalgos
-- Fancy characters & unicode "fonts"
-- Emojified characters
-- Foreign punctuations
-- Cyrillic characters
-- Greek characters
-- Japanese characters
-- Arabic characters
-- And so much more.
-
-[For more info on supported characters, see here.](#characters)
+Node.js module that decancers a string. Cleans everything back to it's lowercased, clean, alphanumeric state.
 
 # installation
 Install with npm:
@@ -28,8 +16,8 @@ console.log(noCancer); // 'very funny text'
 ```
 > **NOTE:** all output will be in lowercase.
 
-# characters
-This library as of the latest version can decode up to **2,206** characters. Here are the details:
+# supported characters
+This library as of the latest version can decode up to **2,207** unique unicode characters. Here are the details:
 
 | Unicode Group | Amount |
 |-----|-----|
@@ -43,7 +31,7 @@ This library as of the latest version can decode up to **2,206** characters. Her
 | Latin Extended-A | 64 |
 | Enclosed Alphanumerics | 62 |
 | Letterlike Symbols | 59 |
-| Latin-1 Supplement | 52 |
+| Latin-1 Supplement | 53 |
 | Greek and Coptic | 52 |
 | Superscripts and Subscripts | 44 |
 | CJK Unified Ideographs | 34 |
