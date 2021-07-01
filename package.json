@@ -1,6 +1,6 @@
 {
     "name": "decancer",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Node.js module that decancers a string from zalgos, emojified texts, fancy unicode fonts, foreign characters, and so much more.",
     "main": "decancer.js",
     "scripts": {
