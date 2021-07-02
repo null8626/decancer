@@ -7,7 +7,7 @@ const startRegex = new RegExp(constants.startRegex, 'g');
  * @returns {string} The cleaned string. Will ALWAYS be in lowercase.
  */
 module.exports = (text) => {
-	if (typeof text !== 'string' || !text.length)
+    if (typeof text !== 'string' || !text.length)
         throw new TypeError("'text' must be a string and it must contain at least a character.");
 
     else if (!/[^\u0000-\u007F]/.test(text))
@@ -19,12 +19,16 @@ module.exports = (text) => {
     for (const [k, v] of Object.entries(constants.others))
         text = text.replace(new RegExp(`[${v}]`), k);
     
-	text = text
+    text = text
       .toLowerCase()
       .replace(startRegex, '');
+    
+    for (let i = 0; i < 26; i++) {
+        const [ styles, extras ] = constants.alphabetical[i].split(';');
+        text = text
+          .replace(new RegExp(`[${extras}]`, 'gi'), alphabet[i])
+          .replace(new RegExp([...styles].map(x => `(${x})`).join('|'), 'g'), alphabet[i]);
+    }
 
-    for (let i = 0; i < 26; i++)
-		text = text.replace(new RegExp(`[${constants.alphabetical[i]}]`, 'gi'), alphabet[i]);
-
-	return text;
+    return text.replace(/[\uD800-\uDB7F]/g, '');
 };
