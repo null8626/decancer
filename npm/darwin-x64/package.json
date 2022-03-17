@@ -17,5 +17,16 @@
   },
   "author": "vierofernando",
   "homepage": "https://github.com/vierofernando/decancer",
-  "description": "Node.js module that decancers a string from zalgos, emojified texts, fancy unicode fonts, foreign characters, and so much more. (Binary port for darwin-x64)"
+  "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes. (Binary port for darwin-x64)",
+  "bugs": {
+    "url": "https://github.com/vierofernando/decancer/issues"
+  },
+  "keywords": [
+    "string",
+    "unicode",
+    "zalgo",
+    "regexp",
+    "confusables",
+    "moderation"
+  ]
 }
