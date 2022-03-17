@@ -30,7 +30,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.android-arm64.node');
           } else {
-            nativeBinding = require('decancer-android-arm64');
+            nativeBinding = require('@vierofernando/decancer-android-arm64');
           }
         } catch (e) {
           loadError = e;
@@ -50,7 +50,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.win32-x64-msvc.node');
           } else {
-            nativeBinding = require('decancer-win32-x64-msvc');
+            nativeBinding = require('@vierofernando/decancer-win32-x64-msvc');
           }
         } catch (e) {
           loadError = e;
@@ -64,7 +64,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.win32-ia32-msvc.node');
           } else {
-            nativeBinding = require('decancer-win32-ia32-msvc');
+            nativeBinding = require('@vierofernando/decancer-win32-ia32-msvc');
           }
         } catch (e) {
           loadError = e;
@@ -78,7 +78,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.win32-arm64-msvc.node');
           } else {
-            nativeBinding = require('decancer-win32-arm64-msvc');
+            nativeBinding = require('@vierofernando/decancer-win32-arm64-msvc');
           }
         } catch (e) {
           loadError = e;
@@ -96,7 +96,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.darwin-x64.node');
           } else {
-            nativeBinding = require('decancer-darwin-x64');
+            nativeBinding = require('@vierofernando/decancer-darwin-x64');
           }
         } catch (e) {
           loadError = e;
@@ -110,7 +110,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.darwin-arm64.node');
           } else {
-            nativeBinding = require('decancer-darwin-arm64');
+            nativeBinding = require('@vierofernando/decancer-darwin-arm64');
           }
         } catch (e) {
           loadError = e;
@@ -131,7 +131,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./decancer.linux-x64-musl.node');
             } else {
-              nativeBinding = require('decancer-linux-x64-musl');
+              nativeBinding = require('@vierofernando/decancer-linux-x64-musl');
             }
           } catch (e) {
             loadError = e;
@@ -144,7 +144,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./decancer.linux-x64-gnu.node');
             } else {
-              nativeBinding = require('decancer-linux-x64-gnu');
+              nativeBinding = require('@vierofernando/decancer-linux-x64-gnu');
             }
           } catch (e) {
             loadError = e;
@@ -160,7 +160,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./decancer.linux-arm64-musl.node');
             } else {
-              nativeBinding = require('decancer-linux-arm64-musl');
+              nativeBinding = require('@vierofernando/decancer-linux-arm64-musl');
             }
           } catch (e) {
             loadError = e;
@@ -173,7 +173,7 @@ switch (platform) {
             if (localFileExisted) {
               nativeBinding = require('./decancer.linux-arm64-gnu.node');
             } else {
-              nativeBinding = require('decancer-linux-arm64-gnu');
+              nativeBinding = require('@vierofernando/decancer-linux-arm64-gnu');
             }
           } catch (e) {
             loadError = e;
@@ -188,7 +188,7 @@ switch (platform) {
           if (localFileExisted) {
             nativeBinding = require('./decancer.linux-arm-gnueabihf.node');
           } else {
-            nativeBinding = require('decancer-linux-arm-gnueabihf');
+            nativeBinding = require('@vierofernando/decancer-linux-arm-gnueabihf');
           }
         } catch (e) {
           loadError = e;

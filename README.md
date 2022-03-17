@@ -1,7 +1,7 @@
 # decancer
 A Node.js module that removes common confusables from strings written in pure [Rust](https://rust-lang.org) without the use of Regexes.
 
-__**As of version 1.1.0, This library supports 1,478 different code-points.**__
+__**As of version 1.1.2, This library supports 1,478 different code-points.**__
 
 # installation
 Install with npm:

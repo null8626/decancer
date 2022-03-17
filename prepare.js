@@ -47,10 +47,19 @@ writeFileSync("README.md", readFileSync("./README.md").toString()
   .replace(/__\*\*([\s\S]*?)\*\*__/,
            `__**As of version ${version}, This library supports ${supportedCount.toLocaleString()} different code-points.**__`));
 
+const optionalDependencies = [];
+
 for (const platform of readdirSync("./npm")) {
+  optionalDependencies.push({
+    [`@vierofernando/decancer-${platform}`]: version
+  });
+  
   const packageJsonPath = join(__dirname, "npm", platform, "package.json");
   writeFileSync(packageJsonPath, JSON.stringify(Object.assign(require(packageJsonPath), {
     version, author, homepage, bugs, keywords, license,
-    description: description + ` (Binary port for ${platform})`
+    description: description + ` (Binary port for ${platform})`,
+    name: `@vierofernando/decancer-${platform}`
   }), null, 2));
 }
+
+writeFileSync("./package.json", JSON.stringify(Object.assign(require("./package.json"), { optionalDependencies }), null, 2));
