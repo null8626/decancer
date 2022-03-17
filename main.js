@@ -36,18 +36,6 @@ switch (platform) {
           loadError = e;
         }
         break;
-      case 'arm':
-        localFileExisted = existsSync(join(__dirname, 'decancer.android-arm-eabi.node'));
-        try {
-          if (localFileExisted) {
-            nativeBinding = require('./decancer.android-arm-eabi.node');
-          } else {
-            nativeBinding = require('decancer-android-arm-eabi');
-          }
-        } catch (e) {
-          loadError = e;
-        }
-        break;
       default:
         throw new Error(`Unsupported architecture on Android ${arch}`);
     }
@@ -70,7 +58,7 @@ switch (platform) {
         break;
       case 'ia32':
         localFileExisted = existsSync(
-          join(__dirname, 'decancer.win32-ia32-msvc.node');
+          join(__dirname, 'decancer.win32-ia32-msvc.node')
         );
         try {
           if (localFileExisted) {
@@ -84,7 +72,7 @@ switch (platform) {
         break;
       case 'arm64':
         localFileExisted = existsSync(
-          join(__dirname, 'decancer.win32-arm64-msvc.node');
+          join(__dirname, 'decancer.win32-arm64-msvc.node')
         );
         try {
           if (localFileExisted) {
@@ -116,7 +104,7 @@ switch (platform) {
         break;
       case 'arm64':
         localFileExisted = existsSync(
-          join(__dirname, 'decancer.darwin-arm64.node');
+          join(__dirname, 'decancer.darwin-arm64.node')
         );
         try {
           if (localFileExisted) {
@@ -132,27 +120,12 @@ switch (platform) {
         throw new Error(`Unsupported architecture on macOS: ${arch}`);
     }
     break;
-  case 'freebsd':
-    if (arch !== 'x64') {
-      throw new Error(`Unsupported architecture on FreeBSD: ${arch}`);
-    }
-    localFileExisted = existsSync(join(__dirname, 'decancer.freebsd-x64.node'));
-    try {
-      if (localFileExisted) {
-        nativeBinding = require('./decancer.freebsd-x64.node');
-      } else {
-        nativeBinding = require('decancer-freebsd-x64');
-      }
-    } catch (e) {
-      loadError = e;
-    }
-    break;
   case 'linux':
     switch (arch) {
       case 'x64':
         if (isMusl()) {
           localFileExisted = existsSync(
-            join(__dirname, 'decancer.linux-x64-musl.node');
+            join(__dirname, 'decancer.linux-x64-musl.node')
           );
           try {
             if (localFileExisted) {
@@ -236,4 +209,4 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`);
 }
 
-module.exports.decancer = nativeBinding.decancer;
+module.exports = nativeBinding.decancer;
