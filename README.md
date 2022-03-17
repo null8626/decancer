@@ -9,6 +9,19 @@ Install with npm:
 $ npm install decancer
 ```
 
+Supported platforms:
+- Windows x64
+- Windows arm64
+- Windows i686
+- macOS x64
+- macOS arm64
+- Linux x64 GNU
+- Linux x64 MUSL
+- Linux arm64 GNU
+- Linux arm64 MUSL
+- Linux arm gnueabihf
+- Android arm64
+
 # example
 ```js
 const decancer = require('decancer');
