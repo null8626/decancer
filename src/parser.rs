@@ -25,7 +25,7 @@ impl<'a> Parser<'a> {
     if !out.is_none() {
       unsafe { *out.unwrap_unchecked() }
     } else {
-      0
+      0xFFFD
     }
   }
   
@@ -36,7 +36,7 @@ impl<'a> Parser<'a> {
       let num = self.input.get(self.index + i);
       
       if num.is_none() {
-        result.push(0);
+        result.push(0xFFFD);
       } else {
         result.push(unsafe { *num.unwrap_unchecked() });
       }
