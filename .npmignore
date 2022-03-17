@@ -8,3 +8,4 @@ npm
 rustfmt.toml
 yarn.lock
 **/*.node
+prepare.js

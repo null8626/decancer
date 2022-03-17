@@ -1,7 +1,7 @@
 {
   "name": "decancer",
   "version": "1.1.0",
-  "description": "Node.js module that decancers a string from zalgos, emojified texts, fancy unicode fonts, foreign characters, and so much more.",
+  "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes.",
   "keywords": [
     "string",
     "unicode",
