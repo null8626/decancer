@@ -39,7 +39,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@napi-rs/cli": "^2.4.5"
+    "@napi-rs/cli": "^2.4.5",
+    "pre-commit": "^1.2.2"
   },
   "engines": {
     "node": ">= 10"
@@ -50,6 +51,13 @@
     "build:debug": "napi build --platform",
     "prepublishOnly": "napi prepublish -t npm",
     "version": "napi version",
-    "test": "echo \"IT WORKS!111\""
+    "test": "echo \"IT WORKS!111\"",
+    "prepare": "node prepare.js"
+  },
+  "pre-commit": {
+    "run": [
+      "prepare"
+    ],
+    "silent": true
   }
 }
