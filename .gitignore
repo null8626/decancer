@@ -1,2 +1,5 @@
-stats.js
-text.txt
+node_modules/
+package-lock.json
+Cargo.lock
+**/*.node
+target/

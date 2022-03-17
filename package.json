@@ -1,27 +1,53 @@
 {
+  "name": "decancer",
+  "description": "Node.js module that decancers a string from zalgos, emojified texts, fancy unicode fonts, foreign characters, and so much more.",
+  "keywords": [
+    "string",
+    "unicode",
+    "zalgo",
+    "regexp",
+    "confusables",
+    "moderation"
+  ],
+  "author": "vierofernando",
+  "bugs": {
+    "url": "https://github.com/vierofernando/decancer/issues"
+  },
+  "homepage": "https://github.com/vierofernando/decancer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vierofernando/decancer"
+  },
+  "types": "index.d.ts",
+  "napi": {
     "name": "decancer",
-    "version": "1.0.6",
-    "description": "Node.js module that decancers a string from zalgos, emojified texts, fancy unicode fonts, foreign characters, and so much more.",
-    "main": "decancer.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "keywords": [
-      "string",
-      "unicode",
-      "regex",
-      "zalgo",
-      "regexp"
-    ],
-    "author": "vierofernando",
-    "bugs": {
-      "url": "https://github.com/vierofernando/decancer/issues"
-    },
-    "homepage": "https://github.com/vierofernando/decancer",
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/vierofernando/decancer"
-    },
-    "license": "MIT",
-    "dependencies": {}
+    "triples": {
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-linux-android",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
+        "aarch64-pc-windows-msvc",
+        "armv7-unknown-linux-gnueabihf",
+        "x86_64-unknown-linux-musl",
+        "x86_64-unknown-freebsd",
+        "i686-pc-windows-msvc",
+        "armv7-linux-androideabi"
+      ]
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.4.5"
+  },
+  "engines": {
+    "node": ">= 10"
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform",
+    "prepublishOnly": "napi prepublish -t npm",
+    "version": "napi version"
+  }
 }
