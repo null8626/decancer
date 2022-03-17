@@ -236,4 +236,6 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-module.exports = nativeBinding.decancer
+const { decancer } = nativeBinding
+
+module.exports.decancer = decancer
