@@ -39,9 +39,11 @@ const MISC = miscRs
 */
 const EMOJIS = 1 + 9 + 26 + 1 + 1 + 1 + 1;
 
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => i + a);
+
 const supportedCount = 
-  [...new Set([...ALPHABETICAL_1, ...ALPHABETICAL_2, ...MISC])].length
-   + ALPHABETICAL_2_ORDERS + NUMERICAL + EMOJIS;
+  [...new Set([...ALPHABETICAL_1, ...ALPHABETICAL_2, ...MISC, ...range(0x300, 0x36F), ...range(0xD800, 0xDB7F)])].length
+   + ALPHABETICAL_2_ORDERS + NUMERICAL + EMOJIS + 1;
 
 writeFileSync("README.md", readFileSync("./README.md").toString()
   .replace(/__\*\*([\s\S]*?)\*\*__/,
