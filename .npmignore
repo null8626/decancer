@@ -11,3 +11,6 @@ yarn.lock
 index.js
 index.d.ts
 prepare.js
+src/
+build.rs
+Cargo.toml

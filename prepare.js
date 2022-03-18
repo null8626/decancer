@@ -1,5 +1,5 @@
 const { readdirSync, readFileSync, writeFileSync } = require("fs");
-const { version, description, author, homepage, keywords, license, bugs } = require("./package.json");
+const { version } = require("./package.json");
 const { join } = require("path");
 
 const alphabetRs = readFileSync(join(__dirname, "src", "alphabet.rs")).toString();
@@ -51,9 +51,5 @@ writeFileSync("README.md", readFileSync("./README.md").toString()
 
 for (const platform of readdirSync("./npm")) {
   const packageJsonPath = join(__dirname, "npm", platform, "package.json");
-  writeFileSync(packageJsonPath, JSON.stringify(Object.assign(require(packageJsonPath), {
-    version, author, homepage, bugs, keywords, license,
-    description: description + ` (Binary port for ${platform})`,
-    name: `@vierofernando/decancer-${platform}`
-  }), null, 2));
+  writeFileSync(packageJsonPath, JSON.stringify(Object.assign(require(packageJsonPath), { version }), null, 2));
 }
