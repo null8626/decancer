@@ -5,10 +5,10 @@ const { join } = require("path");
 const alphabetRs = readFileSync(join(__dirname, "src", "alphabet.rs")).toString();
 const miscRs = readFileSync(join(__dirname, "src", "misc.rs")).toString();
 
-const ALPHABETICAL_1 = eval(alphabetRs.match(/const ALPHABETICAL_1: \[&'static \[u16\]; 26\] = ([\s\S]*?);/)[1].replace(/&\[/g, "[")).flat();
+const ALPHABETICAL_1 = eval(alphabetRs.match(/const ALPHABETICAL_1: \[&'static \[u16\]; \d+\] = ([\s\S]*?);/)[1].replace(/&\[/g, "[")).flat();
 
 const ALPHABETICAL_2_ORDERS = eval(alphabetRs
-  .match(/const ALPHABETICAL_2_ORDERS: \[\(u16, &'static \[u16\]\); 2\] = ([\s\S]*?);/)[1]
+  .match(/const ALPHABETICAL_2_ORDERS: \[\(u16, &'static \[u16\]\); \d+\] = ([\s\S]*?);/)[1]
   .match(/&\[([\s\S]*?)\]/g)
   .map(x => x.slice(1))).flat().length * 24;
 
@@ -47,7 +47,7 @@ const supportedCount =
 
 writeFileSync("README.md", readFileSync("./README.md").toString()
   .replace(/__\*\*([\s\S]*?)\*\*__/,
-           `__**As of version ${version}, This library supports ${supportedCount.toLocaleString()} different code-points.**__`));
+           `__**As of version ${version}, This library supports ${supportedCount.toLocaleString()} different UTF-16 code-points.**__`));
 
 for (const platform of readdirSync("./npm")) {
   const packageJsonPath = join(__dirname, "npm", platform, "package.json");
