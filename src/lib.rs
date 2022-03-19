@@ -32,23 +32,15 @@ fn parse_case_sensitive(input: &[u16]) -> Vec<u16> {
     .to_lowercase()
     .encode_utf16()
     .filter(|&x| (x < 0x300 || x > 0x36F) && x != 0x489)
-    .collect::<Vec<u16>>()
+    .collect::<Vec<_>>()
 }
 
 #[napi]
 fn decancer(raw_input: JsString) -> Result<String, Error> {
-  let utf8_len = raw_input.utf8_len()?;
-  let utf16_len = raw_input.utf16_len()?;
-  let input_str = raw_input.into_utf16()?;
-  
-  if utf8_len == utf16_len {
-    return input_str.as_str();
-  }
-  
-  let mut bytes = parse_case_sensitive(input_str.as_slice());
+  let mut bytes = parse_case_sensitive(raw_input.into_utf16()?.as_slice());
   alphabet::parse(&mut bytes);
   
-  bytes.retain(|&x| x < 0xD800 || x > 0xDB7F);
+  bytes.retain(|&x| (x < 0xD800 || x > 0xDB7F) && x < 0xFFF0);
   
-  Ok(String::from_utf16_lossy(&bytes[..]))
+  Ok(String::from_utf16_lossy(&bytes[..]).replace(char::REPLACEMENT_CHARACTER, ""))
 }
