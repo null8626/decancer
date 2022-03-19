@@ -46,6 +46,7 @@ These are the primary resources that made this project possible.
 
 - [The Official Unicode Confusables List](https://util.unicode.org/UnicodeJsps/confusables.jsp)
 - [The Official Unicode Characters List](https://unicode.org/Public/UNIDATA/UnicodeData.txt)
+- [Wikipedia's list of Unicode Characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
 - [Fancy Text Generator](https://lingojam.com/FancyTextGenerator)
 - [Unicode character inspector](https://apps.timwhitlock.info/unicode/inspect)
 - [napi-rs for integrating Rust into the Node.js ecosystem](https://napi.rs/)
