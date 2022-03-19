@@ -86,7 +86,7 @@ pub(crate) fn parse(parser: &mut Parser) -> bool {
   
   for numeric in NUMERICAL {
     if byte >= numeric && byte <= (numeric + 9) {
-      parser.push_byte(byte - numeric);
+      parser.push_byte(byte - numeric + 0x30);
       parser.advance(1);
       return true;
     }

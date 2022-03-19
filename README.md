@@ -9,7 +9,7 @@ A Node.js module that removes common confusables from strings written in pure [R
 - Supports UTF-32 for emojis and 'fancy fonts'.
 - While this project may not be perfect, it should cover the vast majority of confusables.
 
-__**As of version 1.1.7, This library supports 2,486 different UTF-16 code-points.**__
+__**As of version 1.1.8, This library supports 2,689 different UTF-16 code-points.**__
 
 # installation
 ```bash
