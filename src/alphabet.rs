@@ -82,9 +82,8 @@ pub(crate) fn parse(input: &mut Vec<u16>) {
   }
   
   let mut i = 0;
-  let end = input.len() - 1;
   
-  while i < end {
+  while i < (input.len() - 1) {    
     for ch_order in ALPHABETICAL_2_ORDERS {
       if input[i] == ch_order.0 {
         for ch in ch_order.1 {
@@ -94,6 +93,10 @@ pub(crate) fn parse(input: &mut Vec<u16>) {
             input.remove(i);
             break;
           }
+        }
+        
+        if stop_iterating {
+          break;
         }
       }
     }

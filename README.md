@@ -9,7 +9,7 @@ A Node.js module that removes common confusables from strings written in pure [R
 - Supports UTF-32 for emojis and 'fancy fonts'.
 - While this project may not be perfect, it should cover the vast majority of confusables.
 
-__**As of version 1.1.6, This library supports 2,486 different UTF-16 code-points.**__
+__**As of version 1.1.7, This library supports 2,486 different UTF-16 code-points.**__
 
 # installation
 Install cross-platform release with npm: (Highly recommended)
@@ -17,19 +17,18 @@ Install cross-platform release with npm: (Highly recommended)
 $ npm install decancer
 ```
 
-Or if you're targeting a specific platform, You can use these links to go to each platform-specific release.
-
-- [Windows x64](https://www.npmjs.com/package/@vierofernando/decancer-win32-x64-msvc)
-- [Windows arm64](https://www.npmjs.com/package/@vierofernando/decancer-win32-arm64-msvc)
-- [Windows i686](https://www.npmjs.com/package/@vierofernando/decancer-win32-ia32-msvc)
-- [macOS x64](https://www.npmjs.com/package/@vierofernando/decancer-darwin-x64)
-- [macOS arm64](https://www.npmjs.com/package/@vierofernando/decancer-darwin-arm64)
-- [Linux x64 GNU](https://www.npmjs.com/package/@vierofernando/decancer-linux-x64-gnu)
-- [Linux x64 MUSL](https://www.npmjs.com/package/@vierofernando/decancer-linux-x64-musl)
-- [Linux arm64 GNU](https://www.npmjs.com/package/@vierofernando/decancer-linux-arm64-gnu)
-- [Linux arm64 MUSL](https://www.npmjs.com/package/@vierofernando/decancer-linux-arm64-musl)
-- [Linux arm gnueabihf](https://www.npmjs.com/package/@vierofernando/decancer-linux-arm-gnueabihf)
-- [Android arm64](https://www.npmjs.com/package/@vierofernando/decancer-android-arm64)
+Supported platforms:
+- Windows x64
+- Windows arm64
+- Windows i686
+- macOS x64
+- macOS arm64
+- Linux x64 GNU
+- Linux x64 MUSL
+- Linux arm64 GNU
+- Linux arm64 MUSL
+- Linux arm gnueabihf
+- Android arm64
 
 # example
 ```js
