@@ -9,7 +9,7 @@ A Node.js module that removes common confusables from strings written in pure [R
 - Supports UTF-32 for emojis and 'fancy fonts'.
 - While this project may not be perfect, it should cover the vast majority of confusables.
 
-__**As of version 1.1.8, This library supports 2,689 different UTF-16 code-points.**__
+__**As of version 1.1.8, This library supports 2,717 different UTF-16 code-points.**__
 
 # installation
 ```bash
@@ -36,7 +36,7 @@ const decancer = require('decancer');
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
 console.log(noCancer); // 'very funny text'
 ```
-> **NOTE:** output will ALWAYS be in lowercase and invalid UTF-16 code-points will be replaced by a replacement character (\uFFFD or �).
+> **NOTE:** output will ALWAYS be in lowercase.
 
 # contributions
 All contributions are welcome. If you want to, you can [make a fork here at GitHub.](https://github.com/vierofernando/decancer/fork) Thanks! &lt;3
