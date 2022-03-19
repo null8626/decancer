@@ -12,7 +12,6 @@ A Node.js module that removes common confusables from strings written in pure [R
 __**As of version 1.1.7, This library supports 2,486 different UTF-16 code-points.**__
 
 # installation
-Install cross-platform release with npm: (Highly recommended)
 ```bash
 $ npm install decancer
 ```
