@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "main": "./main.js",
   "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes.",
   "keywords": [
