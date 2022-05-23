@@ -15,7 +15,7 @@ Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-__**As of version 1.2.0, This library supports 2,847 different UTF-16 code-points.**__
+__**As of version 1.2.0, This library supports 2,578 different UTF-16 code-points.**__
 
 # installation
 ```bash
