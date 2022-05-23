@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "main.js",
   "typings": "main.d.ts",
   "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes.",
@@ -64,16 +64,16 @@
     "silent": true
   },
   "optionalDependencies": {
-    "@vierofernando/decancer-win32-x64-msvc": "1.2.0",
-    "@vierofernando/decancer-darwin-x64": "1.2.0",
-    "@vierofernando/decancer-linux-x64-gnu": "1.2.0",
-    "@vierofernando/decancer-darwin-arm64": "1.2.0",
-    "@vierofernando/decancer-android-arm64": "1.2.0",
-    "@vierofernando/decancer-linux-arm64-gnu": "1.2.0",
-    "@vierofernando/decancer-linux-arm64-musl": "1.2.0",
-    "@vierofernando/decancer-win32-arm64-msvc": "1.2.0",
-    "@vierofernando/decancer-linux-arm-gnueabihf": "1.2.0",
-    "@vierofernando/decancer-linux-x64-musl": "1.2.0",
-    "@vierofernando/decancer-win32-ia32-msvc": "1.2.0"
+    "@vierofernando/decancer-win32-x64-msvc": "1.2.1",
+    "@vierofernando/decancer-darwin-x64": "1.2.1",
+    "@vierofernando/decancer-linux-x64-gnu": "1.2.1",
+    "@vierofernando/decancer-darwin-arm64": "1.2.1",
+    "@vierofernando/decancer-android-arm64": "1.2.1",
+    "@vierofernando/decancer-linux-arm64-gnu": "1.2.1",
+    "@vierofernando/decancer-linux-arm64-musl": "1.2.1",
+    "@vierofernando/decancer-win32-arm64-msvc": "1.2.1",
+    "@vierofernando/decancer-linux-arm-gnueabihf": "1.2.1",
+    "@vierofernando/decancer-linux-x64-musl": "1.2.1",
+    "@vierofernando/decancer-win32-ia32-msvc": "1.2.1"
   }
 }
