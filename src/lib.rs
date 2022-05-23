@@ -60,14 +60,14 @@ fn similar(a: u16, b: u16) -> bool {
   false
 }
 
-fn contains_inner(a: &[u16], b: &[u16]) -> bool {
+fn contains_inner(a: &[u16], b: &[u16], a_len: usize, b_len: usize) -> bool {
   let mut j = 0usize;
 
-  for i in 0usize..a.len() {
+  for i in 0usize..a_len {
     if similar(a[i], b[j]) {
       j += 1;
 
-      if j == b.len() {
+      if j == b_len {
         return true;
       }
     } else {
@@ -86,7 +86,7 @@ fn contains(input: JsString, other: JsString) -> Result<bool, Error> {
   if a == 0 || a < b {
     Ok(false)
   } else {
-    Ok(contains_inner(input.into_utf16()?.as_slice(), other.into_utf16()?.as_slice()))
+    Ok(contains_inner(input.into_utf16()?.as_slice(), other.into_utf16()?.as_slice(), a, b))
   }
 }
 
