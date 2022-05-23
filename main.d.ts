@@ -1,1 +1,5 @@
-export default function(rawInput: string): string;
+type DecancerFunction = (rawInput: string): string;
+
+export default interface Decancer extends DecancerFunction {
+  contains: (decancered: string, noNoWord: string): boolean;
+}
