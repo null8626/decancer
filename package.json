@@ -42,7 +42,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@napi-rs/cli": "^2.4.5",
+    "@napi-rs/cli": "^2.9.0",
     "pre-commit": "^1.2.2"
   },
   "engines": {
@@ -62,5 +62,18 @@
       "prepare"
     ],
     "silent": true
+  },
+  "optionalDependencies": {
+    "@vierofernando/decancer-win32-x64-msvc": "1.2.0",
+    "@vierofernando/decancer-darwin-x64": "1.2.0",
+    "@vierofernando/decancer-linux-x64-gnu": "1.2.0",
+    "@vierofernando/decancer-darwin-arm64": "1.2.0",
+    "@vierofernando/decancer-android-arm64": "1.2.0",
+    "@vierofernando/decancer-linux-arm64-gnu": "1.2.0",
+    "@vierofernando/decancer-linux-arm64-musl": "1.2.0",
+    "@vierofernando/decancer-win32-arm64-msvc": "1.2.0",
+    "@vierofernando/decancer-linux-arm-gnueabihf": "1.2.0",
+    "@vierofernando/decancer-linux-x64-musl": "1.2.0",
+    "@vierofernando/decancer-win32-ia32-msvc": "1.2.0"
   }
 }
