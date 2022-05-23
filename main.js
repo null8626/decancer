@@ -209,4 +209,6 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`);
 }
 
-module.exports = nativeBinding.decancer;
+module.exports = Object.assign(nativeBinding.decancer, {
+  contains: nativeBinding.contains
+});
