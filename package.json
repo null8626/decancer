@@ -10,7 +10,8 @@
     "zalgo",
     "rust",
     "confusables",
-    "moderation"
+    "moderation",
+    "homoglyph"
   ],
   "author": "vierofernando",
   "bugs": {
