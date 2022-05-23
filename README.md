@@ -38,17 +38,16 @@ Supported platforms:
 # example
 ```js
 const decancer = require('decancer');
-
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
+
 console.log(noCancer); // 'very funny text'
 ```
 > **NOTE:** output will ALWAYS be in lowercase.
 
-If you want to compare stuff *e.g: if the decancered text contains some sort of a no-no word ;)*
+If you want to check if the decancered string contains a certain keyword, i recommend using this instead of using `.includes`, since mistranslations can happen (e.g mistaking the number 0 with the letter O)
 
 ```js
 const decancer = require('decancer');
-
 const noCancer = decancer(someString);
 
 if (decancer.contains(noCancer, 'no-no-word')) {
