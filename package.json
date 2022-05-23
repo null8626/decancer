@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "1.2.0",
+  "version": "1.2.3",
   "main": "main.js",
   "typings": "main.d.ts",
   "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes.",
@@ -10,7 +10,8 @@
     "zalgo",
     "rust",
     "confusables",
-    "moderation"
+    "moderation",
+    "homoglyph"
   ],
   "author": "vierofernando",
   "bugs": {
@@ -42,7 +43,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@napi-rs/cli": "^2.4.5",
+    "@napi-rs/cli": "^2.9.0",
     "pre-commit": "^1.2.2"
   },
   "engines": {
