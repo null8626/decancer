@@ -56,7 +56,7 @@ if (decancer.contains(noCancer, 'no-no-word')) {
 ```
 
 # contributions
-All contributions are welcome. If you want to, you can [make a fork here at GitHub.](https://github.com/vierofernando/decancer/fork) Thanks! &lt;3
+All contributions are welcome. If you want to, you can [make a fork here at GitHub.](https://github.com/null8626/decancer/fork) Thanks! &lt;3
 
 # special thanks
 These are the primary resources that made this project possible.
