@@ -1,5 +1,5 @@
 {
-  "name": "@vierofernando/decancer-win32-ia32-msvc",
+  "name": "@null8626/decancer-win32-ia32-msvc",
   "version": "1.2.3",
   "os": [
     "win32"
@@ -15,11 +15,11 @@
   "engines": {
     "node": ">= 10"
   },
-  "author": "vierofernando",
-  "homepage": "https://github.com/vierofernando/decancer",
+  "author": "null8626",
+  "homepage": "https://github.com/null8626/decancer",
   "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes. (Binary port for win32-ia32-msvc)",
   "bugs": {
-    "url": "https://github.com/vierofernando/decancer/issues"
+    "url": "https://github.com/null8626/decancer/issues"
   },
   "keywords": [
     "string",

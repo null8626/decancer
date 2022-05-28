@@ -13,20 +13,20 @@
     "moderation",
     "homoglyph"
   ],
-  "author": "vierofernando",
+  "author": "null8626",
   "bugs": {
-    "url": "https://github.com/vierofernando/decancer/issues"
+    "url": "https://github.com/null8626/decancer/issues"
   },
-  "homepage": "https://github.com/vierofernando/decancer",
+  "homepage": "https://github.com/null8626/decancer",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vierofernando/decancer"
+    "url": "git+https://github.com/null8626/decancer"
   },
   "types": "./main.d.ts",
   "napi": {
     "name": "decancer",
     "package": {
-      "name": "@vierofernando/decancer"
+      "name": "@null8626/decancer"
     },
     "triples": {
       "additional": [
