@@ -13,7 +13,7 @@ Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-__**As of version 1.3.0, This library supports 3,624 different code-points.**__
+__**As of version 1.3.0, This library supports 3,631 different code-points.**__
 
 # installation
 ```bash
