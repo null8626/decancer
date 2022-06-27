@@ -1,5 +1,5 @@
-const { existsSync, readFileSync } = require('fs');
-const { join } = require('path');
+const { existsSync, readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
 const { platform, arch } = process;
 
@@ -28,9 +28,9 @@ switch (platform) {
         localFileExisted = existsSync(join(__dirname, 'decancer.android-arm64.node'));
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.android-arm64.node');
+            nativeBinding = require('../decancer.android-arm64.node');
           } else {
-            nativeBinding = require('@null8626/decancer-android-arm64');
+            nativeBinding = require('@vierofernando/decancer-android-arm64');
           }
         } catch (e) {
           loadError = e;
@@ -48,9 +48,9 @@ switch (platform) {
         );
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.win32-x64-msvc.node');
+            nativeBinding = require('../decancer.win32-x64-msvc.node');
           } else {
-            nativeBinding = require('@null8626/decancer-win32-x64-msvc');
+            nativeBinding = require('@vierofernando/decancer-win32-x64-msvc');
           }
         } catch (e) {
           loadError = e;
@@ -62,9 +62,9 @@ switch (platform) {
         );
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.win32-ia32-msvc.node');
+            nativeBinding = require('../decancer.win32-ia32-msvc.node');
           } else {
-            nativeBinding = require('@null8626/decancer-win32-ia32-msvc');
+            nativeBinding = require('@vierofernando/decancer-win32-ia32-msvc');
           }
         } catch (e) {
           loadError = e;
@@ -76,9 +76,9 @@ switch (platform) {
         );
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.win32-arm64-msvc.node');
+            nativeBinding = require('../decancer.win32-arm64-msvc.node');
           } else {
-            nativeBinding = require('@null8626/decancer-win32-arm64-msvc');
+            nativeBinding = require('@vierofernando/decancer-win32-arm64-msvc');
           }
         } catch (e) {
           loadError = e;
@@ -94,9 +94,9 @@ switch (platform) {
         localFileExisted = existsSync(join(__dirname, 'decancer.darwin-x64.node'));
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.darwin-x64.node');
+            nativeBinding = require('../decancer.darwin-x64.node');
           } else {
-            nativeBinding = require('@null8626/decancer-darwin-x64');
+            nativeBinding = require('@vierofernando/decancer-darwin-x64');
           }
         } catch (e) {
           loadError = e;
@@ -108,9 +108,9 @@ switch (platform) {
         );
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.darwin-arm64.node');
+            nativeBinding = require('../decancer.darwin-arm64.node');
           } else {
-            nativeBinding = require('@null8626/decancer-darwin-arm64');
+            nativeBinding = require('@vierofernando/decancer-darwin-arm64');
           }
         } catch (e) {
           loadError = e;
@@ -129,9 +129,9 @@ switch (platform) {
           );
           try {
             if (localFileExisted) {
-              nativeBinding = require('./decancer.linux-x64-musl.node');
+              nativeBinding = require('../decancer.linux-x64-musl.node');
             } else {
-              nativeBinding = require('@null8626/decancer-linux-x64-musl');
+              nativeBinding = require('@vierofernando/decancer-linux-x64-musl');
             }
           } catch (e) {
             loadError = e;
@@ -142,9 +142,9 @@ switch (platform) {
           );
           try {
             if (localFileExisted) {
-              nativeBinding = require('./decancer.linux-x64-gnu.node');
+              nativeBinding = require('../decancer.linux-x64-gnu.node');
             } else {
-              nativeBinding = require('@null8626/decancer-linux-x64-gnu');
+              nativeBinding = require('@vierofernando/decancer-linux-x64-gnu');
             }
           } catch (e) {
             loadError = e;
@@ -158,9 +158,9 @@ switch (platform) {
           );
           try {
             if (localFileExisted) {
-              nativeBinding = require('./decancer.linux-arm64-musl.node');
+              nativeBinding = require('../decancer.linux-arm64-musl.node');
             } else {
-              nativeBinding = require('@null8626/decancer-linux-arm64-musl');
+              nativeBinding = require('@vierofernando/decancer-linux-arm64-musl');
             }
           } catch (e) {
             loadError = e;
@@ -171,9 +171,9 @@ switch (platform) {
           );
           try {
             if (localFileExisted) {
-              nativeBinding = require('./decancer.linux-arm64-gnu.node');
+              nativeBinding = require('../decancer.linux-arm64-gnu.node');
             } else {
-              nativeBinding = require('@null8626/decancer-linux-arm64-gnu');
+              nativeBinding = require('@vierofernando/decancer-linux-arm64-gnu');
             }
           } catch (e) {
             loadError = e;
@@ -186,9 +186,9 @@ switch (platform) {
         );
         try {
           if (localFileExisted) {
-            nativeBinding = require('./decancer.linux-arm-gnueabihf.node');
+            nativeBinding = require('../decancer.linux-arm-gnueabihf.node');
           } else {
-            nativeBinding = require('@null8626/decancer-linux-arm-gnueabihf');
+            nativeBinding = require('@vierofernando/decancer-linux-arm-gnueabihf');
           }
         } catch (e) {
           loadError = e;
