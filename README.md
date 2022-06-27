@@ -6,16 +6,14 @@ Pros:
 - Extremely fast, no use of regex whatsoever!
 - No dependencies.
 - Simple to use, just one single function.
-- Supports UTF-8 for basic confusables.
-- Supports UTF-16 for the majority of confusables, this includes zalgos, foreign languages, etc.
-- Supports UTF-32 for emojis and 'fancy fonts'.
+- Supports all the way to UTF-32 code-points. Like emojis, zalgos, etc.
 - While this project may not be perfect, it should cover the vast majority of confusables.
 
 Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-__**As of version 1.2.3, This library supports 2,578 different UTF-16 code-points.**__
+__**As of version 1.3.0, This library supports 3,624 different code-points.**__
 
 # installation
 ```bash
@@ -56,7 +54,14 @@ if (decancer.contains(noCancer, 'no-no-word')) {
 ```
 
 # contributions
-All contributions are welcome. If you want to, you can [make a fork here at GitHub.](https://github.com/null8626/decancer/fork) Thanks! &lt;3
+All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
+
+If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer)), and open the Node.js REPL:
+
+```js
+> const reader = await import("./contrib/index.mjs");
+> const data = reader.default("./bin/confusables.bin");
+```
 
 # special thanks
 These are the primary resources that made this project possible.
