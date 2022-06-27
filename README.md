@@ -20,19 +20,6 @@ __**As of version 1.3.0, This library supports 3,624 different code-points.**__
 $ npm install decancer
 ```
 
-Supported platforms:
-- Windows x64
-- Windows arm64
-- Windows i686
-- macOS x64
-- macOS arm64
-- Linux x64 GNU
-- Linux x64 MUSL
-- Linux arm64 GNU
-- Linux arm64 MUSL
-- Linux arm gnueabihf
-- Android arm64
-
 # example
 ```js
 const decancer = require('decancer');
@@ -56,7 +43,7 @@ if (decancer.contains(noCancer, 'no-no-word')) {
 # contributions
 All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
 
-If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer)), and open the Node.js REPL:
+If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and open the Node.js REPL:
 
 ```js
 > const reader = await import("./contrib/index.mjs");
