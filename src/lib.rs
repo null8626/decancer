@@ -1,81 +1,22 @@
+#![allow(dead_code)]
 #![deny(clippy::all)]
 
 #[macro_use]
 extern crate napi_derive;
+extern crate napi;
 
 use napi::bindgen_prelude::Error;
 use napi::JsString;
 
-pub(crate) mod parser;
-use parser::Parser;
+mod confusables;
+mod encoding;
 
-mod alphabet;
-mod emojis;
-mod misc;
-
-fn parse_case_sensitive(input: &[u16]) -> Vec<u16> {
-  let mut parser = Parser::new(&input[0..input.len() - 1]);
-  
-  loop {
-    if !emojis::parse(&mut parser) && !misc::parse(&mut parser) {
-      if parser.end() {
-        break;
-      }
-      
-      parser.push_byte(parser.get());
-      parser.advance(1);
-    }
-  }
-  
-  parser
-    .output()
-    .to_lowercase()
-    .encode_utf16()
-    .filter(|&x| (x < 0x300 || x > 0x36F) && x != 0x489)
-    .collect::<Vec<_>>()
-}
-
-const SIMILARITIES: [&[u16]; 8] = [
-  &[0x31, 0x69, 0x7c, 0x6C],
-  &[0x6f, 0x30],
-  &[0x63, 0x28],
-  &[0x69, 0x76],
-  &[0x73, 0x35, 0x24],
-  &[0x34, 0x61],
-  &[0x37, 0x74],
-  &[0x36, 0x62]
-];
+use encoding::*;
 
 fn similar(a: u16, b: u16) -> bool {
-  if a == b {
-    return true;
-  }
-  
-  for elem in SIMILARITIES {
-    if elem.contains(&a) && elem.contains(&b) {
-      return true;
-    }
-  }
-
-  false
-}
-
-fn contains_inner(a: &[u16], b: &[u16], a_len: usize, b_len: usize) -> bool {
-  let mut j = 0usize;
-
-  for i in 0usize..a_len {
-    if similar(a[i], b[j]) {
-      j += 1;
-
-      if j == b_len {
-        return true;
-      }
-    } else {
-      j = 0usize;
-    }
-  }
-
-  false
+  a == b || ((a <= 0xFF) && (b <= 0xFF) && confusables::similar().any(|x| {
+    x.contains(a as _) && x.contains(b as _)
+  }))
 }
 
 #[napi]
@@ -84,18 +25,101 @@ fn contains(input: JsString, other: JsString) -> Result<bool, Error> {
   let b = other.utf16_len()?;
 
   if a == 0 || a < b {
-    Ok(false)
-  } else {
-    Ok(contains_inner(input.into_utf16()?.as_slice(), other.into_utf16()?.as_slice(), a, b))
+    return Ok(false);
   }
+
+  let mut j = 0usize;
+  let inp_a = input.into_utf16()?;
+  let inp_b = other.into_utf16()?;
+
+  for (&x, &y) in inp_a.as_slice().iter().zip(inp_b.as_slice()) {
+    if similar(x, y) {
+      j += 1;
+
+      if j == b {
+        return Ok(true);
+      }
+    } else {
+      j = 0;
+    }
+  }
+
+  Ok(false)
 }
 
 #[napi]
 fn decancer(raw_input: JsString) -> Result<String, Error> {
-  let mut bytes = parse_case_sensitive(raw_input.into_utf16()?.as_slice());
-  alphabet::parse(&mut bytes);
+  let input = raw_input.into_utf16()?;
+  let mut output = String::with_capacity(input.len() - 1);
+
+  // for_each so we can have return (implement some sort of goto in rust)
+  Codepoints::from(&input)
+    .filter(|&x| x != 0x20E3 && x != 0xFE0F && (x < 0x300 || x > 0x36F) && x != 0x489)
+    .for_each(|x| {
+      for num in confusables::numerical() {
+        if x >= num && x <= (num + 9) {
+          return output.push(unsafe { char::from_u32_unchecked(x - num + 0x30) });
+        }
+      }
   
-  bytes.retain(|&x| (x < 0xD800 || x > 0xDB7F) && x < 0xFFF0);
+      for (key, value) in confusables::misc_case_sensitive() {
+        if value.contains(x) {
+          for k in key {
+            output.push(k as char);
+          }
   
-  Ok(String::from_utf16_lossy(&bytes[..]).replace(char::REPLACEMENT_CHARACTER, ""))
+          return;
+        }
+      }
+
+      for pat in confusables::alphabetical_pattern_case_sensitive() {
+        if x >= pat && x <= (pat + 25) {
+          return output.push(unsafe { char::from_u32_unchecked(x - pat + 0x61) });
+        }
+      }
+
+      if let Some(c22) = char::from_u32(x) {
+        c22.to_lowercase().for_each(|c2| {
+          let c = c2 as u32;
+
+          for pat in confusables::alphabetical_pattern() {
+            if c >= pat && c <= (pat + 25) {
+              return output.push(unsafe { char::from_u32_unchecked(c - pat + 0x61) });
+            }
+          }
+
+          for (i, arr) in confusables::alphabetical().enumerate() {
+            if arr.contains(c) {
+              return output.push(unsafe { char::from_u32_unchecked((i as u32) + 0x61) });
+            }
+          }
+
+          for (a, b) in confusables::misc() {
+            if b.contains(c) {
+              return output.push(a as char);
+            }
+          }
+
+          if let Some(t) = char::from_u32(c) {
+            output.push(t);
+          }
+        });
+      }
+    });
+
+  output.retain(|c2| {
+    let (a, b) = charcodes(c2 as _);
+
+    if a != 0 && a != 0xFFFD && (a < 0xD800 || a > 0xDB7F) && a < 0xFFF0 {
+      if let Some(b2) = b {
+        b2 != 0 && b2 != 0xFFFD && (b2 < 0xD800 || b2 > 0xDB7F) && b2 < 0xFFF0
+      } else {
+        true
+      }
+    } else {
+      false
+    }
+  });
+    
+  Ok(output)
 }

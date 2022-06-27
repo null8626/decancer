@@ -5,7 +5,5 @@ Cargo.lock
 target/
 index.js
 index.d.ts
-
-# dont ask what these are
-a.js
-contrib/
+rustfmt.toml
+napi.bat
