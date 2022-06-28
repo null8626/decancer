@@ -24,7 +24,6 @@ jobs:
   build:
     if: '!contains(github.event.head_commit.message, ''skip ci'')'
     strategy:
-      fail-fast: false
       matrix:
         settings:
           - host: macos-latest
@@ -150,9 +149,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bindings-${{ matrix.settings.target }}
-          path:
-            - ${{ env.APP_NAME }}.*.node
-            - ./bin/confusables.bin
+          path: |
+            ${{ env.APP_NAME }}.*.node
+            bin/confusables.bin
           if-no-files-found: error
   publish:
     name: Publish
