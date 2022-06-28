@@ -1,0 +1,20 @@
+{
+  "files": ["src/lib.ts"],
+  "compilerOptions": {
+    "declaration": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "allowUnreachableCode": false,
+    "noUnusedParameters": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "module": "CommonJS",
+    "target": "es2022",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "removeComments": true
+  }
+}
