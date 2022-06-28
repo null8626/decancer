@@ -1,3 +1,2 @@
 **/*.bin binary
 **/*.mjs linguist-vendored=true
-**/*.js linguist-vendored=true
