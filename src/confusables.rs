@@ -77,7 +77,7 @@ impl<T: Copy + PartialEq + Sized> Iterator for BinaryArray<T> {
 
   #[inline(always)]
   fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len() as _, Some(self.len() as _))
+    (0, Some(self.len() as _))
   }
 }
 
