@@ -142,13 +142,17 @@ jobs:
       - name: Install dependencies
         run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
       - name: Build
-        run: ${{ matrix.settings.build }}
+        run: |
+          npx tsc --project tsconfig.json
+          ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: bindings-${{ matrix.settings.target }}
-          path: ${{ env.APP_NAME }}.*.node
+          path:
+            - ${{ env.APP_NAME }}.*.node
+            - ./bin/confusables.bin
           if-no-files-found: error
   publish:
     name: Publish
@@ -176,6 +180,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifacts
+      - name: Move binary
+        run: |
+          mv ./artifacts/bin/confusables.bin ./artifacts
+          rm -d ./artifacts/bin
       - name: Move artifacts
         run: yarn artifacts
       - name: List packages
