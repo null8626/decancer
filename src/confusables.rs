@@ -271,18 +271,14 @@ pub const fn misc() -> Misc {
   Misc::new(get_ptr(2))
 }
 
-pub const fn alphabetical_pattern_case_sensitive() -> BinaryArray<u32> {
+pub const fn alphabetical_pattern() -> BinaryArray<u32> {
   BinaryArray::new(get_ptr(3))
 }
 
-pub const fn alphabetical_pattern() -> BinaryArray<u32> {
-  BinaryArray::new(get_ptr(4))
-}
-
 pub const fn alphabetical() -> Alphabetical {
-  Alphabetical::new(get_ptr(5))
+  Alphabetical::new(get_ptr(4))
 }
 
 pub const fn similar() -> Similar {
-  Similar::new(get_ptr(6))
+  Similar::new(get_ptr(5))
 }

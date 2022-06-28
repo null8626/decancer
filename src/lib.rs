@@ -72,12 +72,6 @@ fn decancer(raw_input: JsString) -> Result<String, Error> {
         }
       }
 
-      for pat in confusables::alphabetical_pattern_case_sensitive() {
-        if x >= pat && x <= (pat + 25) {
-          return output.push(unsafe { char::from_u32_unchecked(x - pat + 0x61) });
-        }
-      }
-
       if let Some(c22) = char::from_u32(x) {
         c22.to_lowercase().for_each(|c2| {
           let c = c2 as u32;

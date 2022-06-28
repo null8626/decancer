@@ -8,7 +8,7 @@ class Writer {
   #buffer;
   
   constructor() {
-    this.#buffer = Buffer.allocUnsafe(14); // 14 bytes is header size.
+    this.#buffer = Buffer.allocUnsafe(12); // 12 bytes is header size.
   }
 
   /**
@@ -99,15 +99,14 @@ export default function write(decancer, filename) {
     writer.writeUInt32Array(confusables); 
   }
 
-  writer.writeHeader(3, writer.writeUInt32Array(decancer.alphabeticalPatternCaseSensitive));
-  writer.writeHeader(4, writer.writeUInt32Array(decancer.alphabeticalPattern));
+  writer.writeHeader(3, writer.writeUInt32Array(decancer.alphabeticalPattern));
 
-  writer.writeHeader(5, writer.writeUInt32Array(decancer.alphabetical[0]));
+  writer.writeHeader(4, writer.writeUInt32Array(decancer.alphabetical[0]));
   for (let i = 1; i < 26; i++) {
     writer.writeUInt32Array(decancer.alphabetical[i]);
   }
 
-  writer.writeHeader(6, writer.writeByte(decancer.similar.length));
+  writer.writeHeader(5, writer.writeByte(decancer.similar.length));
   for (const sim of decancer.similar.map(x => x.map(y => y.charCodeAt()))) {
     writer.writeUInt8Array(sim);
   }

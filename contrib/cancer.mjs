@@ -8,7 +8,6 @@ import write from "./writer.mjs";
 export default class Decancer {
   constructor({
     numerical,
-    alphabeticalPatternCaseSensitive,
     alphabeticalPattern,
     miscCaseSensitive,
     misc,
@@ -16,7 +15,6 @@ export default class Decancer {
     similar
   }) {
     this.numerical = numerical;
-    this.alphabeticalPatternCaseSensitive = alphabeticalPatternCaseSensitive;
     this.alphabeticalPattern = alphabeticalPattern;
     this.miscCaseSensitive = miscCaseSensitive;
     this.misc = misc;
@@ -29,7 +27,6 @@ export default class Decancer {
    */
   get length() {
     return (this.numerical.length * 10) +
-      (this.alphabeticalPatternCaseSensitive.length * 26) +
       (this.alphabeticalPattern.length * 26) +
       [...this.miscCaseSensitive.values()].reduce((a, b) => a + b.length, 0) +
       [...this.misc.values()].reduce((a, b) => a + b.length, 0) +

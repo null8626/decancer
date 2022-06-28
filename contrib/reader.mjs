@@ -20,14 +20,12 @@ export default function read(filename) {
   const numericalOffset                        = buf.readUInt16LE(0);
   const miscCaseSensitiveOffset                = buf.readUInt16LE(2);
   const miscOffset                             = buf.readUInt16LE(4);
-  const alphabeticalPatternCaseSensitiveOffset = buf.readUInt16LE(6);
-  const alphabeticalPatternOffset              = buf.readUInt16LE(8);
-  const alphabeticalOffset                     = buf.readUInt16LE(10);
-  const similarOffset                          = buf.readUInt16LE(12);
+  const alphabeticalPatternOffset              = buf.readUInt16LE(6);
+  const alphabeticalOffset                     = buf.readUInt16LE(8);
+  const similarOffset                          = buf.readUInt16LE(10);
 
   // simple arrays
   const numerical = readSimpleArray(buf, numericalOffset);
-  const alphabeticalPatternCaseSensitive = readSimpleArray(buf, alphabeticalPatternCaseSensitiveOffset);
   const alphabeticalPattern = readSimpleArray(buf, alphabeticalPatternOffset);
 
   // misc case sensitive
@@ -84,7 +82,6 @@ export default function read(filename) {
 
   return new Decancer({
     numerical,
-    alphabeticalPatternCaseSensitive,
     alphabeticalPattern,
     miscCaseSensitive,
     misc,
