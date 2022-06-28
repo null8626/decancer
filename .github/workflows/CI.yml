@@ -141,9 +141,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
       - name: Build
-        run: |
-          npx tsc --project tsconfig.json
-          ${{ matrix.settings.build }}
+        run: ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -151,7 +149,6 @@ jobs:
           name: bindings-${{ matrix.settings.target }}
           path: |
             ${{ env.APP_NAME }}.*.node
-            bin/confusables.bin
           if-no-files-found: error
   publish:
     name: Publish
@@ -179,10 +176,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: artifacts
-      - name: Move binary
+      - name: Copy binary to artifacts
         run: |
-          mv ./artifacts/bin/confusables.bin ./artifacts
-          rm -d ./artifacts/bin
+          cp ./bin/confusables.bin ./artifacts
       - name: Move artifacts
         run: yarn artifacts
       - name: List packages
@@ -190,6 +186,8 @@ jobs:
         shell: bash
       - name: Publish
         run: |
+          npm install --save-dev
+          npx tsc --project tsconfig.json
           if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
           then
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
