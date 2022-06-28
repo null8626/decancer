@@ -40,7 +40,7 @@ impl Iterator for Codepoints<'_> {
   type Item = u32;
   
   fn next(&mut self) -> Option<Self::Item> {
-    if self.inner_index == self.min_len() {
+    if self.inner_index >= self.min_len() {
       return None;
     }
 
