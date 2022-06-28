@@ -13,7 +13,12 @@ env:
       - '**/*.md'
       - LICENSE
       - '**/*.gitignore'
+      - '**/*.npmignore'
       - .editorconfig
+      - .eslintrc.json
+      - .prettierrc.json
+      - tsconfig.json
+      - yarn.lock
   pull_request: null
 jobs:
   build:
