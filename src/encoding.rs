@@ -61,6 +61,6 @@ impl Iterator for Codepoints<'_> {
 
   #[inline(always)]
   fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.min_len(), Some(self.min_len() * 2))
+    (0, Some(self.min_len()))
   }
 }
