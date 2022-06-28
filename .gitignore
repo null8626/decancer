@@ -9,4 +9,3 @@ src/lib.d.ts
 index.js
 index.d.ts
 rustfmt.toml
-napi.bat

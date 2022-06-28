@@ -20,3 +20,4 @@ Cargo.toml
 .eslintrc.json
 tsconfig.json
 LICENSE
+napi.bat
