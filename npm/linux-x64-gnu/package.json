@@ -1,6 +1,6 @@
 {
-  "name": "@null8626/decancer-linux-x64-gnu",
-  "version": "1.3.0",
+  "name": "@vierofernando/decancer-linux-x64-gnu",
+  "version": "1.3.1",
   "os": [
     "linux"
   ],

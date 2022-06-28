@@ -3,7 +3,6 @@ package-lock.json
 Cargo.lock
 **/*.node
 target/
-**/.js
 src/lib.js
 src/lib.d.ts
 index.js
