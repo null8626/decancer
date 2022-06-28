@@ -13,14 +13,19 @@ Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-__**As of version 1.3.0, This library supports 2,526 different code-points.**__
+__**As of version 1.3.0, This package supports 2,526 different code-points.**__
 
 # installation
+
+There are two ways of installing `decancer`. The first one is through NPM:
 ```bash
 $ npm install decancer
 ```
 
+You can also retrieve the latest `.node` binaries from [GitHub releases](https://github.com/null8626/decancer/releases).
+
 # example
+### using the NPM package
 ```js
 const decancer = require('decancer');
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
@@ -39,6 +44,20 @@ if (decancer.contains(noCancer, 'no-no-word')) {
   console.log('LANGUAGE!!!');
 }
 ```
+
+### directly using the `.node` binary
+If you are using the `.node` binary directly, there is a little difference in using it.
+
+```js
+const { decancer, contains } = require('./path/to/decancer.node');
+
+const noCancer = decancer(someString);
+
+if (contains(noCancer, 'no-no-word')) {
+  console.log('LANGUAGE!!!');
+}
+```
+Other than that, everything is the same :)
 
 # contributions
 All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
