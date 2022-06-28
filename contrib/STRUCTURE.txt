@@ -1,7 +1,6 @@
 numerical_array offset (u16)
 misc_case_sensitive offset (u16)
 misc offset (u16)
-alphabetical_pattern_case_sensitive offset (u16)
 alphabetical_pattern offset (u16)
 alphabetical offset (u16)
 similar offset (u16)
@@ -26,10 +25,6 @@ misc:
     translation in ASCII (u8)
     size of confusables (u8)
     array of confusables (u32 array)
-
-alphabetical_pattern_case_sensitive:
-  size of array (u8)
-  array (u32 array)
 
 alphabetical_pattern:
   size of array (u8)
