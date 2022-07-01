@@ -1,12 +1,11 @@
-import Decancer from "./cancer.mjs";
-import { writeFileSync } from "node:fs";
+import { writeFileSync } from 'node:fs';
 
 /**
  * The decancer writer - converting a Decancer object into a stream of uncompressed bytes.
  */
 class Writer {
   #buffer;
-  
+
   constructor() {
     this.#buffer = Buffer.allocUnsafe(12); // 12 bytes is header size.
   }
@@ -27,11 +26,11 @@ class Writer {
    */
   writeUInt32Array(arr) {
     const outputOffset = this.#buffer.byteLength;
-    
+
     this.#buffer = Buffer.concat([
       this.#buffer,
       new Uint8Array([arr.length]),
-      new Uint8Array((new Uint32Array(arr)).buffer)
+      new Uint8Array(new Uint32Array(arr).buffer)
     ]);
 
     return outputOffset;
@@ -44,12 +43,12 @@ class Writer {
    */
   writeUInt8Array(arr) {
     const outputOffset = this.#buffer.byteLength;
-    
+
     this.#buffer = Buffer.concat([
       this.#buffer,
       new Uint8Array([arr.length, ...arr])
     ]);
-    
+
     return outputOffset;
   }
 
@@ -60,10 +59,7 @@ class Writer {
    */
   writeByte(byte) {
     const outputOffset = this.#buffer.byteLength;
-    this.#buffer = Buffer.concat([
-      this.#buffer,
-      new Uint8Array([byte])
-    ]);
+    this.#buffer = Buffer.concat([this.#buffer, new Uint8Array([byte])]);
 
     return outputOffset;
   }
@@ -79,37 +75,39 @@ class Writer {
 
 /**
  * Writes it all back to a binary.
- * @param {Decancer} decancer The decancer instance. 
+ * @param {import('./cancer.mjs').default} decancer The decancer instance.
  * @param {string} filename The file name.
  */
 export default function write(decancer, filename) {
   const writer = new Writer();
 
   writer.writeHeader(0, writer.writeUInt32Array(decancer.numerical));
-  
+
   writer.writeHeader(1, writer.writeByte(decancer.miscCaseSensitive.size));
-  for (const [translation, confusables] of [...decancer.miscCaseSensitive.entries()].map(([K, V]) => [K.split('').map(x => x.charCodeAt()), V])) {
+  for (const [translation, confusables] of Array.from(
+    decancer.miscCaseSensitive.entries()
+  ).map(([K, V]) => [K.split('').map(x => x.charCodeAt()), V])) {
     writer.writeUInt8Array(translation);
     writer.writeUInt32Array(confusables);
   }
 
   writer.writeHeader(2, writer.writeByte(decancer.misc.size));
-  for (const [translation, confusables] of [...decancer.misc].map(([K, V]) => [K.charCodeAt(), V])) {
+  for (const [translation, confusables] of Array.from(decancer.misc).map(
+    ([K, V]) => [K.charCodeAt(), V]
+  )) {
     writer.writeByte(translation);
-    writer.writeUInt32Array(confusables); 
+    writer.writeUInt32Array(confusables);
   }
 
   writer.writeHeader(3, writer.writeUInt32Array(decancer.alphabeticalPattern));
 
   writer.writeHeader(4, writer.writeUInt32Array(decancer.alphabetical[0]));
-  for (let i = 1; i < 26; i++) {
+  for (let i = 1; i < 26; i++)
     writer.writeUInt32Array(decancer.alphabetical[i]);
-  }
 
   writer.writeHeader(5, writer.writeByte(decancer.similar.length));
-  for (const sim of decancer.similar.map(x => x.map(y => y.charCodeAt()))) {
+  for (const sim of decancer.similar.map(x => x.map(y => y.charCodeAt())))
     writer.writeUInt8Array(sim);
-  }
 
   writer.write(filename);
 }

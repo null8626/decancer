@@ -1,3 +1,3 @@
-import read from "./reader.mjs";
+import read from './reader.mjs';
 
 export default read;
