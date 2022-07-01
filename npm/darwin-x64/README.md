@@ -1,3 +1,3 @@
 # `decancer-darwin-x64`
 
-This is the **x86_64-apple-darwin** binary for `decancer`
+This is the **x86_64-apple-darwin** binary for `decancer`.

@@ -1,4 +1,5 @@
 # decancer
+
 A Node.js module that removes common confusables from strings written in pure [Rust](https://rust-lang.org).
 
 Pros:
@@ -13,25 +14,29 @@ Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-__**As of version 1.3.2, This package supports 2,526 different code-points.**__
+**As of version 1.3.2, This package supports 2,526 different code-points.**
 
 # installation
 
 There are two ways of installing `decancer`. The first one is through NPM:
-```bash
+
+```console
 $ npm install decancer
 ```
 
 You can also retrieve the latest `.node` binaries from [GitHub releases](https://github.com/null8626/decancer/releases).
 
 # example
+
 ### using the NPM package
+
 ```js
 const decancer = require('decancer');
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
 
 console.log(noCancer); // 'very funny text'
 ```
+
 > **NOTE:** output will ALWAYS be in lowercase.
 
 If you want to check if the decancered string contains a certain keyword, i recommend using this instead of using `.includes`, since mistranslations can happen (e.g mistaking the number 0 with the letter O)
@@ -40,12 +45,11 @@ If you want to check if the decancered string contains a certain keyword, i reco
 const decancer = require('decancer');
 const noCancer = decancer(someString);
 
-if (decancer.contains(noCancer, 'no-no-word')) {
-  console.log('LANGUAGE!!!');
-}
+if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 ```
 
 ### directly using the `.node` binary
+
 If you are using the `.node` binary directly, there is a little difference in using it.
 
 ```js
@@ -53,23 +57,24 @@ const { decancer, contains } = require('./path/to/decancer.node');
 
 const noCancer = decancer(someString);
 
-if (contains(noCancer, 'no-no-word')) {
-  console.log('LANGUAGE!!!');
-}
+if (contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 ```
+
 Other than that, everything is the same :)
 
 # contributions
+
 All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
 
 If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and open the Node.js REPL:
 
 ```js
-> const reader = await import("./contrib/index.mjs");
-> const data = reader.default("./bin/confusables.bin");
+const reader = await import('./contrib/index.mjs');
+const data = reader.default('./bin/confusables.bin');
 ```
 
 # special thanks
+
 These are the primary resources that made this project possible.
 
 - [The Official Unicode Confusables List](https://util.unicode.org/UnicodeJsps/confusables.jsp)
