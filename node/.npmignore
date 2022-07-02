@@ -1,8 +1,6 @@
-contrib/
 target
 Cargo.lock
 .cargo
-.github
 npm
 rustfmt.toml
 yarn.lock
@@ -13,10 +11,4 @@ index.d.ts
 src/lib.ts
 src/lib.d.ts
 Cargo.toml
-**/*.bin
-.editorconfig
-.gitattributes
-.prettierrc.json
-.eslintrc.json
 tsconfig.json
-LICENSE

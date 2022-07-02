@@ -1,13 +1,3 @@
-#![allow(dead_code)]
-#![deny(clippy::all)]
-
-#[macro_use]
-extern crate napi_derive;
-extern crate napi;
-
-use napi::bindgen_prelude::Error;
-use napi::JsString;
-
 mod confusables;
 mod encoding;
 
@@ -19,41 +9,32 @@ fn similar(a: u16, b: u16) -> bool {
   }))
 }
 
-#[napi]
-fn contains(input: JsString, other: JsString) -> Result<bool, Error> {
-  let a = input.utf16_len()?;
-  let b = other.utf16_len()?;
-
-  if a == 0 || a < b {
-    return Ok(false);
+pub fn contains(a: &[u16], b: &[u16]) -> bool {
+  if a.len() == 0 || a.len() < b.len() {
+    return false;
   }
 
   let mut j = 0usize;
-  let inp_a = input.into_utf16()?;
-  let inp_b = other.into_utf16()?;
-
-  for (&x, &y) in inp_a.as_slice().iter().zip(inp_b.as_slice()) {
+  for (&x, &y) in a.iter().zip(b) {
     if similar(x, y) {
       j += 1;
 
-      if j == b {
-        return Ok(true);
+      if j == b.len() {
+        return true;
       }
     } else {
       j = 0;
     }
   }
 
-  Ok(false)
+  false
 }
 
-#[napi]
-fn decancer(raw_input: JsString) -> Result<String, Error> {
-  let input = raw_input.into_utf16()?;
-  let mut output = String::with_capacity(input.len() - 1);
+pub fn decancer(input: &[u16]) -> String {
+  let mut output = String::with_capacity(input.len());
 
   // for_each so we can have return (implement some sort of goto in rust)
-  Codepoints::from(&input)
+  Codepoints::from(input)
     .filter(|&x| ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F) && x != 0x20E3 && x != 0xFE0F && x != 0x489)
     .for_each(|x| {
       for num in confusables::numerical() {
@@ -115,5 +96,5 @@ fn decancer(raw_input: JsString) -> Result<String, Error> {
     }
   });
     
-  Ok(output)
+  output
 }

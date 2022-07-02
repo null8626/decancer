@@ -1,0 +1,30 @@
+name: build wasm
+'on':
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '!wasm/src/*'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ATiltedTree/setup-rust@v1
+        with:
+          rust-version: stable
+      - name: Install CLI
+        run: cargo install wasm-bindgen-cli
+      - name: Build
+        run: |
+          make wasm
+          mv ./wasm/pkg/decancer_wasm_bg.wasm ./wasm/bin/decancer.wasm
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'wasm: build binary'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
