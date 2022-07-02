@@ -1,6 +1,6 @@
 # decancer
 
-A Node.js module that removes common confusables from strings written in pure [Rust](https://rust-lang.org).
+A portable JavaScript module that removes common confusables from strings written in pure [Rust](https://rust-lang.org). Available for Node.js, Deno, and the Browser.
 
 Pros:
 
@@ -14,24 +14,57 @@ Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-**As of version 1.3.2, This package supports 2,526 different code-points.**
+**As of version 1.3.3, This package supports 2,526 different code-points.**
 
-# installation
+## installation
 
-There are two ways of installing `decancer`. The first one is through NPM:
+### Node.js (npm)
+
+In your shell:
 
 ```console
 $ npm install decancer
 ```
 
-You can also retrieve the latest `.node` binaries from [GitHub releases](https://github.com/null8626/decancer/releases).
-
-# example
-
-### using the NPM package
+In your code:
 
 ```js
 const decancer = require('decancer');
+```
+
+### Node.js (`.node` binary)
+
+`.node` binaries can be retrieved from the [GitHub Releases page](https://github.com/null8626/decancer/releases).
+
+> **IMPORTANT NOTE:** The usage differs a bit from the others because `decancer` here is a standalone function.
+
+```js
+const { decancer, contains } = require('/path/to/decancer.node');
+```
+
+### Deno
+
+In your code:
+
+```ts
+import init from "https://deno.land/x/decancer@v1.3.3/mod.ts";
+
+const decancer = await init();
+```
+
+### Browser
+
+In your code:
+
+```js
+import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.3.3/decancer.min.js";
+
+const decancer = await init();
+```
+
+## example
+
+```js
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
 
 console.log(noCancer); // 'very funny text'
@@ -42,27 +75,12 @@ console.log(noCancer); // 'very funny text'
 If you want to check if the decancered string contains a certain keyword, i recommend using this instead of using `.includes`, since mistranslations can happen (e.g mistaking the number 0 with the letter O)
 
 ```js
-const decancer = require('decancer');
 const noCancer = decancer(someString);
 
 if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 ```
 
-### directly using the `.node` binary
-
-If you are using the `.node` binary directly, there is a little difference in using it.
-
-```js
-const { decancer, contains } = require('./path/to/decancer.node');
-
-const noCancer = decancer(someString);
-
-if (contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
-```
-
-Other than that, everything is the same :)
-
-# contributions
+## contributions
 
 All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
 
@@ -70,10 +88,10 @@ If you want to add, remove, modify, or view the list of supported confusables, y
 
 ```js
 const reader = await import('./contrib/index.mjs');
-const data = reader.default('./bin/confusables.bin');
+const data = reader.default('./core/bin/confusables.bin');
 ```
 
-# special thanks
+## special thanks
 
 These are the primary resources that made this project possible.
 
@@ -82,4 +100,5 @@ These are the primary resources that made this project possible.
 - [Wikipedia's list of Unicode Characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
 - [Fancy Text Generator](https://lingojam.com/FancyTextGenerator)
 - [Unicode character inspector](https://apps.timwhitlock.info/unicode/inspect)
-- [napi-rs for integrating Rust into the Node.js ecosystem](https://napi.rs/)
+- [`napi-rs` for integrating Rust into the Node.js ecosystem](https://napi.rs/)
+- [`wasm-bindgen` for making the development of WebAssembly modules in Rust easier](https://github.com/rustwasm/wasm-bindgen)

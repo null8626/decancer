@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "main": "src/lib.js",
   "typings": "src/typings.d.ts",
   "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes.",
@@ -44,17 +44,12 @@
   "devDependencies": {
     "@napi-rs/cli": "^2.10.0",
     "@types/node": "^18.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
-    "eslint": "^8.18.0",
-    "prettier": "^2.7.1",
     "typescript": "^4.7.4"
   },
   "engines": {
     "node": ">= 10"
   },
   "scripts": {
-    "prettier": "npx prettier --write src/lib.ts",
     "artifacts": "napi artifacts",
     "build": "napi build --platform --release",
     "build:debug": "napi build --platform",

@@ -2,13 +2,13 @@ use std::{slice, mem::size_of};
 
 const BINARY: *const u8 = include_bytes!("../bin/confusables.bin").as_ptr();
 
-pub struct BinaryArray<T: Copy + PartialEq + Sized> {
+pub struct BinaryArray<T: Copy + PartialEq> {
   index: u8,
   inner_len: u8,
   ptr: *const T,
 }
 
-impl<T: Copy + PartialEq + Sized> BinaryArray<T> {
+impl<T: Copy + PartialEq> BinaryArray<T> {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
@@ -20,44 +20,19 @@ impl<T: Copy + PartialEq + Sized> BinaryArray<T> {
   /// Like .any(), but doesn't mutably borrow the value.
   #[inline(always)]
   pub fn contains(&self, elem: T) -> bool {
-    (0..self.len()).any(|x| elem == unsafe { self.get_unchecked(x) })
-  }
-  
-  pub const fn len(&self) -> u8 {
-    self.inner_len
+    (0..self.len()).any(|x| elem == unsafe { *self.ptr.offset(x as _) })
   }
 
   pub const fn size(&self) -> u16 {
-    (size_of::<u8>() as u16) + ((self.len() as u16) * (size_of::<T>() as u16)) // size_of::<u8>() is for the u8 specifying the length before the array.
-  }
-
-  pub const fn as_ptr(&self) -> *const T {
-    self.ptr
-  }
-
-  #[inline(always)]
-  pub fn as_slice(&self) -> &[T] {
-    self.as_ref()
-  }
-
-  pub const fn get(&self, index: u8) -> Option<T> {
-    if index >= self.len() {
-      None
-    } else {
-      Some(unsafe { self.get_unchecked(index) })
-    }
-  }
-
-  pub const unsafe fn get_unchecked(&self, index: u8) -> T {
-    *self.ptr.offset(index as _)
+    (size_of::<u8>() as u16) + ((self.inner_len as u16) * (size_of::<T>() as u16)) // size_of::<u8>() is for the u8 specifying the length before the array.
   }
 }
 
-impl<T: Copy + PartialEq + Sized> Iterator for BinaryArray<T> {
+impl<T: Copy + PartialEq> Iterator for BinaryArray<T> {
   type Item = T;
 
   fn next(&mut self) -> Option<Self::Item> {
-    if self.index == self.len() {
+    if self.index >= self.inner_len {
       None
     } else {
       let out = Some(unsafe { *self.ptr.offset(self.index as _) });
@@ -77,14 +52,21 @@ impl<T: Copy + PartialEq + Sized> Iterator for BinaryArray<T> {
 
   #[inline(always)]
   fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len() as _, Some(self.len() as _))
+    (self.len(), Some(self.len()))
   }
 }
 
-impl<T: Copy + PartialEq + Sized> AsRef<[T]> for BinaryArray<T> {
+impl<T: Copy + PartialEq> AsRef<[T]> for BinaryArray<T> {
   #[inline(always)]
   fn as_ref(&self) -> &[T] {
     unsafe { slice::from_raw_parts(self.ptr, self.inner_len as _) }
+  }
+}
+
+impl<T: Copy + PartialEq> ExactSizeIterator for BinaryArray<T> {
+  #[inline(always)]
+  fn len(&self) -> usize {
+    self.inner_len as _
   }
 }
 
@@ -103,17 +85,13 @@ impl MiscCaseSensitive {
       }
     }
   }
-
-  pub const fn len(&self) -> u8 {
-    self.inner_len
-  }
 }
 
 impl Iterator for MiscCaseSensitive {
   type Item = (BinaryArray<u8>, BinaryArray<u32>);
 
   fn next(&mut self) -> Option<Self::Item> {
-    if self.index == self.len() {
+    if self.index >= self.inner_len {
       None
     } else {
       unsafe {
@@ -131,7 +109,14 @@ impl Iterator for MiscCaseSensitive {
 
   #[inline(always)]
   fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len() as _, Some(self.len() as _))
+    (self.len(), Some(self.len()))
+  }
+}
+
+impl ExactSizeIterator for MiscCaseSensitive {
+  #[inline(always)]
+  fn len(&self) -> usize {
+    self.inner_len as _
   }
 }
 
@@ -150,17 +135,13 @@ impl Misc {
       }
     }
   }
-
-  pub const fn len(&self) -> u8 {
-    self.inner_len
-  }
 }
 
 impl Iterator for Misc {
   type Item = (u8, BinaryArray<u32>);
 
   fn next(&mut self) -> Option<Self::Item> {
-    if self.index == self.len() {
+    if self.index >= self.inner_len {
       None
     } else {
       unsafe {
@@ -178,7 +159,14 @@ impl Iterator for Misc {
 
   #[inline(always)]
   fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len() as _, Some(self.len() as _))
+    (self.len(), Some(self.len()))
+  }
+}
+
+impl ExactSizeIterator for Misc {
+  #[inline(always)]
+  fn len(&self) -> usize {
+    self.inner_len as _
   }
 }
 
@@ -192,17 +180,13 @@ impl Alphabetical {
   const fn new(ptr: *const u8) -> Self {
     Self { index: 0, offset: 0, ptr }
   }
-
-  pub const fn len(&self) -> u8 {
-    26
-  }
 }
 
 impl Iterator for Alphabetical {
   type Item = BinaryArray<u32>;
 
   fn next(&mut self) -> Option<Self::Item> {
-    if self.index == self.len() {
+    if self.index >= 26 {
       None
     } else {
       unsafe {
@@ -213,6 +197,18 @@ impl Iterator for Alphabetical {
         Some(out)
       }
     }
+  }
+
+  #[inline(always)]
+  fn size_hint(&self) -> (usize, Option<usize>) {
+    (26, Some(26))
+  }
+}
+
+impl ExactSizeIterator for Alphabetical {
+  #[inline(always)]
+  fn len(&self) -> usize {
+    26
   }
 }
 
@@ -229,17 +225,13 @@ impl Similar {
       Self { index: 0, inner_len: *ptr, offset: 0, ptr: ptr.offset(size_of::<u8>() as _) }
     }
   }
-
-  pub const fn len(&self) -> u8 {
-    self.inner_len
-  }
 }
 
 impl Iterator for Similar {
   type Item = BinaryArray<u8>;
 
   fn next(&mut self) -> Option<Self::Item> {
-    if self.index == self.len() {
+    if self.index >= self.inner_len {
       None
     } else {
       unsafe {
@@ -250,6 +242,18 @@ impl Iterator for Similar {
         Some(out)
       }
     }
+  }
+
+  #[inline(always)]
+  fn size_hint(&self) -> (usize, Option<usize>) {
+    (self.len(), Some(self.len()))
+  }
+}
+
+impl ExactSizeIterator for Similar {
+  #[inline(always)]
+  fn len(&self) -> usize {
+    self.inner_len as _
   }
 }
 

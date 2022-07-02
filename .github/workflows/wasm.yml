@@ -1,0 +1,32 @@
+name: build wasm
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+    paths:
+      - 'wasm/src/*'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wasm
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ATiltedTree/setup-rust@v1
+        with:
+          rust-version: stable
+      - name: Build
+        run: |
+          cargo install wasm-pack
+          wasm-pack build --no-typescript --release -t web
+          mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'wasm: build binary'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
