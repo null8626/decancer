@@ -87,6 +87,7 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v2
+      - run: cd node
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -131,7 +132,6 @@ jobs:
         shell: bash
       - name: Install dependencies
         run: |
-          cd node
           yarn install --ignore-scripts --frozen-lockfile --registry https://registry.npmjs.org --network-timeout 300000
       - name: Build
         run: ${{ matrix.settings.build }}
@@ -150,6 +150,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v2
+      - run: cd node
       - name: Setup node
         uses: actions/setup-node@v3
         with:

@@ -1,5 +1,7 @@
 .PHONY: node wasm
 
+WASM_PACK=wasm-pack
+
 node: node/decancer.node
 wasm: wasm/pkg/decancer_wasm_bg.wasm	
 
@@ -21,5 +23,5 @@ node/src/node_modules/.package-lock.json:
 wasm/pkg/decancer_wasm_bg.wasm:
 	@cd wasm
 	cargo install wasm-bindgen-cli
-	wasm-pack build --no-typescript --release -t web
+	$(WASM_PACK) build --no-typescript --release -t web
 	@cd ..
