@@ -16,8 +16,6 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - name: Install CLI
-        run: cargo install wasm-bindgen-cli
       - name: Build
         run: |
           make wasm WASM_PACK=$HOME/.cargo/bin/wasm-pack
