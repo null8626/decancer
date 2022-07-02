@@ -118,12 +118,11 @@ jobs:
         run: ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
-        working-directory: node
         uses: actions/upload-artifact@v2
         with:
           name: bindings-${{ matrix.settings.target }}
           path: |
-            ${{ env.APP_NAME }}.*.node
+            node/${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   publish:
     name: Publish
