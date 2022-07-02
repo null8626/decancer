@@ -115,7 +115,10 @@ jobs:
         run: npm install --save-dev --ignore-scripts
       - name: Build
         working-directory: node
-        run: ${{ matrix.settings.build }}
+        run: |
+          ls
+          pwd
+          ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v2
