@@ -85,9 +85,11 @@ jobs:
             build: yarn build --target aarch64-pc-windows-msvc
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
+    defaults:
+      run:
+        working-directory: ./node
     steps:
       - uses: actions/checkout@v2
-      - run: cd node
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -146,11 +148,13 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./node
     needs:
       - build
     steps:
       - uses: actions/checkout@v2
-      - run: cd node
       - name: Setup node
         uses: actions/setup-node@v3
         with:
