@@ -20,10 +20,8 @@ jobs:
         run: cargo install wasm-bindgen-cli
       - name: Build
         run: |
-          ls $HOME/.cargo/bin
-          ls $HOME/.cargo
-          ls $HOME
-          make wasm WASM_PACK=$HOME/.cargo/bin/wasm-pack
+          ls $HOME/.cargo/bin/bin
+          make wasm WASM_PACK=$HOME/.cargo/bin/bin/wasm-pack
           mv ./wasm/pkg/decancer_wasm_bg.wasm ./wasm/bin/decancer.wasm
       - name: Commit
         uses: EndBug/add-and-commit@v9

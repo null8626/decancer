@@ -87,9 +87,12 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     defaults:
       run:
-        working-directory: ./node
+        working-directory: node
     steps:
       - uses: actions/checkout@v2
+      - run: |
+        pwd
+        ls
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -150,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./node
+        working-directory: node
     needs:
       - build
     steps:
