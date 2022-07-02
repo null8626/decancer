@@ -3,7 +3,7 @@ env:
   DEBUG: napi:*
   APP_NAME: decancer
   MACOSX_DEPLOYMENT_TARGET: '10.13'
-'on':
+on:
   push:
     branches:
       - main
@@ -86,7 +86,7 @@ jobs:
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -115,10 +115,7 @@ jobs:
         run: npm install --save-dev --ignore-scripts
       - name: Build
         working-directory: node
-        run: |
-          ls
-          pwd
-          ${{ matrix.settings.build }}
+        run: ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -133,7 +130,7 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup node
         uses: actions/setup-node@v3
         with:

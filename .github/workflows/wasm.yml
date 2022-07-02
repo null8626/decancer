@@ -1,5 +1,5 @@
 name: build wasm
-'on':
+on:
   push:
     branches:
       - main
@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: wasm
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
