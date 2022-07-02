@@ -141,10 +141,9 @@ jobs:
         working-directory: node
         run: npm install --save-dev --ignore-scripts
       - name: Download all artifacts
-        working-directory: node
         uses: actions/download-artifact@v2
         with:
-          path: artifacts
+          path: node/artifacts
       - name: Move artifacts
         working-directory: node
         run: npm run artifacts
