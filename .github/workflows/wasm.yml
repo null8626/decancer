@@ -11,6 +11,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wasm
     steps:
       - uses: actions/checkout@v2
       - uses: ATiltedTree/setup-rust@v1
@@ -18,8 +21,9 @@ jobs:
           rust-version: stable
       - name: Build
         run: |
-          make wasm WASM_PACK=$HOME/.cargo/bin/wasm-pack
-          mv ./wasm/pkg/decancer_wasm_bg.wasm ./wasm/bin/decancer.wasm
+          cargo install wasm-pack
+          wasm-pack build --no-typescript --release -t web
+          mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
