@@ -21,10 +21,10 @@ jobs:
             target: x86_64-apple-darwin
             architecture: x64
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build
+              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform
               strip -x *.node
           - host: windows-latest
-            build: npm run build
+            build: node ./node_modules/@napi-rs/cli/scripts/index.js build --platform
             target: x86_64-pc-windows-msvc
             architecture: x64
           - host: windows-latest
@@ -39,14 +39,14 @@ jobs:
               docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian
               docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian builder
             build: |
-              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder npm run build && strip *.node
+              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder node ./node_modules/@napi-rs/cli/scripts/index.js build --platform && strip *.node
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             architecture: x64
             docker: |
               docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-alpine
               docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-alpine builder
-            build: docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder npm run build && strip *.node
+            build: docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder node ./node_modules/@napi-rs/cli/scripts/index.js build --platform && strip *.node
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
@@ -146,7 +146,7 @@ jobs:
           path: node/artifacts
       - name: Move artifacts
         working-directory: node
-        run: npm run artifacts
+        run: node ./node_modules/@napi-rs/cli/scripts/index.js artifacts
       - name: List packages
         working-directory: node
         run: ls -R ./npm
