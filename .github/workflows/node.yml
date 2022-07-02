@@ -104,10 +104,6 @@ jobs:
           override: true
           toolchain: stable
           target: ${{ matrix.settings.target }}
-      - name: Generate Cargo.lock
-        uses: actions-rs/cargo@v1
-        with:
-          command: generate-lockfile
       - name: Pull latest image
         run: ${{ matrix.settings.docker }}
         env:
