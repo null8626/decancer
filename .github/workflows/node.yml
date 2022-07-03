@@ -96,7 +96,6 @@ jobs:
         with:
           node-version: 18
           check-latest: true
-          cache: npm
           architecture: ${{ matrix.settings.architecture }}
       - name: Install
         uses: actions-rs/toolchain@v1
@@ -141,7 +140,6 @@ jobs:
         with:
           node-version: 18
           check-latest: true
-          cache: npm
       - name: Install dependencies
         run: npm install --save-dev --ignore-scripts
       - name: Download all artifacts
