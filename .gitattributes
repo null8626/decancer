@@ -1,10 +1,8 @@
 **/bin/* binary
-**/*.mjs linguist-vendored=true
-**/*.js linguist-vendored=true
+**/*.mjs linguist-vendored=true eol=lf
+**/*.js linguist-vendored=true eol=lf
 **/*.rs eol=lf
 **/*.ts eol=lf
-**/*.js eol=lf
 **/*.md eol=lf
-**/*.mjs eol=lf
 **/*.toml eol=lf
 **/*.json eol=lf
