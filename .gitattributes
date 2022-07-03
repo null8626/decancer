@@ -6,3 +6,5 @@
 **/*.js eol=lf
 **/*.md eol=lf
 **/*.mjs eol=lf
+**/*.toml eol=lf
+**/*.json eol=lf
