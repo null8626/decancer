@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        ectory: node
+        working-directory: node
     needs:
       - build
     steps:
