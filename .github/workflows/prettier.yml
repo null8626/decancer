@@ -6,7 +6,7 @@ on:
     tags-ignore:
       - '**'
     paths:
-      - 'src/*.rs'
+      - '**/src/*.rs'
 jobs:
   build:
     name: Build

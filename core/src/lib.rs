@@ -6,7 +6,7 @@ use encoding::*;
 fn similar(a: u16, b: u16) -> bool {
   a == b
     || ((a <= 0xFF)
-    && (b <= 0xFF)
+   && (b <= 0xFF)
       && confusables::similar().any(|x| x.contains(a as _) && x.contains(b as _)))
 }
 
