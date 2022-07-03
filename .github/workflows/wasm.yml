@@ -5,8 +5,8 @@ on:
       - main
     tags-ignore:
       - '**'
-    paths-ignore:
-      - '!wasm/src/*'
+    paths:
+      - 'wasm/src/*'
 jobs:
   build:
     name: Build

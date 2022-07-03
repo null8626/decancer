@@ -78,8 +78,6 @@ jobs:
               docker pull ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
               docker tag ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine builder
             build: |
-              cat Cargo.toml
-              cat ../core/Cargo.toml
               docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd):/build -w /build builder sh -c "node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --target=aarch64-unknown-linux-musl && /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node"
           - host: windows-latest
             architecture: x64
@@ -87,6 +85,9 @@ jobs:
             build: node ".\node_modules\@napi-rs\cli\scripts\index.js" --target aarch64-pc-windows-msvc
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
+    defaults:
+      run:
+        working-directory: node
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -113,10 +114,8 @@ jobs:
         if: ${{ matrix.settings.setup }}
         shell: bash
       - name: Install dependencies
-        working-directory: node
         run: npm install --save-dev --ignore-scripts
       - name: Build
-        working-directory: node
         run: ${{ matrix.settings.build }}
         shell: bash
       - name: Upload artifact
@@ -124,11 +123,14 @@ jobs:
         with:
           name: bindings-${{ matrix.settings.target }}
           path: |
-            node/${{ env.APP_NAME }}.*.node
+            ${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: node
     needs:
       - build
     steps:
@@ -140,21 +142,17 @@ jobs:
           check-latest: true
           cache: npm
       - name: Install dependencies
-        working-directory: node
         run: npm install --save-dev --ignore-scripts
       - name: Download all artifacts
         uses: actions/download-artifact@v2
         with:
-          path: node/artifacts
+          path: artifacts
       - name: Move artifacts
-        working-directory: node
         run: node ./node_modules/@napi-rs/cli/scripts/index.js artifacts
       - name: List packages
-        working-directory: node
         run: ls -R ./npm
         shell: bash
       - name: Publish 
-        working-directory: node
         run: |
           npx tsc --project tsconfig.json
           if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
