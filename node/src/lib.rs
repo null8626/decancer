@@ -17,8 +17,8 @@ fn contains(input: JsString, other: JsString) -> Result<bool, Error> {
   let b_slice = b.as_slice();
 
   Ok(decancer_core::contains(
-    &a_slice[0..a_slice.len() - 1], 
-    &b_slice[0..b_slice.len() - 1]
+    &a_slice[0..a_slice.len() - 1],
+    &b_slice[0..b_slice.len() - 1],
   ))
 }
 
@@ -27,5 +27,7 @@ fn decancer(raw_input: JsString) -> Result<String, Error> {
   let input = raw_input.into_utf16()?;
   let input_slice = input.as_slice();
 
-  Ok(decancer_core::decancer(&input_slice[0..input_slice.len() - 1]))
+  Ok(decancer_core::decancer(
+    &input_slice[0..input_slice.len() - 1],
+  ))
 }
