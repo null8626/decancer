@@ -26,7 +26,7 @@ impl<'a> From<&'a [u16]> for Codepoints<'a> {
 
 impl Iterator for Codepoints<'_> {
   type Item = u32;
-  
+
   fn next(&mut self) -> Option<Self::Item> {
     let c = self.next.take().unwrap_or(*self.iter.next()?) as u32;
 

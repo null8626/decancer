@@ -7,5 +7,4 @@ node/src/lib.js
 node/src/lib.d.ts
 node/index.js
 node/index.d.ts
-wasm/pkg
-**/rustfmt.toml
+wasm/pkg/

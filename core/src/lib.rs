@@ -4,9 +4,10 @@ mod encoding;
 use encoding::*;
 
 fn similar(a: u16, b: u16) -> bool {
-  a == b || ((a <= 0xFF) && (b <= 0xFF) && confusables::similar().any(|x| {
-    x.contains(a as _) && x.contains(b as _)
-  }))
+  a == b
+    || ((a <= 0xFF)
+   && (b <= 0xFF)
+      && confusables::similar().any(|x| x.contains(a as _) && x.contains(b as _)))
 }
 
 pub fn contains(a: &[u16], b: &[u16]) -> bool {
@@ -35,20 +36,25 @@ pub fn decancer(input: &[u16]) -> String {
 
   // for_each so we can have return (implement some sort of goto in rust)
   Codepoints::from(input)
-    .filter(|&x| ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F) && x != 0x20E3 && x != 0xFE0F && x != 0x489)
+    .filter(|&x| {
+      ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F)
+        && x != 0x20E3
+        && x != 0xFE0F
+        && x != 0x489
+    })
     .for_each(|x| {
       for num in confusables::numerical() {
         if x >= num && x <= (num + 9) {
           return output.push(unsafe { char::from_u32_unchecked(x - num + 0x30) });
         }
       }
-  
+
       for (key, value) in confusables::misc_case_sensitive() {
         if value.contains(x) {
           for k in key {
             output.push(k as char);
           }
-  
+
           return;
         }
       }
@@ -95,6 +101,6 @@ pub fn decancer(input: &[u16]) -> String {
       false
     }
   });
-    
+
   output
 }
