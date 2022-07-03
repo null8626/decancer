@@ -1,5 +1,5 @@
-extern crate wasm_bindgen;
 extern crate decancer_core;
+extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 
