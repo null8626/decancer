@@ -1,3 +1,8 @@
 **/bin/* binary
-contrib/*.mjs linguist-vendored=true
-*.js linguist-vendored=true
+**/*.mjs linguist-vendored=true
+**/*.js linguist-vendored=true
+**/*.rs eol=lf
+**/*.ts eol=lf
+**/*.js eol=lf
+**/*.md eol=lf
+**/*.mjs eol=lf

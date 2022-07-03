@@ -1,4 +1,4 @@
-use std::{slice, mem::size_of};
+use std::{mem::size_of, slice};
 
 const BINARY: *const u8 = include_bytes!("../bin/confusables.bin").as_ptr();
 
@@ -12,7 +12,9 @@ impl<T: Copy + PartialEq> BinaryArray<T> {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0, inner_len: *off, ptr: off.offset(size_of::<u8>() as _) as _
+        index: 0,
+        inner_len: *off,
+        ptr: off.offset(size_of::<u8>() as _) as _,
       }
     }
   }
@@ -24,7 +26,8 @@ impl<T: Copy + PartialEq> BinaryArray<T> {
   }
 
   pub const fn size(&self) -> u16 {
-    (size_of::<u8>() as u16) + ((self.inner_len as u16) * (size_of::<T>() as u16)) // size_of::<u8>() is for the u8 specifying the length before the array.
+    (size_of::<u8>() as u16) + ((self.inner_len as u16) * (size_of::<T>() as u16))
+    // size_of::<u8>() is for the u8 specifying the length before the array.
   }
 }
 
@@ -37,7 +40,7 @@ impl<T: Copy + PartialEq> Iterator for BinaryArray<T> {
     } else {
       let out = Some(unsafe { *self.ptr.offset(self.index as _) });
       self.index += size_of::<u8>() as u8;
-    
+
       out
     }
   }
@@ -81,7 +84,10 @@ impl MiscCaseSensitive {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0, inner_len: *off, offset: 0, ptr: off.offset(size_of::<u8>() as _) as _
+        index: 0,
+        inner_len: *off,
+        offset: 0,
+        ptr: off.offset(size_of::<u8>() as _) as _,
       }
     }
   }
@@ -131,7 +137,10 @@ impl Misc {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0, inner_len: *off, offset: 0, ptr: off.offset(size_of::<u8>() as _) as _
+        index: 0,
+        inner_len: *off,
+        offset: 0,
+        ptr: off.offset(size_of::<u8>() as _) as _,
       }
     }
   }
@@ -178,7 +187,11 @@ pub struct Alphabetical {
 
 impl Alphabetical {
   const fn new(ptr: *const u8) -> Self {
-    Self { index: 0, offset: 0, ptr }
+    Self {
+      index: 0,
+      offset: 0,
+      ptr,
+    }
   }
 }
 
@@ -222,7 +235,12 @@ pub struct Similar {
 impl Similar {
   const fn new(ptr: *const u8) -> Self {
     unsafe {
-      Self { index: 0, inner_len: *ptr, offset: 0, ptr: ptr.offset(size_of::<u8>() as _) }
+      Self {
+        index: 0,
+        inner_len: *ptr,
+        offset: 0,
+        ptr: ptr.offset(size_of::<u8>() as _),
+      }
     }
   }
 }
@@ -258,9 +276,7 @@ impl ExactSizeIterator for Similar {
 }
 
 const fn get_ptr(header_index: isize) -> *const u8 {
-  unsafe {
-    BINARY.offset(*(BINARY as *const u16).offset(header_index) as _)
-  }
+  unsafe { BINARY.offset(*(BINARY as *const u16).offset(header_index) as _) }
 }
 
 pub const fn numerical() -> BinaryArray<u32> {
