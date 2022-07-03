@@ -9,8 +9,8 @@ on:
       - main
     tags-ignore:
       - '**'
-    paths-ignore:
-      - '!node/**'
+    paths:
+      - 'node/src/**'
 jobs:
   build:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
@@ -29,7 +29,7 @@ jobs:
             architecture: x64
           - host: windows-latest
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --target=i686-pc-windows-msvc
+              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=i686-pc-windows-msvc
             target: i686-pc-windows-msvc
             architecture: x86
           - host: ubuntu-latest
@@ -39,18 +39,18 @@ jobs:
               docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian
               docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian builder
             build: |
-              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform && strip *.node"
+              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release && strip *.node"
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             architecture: x64
             docker: |
               docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-alpine
               docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-alpine builder
-            build: docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform && strip *.node"
+            build: docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release && strip *.node"
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --target=aarch64-apple-darwin
+              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-apple-darwin
               strip -x *.node
           - host: ubuntu-latest
             architecture: x64
@@ -59,7 +59,7 @@ jobs:
               sudo apt-get update
               sudo apt-get install g++-aarch64-linux-gnu gcc-aarch64-linux-gnu -y
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --target=aarch64-unknown-linux-gnu
+              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-unknown-linux-gnu
               aarch64-linux-gnu-strip *.node
           - host: ubuntu-latest
             architecture: x64
@@ -68,7 +68,7 @@ jobs:
               sudo apt-get update
               sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --target=armv7-unknown-linux-gnueabihf
+              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=armv7-unknown-linux-gnueabihf
               arm-linux-gnueabihf-strip *.node
           - host: ubuntu-latest
             architecture: x64
@@ -78,12 +78,12 @@ jobs:
               docker pull ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
               docker tag ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine builder
             build: |
-              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --target=aarch64-unknown-linux-musl && /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node"
+              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-unknown-linux-musl && /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node"
           - host: windows-latest
             architecture: x64
             target: aarch64-pc-windows-msvc
             build: |
-              node ".\node_modules\@napi-rs\cli\scripts\index.js" build --platform --target=aarch64-pc-windows-msvc
+              node ".\node_modules\@napi-rs\cli\scripts\index.js" build --platform --release --target=aarch64-pc-windows-msvc
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     defaults:

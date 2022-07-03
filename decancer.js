@@ -130,7 +130,7 @@ export default async function init() {
     return decancer;
   }
   
-  const { instance, module } = await load(await fetch(new URL('./bin/decancer.wasm', import.meta.url)), {
+  const { instance, module } = await load(await fetch("https://raw.githubusercontent.com/null8626/decancer/main/wasm/bin/decancer.wasm"), {
     wbg: {}
   });
   
@@ -141,5 +141,6 @@ export default async function init() {
   cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
   
   Object.assign(decancer, { contains });
+  initiated = true;
   return decancer;
 }

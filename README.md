@@ -36,7 +36,7 @@ const decancer = require('decancer');
 
 `.node` binaries can be retrieved from the [GitHub Releases page](https://github.com/null8626/decancer/releases).
 
-> **IMPORTANT NOTE:** This usage differ from the others because `decancer` here is a standalone function.
+> **IMPORTANT NOTE:** The usage differs a bit from the others because `decancer` here is a standalone function.
 
 ```js
 const { decancer, contains } = require('/path/to/decancer.node');
@@ -57,7 +57,7 @@ const decancer = await init();
 In your code:
 
 ```js
-import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.3.3/wasm/decancer.js";
+import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.3.3/decancer.min.js";
 
 const decancer = await init();
 ```
