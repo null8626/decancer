@@ -83,9 +83,7 @@ jobs:
             architecture: x64
             target: aarch64-pc-windows-msvc
             build: |
-              node ".\node_modules\@napi-rs\cli\scripts\index.js" build --target=aarch64-pc-windows-msvc
-              echo %cd%
-              dir /s /b /a:-d-h *.node
+              node ".\node_modules\@napi-rs\cli\scripts\index.js" build --platform --target=aarch64-pc-windows-msvc
     name: stable - ${{ matrix.settings.target }} - node@18
     runs-on: ${{ matrix.settings.host }}
     defaults:
