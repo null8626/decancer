@@ -84,11 +84,15 @@ if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 
 All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
 
-If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and open the Node.js REPL:
+If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and modify it directly with Node.js. Either through a script or directly from the REPL.
 
 ```js
 const reader = await import('./contrib/index.mjs');
 const data = reader.default('./core/bin/confusables.bin');
+
+// do something with data...
+
+data.save('./core/bin/confusables.bin');
 ```
 
 ## special thanks
