@@ -10,6 +10,7 @@ on:
     tags-ignore:
       - '**'
     paths:
+      - 'core/src/**'
       - 'node/src/**'
 jobs:
   build:

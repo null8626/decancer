@@ -1,7 +1,13 @@
 [package]
-edition = "2021"
 name = "decancer_node"
-version = "0.0.0"
+version = "1.3.3"
+edition = "2021"
+authors = ["null (https://github.com/null8626)"]
+description = "A Rust module that removes common confusables from strings without the use of Regexes."
+repository = "https://github.com/null8626/decancer"
+license = "MIT"
+keywords = ["unicode", "string", "moderation", "confusables"]
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
@@ -10,7 +16,7 @@ crate-type = ["cdylib"]
 # Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
 napi = { version = "2.5.0", default-features = false, features = ["napi4"] }
 napi-derive = "2.5.0"
-decancer_core = { path = "../core" } 
+decancer = { path = "../core" } 
 
 [build-dependencies]
 napi-build = "2.0.1"

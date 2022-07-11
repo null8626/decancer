@@ -2,7 +2,7 @@ use std::{mem::size_of, slice};
 
 const BINARY: *const u8 = include_bytes!("../bin/confusables.bin").as_ptr();
 
-pub struct BinaryArray<T: Copy + PartialEq> {
+pub(crate) struct BinaryArray<T: Copy + PartialEq> {
   index: u8,
   inner_len: u8,
   ptr: *const T,
@@ -21,11 +21,11 @@ impl<T: Copy + PartialEq> BinaryArray<T> {
 
   /// Like .any(), but doesn't mutably borrow the value.
   #[inline(always)]
-  pub fn contains(&self, elem: T) -> bool {
+  pub(crate) fn contains(&self, elem: T) -> bool {
     (0..self.len()).any(|x| elem == unsafe { *self.ptr.offset(x as _) })
   }
 
-  pub const fn size(&self) -> u16 {
+  pub(crate) const fn size(&self) -> u16 {
     (size_of::<u8>() as u16) + ((self.inner_len as u16) * (size_of::<T>() as u16))
     // size_of::<u8>() is for the u8 specifying the length before the array.
   }
@@ -73,7 +73,7 @@ impl<T: Copy + PartialEq> ExactSizeIterator for BinaryArray<T> {
   }
 }
 
-pub struct MiscCaseSensitive {
+pub(crate) struct MiscCaseSensitive {
   index: u8,
   inner_len: u8,
   offset: u16,
@@ -126,7 +126,7 @@ impl ExactSizeIterator for MiscCaseSensitive {
   }
 }
 
-pub struct Misc {
+pub(crate) struct Misc {
   index: u8,
   inner_len: u8,
   offset: u16,
@@ -179,7 +179,7 @@ impl ExactSizeIterator for Misc {
   }
 }
 
-pub struct Alphabetical {
+pub(crate) struct Alphabetical {
   index: u8,
   offset: u16,
   ptr: *const u8,
@@ -225,7 +225,7 @@ impl ExactSizeIterator for Alphabetical {
   }
 }
 
-pub struct Similar {
+pub(crate) struct Similar {
   index: u8,
   inner_len: u8,
   offset: u16,
@@ -279,26 +279,26 @@ const fn get_ptr(header_index: isize) -> *const u8 {
   unsafe { BINARY.offset(*(BINARY as *const u16).offset(header_index) as _) }
 }
 
-pub const fn numerical() -> BinaryArray<u32> {
+pub(crate) const fn numerical() -> BinaryArray<u32> {
   BinaryArray::new(get_ptr(0))
 }
 
-pub const fn misc_case_sensitive() -> MiscCaseSensitive {
+pub(crate) const fn misc_case_sensitive() -> MiscCaseSensitive {
   MiscCaseSensitive::new(get_ptr(1))
 }
 
-pub const fn misc() -> Misc {
+pub(crate) const fn misc() -> Misc {
   Misc::new(get_ptr(2))
 }
 
-pub const fn alphabetical_pattern() -> BinaryArray<u32> {
+pub(crate) const fn alphabetical_pattern() -> BinaryArray<u32> {
   BinaryArray::new(get_ptr(3))
 }
 
-pub const fn alphabetical() -> Alphabetical {
+pub(crate) const fn alphabetical() -> Alphabetical {
   Alphabetical::new(get_ptr(4))
 }
 
-pub const fn similar() -> Similar {
+pub(crate) const fn similar() -> Similar {
   Similar::new(get_ptr(5))
 }

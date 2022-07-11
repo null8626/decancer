@@ -1,6 +1,6 @@
 # decancer
 
-A portable JavaScript module that removes common confusables from strings written in pure [Rust](https://rust-lang.org). Available for Node.js, Deno, and the Browser.
+A portable module that removes common confusables from strings without the use of Regexes. Available for Rust, Node.js, Deno, and the Browser.
 
 Pros:
 
@@ -14,11 +14,17 @@ Con:
 
 - Remember that this project is not perfect, false-positives may happen.
 
-**As of version 1.3.3, This package supports 2,526 different code-points.**
-
 ## installation
 
-### Node.js (npm)
+### Rust
+
+In your `Cargo.toml`:
+
+```toml
+decancer = "1.3.3"
+```
+
+### Node.js
 
 In your shell:
 
@@ -30,16 +36,6 @@ In your code:
 
 ```js
 const decancer = require('decancer');
-```
-
-### Node.js (`.node` binary)
-
-`.node` binaries can be retrieved from the [GitHub Releases page](https://github.com/null8626/decancer/releases).
-
-> **IMPORTANT NOTE:** The usage differs a bit from the others because `decancer` here is a standalone function.
-
-```js
-const { decancer, contains } = require('/path/to/decancer.node');
 ```
 
 ### Deno
@@ -62,7 +58,11 @@ import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.3.3/decancer.
 const decancer = await init();
 ```
 
-## example
+## examples
+
+### JavaScript
+
+> **NOTE:** cured output will ALWAYS be in lowercase.
 
 ```js
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
@@ -70,14 +70,38 @@ const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
 console.log(noCancer); // 'very funny text'
 ```
 
-> **NOTE:** output will ALWAYS be in lowercase.
+### Rust
 
-If you want to check if the decancered string contains a certain keyword, i recommend using this instead of using `.includes`, since mistranslations can happen (e.g mistaking the number 0 with the letter O)
+```rust
+extern crate decancer;
+
+fn main() {
+  println!("{}", decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"));
+}
+```
+
+If you want to check if the decancered string contains a certain keyword, i recommend using this instead since mistranslations can happen (e.g mistaking the number 0 with the letter O)
+
+### JavaScript
 
 ```js
 const noCancer = decancer(someString);
 
 if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
+```
+
+### Rust
+
+```rust,norun
+extern crate decancer;
+
+fn main() {
+  let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+
+  if decancer::contains(cured, "no-no-word") {
+    println!("LANGUAGE!!!");
+  }
+}
 ```
 
 ## contributions
