@@ -1,11 +1,8 @@
-import assert from 'node:assert';
-import { existsSync, readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type Decancer from './typings';
+const assert = require('node:assert');
+const { existsSync, readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
-const require: NodeRequire = createRequire(import.meta.url);
+import type Decancer from './typings';
 
 type Option<T> = T | undefined | null;
 type Arch =
@@ -34,11 +31,11 @@ function isMusl(): boolean {
   }
 }
 
-// @ts-ignore: this will NOT be null :)
-let exported: Decancer = null;
-
 function loadBinding(name: string) {
-  const path: string = join(fileURLToPath(import.meta.url), '..', '..', `decancer.${name}.node`);
+  const path: string = join(__dirname, '..', `decancer.${name}.node`);
+
+  // @ts-ignore: this will NOT be null :)
+  let exported: Decancer = null;
 
   if (existsSync(path))
     exported = require(`../decancer.${name}.node`);
@@ -49,7 +46,7 @@ function loadBinding(name: string) {
   Object.assign(exported.decancer, { contains: exported.contains });
 
   // @ts-ignore: pretend like it is (because it is)
-  exported = exported.decancer;
+  module.exports = exported.decancer;
 }
 
 const platforms: Record<string, Record<string, Arch>> = {
@@ -84,5 +81,3 @@ try {
   );
   throw err;
 }
-
-export default exported;

@@ -3,7 +3,6 @@
 
 #[macro_use]
 extern crate napi_derive;
-extern crate napi;
 
 extern crate decancer;
 use decancer::Decancer;
