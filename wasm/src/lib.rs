@@ -3,7 +3,6 @@ extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 
-
 #[wasm_bindgen]
 pub fn decancer(raw_input: &str) -> String {
   decancer::cure(raw_input)
