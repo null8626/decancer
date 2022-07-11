@@ -300,3 +300,11 @@ impl Default for Decancer {
     Self::new()
   }
 }
+
+#[test]
+fn it_works() {
+  let instance = Decancer::new();
+  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+
+  assert_eq!(output, String::from("very funny text"));
+}
