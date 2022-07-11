@@ -60,9 +60,9 @@ const decancer = await init();
 
 ## examples
 
-### JavaScript
-
 > **NOTE:** cured output will ALWAYS be in lowercase.
+
+### JavaScript
 
 ```js
 const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
