@@ -1,9 +1,50 @@
-use std::{mem::size_of, slice};
+use std::mem::size_of;
 
 const BINARY: *const u8 = include_bytes!("../bin/confusables.bin").as_ptr();
 
-pub(crate) struct BinaryArray<T: Copy + PartialEq> {
+pub(crate) struct Confusables<'a, I> {
   index: u8,
+  inner: &'a I,
+}
+
+pub(crate) trait Iterable: Sized {
+  type Item: Sized;
+
+  fn iter<'a>(&'a self) -> Confusables<'a, Self> {
+    Confusables {
+      index: 0,
+      inner: self,
+    }
+  }
+
+  fn len(&self) -> u8;
+  fn nth(&self, index: u8) -> Self::Item;
+}
+
+impl<I: Iterable> Iterator for Confusables<'_, I> {
+  type Item = <I as Iterable>::Item;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    if self.index == self.inner.len() {
+      None
+    } else {
+      let out = self.inner.nth(self.index);
+      self.index += 1;
+
+      Some(out)
+    }
+  }
+}
+
+impl<I: Iterable> ExactSizeIterator for Confusables<'_, I> {
+  #[inline(always)]
+  fn len(&self) -> usize {
+    self.inner.len() as _
+  }
+}
+
+#[derive(Copy, Clone)]
+pub(crate) struct BinaryArray<T: Copy + PartialEq> {
   inner_len: u8,
   ptr: *const T,
 }
@@ -12,7 +53,6 @@ impl<T: Copy + PartialEq> BinaryArray<T> {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0,
         inner_len: *off,
         ptr: off.offset(size_of::<u8>() as _) as _,
       }
@@ -31,52 +71,66 @@ impl<T: Copy + PartialEq> BinaryArray<T> {
   }
 }
 
-impl<T: Copy + PartialEq> Iterator for BinaryArray<T> {
+impl<T: Copy + PartialEq> Iterable for BinaryArray<T> {
   type Item = T;
 
+  #[inline(always)]
+  fn len(&self) -> u8 {
+    self.inner_len
+  }
+
+  #[inline(always)]
+  fn nth(&self, index: u8) -> Self::Item {
+    unsafe { *self.ptr.offset(index as _) }
+  }
+}
+
+pub(crate) struct DynamicConfusables<'a, I> {
+  index: u8,
+  offset: u16,
+  inner: &'a I,
+}
+
+pub(crate) trait DynamicIterable: Sized {
+  type Item: Sized;
+
+  fn iter<'a>(&'a self) -> DynamicConfusables<'a, Self> {
+    DynamicConfusables {
+      index: 0,
+      offset: 0,
+      inner: self,
+    }
+  }
+
+  fn len(&self) -> u8;
+  fn advance(&self, offset: &mut u16) -> Self::Item;
+}
+
+impl<I: DynamicIterable> Iterator for DynamicConfusables<'_, I> {
+  type Item = <I as DynamicIterable>::Item;
+
   fn next(&mut self) -> Option<Self::Item> {
-    if self.index >= self.inner_len {
+    if self.index == self.inner.len() {
       None
     } else {
-      let out = Some(unsafe { *self.ptr.offset(self.index as _) });
-      self.index += size_of::<u8>() as u8;
+      let out = self.inner.advance(&mut self.offset);
+      self.index += 1;
 
-      out
+      Some(out)
     }
-  }
-
-  fn nth(&mut self, n: usize) -> Option<Self::Item> {
-    if n > 0xFF || ((n as u8) >= self.inner_len) {
-      None
-    } else {
-      Some(unsafe { *self.ptr.offset(n as _) })
-    }
-  }
-
-  #[inline(always)]
-  fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len(), Some(self.len()))
   }
 }
 
-impl<T: Copy + PartialEq> AsRef<[T]> for BinaryArray<T> {
-  #[inline(always)]
-  fn as_ref(&self) -> &[T] {
-    unsafe { slice::from_raw_parts(self.ptr, self.inner_len as _) }
-  }
-}
-
-impl<T: Copy + PartialEq> ExactSizeIterator for BinaryArray<T> {
+impl<I: DynamicIterable> ExactSizeIterator for DynamicConfusables<'_, I> {
   #[inline(always)]
   fn len(&self) -> usize {
-    self.inner_len as _
+    self.inner.len() as _
   }
 }
 
+#[derive(Copy, Clone)]
 pub(crate) struct MiscCaseSensitive {
-  index: u8,
   inner_len: u8,
-  offset: u16,
   ptr: *const u8,
 }
 
@@ -84,52 +138,37 @@ impl MiscCaseSensitive {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0,
         inner_len: *off,
-        offset: 0,
         ptr: off.offset(size_of::<u8>() as _) as _,
       }
     }
   }
 }
 
-impl Iterator for MiscCaseSensitive {
+impl DynamicIterable for MiscCaseSensitive {
   type Item = (BinaryArray<u8>, BinaryArray<u32>);
 
-  fn next(&mut self) -> Option<Self::Item> {
-    if self.index >= self.inner_len {
-      None
-    } else {
-      unsafe {
-        let a = BinaryArray::new(self.ptr.offset(self.offset as _));
-        self.offset += a.size();
+  #[inline(always)]
+  fn len(&self) -> u8 {
+    self.inner_len
+  }
 
-        let b = BinaryArray::new(self.ptr.offset(self.offset as _));
-        self.offset += b.size();
-        self.index += 1;
+  fn advance(&self, offset: &mut u16) -> Self::Item {
+    unsafe {
+      let a = BinaryArray::new(self.ptr.offset(*offset as _));
+      *offset += a.size();
 
-        Some((a, b))
-      }
+      let b = BinaryArray::new(self.ptr.offset(*offset as _));
+      *offset += b.size();
+
+      (a, b)
     }
   }
-
-  #[inline(always)]
-  fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len(), Some(self.len()))
-  }
 }
 
-impl ExactSizeIterator for MiscCaseSensitive {
-  #[inline(always)]
-  fn len(&self) -> usize {
-    self.inner_len as _
-  }
-}
-
+#[derive(Copy, Clone)]
 pub(crate) struct Misc {
-  index: u8,
   inner_len: u8,
-  offset: u16,
   ptr: *const u8,
 }
 
@@ -137,98 +176,66 @@ impl Misc {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0,
         inner_len: *off,
-        offset: 0,
         ptr: off.offset(size_of::<u8>() as _) as _,
       }
     }
   }
 }
 
-impl Iterator for Misc {
+impl DynamicIterable for Misc {
   type Item = (u8, BinaryArray<u32>);
 
-  fn next(&mut self) -> Option<Self::Item> {
-    if self.index >= self.inner_len {
-      None
-    } else {
-      unsafe {
-        let a = *self.ptr.offset(self.offset as _);
-        self.offset += size_of::<u8>() as u16;
+  #[inline(always)]
+  fn len(&self) -> u8 {
+    self.inner_len
+  }
 
-        let b = BinaryArray::new(self.ptr.offset(self.offset as _));
-        self.offset += b.size();
-        self.index += 1;
+  fn advance(&self, offset: &mut u16) -> Self::Item {
+    unsafe {
+      let a = *self.ptr.offset(*offset as _);
+      *offset += size_of::<u8>() as u16;
 
-        Some((a, b))
-      }
+      let b = BinaryArray::new(self.ptr.offset(*offset as _));
+      *offset += b.size();
+
+      (a, b)
     }
   }
-
-  #[inline(always)]
-  fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len(), Some(self.len()))
-  }
 }
 
-impl ExactSizeIterator for Misc {
-  #[inline(always)]
-  fn len(&self) -> usize {
-    self.inner_len as _
-  }
-}
-
+#[derive(Copy, Clone)]
 pub(crate) struct Alphabetical {
-  index: u8,
-  offset: u16,
   ptr: *const u8,
 }
 
 impl Alphabetical {
   const fn new(ptr: *const u8) -> Self {
-    Self {
-      index: 0,
-      offset: 0,
-      ptr,
-    }
+    Self { ptr }
   }
 }
 
-impl Iterator for Alphabetical {
+impl DynamicIterable for Alphabetical {
   type Item = BinaryArray<u32>;
 
-  fn next(&mut self) -> Option<Self::Item> {
-    if self.index >= 26 {
-      None
-    } else {
-      unsafe {
-        let out = BinaryArray::new(self.ptr.offset(self.offset as _));
-        self.offset += out.size();
-        self.index += 1;
-
-        Some(out)
-      }
-    }
-  }
-
   #[inline(always)]
-  fn size_hint(&self) -> (usize, Option<usize>) {
-    (26, Some(26))
-  }
-}
-
-impl ExactSizeIterator for Alphabetical {
-  #[inline(always)]
-  fn len(&self) -> usize {
+  fn len(&self) -> u8 {
     26
   }
+
+  fn advance(&self, offset: &mut u16) -> Self::Item {
+    unsafe {
+      let out = BinaryArray::new(self.ptr.offset(*offset as _));
+      *offset += out.size();
+
+      out
+    }
+  }
 }
 
+#[derive(Copy, Clone)]
 pub(crate) struct Similar {
-  index: u8,
   inner_len: u8,
-  offset: u16,
   ptr: *const u8,
 }
 
@@ -236,46 +243,32 @@ impl Similar {
   const fn new(ptr: *const u8) -> Self {
     unsafe {
       Self {
-        index: 0,
         inner_len: *ptr,
-        offset: 0,
         ptr: ptr.offset(size_of::<u8>() as _),
       }
     }
   }
 }
 
-impl Iterator for Similar {
+impl DynamicIterable for Similar {
   type Item = BinaryArray<u8>;
 
-  fn next(&mut self) -> Option<Self::Item> {
-    if self.index >= self.inner_len {
-      None
-    } else {
-      unsafe {
-        let out = BinaryArray::new(self.ptr.offset(self.offset as _));
-        self.offset += out.size();
-        self.index += 1;
+  #[inline(always)]
+  fn len(&self) -> u8 {
+    self.inner_len
+  }
 
-        Some(out)
-      }
+  fn advance(&self, offset: &mut u16) -> Self::Item {
+    unsafe {
+      let out = BinaryArray::new(self.ptr.offset(*offset as _));
+      *offset += out.size();
+
+      out
     }
   }
-
-  #[inline(always)]
-  fn size_hint(&self) -> (usize, Option<usize>) {
-    (self.len(), Some(self.len()))
-  }
 }
 
-impl ExactSizeIterator for Similar {
-  #[inline(always)]
-  fn len(&self) -> usize {
-    self.inner_len as _
-  }
-}
-
-const fn get_ptr(header_index: isize) -> *const u8 {
+pub(crate) const fn get_ptr(header_index: isize) -> *const u8 {
   unsafe { BINARY.offset(*(BINARY as *const u16).offset(header_index) as _) }
 }
 
