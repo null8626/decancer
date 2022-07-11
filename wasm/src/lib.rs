@@ -1,8 +1,8 @@
 extern crate decancer;
 extern crate wasm_bindgen;
 
-use wasm_bindgen::prelude::*;
 use decancer::Decancer;
+use wasm_bindgen::prelude::*;
 
 const DECANCER: Decancer = Decancer::new();
 

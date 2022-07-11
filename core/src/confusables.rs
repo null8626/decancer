@@ -11,7 +11,10 @@ pub(crate) trait Iterable: Sized {
   type Item: Sized;
 
   fn iter<'a>(&'a self) -> Confusables<'a, Self> {
-    Confusables { index: 0, inner: self }
+    Confusables {
+      index: 0,
+      inner: self,
+    }
   }
 
   fn len(&self) -> u8;
@@ -27,7 +30,7 @@ impl<I: Iterable> Iterator for Confusables<'_, I> {
     } else {
       let out = self.inner.nth(self.index);
       self.index += 1;
-    
+
       Some(out)
     }
   }
@@ -75,7 +78,7 @@ impl<T: Copy + PartialEq> Iterable for BinaryArray<T> {
   fn len(&self) -> u8 {
     self.inner_len
   }
-  
+
   #[inline(always)]
   fn nth(&self, index: u8) -> Self::Item {
     unsafe { *self.ptr.offset(index as _) }
@@ -92,7 +95,11 @@ pub(crate) trait DynamicIterable: Sized {
   type Item: Sized;
 
   fn iter<'a>(&'a self) -> DynamicConfusables<'a, Self> {
-    DynamicConfusables { index: 0, offset: 0, inner: self }
+    DynamicConfusables {
+      index: 0,
+      offset: 0,
+      inner: self,
+    }
   }
 
   fn len(&self) -> u8;
@@ -108,7 +115,7 @@ impl<I: DynamicIterable> Iterator for DynamicConfusables<'_, I> {
     } else {
       let out = self.inner.advance(&mut self.offset);
       self.index += 1;
-    
+
       Some(out)
     }
   }
@@ -204,15 +211,13 @@ pub(crate) struct Alphabetical {
 
 impl Alphabetical {
   const fn new(ptr: *const u8) -> Self {
-    Self {
-      ptr,
-    }
+    Self { ptr }
   }
 }
 
 impl DynamicIterable for Alphabetical {
   type Item = BinaryArray<u32>;
-  
+
   #[inline(always)]
   fn len(&self) -> u8 {
     26
