@@ -6,7 +6,8 @@ on:
     tags-ignore:
       - '**'
     paths:
-      - 'wasm/src/*'
+      - 'core/src/**'
+      - 'wasm/src/**'
 jobs:
   build:
     name: Build
