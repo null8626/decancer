@@ -235,6 +235,31 @@ impl Decancer {
     self.cure_inner(it, lower_bound)
   }
 
+  /// Cures a list of `char`s.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```rust,norun
+  /// extern crate decancer;
+  /// use decancer::Decancer;
+  ///
+  /// let instance = Decancer::new();
+  /// let output = instance.cure_utf32(['v', 'Ｅ', 'ⓡ', '𝔂', ' ',
+  ///                                   '𝔽', '𝕌' , 'Ň', 'ℕ', 'ｙ',
+  ///                                   ' ', 'ţ', '乇', '𝕏' , '𝓣']);
+  ///
+  /// assert_eq!(output, String::from("very funny text"));
+  /// ```
+  #[must_use]
+  pub fn cure_chars<I: IntoIterator<Item = char>>(&self, iter: I) -> String {
+    let it = iter.into_iter();
+    let (lower_bound, _) = it.size_hint();
+
+    self.cure_inner(it.map(|x| x as u32), lower_bound)
+  }
+
   /// Cures a string.
   ///
   /// # Examples
