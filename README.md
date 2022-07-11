@@ -74,9 +74,13 @@ console.log(noCancer); // 'very funny text'
 
 ```rust
 extern crate decancer;
+use decancer::Decancer;
 
 fn main() {
-  println!("{}", decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"));
+  let instance = Decancer::new();
+  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+
+  assert_eq!(output, String::from("very funny text"));
 }
 ```
 
@@ -94,11 +98,13 @@ if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 
 ```rust,norun
 extern crate decancer;
+use decancer::Decancer;
 
 fn main() {
-  let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-
-  if decancer::contains(cured, "no-no-word") {
+  let instance = Decancer::new();
+  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  
+  if instance.contains(output, "badwordhere") {
     println!("LANGUAGE!!!");
   }
 }

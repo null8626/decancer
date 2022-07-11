@@ -6,13 +6,16 @@ extern crate napi_derive;
 extern crate napi;
 
 extern crate decancer;
+use decancer::Decancer;
+
+const DECANCER: Decancer = Decancer::new();
 
 #[napi]
 fn contains(a: String, b: String) -> bool {
-  decancer::contains(a, b)
+  DECANCER.contains(a, b)
 }
 
 #[napi]
 fn decancer(input: String) -> String {
-  decancer::cure(input)
+  DECANCER.cure(input)
 }
