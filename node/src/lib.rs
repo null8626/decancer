@@ -10,7 +10,7 @@ extern crate decancer;
 #[napi]
 fn contains(a: String, b: String) -> bool {
   decancer::contains(a, b)
-} 
+}
 
 #[napi]
 fn decancer(input: String) -> String {
