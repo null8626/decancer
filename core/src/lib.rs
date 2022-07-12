@@ -1,3 +1,115 @@
+//! # decancer
+//! 
+//! A portable module that removes common confusables from strings without the use of Regexes. Available for Rust, Node.js, Deno, and the Browser.
+//! 
+//! Pros:
+//! 
+//! - Extremely fast, no use of regex whatsoever!
+//! - No dependencies.
+//! - Simple to use, just one single function.
+//! - Supports all the way to UTF-32 code-points. Like emojis, zalgos, etc.
+//! - While this project may not be perfect, it should cover the vast majority of confusables.
+//! 
+//! Con:
+//! 
+//! - Remember that this project is not perfect, false-positives may happen.
+//! 
+//! ## installation
+//! 
+//! ### Rust
+//! 
+//! In your `Cargo.toml`:
+//! 
+//! ```toml
+//! decancer = "1.3.3"
+//! ```
+//! 
+//! ### Node.js
+//! 
+//! In your shell:
+//! 
+//! ```console
+//! $ npm install decancer
+//! ```
+//! 
+//! In your code:
+//! 
+//! ```js
+//! const decancer = require('decancer');
+//! ```
+//! 
+//! ### Deno
+//! 
+//! In your code:
+//! 
+//! ```ts
+//! import init from "https://deno.land/x/decancer@v1.3.3/mod.ts";
+//! 
+//! const decancer = await init();
+//! ```
+//! 
+//! ### Browser
+//! 
+//! In your code:
+//! 
+//! ```js
+//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.3.3/decancer.min.js";
+//! 
+//! const decancer = await init();
+//! ```
+//! 
+//! ## examples
+//! 
+//! > **NOTE:** cured output will ALWAYS be in lowercase.
+//! 
+//! ### JavaScript
+//! 
+//! ```js
+//! const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
+//! 
+//! console.log(noCancer); // 'very funny text'
+//! ```
+//! 
+//! ### Rust
+//! 
+//! ```rust
+//! extern crate decancer;
+//! use decancer::Decancer;
+//! 
+//! fn main() {
+//!   let instance = Decancer::new();
+//!   let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+//! 
+//!   assert_eq!(output, String::from("very funny text"));
+//! }
+//! ```
+//! 
+//! If you want to check if the decancered string contains a certain keyword, i recommend using this instead since mistranslations can happen (e.g mistaking the number 0 with the letter O)
+//! 
+//! ### JavaScript
+//! 
+//! ```js
+//! const noCancer = decancer(someString);
+//! 
+//! if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
+//! ```
+//! 
+//! ### Rust
+//! 
+//! ```rust,norun
+//! extern crate decancer;
+//! use decancer::Decancer;
+//! 
+//! fn main() {
+//!   let instance = Decancer::new();
+//!   let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+//!   
+//!   if instance.contains(output, "badwordhere") {
+//!     println!("LANGUAGE!!!");
+//!   }
+//! }
+//! ```
+
 mod confusables;
 mod encoding;
 
@@ -246,8 +358,8 @@ impl Decancer {
   /// use decancer::Decancer;
   ///
   /// let instance = Decancer::new();
-  /// let output = instance.cure_utf32(['v', 'Ｅ', 'ⓡ', '𝔂', ' ',
-  ///                                   '𝔽', '𝕌' , 'Ň', 'ℕ', 'ｙ',
+  /// let output = instance.cure_chars(['v', 'Ｅ', 'ⓡ', '𝔂', ' ',
+  ///                                   '𝔽', '𝕌', 'Ň', 'ℕ', 'ｙ',
   ///                                   ' ', 'ţ', '乇', '𝕏' , '𝓣']);
   ///
   /// assert_eq!(output, String::from("very funny text"));
