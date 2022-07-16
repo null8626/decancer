@@ -22,7 +22,8 @@ misc:
   size of table (u8)
   
   loop:
-    translation in ASCII (u8)
+    size of translation (u8)
+    translation string in ASCII (u8 array)
     size of confusables (u8)
     array of confusables (u32 array)
 

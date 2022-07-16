@@ -21,7 +21,7 @@ Con:
 In your `Cargo.toml`:
 
 ```toml
-decancer = "1.3.3"
+decancer = "1.4.0"
 ```
 
 ### Node.js
@@ -43,7 +43,7 @@ const decancer = require('decancer');
 In your code:
 
 ```ts
-import init from "https://deno.land/x/decancer@v1.3.3/mod.ts";
+import init from "https://deno.land/x/decancer@v1.4.0/mod.ts";
 
 const decancer = await init();
 ```
@@ -53,7 +53,7 @@ const decancer = await init();
 In your code:
 
 ```js
-import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.3.3/decancer.min.js";
+import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
 
 const decancer = await init();
 ```
@@ -104,8 +104,8 @@ fn main() {
   let instance = Decancer::new();
   let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   
-  if instance.contains(output, "badwordhere") {
-    println!("LANGUAGE!!!");
+  if instance.contains(&output, "funny") {
+    println!("i found the funny");
   }
 }
 ```
