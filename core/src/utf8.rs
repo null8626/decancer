@@ -93,9 +93,7 @@ impl Iterator for Codepoints<'_> {
 
         if (next >> 6) != 0x02 {
           break; // invalid UTF-8
-        }
-
-        if current >= 0xE0 {
+        } else if current >= 0xE0 {
           match self.iter.next() {
             Some(&c) => next = c,
             None => break,
@@ -103,9 +101,7 @@ impl Iterator for Codepoints<'_> {
 
           if (next >> 6) != 0x02 {
             break; // invalid UTF-8
-          }
-
-          if current >= 0xF0 {
+          } else if current >= 0xF0 {
             match self.iter.next() {
               Some(&c) => next = c,
               None => break,
