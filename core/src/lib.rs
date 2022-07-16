@@ -43,7 +43,7 @@
 //! In your code:
 //! 
 //! ```ts
-//! import init from "https://deno.land/x/decancer@v1.4.0/mod.ts";
+//! import init from "https://deno.land/x/decancer@v1.4.1/mod.ts";
 //! 
 //! const decancer = await init();
 //! ```
@@ -53,7 +53,7 @@
 //! In your code:
 //! 
 //! ```js
-//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
+//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
 //! 
 //! const decancer = await init();
 //! ```
@@ -135,7 +135,7 @@
 //!     <br />
 //!     <button id="cure" onclick="cure()">cure!</button>
 //!     <script type="module">
-//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
+//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
 //!       
 //!       const decancer = await init();
 //!       
