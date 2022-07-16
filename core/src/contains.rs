@@ -20,7 +20,7 @@ impl<I: Clone> Restartable<I> {
 
 impl<I: Iterator> Iterator for Restartable<I> {
   type Item = I::Item;
-  
+
   #[inline(always)]
   fn next(&mut self) -> Option<Self::Item> {
     self.iter.next()

@@ -48,7 +48,9 @@ impl Iterator for IterWrapper<'_, char> {
 
 impl<'a, T: Clone> Clone for IterWrapper<'a, T> {
   fn clone(&self) -> Self {
-    Self { inner: self.inner.clone() }
+    Self {
+      inner: self.inner.clone(),
+    }
   }
 }
 

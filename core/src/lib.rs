@@ -143,8 +143,8 @@ mod utf32;
 mod utf8;
 
 use confusables::*;
-use utf32::ToCodepoints;
 use contains::contains;
+use utf32::ToCodepoints;
 
 /// A Decancer instance. The instance here stores the supported confusables in pointers instead of arrays.
 ///
@@ -238,7 +238,9 @@ impl Decancer {
     A: ToCodepoints<'a> + ?Sized,
     B: ToCodepoints<'a> + ?Sized,
   {
-    contains(a.to_codepoints(), b.to_codepoints(), |a, b| self.similar(a, b))
+    contains(a.to_codepoints(), b.to_codepoints(), |a, b| {
+      self.similar(a, b)
+    })
   }
 
   /// Cures a string.
