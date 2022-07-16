@@ -17,7 +17,17 @@ impl Iterator for IterWrapper<'_, u32> {
 
   #[inline(always)]
   fn next(&mut self) -> Option<Self::Item> {
-    Some(*self.inner.next()?)
+    match self.inner.next() {
+      Some(&r) => {
+        if r <= 0x10FFFF {
+          Some(r)
+        } else {
+          None
+        }
+      }
+
+      None => None,
+    }
   }
 
   #[inline(always)]
@@ -57,7 +67,7 @@ impl<'a, T: Clone> Clone for IterWrapper<'a, T> {
 /// A trait for Rust data-types that can yield UTF-32 codepoints.
 ///
 /// Invalid UTF-8 bytes will cause the decancer process to be aborted (with no errors).
-/// Invalid UTF-16 surrogates will be skipped.
+/// Invalid UTF-16 surrogates or UTF-32 codepoints will be skipped.
 pub trait ToCodepoints<'a> {
   type Out: Iterator<Item = u32> + Clone + 'a;
 
