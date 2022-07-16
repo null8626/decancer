@@ -1,10 +1,10 @@
 [package]
 name = "decancer"
-version = "1.4.0"
+version = "1.4.1"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
 description = "A Rust module that removes common confusables from strings without the use of Regexes."
-readme = "../README.md"
+readme = "../node/README.md"
 repository = "https://github.com/null8626/decancer"
 license = "MIT"
 keywords = ["unicode", "string", "moderation", "confusables"]

@@ -21,7 +21,7 @@
 //! In your `Cargo.toml`:
 //! 
 //! ```toml
-//! decancer = "1.4.0"
+//! decancer = "1.4.1"
 //! ```
 //! 
 //! ### Node.js
@@ -131,9 +131,9 @@
 //!   </head>
 //!   <body>
 //!     <h3>Input cancerous text here:</h3>
-//!     <textarea rows="10" cols="30" style="font-size: 30px;"></textarea>
+//!     <textarea rows="10" cols="30"></textarea>
 //!     <br />
-//!     <button style="font-size: 20px; padding: 5px 30px" onclick="cure()">cure!</button>
+//!     <button id="cure" onclick="cure()">cure!</button>
 //!     <script type="module">
 //!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
 //!       
@@ -188,7 +188,7 @@ mod utf8;
 
 use confusables::*;
 use contains::contains;
-use utf32::ToCodepoints;
+pub use utf32::ToCodepoints;
 
 /// A Decancer instance. The instance here stores the supported confusables in pointers instead of arrays.
 ///
@@ -266,7 +266,7 @@ impl Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,no_run
+  /// ```rust
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
@@ -293,7 +293,7 @@ impl Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,no_run
+  /// ```rust
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
@@ -391,7 +391,7 @@ impl Default for Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,no_run
+  /// ```rust
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
