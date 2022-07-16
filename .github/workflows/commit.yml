@@ -1,4 +1,4 @@
-name: prettier
+name: commit build
 on:
   push:
     branches:
@@ -6,10 +6,10 @@ on:
     tags-ignore:
       - '**'
     paths:
-      - '**/src/**/*.rs'
+      - 'src/**/*.rs'
 jobs:
-  build:
-    name: Build
+  prettier:
+    name: Prettier
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,9 +25,15 @@ jobs:
       - name: Prettier wasm crate
         working-directory: wasm
         run: cargo fmt
+      - name: Build wasm
+        working-directory: wasm
+        run: |
+          cargo install wasm-pack
+          wasm-pack build --no-typescript --release -t web
+          mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: prettier'
+          message: 'chore: prettier and build wasm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
