@@ -110,6 +110,49 @@ fn main() {
 }
 ```
 
+### Web app example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Decancerer!!! (tm)</title>
+    <style>
+      textarea {
+        font-size: 30px;
+      }
+      
+      #cure {
+        font-size: 20px;
+        padding: 5px 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Input cancerous text here:</h3>
+    <textarea rows="10" cols="30" style="font-size: 30px;"></textarea>
+    <br />
+    <button style="font-size: 20px; padding: 5px 30px" onclick="cure()">cure!</button>
+    <script type="module">
+      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
+      
+      const decancer = await init();
+      
+      window.cure = function () {
+        const textarea = document.querySelector("textarea");
+        
+        if (!textarea.value.length) {
+          return alert("There's no text!!!");
+        }
+        
+        textarea.value = decancer2(textarea.value);
+      }
+    </script>
+  </body>
+</html>
+```
+
 ## contributions
 
 All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
