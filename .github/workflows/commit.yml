@@ -6,10 +6,10 @@ on:
     tags-ignore:
       - '**'
     paths:
-      - '**/*src/**/*.rs'
+      - '**/src/**/*.rs'
 jobs:
-  prettier:
-    name: Prettier
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
