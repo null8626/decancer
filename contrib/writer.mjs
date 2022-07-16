@@ -92,10 +92,10 @@ export default function write(decancer, filename) {
   }
 
   writer.writeHeader(2, writer.writeByte(decancer.misc.size));
-  for (const [translation, confusables] of Array.from(decancer.misc).map(
-    ([K, V]) => [K.charCodeAt(), V]
-  )) {
-    writer.writeByte(translation);
+  for (const [translation, confusables] of Array.from(
+    decancer.misc.entries()
+  ).map(([K, V]) => [K.split('').map(x => x.charCodeAt()), V])) {
+    writer.writeUInt8Array(translation);
     writer.writeUInt32Array(confusables);
   }
 

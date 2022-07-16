@@ -36,13 +36,6 @@ impl<I: Iterable> Iterator for Confusables<'_, I> {
   }
 }
 
-impl<I: Iterable> ExactSizeIterator for Confusables<'_, I> {
-  #[inline(always)]
-  fn len(&self) -> usize {
-    self.inner.len() as _
-  }
-}
-
 #[derive(Copy, Clone)]
 pub(crate) struct BinaryArray<T: Copy + PartialEq> {
   inner_len: u8,
@@ -121,20 +114,13 @@ impl<I: DynamicIterable> Iterator for DynamicConfusables<'_, I> {
   }
 }
 
-impl<I: DynamicIterable> ExactSizeIterator for DynamicConfusables<'_, I> {
-  #[inline(always)]
-  fn len(&self) -> usize {
-    self.inner.len() as _
-  }
-}
-
 #[derive(Copy, Clone)]
-pub(crate) struct MiscCaseSensitive {
+pub(crate) struct ConfusablesMap {
   inner_len: u8,
   ptr: *const u8,
 }
 
-impl MiscCaseSensitive {
+impl ConfusablesMap {
   const fn new(off: *const u8) -> Self {
     unsafe {
       Self {
@@ -145,7 +131,7 @@ impl MiscCaseSensitive {
   }
 }
 
-impl DynamicIterable for MiscCaseSensitive {
+impl DynamicIterable for ConfusablesMap {
   type Item = (BinaryArray<u8>, BinaryArray<u32>);
 
   #[inline(always)]
@@ -157,44 +143,6 @@ impl DynamicIterable for MiscCaseSensitive {
     unsafe {
       let a = BinaryArray::new(self.ptr.offset(*offset as _));
       *offset += a.size();
-
-      let b = BinaryArray::new(self.ptr.offset(*offset as _));
-      *offset += b.size();
-
-      (a, b)
-    }
-  }
-}
-
-#[derive(Copy, Clone)]
-pub(crate) struct Misc {
-  inner_len: u8,
-  ptr: *const u8,
-}
-
-impl Misc {
-  const fn new(off: *const u8) -> Self {
-    unsafe {
-      Self {
-        inner_len: *off,
-        ptr: off.offset(size_of::<u8>() as _) as _,
-      }
-    }
-  }
-}
-
-impl DynamicIterable for Misc {
-  type Item = (u8, BinaryArray<u32>);
-
-  #[inline(always)]
-  fn len(&self) -> u8 {
-    self.inner_len
-  }
-
-  fn advance(&self, offset: &mut u16) -> Self::Item {
-    unsafe {
-      let a = *self.ptr.offset(*offset as _);
-      *offset += size_of::<u8>() as u16;
 
       let b = BinaryArray::new(self.ptr.offset(*offset as _));
       *offset += b.size();
@@ -276,12 +224,12 @@ pub(crate) const fn numerical() -> BinaryArray<u32> {
   BinaryArray::new(get_ptr(0))
 }
 
-pub(crate) const fn misc_case_sensitive() -> MiscCaseSensitive {
-  MiscCaseSensitive::new(get_ptr(1))
+pub(crate) const fn misc_case_sensitive() -> ConfusablesMap {
+  ConfusablesMap::new(get_ptr(1))
 }
 
-pub(crate) const fn misc() -> Misc {
-  Misc::new(get_ptr(2))
+pub(crate) const fn misc() -> ConfusablesMap {
+  ConfusablesMap::new(get_ptr(2))
 }
 
 pub(crate) const fn alphabetical_pattern() -> BinaryArray<u32> {

@@ -46,20 +46,22 @@ export default function read(filename) {
 
     miscCaseSensitive.set(String.fromCharCode(...translation), confusables);
   }
-
+  
   // Misc
   const miscSize = buf[miscOffset];
   const misc = new Map();
   currentOffset = miscOffset + 1;
 
   for (let i = 0; i < miscSize; i++) {
-    const translation = buf[currentOffset];
-    currentOffset++;
+    const translation = Array.from(
+      buf.subarray(currentOffset + 1, currentOffset + 1 + buf[currentOffset])
+    );
+    currentOffset += 1 + translation.length;
 
     const confusables = readSimpleArray(buf, currentOffset);
     currentOffset += 1 + confusables.length * 4;
 
-    misc.set(String.fromCharCode(translation), confusables);
+    misc.set(String.fromCharCode(...translation), confusables);
   }
 
   // Alphabetical
