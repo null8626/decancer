@@ -1,4 +1,4 @@
-use std::{slice::Iter, mem::MaybeUninit};
+use std::{mem::MaybeUninit, slice::Iter};
 
 #[doc(hidden)]
 pub struct Codepoints<'a> {
@@ -8,9 +8,7 @@ pub struct Codepoints<'a> {
 impl<'a> Codepoints<'a> {
   #[inline(always)]
   pub fn new(arr: &'a [u8]) -> Self {
-    Self {
-      iter: arr.iter()
-    }
+    Self { iter: arr.iter() }
   }
 }
 
@@ -45,7 +43,7 @@ impl Iterator for Codepoints<'_> {
         }
 
         bytes = (bytes << 6) | ((next & 0x3F) as u32);
-        
+
         if current >= 0xF0 {
           next = *self.iter.next()?;
 
@@ -71,8 +69,8 @@ impl Iterator for Codepoints<'_> {
 
   #[allow(unused_assignments)]
   fn count(mut self) -> usize
-    where
-      Self: Sized
+  where
+    Self: Sized,
   {
     let mut i = 0;
     let mut current = unsafe { MaybeUninit::uninit().assume_init() };
@@ -91,7 +89,7 @@ impl Iterator for Codepoints<'_> {
           Some(&c) => next = c,
           None => break,
         };
-  
+
         if (next >> 6) != 0x02 {
           break; // invalid UTF-8
         }
@@ -101,7 +99,7 @@ impl Iterator for Codepoints<'_> {
             Some(&c) => next = c,
             None => break,
           };
-  
+
           if (next >> 6) != 0x02 {
             break; // invalid UTF-8
           }
@@ -111,7 +109,7 @@ impl Iterator for Codepoints<'_> {
               Some(&c) => next = c,
               None => break,
             };
-  
+
             if (next >> 6) != 0x02 {
               break; // invalid UTF-8
             }

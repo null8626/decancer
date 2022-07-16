@@ -1,5 +1,5 @@
+use crate::{utf16, utf8};
 use std::slice::Iter;
-use crate::{utf8, utf16};
 
 #[doc(hidden)]
 pub struct IterWrapper<'a, T> {
@@ -14,7 +14,7 @@ impl<'a, T> IterWrapper<'a, T> {
 
 impl Iterator for IterWrapper<'_, u32> {
   type Item = u32;
-  
+
   #[inline(always)]
   fn next(&mut self) -> Option<Self::Item> {
     Some(*self.inner.next()?)
@@ -22,8 +22,8 @@ impl Iterator for IterWrapper<'_, u32> {
 
   #[inline(always)]
   fn count(self) -> usize
-    where
-      Self: Sized
+  where
+    Self: Sized,
   {
     self.inner.len()
   }
@@ -31,7 +31,7 @@ impl Iterator for IterWrapper<'_, u32> {
 
 impl Iterator for IterWrapper<'_, char> {
   type Item = u32;
-  
+
   #[inline(always)]
   fn next(&mut self) -> Option<Self::Item> {
     Some(*self.inner.next()? as u32)
@@ -39,8 +39,8 @@ impl Iterator for IterWrapper<'_, char> {
 
   #[inline(always)]
   fn count(self) -> usize
-    where
-      Self: Sized
+  where
+    Self: Sized,
   {
     self.inner.len()
   }

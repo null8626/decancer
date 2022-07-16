@@ -1,4 +1,4 @@
-use std::{slice::Iter, mem::MaybeUninit};
+use std::{mem::MaybeUninit, slice::Iter};
 
 pub(crate) const fn from(c: u32) -> (u16, Option<u16>) {
   if c <= 0xFFFF {
@@ -46,8 +46,8 @@ impl Iterator for Codepoints<'_> {
 
   #[allow(unused_assignments)]
   fn count(mut self) -> usize
-    where
-      Self: Sized
+  where
+    Self: Sized,
   {
     let mut i = 0;
 
@@ -60,7 +60,7 @@ impl Iterator for Codepoints<'_> {
         None => match self.iter.next() {
           Some(&it) => c = it,
           None => break,
-        }
+        },
       };
 
       if c >= 0xD800 && c < 0xDC00 {
@@ -73,7 +73,7 @@ impl Iterator for Codepoints<'_> {
 
       i += 1;
     }
-    
+
     i
   }
 }

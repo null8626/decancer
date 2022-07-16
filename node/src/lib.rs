@@ -4,11 +4,11 @@
 #[macro_use]
 extern crate napi_derive;
 
-extern crate napi;
 extern crate decancer;
+extern crate napi;
 
 use decancer::Decancer;
-use napi::{Result, JsString};
+use napi::{JsString, Result};
 
 const DECANCER: Decancer = Decancer::new();
 
