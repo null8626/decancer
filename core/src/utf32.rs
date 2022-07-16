@@ -55,7 +55,7 @@ impl<'a, T: Clone> Clone for IterWrapper<'a, T> {
 }
 
 /// A trait for Rust data-types that can yield UTF-32 codepoints.
-/// 
+///
 /// Invalid UTF-8 bytes will cause the decancer process to be aborted (with no errors).
 /// Invalid UTF-16 surrogates will be skipped.
 pub trait ToCodepoints<'a> {
