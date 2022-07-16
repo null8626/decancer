@@ -1,6 +1,7 @@
 use std::{mem::MaybeUninit, slice::Iter};
 
 #[doc(hidden)]
+#[derive(Clone)]
 pub struct Codepoints<'a> {
   iter: Iter<'a, u8>,
 }

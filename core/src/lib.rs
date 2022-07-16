@@ -1,4 +1,5 @@
 mod confusables;
+mod contains;
 mod utf16;
 mod utf32;
 /// # decancer
@@ -75,7 +76,7 @@ mod utf32;
 ///
 /// ### Rust
 ///
-/// ```rust
+/// ```rust,no_run
 /// extern crate decancer;
 /// use decancer::Decancer;
 ///
@@ -99,7 +100,7 @@ mod utf32;
 ///
 /// ### Rust
 ///
-/// ```rust,norun
+/// ```rust,no_run
 /// extern crate decancer;
 /// use decancer::Decancer;
 ///
@@ -143,6 +144,7 @@ mod utf8;
 
 use confusables::*;
 use utf32::ToCodepoints;
+use contains::contains;
 
 /// A Decancer instance. The instance here stores the supported confusables in pointers instead of arrays.
 ///
@@ -150,7 +152,7 @@ use utf32::ToCodepoints;
 ///
 /// Basic usage:
 ///
-/// ```rust,norun
+/// ```rust,no_run
 /// extern crate decancer;
 /// use decancer::Decancer;
 ///
@@ -177,7 +179,7 @@ impl Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,norun
+  /// ```rust,no_run
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
@@ -186,7 +188,7 @@ impl Decancer {
   ///
   /// Or use it in a global state:
   ///
-  /// ```rust,norun
+  /// ```rust,no_run
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
@@ -220,7 +222,7 @@ impl Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,norun
+  /// ```rust,no_run
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
@@ -229,28 +231,14 @@ impl Decancer {
   ///
   /// assert_eq!(true, instance.contains(&output, "funny"));
   /// ```
+  #[inline(always)]
   #[must_use]
   pub fn contains<'a, A, B>(&self, a: &'a A, b: &'a B) -> bool
   where
     A: ToCodepoints<'a> + ?Sized,
     B: ToCodepoints<'a> + ?Sized,
   {
-    let b_len = b.to_codepoints().count();
-
-    let mut j = 0usize;
-    for (x, y) in a.to_codepoints().zip(b.to_codepoints()) {
-      if self.similar(x, y) {
-        j += 1;
-
-        if j == b_len {
-          return true;
-        }
-      } else {
-        j = 0;
-      }
-    }
-
-    false
+    contains(a.to_codepoints(), b.to_codepoints(), |a, b| self.similar(a, b))
   }
 
   /// Cures a string.
@@ -259,7 +247,7 @@ impl Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,norun
+  /// ```rust,no_run
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
@@ -281,7 +269,6 @@ impl Decancer {
           && x != 0x20E3
           && x != 0xFE0F
           && x != 0x489
-          && x < 0xFFF0
       })
       .for_each(|x| {
         for num in self.numerical.iter() {
@@ -358,7 +345,7 @@ impl Default for Decancer {
   ///
   /// Basic usage:
   ///
-  /// ```rust,norun
+  /// ```rust,no_run
   /// extern crate decancer;
   /// use decancer::Decancer;
   ///
