@@ -146,7 +146,7 @@ fn main() {
           return alert("There's no text!!!");
         }
         
-        textarea.value = decancer2(textarea.value);
+        textarea.value = decancer(textarea.value);
       }
     </script>
   </body>
