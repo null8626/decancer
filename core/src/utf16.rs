@@ -10,6 +10,7 @@ pub(crate) const fn from(c: u32) -> (u16, Option<u16>) {
 }
 
 #[doc(hidden)]
+#[derive(Clone)]
 pub struct Codepoints<'a> {
   iter: Iter<'a, u16>,
   next: Option<u16>,

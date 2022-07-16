@@ -46,9 +46,17 @@ impl Iterator for IterWrapper<'_, char> {
   }
 }
 
+impl<'a, T: Clone> Clone for IterWrapper<'a, T> {
+  fn clone(&self) -> Self {
+    Self {
+      inner: self.inner.clone(),
+    }
+  }
+}
+
 /// A trait for Rust data-types that can yield UTF-32 codepoints. Invalid UTF-8 or UTF-16 bytes will cause the decancer process to be aborted.
 pub trait ToCodepoints<'a> {
-  type Out: Iterator<Item = u32> + 'a;
+  type Out: Iterator<Item = u32> + Clone + 'a;
 
   fn to_codepoints(&'a self) -> Self::Out;
   fn approximate_chars(&'a self) -> usize;

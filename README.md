@@ -96,7 +96,7 @@ if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 
 ### Rust
 
-```rust,norun
+```rust
 extern crate decancer;
 use decancer::Decancer;
 
