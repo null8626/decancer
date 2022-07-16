@@ -18,11 +18,13 @@ impl Iterator for IterWrapper<'_, u32> {
   #[inline(always)]
   fn next(&mut self) -> Option<Self::Item> {
     match self.inner.next() {
-      Some(&r) => if r <= 0x10FFFF {
-        Some(r)
-      } else {
-        None
-      },
+      Some(&r) => {
+        if r <= 0x10FFFF {
+          Some(r)
+        } else {
+          None
+        }
+      }
 
       None => None,
     }
