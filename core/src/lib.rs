@@ -1,105 +1,105 @@
 //! # decancer
-//! 
+//!
 //! A portable module that removes common confusables from strings without the use of Regexes. Available for Rust, Node.js, Deno, and the Browser.
-//! 
+//!
 //! Pros:
-//! 
+//!
 //! - Extremely fast, no use of regex whatsoever!
 //! - No dependencies.
 //! - Simple to use, just one single function.
 //! - Supports all the way to UTF-32 code-points. Like emojis, zalgos, etc.
 //! - While this project may not be perfect, it should cover the vast majority of confusables.
-//! 
+//!
 //! Con:
-//! 
+//!
 //! - Remember that this project is not perfect, false-positives may happen.
-//! 
+//!
 //! ## installation
-//! 
+//!
 //! ### Rust
-//! 
+//!
 //! In your `Cargo.toml`:
-//! 
+//!
 //! ```toml
-//! decancer = "1.4.1"
+//! decancer = "1.4.2"
 //! ```
-//! 
+//!
 //! ### Node.js
-//! 
+//!
 //! In your shell:
-//! 
+//!
 //! ```console
 //! $ npm install decancer
 //! ```
-//! 
+//!
 //! In your code:
-//! 
+//!
 //! ```js
 //! const decancer = require('decancer');
 //! ```
-//! 
+//!
 //! ### Deno
-//! 
+//!
 //! In your code:
-//! 
+//!
 //! ```ts
-//! import init from "https://deno.land/x/decancer@v1.4.0/mod.ts";
-//! 
+//! import init from "https://deno.land/x/decancer@v1.4.2/mod.ts";
+//!
 //! const decancer = await init();
 //! ```
-//! 
+//!
 //! ### Browser
-//! 
+//!
 //! In your code:
-//! 
+//!
 //! ```js
-//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
-//! 
+//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js";
+//!
 //! const decancer = await init();
 //! ```
-//! 
+//!
 //! ## examples
-//! 
+//!
 //! > **NOTE:** cured output will ALWAYS be in lowercase.
-//! 
+//!
 //! ### JavaScript
-//! 
+//!
 //! ```js
 //! const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
-//! 
+//!
 //! console.log(noCancer); // 'very funny text'
 //! ```
-//! 
+//!
 //! ### Rust
-//! 
+//!
 //! ```rust
 //! extern crate decancer;
 //! use decancer::Decancer;
-//! 
+//!
 //! fn main() {
 //!   let instance = Decancer::new();
 //!   let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-//! 
+//!
 //!   assert_eq!(output, String::from("very funny text"));
 //! }
 //! ```
-//! 
+//!
 //! If you want to check if the decancered string contains a certain keyword, i recommend using this instead since mistranslations can happen (e.g mistaking the number 0 with the letter O)
-//! 
+//!
 //! ### JavaScript
-//! 
+//!
 //! ```js
 //! const noCancer = decancer(someString);
-//! 
+//!
 //! if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 //! ```
-//! 
+//!
 //! ### Rust
-//! 
+//!
 //! ```rust
 //! extern crate decancer;
 //! use decancer::Decancer;
-//! 
+//!
 //! fn main() {
 //!   let instance = Decancer::new();
 //!   let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
@@ -109,9 +109,9 @@
 //!   }
 //! }
 //! ```
-//! 
+//!
 //! ### Web app example
-//! 
+//!
 //! ```html
 //! <!DOCTYPE html>
 //! <html lang="en">
@@ -135,7 +135,7 @@
 //!     <br />
 //!     <button id="cure" onclick="cure()">cure!</button>
 //!     <script type="module">
-//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.0/decancer.min.js";
+//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js";
 //!       
 //!       const decancer = await init();
 //!       
@@ -152,26 +152,26 @@
 //!   </body>
 //! </html>
 //! ```
-//! 
+//!
 //! ## contributions
-//! 
+//!
 //! All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
-//! 
+//!
 //! If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and modify it directly with Node.js. Either through a script or directly from the REPL.
-//! 
+//!
 //! ```js
 //! const reader = await import('./contrib/index.mjs');
 //! const data = reader.default('./core/bin/confusables.bin');
-//! 
+//!
 //! // do something with data...
-//! 
+//!
 //! data.save('./core/bin/confusables.bin');
 //! ```
-//! 
+//!
 //! ## special thanks
-//! 
+//!
 //! These are the primary resources that made this project possible.
-//! 
+//!
 //! - [The Official Unicode Confusables List](https://util.unicode.org/UnicodeJsps/confusables.jsp)
 //! - [The Official Unicode Characters List](https://unicode.org/Public/UNIDATA/UnicodeData.txt)
 //! - [Wikipedia's list of Unicode Characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
@@ -287,6 +287,40 @@ impl Decancer {
     })
   }
 
+  // similar to char::is_whitespace, except ignores the default space
+  // and also supports more codepoints.
+  const fn is_whitespace(c: u32) -> bool {
+    match c {
+      0x09
+      | 0x0A..=0x0D
+      | 0x85
+      | 0xA0
+      | 0x1680
+      | 0x2000..=0x200A
+      | 0x2028
+      | 0x2029
+      | 0x202F
+      | 0x205F
+      | 0x3000
+      | 0x180E
+      | 0x200B..=0x200D
+      | 0x2060
+      | 0xFEFF => true,
+      _ => false,
+    }
+  }
+
+  const fn filter_codepoint(x: u32) -> bool {
+    ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F)
+      && x != 0x20E3
+      && x != 0xFE0F
+      && x != 0x489
+  }
+
+  const fn valid_codepoint(c: u16) -> bool {
+    (c < 0xD800 || c > 0xDB7F) && c < 0xFFF0
+  }
+
   /// Cures a string.
   ///
   /// # Examples
@@ -310,11 +344,13 @@ impl Decancer {
     let mut output = String::with_capacity(s.approximate_chars());
 
     s.to_codepoints()
-      .filter(|&x| {
-        ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F)
-          && x != 0x20E3
-          && x != 0xFE0F
-          && x != 0x489
+      .filter(|&x| Self::filter_codepoint(x))
+      .map(|x| {
+        if Self::is_whitespace(x) {
+          0x20 // char code for ' '
+        } else {
+          x
+        }
       })
       .for_each(|x| {
         for num in self.numerical.iter() {
@@ -359,9 +395,7 @@ impl Decancer {
               }
             }
 
-            if let Some(t) = char::from_u32(c) {
-              output.push(t);
-            }
+            output.push(unsafe { char::from_u32_unchecked(c) });
           });
         }
       });
@@ -369,11 +403,10 @@ impl Decancer {
     output.retain(|c2| {
       let (a, b) = utf16::from(c2 as _);
 
-      if a != 0xFFFD && (a < 0xD800 || a > 0xDB7F) && a < 0xFFF0 {
-        if let Some(b2) = b {
-          b2 != 0xFFFD && (b2 < 0xD800 || b2 > 0xDB7F) && b2 < 0xFFF0
-        } else {
-          true
+      if Self::valid_codepoint(a) {
+        match b {
+          Some(b2) => Self::valid_codepoint(b2),
+          None => true,
         }
       } else {
         false
