@@ -436,6 +436,10 @@ impl Default for Decancer {
   }
 }
 
+// this is safe to use in multiple threads!
+unsafe impl Send for Decancer {}
+unsafe impl Sync for Decancer {}
+
 #[test]
 fn it_works() {
   let instance = Decancer::new();
