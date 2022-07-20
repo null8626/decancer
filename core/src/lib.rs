@@ -21,7 +21,7 @@
 //! In your `Cargo.toml`:
 //! 
 //! ```toml
-//! decancer = "1.4.1"
+//! decancer = "1.4.2"
 //! ```
 //! 
 //! ### Node.js
@@ -43,7 +43,7 @@
 //! In your code:
 //! 
 //! ```ts
-//! import init from "https://deno.land/x/decancer@v1.4.1/mod.ts";
+//! import init from "https://deno.land/x/decancer@v1.4.2/mod.ts";
 //! 
 //! const decancer = await init();
 //! ```
@@ -53,7 +53,7 @@
 //! In your code:
 //! 
 //! ```js
-//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
+//! import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js";
 //! 
 //! const decancer = await init();
 //! ```
@@ -135,7 +135,7 @@
 //!     <br />
 //!     <button id="cure" onclick="cure()">cure!</button>
 //!     <script type="module">
-//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
+//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js";
 //!       
 //!       const decancer = await init();
 //!       
@@ -286,6 +286,28 @@ impl Decancer {
       self.similar(a, b)
     })
   }
+  
+  // similar to char::is_whitespace, except ignores the default space
+  // and also supports more codepoints.
+  const fn is_whitespace(c: u32) -> bool {
+    match c {
+      0x09 | 0x0A..=0x0D | 0x85 | 0xA0 | 0x1680 | 0x2000..=0x200A |
+      0x2028 | 0x2029 | 0x202F | 0x205F | 0x3000 | 0x180E |
+      0x200B..=0x200D | 0x2060 | 0xFEFF => true,
+      _ => false,
+    }
+  }
+  
+  const fn filter_codepoint(x: u32) -> bool {
+    ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F)
+      && x != 0x20E3
+      && x != 0xFE0F
+      && x != 0x489
+  }
+  
+  const fn valid_codepoint(c: u16) -> bool {
+    (c < 0xD800 || c > 0xDB7F) && c < 0xFFF0
+  }
 
   /// Cures a string.
   ///
@@ -310,11 +332,11 @@ impl Decancer {
     let mut output = String::with_capacity(s.approximate_chars());
 
     s.to_codepoints()
-      .filter(|&x| {
-        ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F)
-          && x != 0x20E3
-          && x != 0xFE0F
-          && x != 0x489
+      .filter(|&x| Self::filter_codepoint(x))
+      .map(|x| if Self::is_whitespace(x) {
+        0x20 // char code for ' '
+      } else {
+        x
       })
       .for_each(|x| {
         for num in self.numerical.iter() {
@@ -359,9 +381,7 @@ impl Decancer {
               }
             }
 
-            if let Some(t) = char::from_u32(c) {
-              output.push(t);
-            }
+            output.push(unsafe { char::from_u32_unchecked(c) });
           });
         }
       });
@@ -369,11 +389,10 @@ impl Decancer {
     output.retain(|c2| {
       let (a, b) = utf16::from(c2 as _);
 
-      if a != 0xFFFD && (a < 0xD800 || a > 0xDB7F) && a < 0xFFF0 {
-        if let Some(b2) = b {
-          b2 != 0xFFFD && (b2 < 0xD800 || b2 > 0xDB7F) && b2 < 0xFFF0
-        } else {
-          true
+      if Self::valid_codepoint(a) {
+        match b {
+          Some(b2) => Self::valid_codepoint(b2),
+          None => true,
         }
       } else {
         false
