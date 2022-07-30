@@ -6,6 +6,7 @@ on:
     tags-ignore:
       - '**'
     paths:
+      - '.github/workflows/commit.yml'
       - '**/src/**/*.rs'
       - '**/README.md'
       - 'mod.ts'
