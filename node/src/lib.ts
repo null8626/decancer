@@ -38,7 +38,7 @@ function isMusl(): boolean {
 // @ts-ignore: this will NOT be null :)
 let decancer: Decancer = null
 
-function loadBinding(name: string): Decancer {
+function loadBinding(name: string) {
   const path: string = join(__dirname, '..', `decancer.${name}.node`)
   const require: any = createRequire(import.meta.url)
 
@@ -49,9 +49,7 @@ function loadBinding(name: string): Decancer {
   }
   
   // @ts-ignore
-  Object.assign(decancer.decancer, { contains: exported.contains })
-
-  return decancer
+  decancer = Object.assign(decancer.decancer, { contains: decancer.contains })
 }
 
 const platforms: Record<string, Record<string, Arch>> = {
