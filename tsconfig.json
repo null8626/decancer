@@ -1,5 +1,5 @@
 {
-  "files": ["src/lib.ts"],
+  "files": ["mod.ts"],
   "compilerOptions": {
     "declaration": true,
     "noImplicitAny": true,
