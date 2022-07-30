@@ -52,10 +52,12 @@ const decancer = await init();
 
 In your code:
 
-```js
-import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js";
+```html
+<script type="module">
+  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js";
 
-const decancer = await init();
+  const decancer = await init();
+</script>
 ```
 
 ## examples

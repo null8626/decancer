@@ -7,6 +7,8 @@ on:
       - '**'
     paths:
       - '**/src/**/*.rs'
+      - '**/README.md'
+      - 'mod.ts'
 jobs:
   build:
     name: Build
@@ -25,6 +27,10 @@ jobs:
       - name: Prettier wasm crate
         working-directory: wasm
         run: cargo fmt
+      - name: Minify mod.ts code
+        run: npm run minify
+      - name: Update README.md
+        run: npm run readme
       - name: Build wasm
         working-directory: wasm
         run: |
@@ -34,6 +40,6 @@ jobs:
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: prettier and build wasm'
+          message: 'chore: update files on commit'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

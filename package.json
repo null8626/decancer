@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": ">= 18"
+  },
+  "scripts": {
+    "build": "npx tsc",
+    "minify": "npm install --save-dev && npm run build && node scripts/minify.mjs",
+    "readme": "node scripts/readme.mjs"
+  }
+}
