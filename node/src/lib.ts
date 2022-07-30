@@ -38,7 +38,7 @@ function loadBinding(name: string) {
   let exported: Decancer = null;
 
   if (existsSync(path))
-    exported = require(`../decancer.${name}.node`);
+    exported = require(path);
   else
     exported = require(`@vierofernando/decancer-${name}`);
   

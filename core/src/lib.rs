@@ -447,4 +447,5 @@ fn it_works() {
 
   assert_eq!(output, String::from("very funny text"));
   assert_eq!(true, instance.contains(&output, "funny"));
+  assert_eq!(true, instance.contains("this is a piece of $h1t", "shit"));
 }

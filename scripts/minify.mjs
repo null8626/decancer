@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const MOD_TS = resolve(__dirname, '..', 'mod.ts')
+const NEWLINE_REGEX = /\r?\n/g
 
 const valid = execSync('git log --name-only --pretty=%b', {
   cwd: resolve(__dirname, '..')

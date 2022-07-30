@@ -1,4 +1,4 @@
-name: commit build
+name: on commit workflow
 on:
   push:
     branches:
@@ -18,6 +18,14 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: vx.x.x
+      - name: Run tests
+        run: npm test
       - name: Prettier core crate
         working-directory: core
         run: cargo fmt
