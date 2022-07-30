@@ -25,6 +25,17 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: vx.x.x
+      - name: Install dependencies
+        run: npm run install
+      - name: Build wasm
+        working-directory: wasm
+        run: |
+          wasm-pack build --no-typescript --release -t web
+          mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
+      - name: Minify mod.ts code
+        run: npm run minify
+      - name: Update README.md
+        run: npm run readme
       - name: Run tests
         run: npm test
       - name: Prettier core crate
@@ -36,16 +47,6 @@ jobs:
       - name: Prettier wasm crate
         working-directory: wasm
         run: cargo fmt
-      - name: Minify mod.ts code
-        run: npm run minify
-      - name: Update README.md
-        run: npm run readme
-      - name: Build wasm
-        working-directory: wasm
-        run: |
-          cargo install wasm-pack
-          wasm-pack build --no-typescript --release -t web
-          mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:

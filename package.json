@@ -11,7 +11,8 @@
     "node": ">= 18"
   },
   "scripts": {
-    "test": "npm i --save-dev && node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --no-cache",
+    "install": "node script/install.mjs",
+    "test": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --no-cache",
     "minify": "npx tsc && node scripts/minify.mjs",
     "readme": "node scripts/readme.mjs"
   },
