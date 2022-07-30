@@ -1,10 +1,7 @@
-import assert from 'node:assert'
-import { existsSync, readFileSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+const assert = require('node:assert')
+const { existsSync, readFileSync } = require('node:fs')
+const { resolve } = require('node:path')
 import type Decancer from './typings'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 type Option<T> = T | undefined | null
 type Arch =
