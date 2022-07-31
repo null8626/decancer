@@ -2,6 +2,7 @@ import { execSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 /**
  * Promise.all but better
  * @arg {Promise[]} promises An array of `Promise`s.
@@ -38,7 +39,8 @@ await spawnPromises([
     console.time('[root] done')
     
     execSync('npm i --save-dev', {
-      cwd: resolve(__dirname, '..')
+      cwd: resolve(__dirname, '..'),
+      stdio: 'ignore'
     })
 
     console.timeEnd('[root] done')
@@ -51,7 +53,8 @@ await spawnPromises([
     console.time('[node] done')
     
     execSync('npm i --save-dev', {
-      cwd: resolve(__dirname, '..', 'node')
+      cwd: resolve(__dirname, '..', 'node'),
+      stdio: 'ignore'
     })
 
     console.timeEnd('[node] done')
@@ -64,7 +67,8 @@ await spawnPromises([
     console.time('[wasm] done')
     
     execSync('cargo install wasm-pack', {
-      cwd: resolve(__dirname, '..', 'wasm')
+      cwd: resolve(__dirname, '..', 'wasm'),
+      stdio: 'ignore'
     })
 
     console.timeEnd('[wasm] done')

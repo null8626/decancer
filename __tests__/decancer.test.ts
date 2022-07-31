@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname: string = dirname(fileURLToPath(import.meta.url))
 
 it('works with Rust', () => void execSync('cargo test', {
   stdio: 'inherit',
@@ -15,7 +15,7 @@ it('compiles in Node.js', () => void execSync('npm run build', {
 }))
 
 it('works with Node.js', async () => {
-  const decancer = await import(resolve(__dirname, '..', 'node', 'src', 'lib'))
+  const decancer = (await import(resolve(__dirname, '..', 'node', 'src', 'lib'))).default
   const decancered = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
   expect(decancered).toBe('very funny text')
