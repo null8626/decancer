@@ -120,12 +120,12 @@ fn main() {
     <title>Decancerer!!! (tm)</title>
     <style>
       textarea {
-        font-size: 30px
+        font-size: 30px;
       }
       
       #cure {
-        font-size: 20px
-        padding: 5px 30px
+        font-size: 20px;
+        padding: 5px 30px;
       }
     </style>
   </head>
