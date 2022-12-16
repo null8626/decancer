@@ -21,7 +21,7 @@ Con:
 In your `Cargo.toml`:
 
 ```toml
-decancer = "1.4.2"
+decancer = "1.4.1"
 ```
 
 ### Node.js
@@ -35,7 +35,7 @@ $ npm install decancer
 In your code:
 
 ```js
-const decancer = require('decancer')
+const decancer = require('decancer');
 ```
 
 ### Deno
@@ -43,21 +43,19 @@ const decancer = require('decancer')
 In your code:
 
 ```ts
-import init from "https://deno.land/x/decancer@v1.4.2/mod.ts"
+import init from "https://deno.land/x/decancer@v1.4.1/mod.ts";
 
-const decancer = await init()
+const decancer = await init();
 ```
 
 ### Browser
 
 In your code:
 
-```html
-<script type="module">
-  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js"
+```js
+import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
 
-  const decancer = await init()
-</script>
+const decancer = await init();
 ```
 
 ## examples
@@ -67,9 +65,9 @@ In your code:
 ### JavaScript
 
 ```js
-const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
+const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
 
-console.log(noCancer) // 'very funny text'
+console.log(noCancer); // 'very funny text'
 ```
 
 ### Rust
@@ -91,9 +89,9 @@ If you want to check if the decancered string contains a certain keyword, i reco
 ### JavaScript
 
 ```js
-const noCancer = decancer(someString)
+const noCancer = decancer(someString);
 
-if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!')
+if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
 ```
 
 ### Rust
@@ -122,12 +120,12 @@ fn main() {
     <title>Decancerer!!! (tm)</title>
     <style>
       textarea {
-        font-size: 30px
+        font-size: 30px;
       }
       
       #cure {
-        font-size: 20px
-        padding: 5px 30px
+        font-size: 20px;
+        padding: 5px 30px;
       }
     </style>
   </head>
@@ -137,18 +135,18 @@ fn main() {
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js"
+      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
       
-      const decancer = await init()
+      const decancer = await init();
       
       window.cure = function () {
-        const textarea = document.querySelector("textarea")
+        const textarea = document.querySelector("textarea");
         
         if (!textarea.value.length) {
-          return alert("There's no text!!!")
+          return alert("There's no text!!!");
         }
         
-        textarea.value = decancer(textarea.value)
+        textarea.value = decancer(textarea.value);
       }
     </script>
   </body>
@@ -157,17 +155,17 @@ fn main() {
 
 ## contributions
 
-All contributions are welcome. Feel free to fork the project at GitHub! &lt3
+All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
 
 If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and modify it directly with Node.js. Either through a script or directly from the REPL.
 
 ```js
-const reader = await import('./contrib/index.mjs')
-const data = reader.default('./core/bin/confusables.bin')
+const reader = await import('./contrib/index.mjs');
+const data = reader.default('./core/bin/confusables.bin');
 
 // do something with data...
 
-data.save('./core/bin/confusables.bin')
+data.save('./core/bin/confusables.bin');
 ```
 
 ## special thanks

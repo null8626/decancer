@@ -8,4 +8,5 @@ node/src/lib.d.ts
 node/index.js
 node/index.d.ts
 wasm/pkg/
-mod.js
+**/*output*
+**/*Refactored.json

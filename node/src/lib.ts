@@ -1,55 +1,52 @@
-import assert from 'node:assert'
-import { existsSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { createRequire } from 'node:module'
-import type Decancer from './typings'
+const assert = require('node:assert');
+const { existsSync, readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
-const __dirname: string = dirname(fileURLToPath(import.meta.url))
+import type Decancer from './typings';
 
-type Option<T> = T | undefined | null
+type Option<T> = T | undefined | null;
 type Arch =
   | string
   | {
-      name: string
-      musl: boolean
-    }
+      name: string;
+      musl: boolean;
+    };
 
 function isMusl(): boolean {
-  // For Node 10
+  // For Node 10;
   if (
     process.report == undefined ||
     typeof process.report.getReport !== 'function'
   ) {
     try {
-      return readFileSync('/usr/bin/ldd', 'utf8').includes('musl')
+      return readFileSync('/usr/bin/ldd', 'utf8').includes('musl');
     } catch {
-      return true
+      return true;
     }
   } else {
     // @ts-ignore
-    const { glibcVersionRuntime } = process.report.getReport().header
+    const { glibcVersionRuntime } = process.report.getReport().header;
 
-    return !glibcVersionRuntime
+    return !glibcVersionRuntime;
   }
 }
 
-// @ts-ignore: this will NOT be null :)
-let decancer: Decancer = null
-
 function loadBinding(name: string) {
-  const path: string = join(__dirname, '..', `decancer.${name}.node`)
-  const require: any = createRequire(import.meta.url)
+  const path: string = join(__dirname, '..', `decancer.${name}.node`);
 
-  if (existsSync(path)) {
-    decancer = require(path)
-  } else {
-    decancer = require(`@vierofernando/decancer-${name}`)
-  }
+  // @ts-ignore: this will NOT be null :)
+  let exported: Decancer = null;
+
+  if (existsSync(path))
+    exported = require(`../decancer.${name}.node`);
+  else
+    exported = require(`@vierofernando/decancer-${name}`);
   
   // @ts-ignore
-  decancer = Object.assign(decancer.decancer, { contains: decancer.contains })
+  Object.assign(exported.decancer, { contains: exported.contains });
+
+  // @ts-ignore: pretend like it is (because it is)
+  module.exports = exported.decancer;
 }
 
 const platforms: Record<string, Record<string, Arch>> = {
@@ -65,26 +62,22 @@ const platforms: Record<string, Record<string, Arch>> = {
     arm64: { name: 'linux-arm64', musl: true },
     arm: 'linux-arm-gnueabihf'
   }
-}
+};
 
 try {
-  const data: Option<Arch> = platforms[process.platform][process.arch]
-  assert(data != null)
+  const data: Option<Arch> = platforms[process.platform][process.arch];
+  assert(data != null);
 
-  if (typeof data === 'string') {
-    loadBinding(data)
-  } else {
-    if (data.musl && isMusl()) {
-      loadBinding(`${data.name}-musl`)
-    } else {
-      loadBinding(`${data.name}-gnu`)
-    }
+  if (typeof data === 'string') loadBinding(data);
+  else {
+    if (data.musl && isMusl())
+      loadBinding(`${data.name}-musl`);
+    else
+      loadBinding(`${data.name}-gnu`);
   }
 } catch (err) {
   console.error(
     `Error: cannot load module. OS: ${process.platform} Arch: ${process.arch} may not be supported.`
-  )
-  throw err
+  );
+  throw err;
 }
-
-export default decancer
