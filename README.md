@@ -4,11 +4,10 @@ A portable module that removes common confusables from strings without the use o
 
 Pros:
 
-- Extremely fast, no use of regex whatsoever!
-- No dependencies.
+- BLAZINGLY FAST™, no use of regex whatsoever!
+- No use of any external dependencies.
 - Simple to use, just one single function.
-- Supports all the way to UTF-32 code-points. Like emojis, zalgos, etc.
-- While this project may not be perfect, it should cover the vast majority of confusables.
+- Supports more than **2000 unicode codepoints**. This should cover the vast majority of confusables. Including emojis, zalgos, etc.
 
 Con:
 
@@ -21,7 +20,7 @@ Con:
 In your `Cargo.toml`:
 
 ```toml
-decancer = "1.4.2"
+decancer = "1.5.0"
 ```
 
 ### Node.js
@@ -76,13 +75,14 @@ console.log(noCancer) // 'very funny text'
 
 ```rust
 extern crate decancer;
-use decancer::Decancer;
 
 fn main() {
-  let instance = Decancer::new();
-  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  let output = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 
-  assert_eq!(output, String::from("very funny text"));
+  assert_eq!(output, "very funny text");
+
+  // decancer::cure returns a CuredString struct. To coerce it to a String, use .into_str().
+  let _output_str = output.into_str();
 }
 ```
 
@@ -100,14 +100,12 @@ if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!')
 
 ```rust
 extern crate decancer;
-use decancer::Decancer;
 
 fn main() {
-  let instance = Decancer::new();
-  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  let output = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   
-  if instance.contains(&output, "funny") {
-    println!("i found the funny");
+  if output.contains("funny") { // TODO!
+    println!("i found the funny"); 
   }
 }
 ```
@@ -153,21 +151,6 @@ fn main() {
     </script>
   </body>
 </html>
-```
-
-## contributions
-
-All contributions are welcome. Feel free to fork the project at GitHub! &lt3
-
-If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and modify it directly with Node.js. Either through a script or directly from the REPL.
-
-```js
-const reader = await import('./contrib/index.mjs')
-const data = reader.default('./core/bin/confusables.bin')
-
-// do something with data...
-
-data.save('./core/bin/confusables.bin')
 ```
 
 ## special thanks

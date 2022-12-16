@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "main": "src/lib.js",
   "typings": "src/typings.d.ts",
   "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes.",
@@ -22,6 +22,7 @@
     "type": "git",
     "url": "git+https://github.com/null8626/decancer"
   },
+  "types": "src/typings.d.ts",
   "napi": {
     "name": "decancer",
     "package": {

@@ -1,6 +1,6 @@
 [package]
 name = "decancer_wasm"
-version = "1.4.2"
+version = "1.5.0"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
 description = "A Rust module that removes common confusables from strings without the use of Regexes."
