@@ -1,5 +1,5 @@
-// use SUPER CURE!!! PEWPEWPEPWEPWEPWPEPWEPWE
-use super::cure;
+use super::{CuredString, cure};
+use std::mem::transmute;
 
 #[test]
 fn example() {
@@ -13,11 +13,17 @@ fn functions_test() {
   assert!(cured.starts_with("very"));
   assert!(cured.ends_with("text"));
   assert!(cured.contains("funny"));
+
+  let cured2 = unsafe { transmute::<_, CuredString>(String::from("vwv (vnt 111")) };
+
+  assert!(cured2.starts_with("uwu"));
+  assert!(cured2.ends_with("lil"));
+  assert!(cured2.contains("cunt"));
 }
 
 #[test]
 fn zalgo_test() {
-  assert_eq!(cure("|z̸a̸l̸g̷o̶ ̷s̵u̴c̶k̴s̸"), "lzalgo sucks");
+  assert_eq!(cure("z̸a̸l̸g̷o̶ ̷s̵u̴c̶k̴s̸"), "zalgo sucks");
 }
 
 #[test]

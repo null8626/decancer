@@ -36,6 +36,11 @@ impl CuredString {
 
   pub fn starts_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
+
+    if o.len() > self.len() {
+      return false;
+    }
+
     let mut other_iter = o.chars();
 
     for self_char in self.chars() {
@@ -55,6 +60,11 @@ impl CuredString {
 
   pub fn ends_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
+
+    if o.len() > self.len() {
+      return false;
+    }
+
     let mut other_iter = o.chars().rev();
 
     for self_char in self.chars().rev() {
@@ -67,6 +77,30 @@ impl CuredString {
 
         None => return true,
       };
+    }
+
+    false
+  }
+
+  pub fn contains<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
+    let o = other.as_ref();
+    if o.len() > self.len() {
+      return false;
+    }
+
+    let other_chars = o.chars().collect::<Vec<_>>();
+    let mut other_index = 0usize;
+
+    for self_char in self.chars() {
+      if similar::is(other_chars[other_index] as _, self_char as _) {
+        other_index += 1;
+
+        if other_index == other_chars.len() {
+          return true;
+        }
+      } else {
+        other_index = 0;
+      }
     }
 
     false
