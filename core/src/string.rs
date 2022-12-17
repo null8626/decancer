@@ -30,63 +30,80 @@ impl CuredString {
     self.0.push(unsafe { transmute(code) })
   }
 
-  #[inline(always)]
-  pub fn into_str(self) -> String {
-    self.0
+  pub const fn into_str(self) -> String {
+    unsafe { transmute(self) }
   }
 
   pub fn starts_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
 
-    if self.len() < o.len() || self.is_empty() {
-      false
-    } else {
-      unsafe {
-        let mut s_ptr = self.as_ptr();
-        let mut o_ptr = o.as_ptr();
-        let end = o_ptr.offset(o.len() as _);
+    if o.len() > self.len() {
+      return false;
+    }
 
-        while o_ptr < end {
-          let offset = similar::is(s_ptr, o_ptr);
+    let mut other_iter = o.chars();
 
-          if offset == 0 {
+    for self_char in self.chars() {
+      match other_iter.next() {
+        Some(other_char) => {
+          if !similar::is(self_char as _, other_char as _) {
             return false;
-          } else {
-            s_ptr = s_ptr.offset(offset as _);
-            o_ptr = o_ptr.offset(offset as _);
           }
         }
 
-        true
-      }
+        None => return true,
+      };
     }
+
+    false
   }
 
   pub fn ends_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
 
-    if self.len() < o.len() || self.is_empty() {
-      false
-    } else {
-      unsafe {
-        let mut s_ptr = self.as_ptr().offset((self.len() - 1) as _);
-        let mut o_ptr = o.as_ptr().offset((o.len() - 1) as _);
+    if o.len() > self.len() {
+      return false;
+    }
 
-        while o_ptr >= o.as_ptr() {
-          compute_reversed_utf8(&mut s_ptr);
-          compute_reversed_utf8(&mut o_ptr);
+    let mut other_iter = o.chars().rev();
 
-          if similar::is(s_ptr, o_ptr) == 0 {
+    for self_char in self.chars().rev() {
+      match other_iter.next() {
+        Some(other_char) => {
+          if !similar::is(self_char as _, other_char as _) {
             return false;
-          } else {
-            s_ptr = s_ptr.offset(-1);
-            o_ptr = o_ptr.offset(-1);
           }
         }
 
-        true
+        None => return true,
+      };
+    }
+
+    false
+  }
+
+  pub fn contains<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
+    let o = other.as_ref();
+    if o.len() > self.len() {
+      return false;
+    }
+
+    let other_chars = o.chars().collect::<Vec<_>>();
+    let mut other_index = 0usize;
+
+    for self_char in self.chars() {
+      if similar::is(other_chars[other_index] as _, self_char as _) {
+        other_index += 1;
+
+        if other_index == other_chars.len() {
+          return true;
+        }
+      } else {
+        other_index = 0;
       }
     }
+
+    false
   }
 }
 
@@ -114,24 +131,21 @@ where
     if self.len() != o.len() {
       false
     } else {
-      unsafe {
-        let mut s_ptr = self.as_ptr();
-        let mut o_ptr = o.as_ptr();
-        let end = s_ptr.offset(self.len() as _);
+      let mut other_iter = o.chars();
 
-        while s_ptr < end {
-          let offset = similar::is(s_ptr, o_ptr);
-
-          if offset == 0 {
-            return false;
-          } else {
-            s_ptr = s_ptr.offset(offset as _);
-            o_ptr = o_ptr.offset(offset as _);
+      for self_char in self.chars() {
+        match other_iter.next() {
+          Some(other_char) => {
+            if !similar::is(self_char as _, other_char as _) {
+              return false;
+            }
           }
-        }
 
-        true
+          None => return false,
+        };
       }
+
+      true
     }
   }
 }
