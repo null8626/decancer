@@ -1,4 +1,4 @@
-use super::{CuredString, cure};
+use super::{cure, CuredString};
 use std::mem::transmute;
 
 #[test]
