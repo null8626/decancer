@@ -8,7 +8,6 @@ on:
     paths:
       - '.github/workflows/commit.yml'
       - '**/src/**/*.rs'
-      - '**/README.md'
       - 'mod.ts'
 jobs:
   test:
@@ -35,7 +34,13 @@ jobs:
         run: |
           cargo install wasm-pack
           wasm-pack build --no-typescript --release -t web
-          mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
+          mv ./pkg/decancer_wasm_bg.wasm ../decancer.wasm
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: decancer-wasm-binary
+          path: |
+            decancer.wasm
   prettier:
     name: Prettier files and commit
     runs-on: ubuntu-latest
@@ -56,6 +61,13 @@ jobs:
       - name: Prettier wasm crate
         working-directory: wasm
         run: cargo fmt
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: decancer-wasm-binary
+          path: artifacts
+      - name: Move artifact
+        run: mv ./artifacts/decancer.wasm ./wasm/bin
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:

@@ -9,8 +9,8 @@ if (typeof process.argv[2] !== 'string') {
 
 const { confusables, similar } = JSON.parse(readFileSync(process.argv[2]))
 
-assert(Array.isArray(confusables), 'confusables must be an array')
-assert(Array.isArray(similar) && similar.every(x => Array.isArray(x) && x.every(y => y.length === 1 && y.codePointAt() <= 0xff)), 'similar must be an array of an array of ASCII strings')
+assert(Array.isArray(confusables) && confusables.length > 0, 'confusables must be an array')
+assert(Array.isArray(similar) && similar.length > 0 && similar.length <= 0x7f && similar.every(x => Array.isArray(x) && x.length > 0 && x.length <= 0xff && x.every(y => y.length === 1 && y.codePointAt() <= 0xff)), 'similar must be an array of an array of ASCII strings')
 
 const isCaseSensitive = x => String.fromCodePoint(x).toLowerCase() !== String.fromCodePoint(x)
 
@@ -103,7 +103,7 @@ console.log(`- discovered ${syncedSequences.length} (${Math.round((syncedSequenc
 
 const grandTotal = [...syncedSequences, ...notSyncedSequences, ...rest].sort((a, b) => a.codepoint - b.codepoint)
 
-writeFileSync(process.argv[2].replace(/\.json$/i, 'Refactored.json'), JSON.stringify({ confusables: grandTotal, similar }, null, 2))
+writeFileSync(process.argv[2].replace(/\.json$/i, 'Optimized.json'), JSON.stringify({ confusables: grandTotal, similar }, null, 2))
 
 console.log(`- condensed down from ${expanded.length} to ${grandTotal.length} (${Math.round((grandTotal.length / expanded.length) * 100)}%). (wrote refactored JSON output to ${process.argv[2].replace(/\.json$/i, 'Refactored.json')})`)
 
