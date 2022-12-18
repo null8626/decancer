@@ -53,5 +53,5 @@ interface JsonContents {
 
 	- The `string[][]` two-dimensional array **must NOT be empty** and it's length **must NOT exceed `127`.**
 	- The `string[]` arrays **must NOT be empty** and their lengths **must NOT exceed `255`.**
-	- Each `string` in the `string[][]` array **must ONLY be only one character in length.**
-	- Each `string` in the `string[][]` array **must ONLY be in the UTF-1 character range. This means only `\x00` to `\xFF`.**
+	- Each `string` **must ONLY be only one character in length.**
+	- Each `string` **must ONLY be in the UTF-1 range. This means only characters `\x00` to `\xFF` are allowed.**
