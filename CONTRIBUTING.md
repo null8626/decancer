@@ -7,7 +7,7 @@ If you want to see/modify on the confusables supported and/or their respective t
 
 - **To convert the binary into a readable and modifiable JSON, do the following:**
 
-```shell
+```console
 node scripts/decode.mjs core/bin/confusables.bin
 ```
 
@@ -15,7 +15,7 @@ And a file called `output.json` should be generated in the same directory.
 
 - **And to validate, optimize, and convert the JSON back into a binary, do the following:**
 
-```shell
+```console
 node scripts/encode.mjs path/to/file.json
 ```
 
