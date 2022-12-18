@@ -42,6 +42,7 @@ interface JsonContents {
 
 - **Information regarding the `Confusable` structure:**
 
+	- The `JsonContents#confusables` array **must NOT be empty.** *(duh)*
 	- `Confusable#codepoint` is the Unicode codepoint of the desired confusable. It must be in the unicode range (`0` to `0x10FFFF`)
 	- `Confusable#translation` is the translation string, it must NOT be empty.
 	- `Confusable#caseSensitive` is a flag whether this `Confusable#codepoint` is case-sensitive or not. In other words, whether the `codepoint` changes when it is called with `.toLowerCase()`.
