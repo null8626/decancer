@@ -22,7 +22,6 @@
     "type": "git",
     "url": "git+https://github.com/null8626/decancer"
   },
-  "types": "src/typings.d.ts",
   "napi": {
     "name": "decancer",
     "package": {

@@ -7,17 +7,38 @@ extern crate napi_derive;
 extern crate decancer;
 extern crate napi;
 
-use napi::{JsString, Result};
-
-/*#[napi]
-fn contains(a: JsString, b: JsString) -> Result<bool> {
-  let a_utf16 = a.into_utf16()?;
-  let b_utf16 = b.into_utf16()?;
-
-  Ok(DECANCER.contains(a_utf16.as_slice(), b_utf16.as_slice()))
-}*/
+#[napi]
+pub struct CuredString(decancer::CuredString);
 
 #[napi]
-fn decancer(input: String) -> Result<String {
-  decancer::cure(&input).into_str()
+impl CuredString {
+  #[napi(js_name = "startsWith")]
+  pub fn starts_with(&self, other: String) -> bool {
+    self.0.starts_with(&other)
+  }
+
+  #[napi(js_name = "endsWith")]
+  pub fn ends_with(&self, other: String) -> bool {
+    self.0.ends_with(&other)
+  }
+
+  #[napi]
+  pub fn contains(&self, other: String) -> bool {
+    self.0.contains(&other)
+  }
+
+  #[napi]
+  pub fn equals(&self, other: String) -> bool {
+    self.0 == &other
+  }
+
+  #[napi(js_name = "toString")]
+  pub fn to_string(&self) -> String {
+    self.0.clone().into_str()
+  }
+}
+
+#[napi]
+fn decancer(input: String) -> CuredString {
+  CuredString(decancer::cure(&input))
 }

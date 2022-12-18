@@ -1,4 +1,5 @@
-import type Decancer from "./node/src/typings";
+import type { CuredString } from "./node/src/typings";
+export type { CuredString };
+
 import init from "./decancer.min.js";
-export { Decancer };
 export default init;
