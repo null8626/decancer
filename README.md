@@ -148,7 +148,7 @@ fn main() {
 ## contributing
 
 If you want to contribute, i appreciate that!!! ❤️❤️❤️<br>
-Feel free to [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
+Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
 
 ## special thanks
 

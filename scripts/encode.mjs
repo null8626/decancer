@@ -103,7 +103,7 @@ console.log(`- discovered ${syncedSequences.length} (${Math.round((syncedSequenc
 
 const grandTotal = [...syncedSequences, ...notSyncedSequences, ...rest].sort((a, b) => a.codepoint - b.codepoint)
 
-writeFileSync(process.argv[2].replace(/\.json$/i, 'Refactored.json'), JSON.stringify({ confusables: grandTotal, similar }, null, 2))
+writeFileSync(process.argv[2].replace(/\.json$/i, 'Optimized.json'), JSON.stringify({ confusables: grandTotal, similar }, null, 2))
 
 console.log(`- condensed down from ${expanded.length} to ${grandTotal.length} (${Math.round((grandTotal.length / expanded.length) * 100)}%). (wrote refactored JSON output to ${process.argv[2].replace(/\.json$/i, 'Refactored.json')})`)
 

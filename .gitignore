@@ -11,4 +11,4 @@ node/artifacts/
 wasm/pkg/
 artifacts/
 **/*output*
-**/*Refactored.json
+**/*Optimized.json
