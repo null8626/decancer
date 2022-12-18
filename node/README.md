@@ -1,14 +1,13 @@
 # decancer
 
-A portable module that removes common confusables from strings without the use of Regexes. Available for Rust, Node.js, Deno, and the Browser.
+A tiny package that removes common confusables from strings. Available for Rust, Node.js, Deno, and the Browser.
 
 Pros:
 
-- Extremely fast, no use of regex whatsoever!
-- No dependencies.
-- Simple to use, just one single function.
-- Supports all the way to UTF-32 code-points. Like emojis, zalgos, etc.
-- While this project may not be perfect, it should cover the vast majority of confusables.
+- BLAZINGLY FAST™ 🚀🚀🚀, no use of regex whatsoever!
+- No use of any external dependencies.
+- Very simple to use!
+- Supports more than **2500 unicode codepoints**. This should cover the vast majority of confusables, including emojis, zalgos, etc.
 
 Con:
 
@@ -21,7 +20,7 @@ Con:
 In your `Cargo.toml`:
 
 ```toml
-decancer = "1.4.1"
+decancer = "1.5.0"
 ```
 
 ### Node.js
@@ -35,7 +34,7 @@ $ npm install decancer
 In your code:
 
 ```js
-const decancer = require('decancer');
+const decancer = require('decancer')
 ```
 
 ### Deno
@@ -43,19 +42,21 @@ const decancer = require('decancer');
 In your code:
 
 ```ts
-import init from "https://deno.land/x/decancer@v1.4.1/mod.ts";
+import init from "https://deno.land/x/decancer@v1.5.0/mod.ts"
 
-const decancer = await init();
+const decancer = await init()
 ```
 
 ### Browser
 
 In your code:
 
-```js
-import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
+```html
+<script type="module">
+  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.0/decancer.min.js"
 
-const decancer = await init();
+  const decancer = await init()
+</script>
 ```
 
 ## examples
@@ -65,48 +66,39 @@ const decancer = await init();
 ### JavaScript
 
 ```js
-const noCancer = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣');
+const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
-console.log(noCancer); // 'very funny text'
-```
+// cured here is a CuredString object wrapping over the cured string
+// for comparison purposes, it's more recommended to use the methods provided by the CuredString class.
 
-### Rust
-
-```rust
-extern crate decancer;
-use decancer::Decancer;
-
-fn main() {
-  let instance = Decancer::new();
-  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-
-  assert_eq!(output, String::from("very funny text"));
+if (cured.contains('funny')) {
+  console.log('found the funny')
 }
-```
 
-If you want to check if the decancered string contains a certain keyword, i recommend using this instead since mistranslations can happen (e.g mistaking the number 0 with the letter O)
+if (cured.equals('very funny text') && cured.startsWith('very') && cured.endsWith('text')) {
+  console.log('it works!')
+}
 
-### JavaScript
-
-```js
-const noCancer = decancer(someString);
-
-if (decancer.contains(noCancer, 'no-no-word')) console.log('LANGUAGE!!!');
+console.log(cured.toString()); // 'very funny text'
 ```
 
 ### Rust
 
 ```rust
 extern crate decancer;
-use decancer::Decancer;
 
 fn main() {
-  let instance = Decancer::new();
-  let output = instance.cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+
+  // cured here is a decancer::CuredString struct wrapping over the cured string
+  // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
   
-  if instance.contains(&output, "funny") {
-    println!("i found the funny");
-  }
+  assert_eq!(output, "very funny text");
+  assert!(output.starts_with("very"));
+  assert!(output.contains("funny"));
+  assert!(output.ends_with("text"));
+
+  let _output_str = output.into_str(); // retrieve the String inside and consume the struct.
 }
 ```
 
@@ -135,38 +127,28 @@ fn main() {
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.1/decancer.min.js";
+      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.0/decancer.min.js"
       
-      const decancer = await init();
+      const decancer = await init()
       
       window.cure = function () {
-        const textarea = document.querySelector("textarea");
+        const textarea = document.querySelector("textarea")
         
         if (!textarea.value.length) {
-          return alert("There's no text!!!");
+          return alert("There's no text!!!")
         }
         
-        textarea.value = decancer(textarea.value);
+        textarea.value = decancer(textarea.value).toString()
       }
     </script>
   </body>
 </html>
 ```
 
-## contributions
+## contributing
 
-All contributions are welcome. Feel free to fork the project at GitHub! &lt;3
-
-If you want to add, remove, modify, or view the list of supported confusables, you can clone the [GitHub repository](https://github.com/null8626/decancer), and modify it directly with Node.js. Either through a script or directly from the REPL.
-
-```js
-const reader = await import('./contrib/index.mjs');
-const data = reader.default('./core/bin/confusables.bin');
-
-// do something with data...
-
-data.save('./core/bin/confusables.bin');
-```
+If you want to contribute, i appreciate that!!! ❤️❤️❤️<br>
+Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
 
 ## special thanks
 
