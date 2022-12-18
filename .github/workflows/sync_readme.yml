@@ -19,10 +19,6 @@ jobs:
           node-version: 18
       - name: Run Synchronize script
         run: |
-          ls -l
-          ls -l ..
-          ls -l scripts
-          pwd
           node ./scripts/synchronizeReadme.mjs
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
