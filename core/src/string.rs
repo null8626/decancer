@@ -1,6 +1,7 @@
 use super::{matcher::Translation, similar};
 use std::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 
+#[derive(Clone)]
 pub struct CuredString(String);
 
 fn compute_reversed_utf8(ptr: &mut *const u8) {
@@ -30,10 +31,44 @@ impl CuredString {
     self.0.push(unsafe { transmute(code) })
   }
 
+  /// Coerces this data to a [`String`].
+  /// [`transmuting`][std::mem::transmute] works too.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///  
+  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  /// assert_eq!(cured.into_str(), String::from("very funny text"));
+  /// ```
   pub const fn into_str(self) -> String {
     unsafe { transmute(self) }
   }
 
+  /// Checks if this string ***similarly*** starts with another string.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///  
+  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  /// assert!(cured.starts_with("very"));
+  /// ```
+  ///
+  /// And since it checks if the strings are similar, please note that this is valid too.
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///
+  /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+  /// assert!(cured.starts_with("uwu")); // it assumes that v is similar to u as well
+  /// ```
   pub fn starts_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
 
@@ -58,6 +93,27 @@ impl CuredString {
     false
   }
 
+  /// Checks if this string ***similarly*** ends with another string.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///  
+  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  /// assert!(cured.ends_with("text"));
+  /// ```
+  ///
+  /// And since it checks if the strings are similar, please note that this is valid too.
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///
+  /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+  /// assert!(cured.ends_with("lil")); // it assumes that 1 is similar to l and i as well
+  /// ```
   pub fn ends_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
 
@@ -82,8 +138,30 @@ impl CuredString {
     false
   }
 
+  /// Checks if this string ***similarly*** contains another string.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///  
+  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  /// assert!(cured.contains("funny"));
+  /// ```
+  ///
+  /// And since it checks if the strings are similar, please note that this is valid too.
+  ///
+  /// ```rust
+  /// extern crate decancer;
+  ///
+  /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+  /// assert!(cured.contains("cunt")); // it assumes that ( is similar to c and v is similar to u as well
+  /// ```
   pub fn contains<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
     let o = other.as_ref();
+
     if o.len() > self.len() {
       return false;
     }
@@ -121,6 +199,27 @@ impl AsRef<str> for CuredString {
   }
 }
 
+/// Checks if this string is ***similar*** to another string.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// extern crate decancer;
+///  
+/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// assert!(cured == "very funny text");
+/// ```
+///
+/// And since it checks if the strings are similar, please note that this is valid too.
+///
+/// ```rust
+/// extern crate decancer;
+///
+/// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+/// assert!(cured == "uwu cunt lil");
+/// ```
 impl<S> PartialEq<S> for CuredString
 where
   S: AsRef<str> + ?Sized,

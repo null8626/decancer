@@ -15,7 +15,7 @@ mod util; // for internal use
 mod tests;
 
 use std::{cmp::Ordering, mem::transmute};
-use string::CuredString;
+pub use string::CuredString;
 
 #[inline(always)]
 fn to_lowercase(code: u32) -> u32 {
@@ -32,6 +32,18 @@ const fn valid_codepoint(x: u32) -> bool {
     && x != 0x489
 }
 
+/// Cures a string.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// extern crate decancer;
+///  
+/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// assert_eq!(cured, "very funny text");
+/// ```
 pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
   let input_s = input.as_ref();
   let mut output = CuredString::with_capacity(input_s.len());
