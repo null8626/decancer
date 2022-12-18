@@ -16,9 +16,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Run ynchronize script
+      - name: Run Synchronize script
         run: |
-          node scripts/synchronizeReadme.mjs
+          ls
+          pwd
+          node ./scripts/synchronizeReadme.mjs
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
