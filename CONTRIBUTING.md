@@ -50,9 +50,7 @@ interface JsonContents {
 
 - **Information regarding the `JsonContents#similar` field:**
 
-> Every array here **must NOT be empty.**
-
-	- The `string[][]` array length **must NOT exceed `127`.**
-	- The `string[]` array length **must NOT exceed `255`.**
+	- The `string[][]` **must NOT be empty** and it's array length **must NOT exceed `127`.**
+	- The `string[]` **must NOT be empty** and it's array length **must NOT exceed `255`.**
 	- Each `string` in the `string[][]` array **must ONLY be only one character in length.**
 	- Each `string` in the `string[][]` array **must ONLY be in the UTF-1 character range. This means only `\x00` to `\xFF`.**
