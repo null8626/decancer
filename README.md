@@ -42,7 +42,7 @@ const decancer = require('decancer')
 In your code:
 
 ```ts
-import init from "https://deno.land/x/decancer@v1.4.2/mod.ts"
+import init from "https://deno.land/x/decancer@v1.5.0/mod.ts"
 
 const decancer = await init()
 ```
@@ -53,7 +53,7 @@ In your code:
 
 ```html
 <script type="module">
-  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js"
+  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.0/decancer.min.js"
 
   const decancer = await init()
 </script>
@@ -127,7 +127,7 @@ fn main() {
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.4.2/decancer.min.js"
+      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.0/decancer.min.js"
       
       const decancer = await init()
       
@@ -147,7 +147,7 @@ fn main() {
 
 ## contributing
 
-If you want to contribute, i appreciate that!!! ❤️❤️❤️
+If you want to contribute, i appreciate that!!! ❤️❤️❤️<br>
 Feel free to [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
 
 ## special thanks

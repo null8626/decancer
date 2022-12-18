@@ -7,6 +7,8 @@ node/src/lib.js
 node/src/lib.d.ts
 node/index.js
 node/index.d.ts
+node/artifacts/
 wasm/pkg/
+artifacts/
 **/*output*
 **/*Refactored.json
