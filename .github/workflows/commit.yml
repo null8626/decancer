@@ -19,12 +19,13 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - name: Run cargo test
+        working-directory: core
+        run: cargo test
       - name: Build wasm
         working-directory: wasm
         run: |
+          cargo install wasm-pack
           wasm-pack build --no-typescript --release -t web
           mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
       - name: Prettier core crate
