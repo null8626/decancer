@@ -1,0 +1,27 @@
+name: synchronize readme
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+    paths:
+      - 'README.md'
+      - 'node/README.md'
+jobs:
+  sync:
+    name: Synchronize
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Run ynchronize script
+        run: |
+          node scripts/synchronizeReadme.mjs
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'chore: synchronize readme'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
