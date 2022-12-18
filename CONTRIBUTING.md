@@ -40,6 +40,8 @@ interface JsonContents {
 }
 ```
 
+Every array here **must NOT be empty.**
+
 Information regarding the `Confusable` structure:
 
 - `Confusable#codepoint` is the Unicode codepoint of the desired confusable. It must be in the unicode range (`0` to `0x10FFFF`)
@@ -50,6 +52,7 @@ Information regarding the `Confusable` structure:
 
 Information regarding the `JsonContents#similar` field:
 
-- The `string[]` array length **must NOT exceed `127`.**
+- The `string[][]` array length **must NOT exceed `127`.**
+- The `string[]` array length **must NOT exceed `255`.**
 - Each `string` in the `string[][]` array **must ONLY be only one character in length.**
 - Each `string` in the `string[][]` array **must ONLY be in the UTF-1 character range. This means only `\x00` to `\xFF`.**
