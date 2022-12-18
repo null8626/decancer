@@ -37,7 +37,7 @@ jobs:
           wasm-pack build --no-typescript --release -t web
           mv ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
   prettier:
-    name: Build
+    name: Prettier files and commit
     runs-on: ubuntu-latest
     needs:
       - test
