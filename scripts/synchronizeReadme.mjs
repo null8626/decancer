@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process'
 import { copyFileSync } from 'node:fs'
-
+console.log(execSync('git --version').toString())
 let file = execSync('git diff --name-only HEAD..HEAD~1').toString().trim()
 console.log('THE THING')
 console.log(file)
