@@ -30,11 +30,11 @@ function isMusl(): boolean {
 }
 
 function loadBinding(name: string) {
-  const path: string = readdirSync(join(__dirname, '..')).find(x => x.endsWIth('.node'))
+  const path: string = readdirSync(join(__dirname, '..')).find((x: string) => x.endsWith('.node'))
   let exported = null
 
   if (path)
-    exported = require(path)
+    exported = require(join(__dirname, '..', path))
   else
     exported = require(`@vierofernando/decancer-${name}`)
 
