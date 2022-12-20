@@ -201,6 +201,16 @@ jobs:
         uses: geekyeggo/delete-artifact@v2
         with:
           name: decancer-wasm-binary
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Test Deno
+        run: deno run --allow-net test_deno.ts
+      - name: Remove wasm artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: decancer-wasm-binary
       - name: Move README.md and install node dependencies
         working-directory: node
         run: |
