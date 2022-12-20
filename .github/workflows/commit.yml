@@ -128,6 +128,8 @@ jobs:
       - name: Build
         run: ${{ matrix.settings.build }}
         shell: bash
+      - name: Build typescript
+        run: npx tsc
       - name: Run tests
         run: node test.cjs
       - name: Upload artifact
@@ -138,7 +140,7 @@ jobs:
             node/${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   wasm:
-    name: Build and test wasm
+    name: Build wasm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
