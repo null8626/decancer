@@ -7,22 +7,18 @@ on:
       - '**'
     paths:
       - 'README.md'
-      - 'node/README.md'
 jobs:
   sync:
     name: Synchronize
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Run Synchronize script
+      - name: Copy readme
         run: |
-          node ./scripts/synchronizeReadme.mjs
-      - name: Commit changes
+          cp ./README.md ./node/README.md
+      - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: synchronize readme'
+          message: 'chore: synchronize README'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
