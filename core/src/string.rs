@@ -17,11 +17,20 @@ impl CuredString {
   pub(crate) fn with_capacity(n: usize) -> Self {
     Self(String::with_capacity(n))
   }
+  
+  fn is_last_space(&self) -> bool {
+    let b = self.0.as_bytes();
+    return b[b.len() - 1] == 0x20;
+  }
 
-  #[inline(always)]
   pub(crate) fn push_translation(&mut self, t: Translation) {
     match t {
-      Translation::Character(c) => self.0.push(c),
+      Translation::Character(c) => 
+		if c == ' ' && (self.is_empty() || self.is_last_space()) {
+          return;
+		} else {
+		  self.0.push(c);
+		},
       Translation::String(s) => self.0.push_str(s),
     }
   }
@@ -29,6 +38,13 @@ impl CuredString {
   #[inline(always)]
   pub(crate) fn push_code(&mut self, code: u32) {
     self.0.push(unsafe { transmute(code) })
+  }
+
+  #[inline(always)]
+  pub(crate) fn finishing(&mut self) {
+	if self.is_last_space() {
+	  self.0.pop();
+	}
   }
 
   /// Coerces this data to a [`String`].
