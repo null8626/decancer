@@ -3,8 +3,6 @@
 If you want to contribute to the source code, feel free to do so! ❤️<br>
 Don't forget to state on what should be changed and their reason.
 
-> P.S: if you want to modify `node/README.md`, **there's no need for that! Just modify the `README.md` in the root directory** and a workflow should sync it automatically.
-
 If you want to see/modify on the confusables supported and/or their respective translation(s), feel free to do so! Here are the ways on how to do them;
 
 - **To convert the binary into a readable and modifiable JSON, do the following:**
