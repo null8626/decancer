@@ -63,7 +63,7 @@ jobs:
               node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-apple-darwin
               strip -x *.node
           - host: ubuntu-latest
-            architecture: x64
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             target: aarch64-unknown-linux-gnu
             setup: |
               sudo apt-get update
@@ -72,7 +72,6 @@ jobs:
               node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-unknown-linux-gnu
               aarch64-linux-gnu-strip *.node
           - host: ubuntu-latest
-            architecture: x64
             target: armv7-unknown-linux-gnueabihf
             setup: |
               sudo apt-get update
@@ -128,6 +127,8 @@ jobs:
       - name: Build
         run: ${{ matrix.settings.build }}
         shell: bash
+      - name: Build typescript
+        run: npx tsc
       - name: Run tests
         run: node test.cjs
       - name: Upload artifact
@@ -138,7 +139,7 @@ jobs:
             node/${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   wasm:
-    name: Build and test wasm
+    name: Build wasm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -197,6 +198,16 @@ jobs:
           message: 'chore: update files on commit'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove wasm artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: decancer-wasm-binary
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Test Deno
+        run: deno run --allow-net test_deno.ts
       - name: Remove wasm artifact
         uses: geekyeggo/delete-artifact@v2
         with:

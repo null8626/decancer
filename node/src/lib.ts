@@ -1,8 +1,6 @@
-const assert = require('node:assert')
 const { existsSync, readFileSync } = require('node:fs')
+const assert = require('node:assert')
 const { join } = require('node:path')
-
-import type Decancer from './typings'
 
 type Option<T> = T | undefined | null
 type Arch =
@@ -33,21 +31,17 @@ function isMusl(): boolean {
 
 function loadBinding(name: string) {
   const path: string = join(__dirname, '..', `decancer.${name}.node`)
-
-  // @ts-ignore: this will NOT be null :)
-  let exported: Decancer = null
+  let exported = null
 
   if (existsSync(path))
-    exported = require(`../decancer.${name}.node`)
+    exported = require(path)
   else
     exported = require(`@vierofernando/decancer-${name}`)
 
-  // @ts-ignore: pretend like it is (because it is)
   module.exports = exported.decancer
 }
 
 const platforms: Record<string, Record<string, Arch>> = {
-  android: { arm64: 'android-arm64' },
   win32: {
     x64: 'win32-x64-msvc',
     ia32: 'win32-ia32-msvc',

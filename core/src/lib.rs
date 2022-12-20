@@ -84,5 +84,6 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
     }
   });
 
+  output.finishing();
   output
 }
