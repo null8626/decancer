@@ -63,7 +63,7 @@ jobs:
               node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-apple-darwin
               strip -x *.node
           - host: ubuntu-latest
-            architecture: x64
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             target: aarch64-unknown-linux-gnu
             setup: |
               sudo apt-get update
@@ -72,7 +72,6 @@ jobs:
               node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-unknown-linux-gnu
               aarch64-linux-gnu-strip *.node
           - host: ubuntu-latest
-            architecture: x64
             target: armv7-unknown-linux-gnueabihf
             setup: |
               sudo apt-get update
