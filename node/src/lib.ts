@@ -1,5 +1,5 @@
+const { existsSync, readFileSync } = require('node:fs')
 const assert = require('node:assert')
-const { readdirSync, readFileSync } = require('node:fs')
 const { join } = require('node:path')
 
 type Option<T> = T | undefined | null
@@ -30,11 +30,11 @@ function isMusl(): boolean {
 }
 
 function loadBinding(name: string) {
-  const path: string = readdirSync(join(__dirname, '..')).find((x: string) => x.endsWith('.node'))
+  const path: string = join(__dirname, '..', `decancer.${name}.node`)
   let exported = null
 
-  if (path)
-    exported = require(join(__dirname, '..', path))
+  if (existsSync(path))
+    exported = require(path)
   else
     exported = require(`@vierofernando/decancer-${name}`)
 
@@ -42,7 +42,6 @@ function loadBinding(name: string) {
 }
 
 const platforms: Record<string, Record<string, Arch>> = {
-  android: { arm64: 'android-arm64' },
   win32: {
     x64: 'win32-x64-msvc',
     ia32: 'win32-ia32-msvc',
