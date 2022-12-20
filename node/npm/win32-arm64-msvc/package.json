@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-win32-arm64-msvc",
-  "version": "1.3.1",
+  "version": "1.5.0",
   "os": [
     "win32"
   ],
