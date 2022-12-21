@@ -71,7 +71,6 @@ jobs:
               yarn build --target aarch64-unknown-linux-gnu &&
               aarch64-unknown-linux-gnu-strip *.node
           - host: ubuntu-latest
-            architecture: x64
             target: armv7-unknown-linux-gnueabihf
             setup: |
               sudo apt-get update
@@ -145,6 +144,10 @@ jobs:
         with:
           path: node/.yarn/cache
           key: npm-cache-build-${{ matrix.settings.target }}-node@18
+      - uses: goto-bus-stop/setup-zig@v2
+        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
+        with:
+          version: 0.10.0
       - name: Setup toolchain
         run: ${{ matrix.settings.setup }}
         if: ${{ matrix.settings.setup }}
