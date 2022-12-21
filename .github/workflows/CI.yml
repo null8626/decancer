@@ -203,26 +203,13 @@ jobs:
           usesh: true
           mem: 3000
           prepare: |
-            echo "hello freebsd"
             pkg install -y curl node16 python2
             curl -qL https://www.npmjs.com/install.sh | sh
             npm install -g yarn
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --profile minimal --default-toolchain stable
-            export PATH="/usr/local/cargo/bin:$PATH"
-            echo "~~~~ rustc --version ~~~~"
-            rustc --version
-            echo "~~~~ node -v ~~~~"
-            node -v
-            echo "~~~~ yarn --version ~~~~"
-            yarn --version
           run: |
             export PATH="/usr/local/cargo/bin:$PATH"
-            pwd
-            ls -lah
-            whoami
-            env
-            freebsd-version
             cd node
             yarn install --mode=skip-build
             yarn build
@@ -267,10 +254,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-pc-windows-msvc
-          path: .
+          path: node
       - name: Test bindings
         run: |
-          ls
+          ls && ls ..
           node test.cjs
   test-linux-x64-gnu-node-binding:
     name: Test node bindings for Linux-x64-gnu
