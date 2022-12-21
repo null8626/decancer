@@ -1,23 +1,20 @@
 {
-  "name": "@vierofernando/decancer-linux-x64-musl",
+  "name": "@vierofernando/decancer-android-arm64",
   "version": "1.5.0",
   "os": [
-    "linux"
+    "android"
   ],
   "cpu": [
-    "x64"
+    "arm64"
   ],
-  "main": "decancer.linux-x64-musl.node",
+  "main": "decancer.android-arm64.node",
   "files": [
-    "decancer.linux-x64-musl.node"
+    "decancer.android-arm64.node"
   ],
   "license": "MIT",
   "engines": {
     "node": ">= 10"
   },
-  "libc": [
-    "musl"
-  ],
   "author": "null8626",
   "homepage": "https://github.com/null8626/decancer",
   "description": "A tiny package that removes common confusables from strings. (Binary port for darwin-arm64)",

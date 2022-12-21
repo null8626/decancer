@@ -15,9 +15,12 @@
   "engines": {
     "node": ">= 10"
   },
+  "libc": [
+    "glibc"
+  ],
   "author": "null8626",
   "homepage": "https://github.com/null8626/decancer",
-  "description": "A Node.js module that removes common confusables from strings written in pure Rust without the use of Regexes. (Binary port for linux-x64-gnu)",
+  "description": "A tiny package that removes common confusables from strings. (Binary port for darwin-arm64)",
   "bugs": {
     "url": "https://github.com/null8626/decancer/issues"
   },

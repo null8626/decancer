@@ -52,12 +52,19 @@ const platforms: Record<string, Record<string, Arch>> = {
     x64: { name: 'linux-x64', musl: true },
     arm64: { name: 'linux-arm64', musl: true },
     arm: 'linux-arm-gnueabihf'
+  },
+  android: {
+    arm64: 'android-arm64',
+    arm: 'android-arm-eabi'
+  },
+  freebsd: {
+    x64: 'freebsd-x64'
   }
 }
 
 try {
   const data: Option<Arch> = platforms[process.platform][process.arch]
-  assert(data != null)
+  assert(data != null, `This platform (${process.platform} on a ${process.arch}) is not supported.`)
 
   if (typeof data === 'string') loadBinding(data)
   else {
