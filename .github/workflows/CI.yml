@@ -256,9 +256,7 @@ jobs:
           name: bindings-x86_64-pc-windows-msvc
           path: node
       - name: Test bindings
-        run: |
-          ls && ls ..
-          node test.cjs
+        run: node test.cjs
   test-linux-x64-gnu-node-binding:
     name: Test node bindings for Linux-x64-gnu
     needs:
@@ -327,7 +325,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        working-directory: node
       - uses: actions/checkout@v3
       - name: Download artifacts
         uses: actions/download-artifact@v3
@@ -361,7 +358,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        working-directory: node
       - uses: actions/checkout@v3
       - name: Download artifacts
         uses: actions/download-artifact@v3
@@ -396,7 +392,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        working-directory: node
       - uses: actions/checkout@v3
       - name: Download artifacts
         uses: actions/download-artifact@v3
