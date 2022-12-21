@@ -1,4 +1,4 @@
-name: on commit workflow
+name: le CI
 env:
   DEBUG: napi:*
   APP_NAME: decancer
@@ -223,7 +223,7 @@ jobs:
           path: ${{ env.APP_NAME }}.*.node
           if-no-files-found: error
   test-macOS-windows-node-binding:
-    name: Test node bindings on ${{ matrix.settings.target }}
+    name: Test node bindings for MacOS and Windows
     needs:
       - build-node
     defaults:
@@ -255,7 +255,7 @@ jobs:
       - name: Test bindings
         run: node test.cjs
   test-linux-x64-gnu-node-binding:
-    name: Test node bindings on Linux-x64-gnu
+    name: Test node bindings for Linux-x64-gnu
     needs:
       - build-node
     defaults:
@@ -287,7 +287,7 @@ jobs:
       - name: Test bindings
         run: docker run --rm -v $(pwd):/build -w /build node:18-slim node test.cjs
   test-linux-x64-musl-node-binding:
-    name: Test node bindings on x86_64-unknown-linux-musl
+    name: Test node bindings for x86_64-unknown-linux-musl
     needs:
       - build-node
     defaults:
@@ -312,7 +312,7 @@ jobs:
           yarn config set supportedArchitectures.libc "musl"
           yarn install
       - name: Build TypeScript
-      - run: npx tsc
+        run: npx tsc
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
@@ -321,7 +321,7 @@ jobs:
       - name: Test bindings
         run: docker run --rm -v $(pwd):/build -w /build node:18-alpine node test.cjs
   test-linux-aarch64-gnu-node-binding:
-    name: Test node bindings on aarch64-unknown-linux-gnu
+    name: Test node bindings for aarch64-unknown-linux-gnu
     needs:
       - build-node
     defaults:
@@ -357,7 +357,7 @@ jobs:
             set -e
             node test.cjs
   test-linux-aarch64-musl-node-binding:
-    name: Test node bindings on aarch64-unknown-linux-musl
+    name: Test node bindings for aarch64-unknown-linux-musl
     needs:
       - build-node
     defaults:
@@ -394,7 +394,7 @@ jobs:
             apk add nodejs npm yarn
             node test.cjs
   test-linux-arm-gnueabihf-node-binding:
-    name: Test node bindings on armv7-unknown-linux-gnueabihf
+    name: Test node bindings for armv7-unknown-linux-gnueabihf
     needs:
       - build-node
     defaults:
