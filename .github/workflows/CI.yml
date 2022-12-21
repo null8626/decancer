@@ -127,23 +127,6 @@ jobs:
           override: true
           toolchain: stable
           target: ${{ matrix.settings.target }}
-      - name: Cache cargo
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            node/.cargo-cache/registry/index/
-            node/.cargo-cache/registry/cache/
-            node/.cargo-cache/git/db/
-            node/target/
-          key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: node/.yarn/cache
-          key: npm-cache-build-${{ matrix.settings.target }}-node@18
       - uses: goto-bus-stop/setup-zig@v2
         if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
         with:
@@ -172,7 +155,7 @@ jobs:
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/node/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/node/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/node/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/node'
           run: ${{ matrix.settings.build }}
       - name: Build
         working-directory: node
@@ -245,11 +228,6 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: npm-cache-test-x86_64-pc-windows-msvc-18-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies and Build TypeScript
         run: |
           yarn install
@@ -274,11 +252,6 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: node/.yarn/cache
-          key: npm-cache-test-linux-x64-gnu-18
       - name: Install dependencies and Build TypeScript
         working-directory: node
         run: |
@@ -304,11 +277,6 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: node/.yarn/cache
-          key: npm-cache-test-x86_64-unknown-linux-musl-18
       - name: Install dependencies and Build TypeScript
         working-directory: node
         run: |
@@ -335,11 +303,6 @@ jobs:
         with:
           name: bindings-aarch64-unknown-linux-gnu
           path: node
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: node/.yarn/cache
-          key: npm-cache-test-linux-aarch64-gnu-18
       - name: Install dependencies and Build TypeScript
         working-directory: node
         run: |
@@ -368,11 +331,6 @@ jobs:
         with:
           name: bindings-aarch64-unknown-linux-musl
           path: node
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: node/.yarn/cache
-          key: npm-cache-test-linux-aarch64-musl-18
       - name: Install dependencies and Build TypeScript
         working-directory: node
         run: |
@@ -402,11 +360,6 @@ jobs:
         with:
           name: bindings-armv7-unknown-linux-gnueabihf
           path: node
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: node/.yarn/cache
-          key: npm-cache-test-linux-arm-gnueabihf-18
       - name: Install dependencies and Build TypeScript
         working-directory: node
         run: |
@@ -508,11 +461,6 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Cache NPM dependencies
-        uses: actions/cache@v3
-        with:
-          path: .yarn/cache
-          key: npm-cache-ubuntu-latest-publish
       - name: Install dependencies
         run: yarn install
       - name: Download all artifacts
