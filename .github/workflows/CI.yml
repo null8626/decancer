@@ -71,6 +71,7 @@ jobs:
               yarn build --target aarch64-unknown-linux-gnu &&
               aarch64-unknown-linux-gnu-strip *.node
           - host: ubuntu-latest
+            architecture: x64
             target: armv7-unknown-linux-gnueabihf
             setup: |
               sudo apt-get update
@@ -407,14 +408,16 @@ jobs:
         working-directory: node
         run: |
           yarn config set supportedArchitectures.cpu "arm"
-          yarn install
+          yarn install --mode=skip-build
           npx tsc
       - name: Setup and run tests
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
           options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
-          run: node test.cjs
+          run: |
+            set -e
+            node test.cjs
   wasm:
     name: Build wasm
     runs-on: ubuntu-latest
