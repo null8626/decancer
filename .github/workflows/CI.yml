@@ -192,7 +192,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build
         id: build
-        uses: vmactions/freebsd-vm@v0.1.6
+        uses: vmactions/freebsd-vm@v0.3.0
         env:
           DEBUG: napi:*
           RUSTUP_HOME: /usr/local/rustup
@@ -203,15 +203,28 @@ jobs:
           usesh: true
           mem: 3000
           prepare: |
-            pkg install -y curl node14 python2
+            echo "hello freebsd"
+            pkg install -y curl node16 python2
             curl -qL https://www.npmjs.com/install.sh | sh
             npm install -g yarn
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --profile minimal --default-toolchain stable
+            export PATH="/usr/local/cargo/bin:$PATH"
+            echo "~~~~ rustc --version ~~~~"
+            rustc --version
+            echo "~~~~ node -v ~~~~"
+            node -v
+            echo "~~~~ yarn --version ~~~~"
+            yarn --version
           run: |
             export PATH="/usr/local/cargo/bin:$PATH"
+            pwd
+            ls -lah
+            whoami
+            env
+            freebsd-version
             cd node
-            yarn install
+            yarn install --mode=skip-build
             yarn build
             strip -x *.node
             npx tsc
@@ -256,7 +269,9 @@ jobs:
           name: bindings-x86_64-pc-windows-msvc
           path: .
       - name: Test bindings
-        run: node test.cjs
+        run: |
+          ls
+          node test.cjs
   test-linux-x64-gnu-node-binding:
     name: Test node bindings for Linux-x64-gnu
     needs:
