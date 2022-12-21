@@ -175,8 +175,10 @@ jobs:
         run: ${{ matrix.settings.build }}
         if: ${{ !matrix.settings.docker }}
         shell: bash
+      - name: Move artifact
+        run: mv ./node/${{ env.APP_NAME }}.*.node .
+        shell: bash
       - name: Upload artifact
-        working-directory: node
         uses: actions/upload-artifact@v3
         with:
           name: bindings-${{ matrix.settings.target }}
@@ -216,8 +218,8 @@ jobs:
             node test.cjs
             rm -rf node_modules
             rm -rf target
+            mv ${{ env.APP_NAME }}.*.node ..
       - name: Upload artifact
-        working-directory: node
         uses: actions/upload-artifact@v3
         with:
           name: bindings-freebsd
