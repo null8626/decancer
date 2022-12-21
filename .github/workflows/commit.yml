@@ -23,81 +23,213 @@ jobs:
       - name: Run cargo test
         working-directory: core
         run: cargo test
-  node:
+  build-node:
+    if: '!contains(github.event.head_commit.message, ''skip ci'')'
     strategy:
       matrix:
         settings:
           - host: macos-latest
             target: x86_64-apple-darwin
-            architecture: x64
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform
+              yarn build
               strip -x *.node
           - host: windows-latest
-            build: node ./node_modules/@napi-rs/cli/scripts/index.js build --platform
+            build: yarn build
             target: x86_64-pc-windows-msvc
-            architecture: x64
           - host: windows-latest
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=i686-pc-windows-msvc
+              yarn build --target i686-pc-windows-msvc
+              npx tsc
+              node test.cjs
             target: i686-pc-windows-msvc
-            architecture: x86
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            architecture: x64
-            docker: |
-              docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian
-              docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-debian builder
-            build: |
-              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release && strip *.node"
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
+            build: |-
+              set -e &&
+              yarn build --target x86_64-unknown-linux-gnu &&
+              strip *.node
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            architecture: x64
-            docker: |
-              docker pull $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-alpine
-              docker tag $DOCKER_REGISTRY_URL/napi-rs/napi-rs/nodejs-rust:lts-alpine builder
-            build: docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release && strip *.node"
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: set -e && yarn build && strip *.node
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-apple-darwin
+              sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
+              export CC=$(xcrun -f clang);
+              export CXX=$(xcrun -f clang++);
+              SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
+              export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
+              yarn build --target aarch64-apple-darwin
               strip -x *.node
           - host: ubuntu-latest
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             target: aarch64-unknown-linux-gnu
-            setup: |
-              sudo apt-get update
-              sudo apt-get install g++-aarch64-linux-gnu gcc-aarch64-linux-gnu -y
-            build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-unknown-linux-gnu
-              aarch64-linux-gnu-strip *.node
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+            build: |-
+              set -e &&
+              yarn build --target aarch64-unknown-linux-gnu &&
+              aarch64-unknown-linux-gnu-strip *.node
           - host: ubuntu-latest
             target: armv7-unknown-linux-gnueabihf
             setup: |
               sudo apt-get update
               sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
             build: |
-              node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=armv7-unknown-linux-gnueabihf
+              yarn build --target=armv7-unknown-linux-gnueabihf
               arm-linux-gnueabihf-strip *.node
           - host: ubuntu-latest
-            architecture: x64
+            target: aarch64-linux-android
+            build: |
+              export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
+              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+              yarn build --target aarch64-linux-android
+              ${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip *.node
+          - host: ubuntu-latest
+            target: armv7-linux-androideabi
+            build: |
+              export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
+              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+              yarn build --target armv7-linux-androideabi
+              ${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip *.node
+          - host: ubuntu-latest
             target: aarch64-unknown-linux-musl
-            downloadTarget: aarch64-unknown-linux-musl
-            docker: |
-              docker pull ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-              docker tag ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine builder
-            build: |
-              docker run --rm -v ~/.cargo/git:/root/.cargo/git -v ~/.cargo/registry:/root/.cargo/registry -v $(pwd)/..:$(pwd)/.. -w $(pwd)/.. builder sh -c "cd node && node ./node_modules/@napi-rs/cli/scripts/index.js build --platform --release --target=aarch64-unknown-linux-musl && /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node"
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |-
+              set -e &&
+              rustup target add aarch64-unknown-linux-musl &&
+              yarn build --target aarch64-unknown-linux-musl &&
+              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
           - host: windows-latest
-            architecture: x64
             target: aarch64-pc-windows-msvc
-            build: |
-              node ".\node_modules\@napi-rs\cli\scripts\index.js" build --platform --release --target=aarch64-pc-windows-msvc
-    name: Build and test node (stable - ${{ matrix.settings.target }} - node@18)
-    runs-on: ${{ matrix.settings.host }}
+            build: yarn build --target aarch64-pc-windows-msvc
     defaults:
       run:
         working-directory: node
+    name: Build node bindings on ${{ matrix.settings.target }}
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        if: ${{ !matrix.settings.docker }}
+        with:
+          node-version: 18
+          check-latest: true
+          cache: yarn
+      - name: Install
+        uses: actions-rs/toolchain@v1
+        if: ${{ !matrix.settings.docker }}
+        with:
+          profile: minimal
+          override: true
+          toolchain: stable
+          target: ${{ matrix.settings.target }}
+      - name: Cache cargo
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            .cargo-cache/registry/index/
+            .cargo-cache/registry/cache/
+            .cargo-cache/git/db/
+            target/
+          key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-build-${{ matrix.settings.target }}-node@18
+      - name: Setup toolchain
+        run: ${{ matrix.settings.setup }}
+        if: ${{ matrix.settings.setup }}
+        shell: bash
+      - name: Setup node x86
+        if: matrix.settings.target == 'i686-pc-windows-msvc'
+        run: yarn config set supportedArchitectures.cpu "ia32"
+        shell: bash
+      - name: Install dependencies
+        run: yarn install
+      - name: Setup node x86
+        uses: actions/setup-node@v3
+        if: matrix.settings.target == 'i686-pc-windows-msvc'
+        with:
+          node-version: 18
+          check-latest: true
+          cache: yarn
+          architecture: x86
+      - name: Build in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
+          run: ${{ matrix.settings.build }}
+      - name: Build
+        run: ${{ matrix.settings.build }}
+        if: ${{ !matrix.settings.docker }}
+        shell: bash
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings-${{ matrix.settings.target }}
+          path: ${{ env.APP_NAME }}.*.node
+          if-no-files-found: error
+  build-node-freebsd:
+    runs-on: macos-10.15
+    name: Build node bindings on FreeBSD
+    defaults:
+      run:
+        working-directory: node
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        id: build
+        uses: vmactions/freebsd-vm@v0.1.6
+        env:
+          DEBUG: napi:*
+          RUSTUP_HOME: /usr/local/rustup
+          CARGO_HOME: /usr/local/cargo
+          RUSTUP_IO_THREADS: 1
+        with:
+          envs: DEBUG RUSTUP_HOME CARGO_HOME RUSTUP_IO_THREADS
+          usesh: true
+          mem: 3000
+          prepare: |
+            pkg install -y curl node14 python2
+            curl -qL https://www.npmjs.com/install.sh | sh
+            npm install -g yarn
+            curl https://sh.rustup.rs -sSf --output rustup.sh
+            sh rustup.sh -y --profile minimal --default-toolchain stable
+          run: |
+            export PATH="/usr/local/cargo/bin:$PATH"
+            yarn install
+            yarn build
+            strip -x *.node
+            npx tsc
+            node test.cjs
+            rm -rf node_modules
+            rm -rf target
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings-freebsd
+          path: ${{ env.APP_NAME }}.*.node
+          if-no-files-found: error
+  test-macOS-windows-node-binding:
+    name: Test node bindings on ${{ matrix.settings.target }}
+    needs:
+      - build-node
+    defaults:
+      run:
+        working-directory: node
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -105,39 +237,195 @@ jobs:
         with:
           node-version: 18
           check-latest: true
-          architecture: ${{ matrix.settings.architecture }}
-      - name: Install
-        uses: actions-rs/toolchain@v1
+          cache: yarn
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
         with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          target: ${{ matrix.settings.target }}
-      - name: Pull latest image
-        run: ${{ matrix.settings.docker }}
-        env:
-          DOCKER_REGISTRY_URL: ghcr.io
-        if: ${{ matrix.settings.docker }}
-      - name: Setup toolchain
-        run: ${{ matrix.settings.setup }}
-        if: ${{ matrix.settings.setup }}
-        shell: bash
+          path: .yarn/cache
+          key: npm-cache-test-x86_64-pc-windows-msvc-18-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
-        run: npm install --save-dev --ignore-scripts
-      - name: Build
-        run: ${{ matrix.settings.build }}
-        shell: bash
-      - name: Build typescript
-        run: npx tsc
-      - name: Run tests
-        run: node test.cjs
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        run: yarn install
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: bindings-${{ matrix.settings.target }}
-          path: |
-            node/${{ env.APP_NAME }}.*.node
-          if-no-files-found: error
+          name: bindings-x86_64-pc-windows-msvc
+          path: .
+      - name: Build TypeScript
+        run: npx tsc
+      - name: Test bindings
+        run: node test.cjs
+  test-linux-x64-gnu-node-binding:
+    name: Test node bindings on Linux-x64-gnu
+    needs:
+      - build-node
+    defaults:
+      run:
+        working-directory: node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+          cache: yarn
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-test-linux-x64-gnu-18
+      - name: Install dependencies
+        run: yarn install
+      - name: Build TypeScript
+        run: npx tsc
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-x86_64-unknown-linux-gnu
+          path: .
+      - name: Test bindings
+        run: docker run --rm -v $(pwd):/build -w /build node:18-slim node test.cjs
+  test-linux-x64-musl-node-binding:
+    name: Test node bindings on x86_64-unknown-linux-musl
+    needs:
+      - build-node
+    defaults:
+      run:
+        working-directory: node
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+          cache: yarn
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-test-x86_64-unknown-linux-musl-18
+      - name: Install dependencies
+        run: |
+          yarn config set supportedArchitectures.libc "musl"
+          yarn install
+      - name: Build TypeScript
+      - run: npx tsc
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-x86_64-unknown-linux-musl
+          path: .
+      - name: Test bindings
+        run: docker run --rm -v $(pwd):/build -w /build node:18-alpine node test.cjs
+  test-linux-aarch64-gnu-node-binding:
+    name: Test node bindings on aarch64-unknown-linux-gnu
+    needs:
+      - build-node
+    defaults:
+      run:
+        working-directory: node
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-aarch64-unknown-linux-gnu
+          path: .
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-test-linux-aarch64-gnu-18
+      - name: Install dependencies
+        run: |
+          yarn config set supportedArchitectures.cpu "arm64"
+          yarn config set supportedArchitectures.libc "glibc"
+          yarn install
+      - name: Build TypeScript
+        run: npx tsc
+      - name: Setup and run tests
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-18
+          options: '-v ${{ github.workspace }}:/build -w /build'
+          run: |
+            set -e
+            node test.cjs
+  test-linux-aarch64-musl-node-binding:
+    name: Test node bindings on aarch64-unknown-linux-musl
+    needs:
+      - build-node
+    defaults:
+      run:
+        working-directory: node
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-aarch64-unknown-linux-musl
+          path: .
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-test-linux-aarch64-musl-18
+      - name: Install dependencies
+        run: |
+          yarn config set supportedArchitectures.cpu "arm64"
+          yarn config set supportedArchitectures.libc "musl"
+          yarn install
+      - name: Build TypeScript
+        run: npx tsc
+      - name: Setup and run tests
+        uses: addnab/docker-run-action@v3
+        with:
+          image: multiarch/alpine:aarch64-latest-stable
+          options: '-v ${{ github.workspace }}:/build -w /build'
+          run: |
+            set -e
+            apk add nodejs npm yarn
+            node test.cjs
+  test-linux-arm-gnueabihf-node-binding:
+    name: Test node bindings on armv7-unknown-linux-gnueabihf
+    needs:
+      - build-node
+    defaults:
+      run:
+        working-directory: node
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      - uses: actions/checkout@v3
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-armv7-unknown-linux-gnueabihf
+          path: .
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-test-linux-arm-gnueabihf-18
+      - name: Install dependencies
+        run: |
+          yarn config set supportedArchitectures.cpu "arm"
+          yarn install
+      - name: Build TypeScript
+        run: npx tsc
+      - name: Setup and run tests
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
+          options: '-v ${{ github.workspace }}:/build -w /build'
+          run: node test.cjs
   wasm:
     name: Build wasm
     runs-on: ubuntu-latest
@@ -158,24 +446,17 @@ jobs:
           name: decancer-wasm-binary
           path: |
             decancer.wasm
-  publish:
-    name: Prettier files, commit, and publish
+  prettier:
+    name: Prettier files and Test Deno
     runs-on: ubuntu-latest
     needs:
       - core
-      - node
       - wasm
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          architecture: ${{ matrix.settings.architecture }}
       - name: Prettier core crate
         working-directory: core
         run: cargo fmt
@@ -189,9 +470,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: decancer-wasm-binary
-          path: artifacts
+          path: .
       - name: Move artifact
-        run: mv ./artifacts/decancer.wasm ./wasm/bin
+        run: mv ./decancer.wasm ./wasm/bin
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
@@ -208,30 +489,48 @@ jobs:
           deno-version: v1.x
       - name: Test Deno
         run: deno run --allow-net test_deno.ts
-      - name: Remove wasm artifact
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: decancer-wasm-binary
-      - name: Move README.md and install node dependencies
+  publish-node:
+    name: Publish node bindings
+    runs-on: ubuntu-latest
+    defaults:
+      run:
         working-directory: node
+    needs:
+      - prettier
+      - build-node-freebsd
+      - test-macOS-windows-node-binding
+      - test-linux-x64-gnu-node-binding
+      - test-linux-x64-musl-node-binding
+      - test-linux-aarch64-gnu-node-binding
+      - test-linux-aarch64-musl-node-binding
+      - test-linux-arm-gnueabihf-node-binding
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+          cache: yarn
+      - name: Cache NPM dependencies
+        uses: actions/cache@v3
+        with:
+          path: .yarn/cache
+          key: npm-cache-ubuntu-latest-publish
+      - name: Install dependencies
+        run: yarn install
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+      - name: Move artifacts
+        run: yarn artifacts
+      - name: Move README.md and Build TypeScript
         run: |
           mv ../README.md .
-          npm install --save-dev --ignore-scripts
-      - name: Download all node artifacts
-        uses: actions/download-artifact@v2
-        with:
-          path: node/artifacts
-      - name: Move artifacts
-        working-directory: node
-        run: node ./node_modules/@napi-rs/cli/scripts/index.js artifacts
-      - name: List node packages
-        working-directory: node
-        run: ls -R ./npm
-        shell: bash
-      - name: Publish node
-        working-directory: node
-        run: |
           npx tsc
+      - name: Publish
+        run: |
           if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
           then
             echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc

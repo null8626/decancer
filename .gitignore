@@ -9,6 +9,5 @@ node/index.js
 node/index.d.ts
 node/artifacts/
 wasm/pkg/
-artifacts/
 **/*output*
 **/*Optimized.json
