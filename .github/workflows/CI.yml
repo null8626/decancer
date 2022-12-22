@@ -11,6 +11,7 @@ on:
       - '**'
     paths:
       - '**/src/**/*.rs'
+      - 'core/bin/confusables.bin'
 jobs:
   core:
     name: Test core
