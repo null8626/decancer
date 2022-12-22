@@ -21,6 +21,8 @@ node scripts/encode.mjs path/to/file.json
 
 And a file called `output.bin` should be generated in the same directory, and an optimized version of the JSON file should appear at `path/to/fileOptimized.json`.
 
+> P.S: for further optimizations purposes, it's recommended to do a second run of the encoding process, e.g `node scripts/encode.mjs path/to/fileOptimized.json`
+
 - **The structure of the JSON is as follows:**
 
 The optional fields here are only optional when writing and encoding them back into a binary.

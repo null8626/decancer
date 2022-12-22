@@ -1,6 +1,9 @@
 use super::{matcher::Translation, similar};
 use std::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 
+/// This is a small wrapper around the [`String`] datatype.
+///
+/// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone)]
 pub struct CuredString(String);
 
@@ -26,9 +29,7 @@ impl CuredString {
   pub(crate) fn push_translation(&mut self, t: Translation) {
     match t {
       Translation::Character(c) => {
-        if c == ' ' && (self.is_empty() || self.is_last_space()) {
-          return;
-        } else {
+        if c != ' ' || (self.len() > 0 && !self.is_last_space()) {
           self.0.push(c);
         }
       }
@@ -38,7 +39,9 @@ impl CuredString {
 
   #[inline(always)]
   pub(crate) fn push_code(&mut self, code: u32) {
-    self.0.push(unsafe { transmute(code) })
+    if code != 0x20 || (self.len() > 0 && !self.is_last_space()) {
+      self.0.push(unsafe { transmute(code) })
+    }
   }
 
   #[inline(always)]

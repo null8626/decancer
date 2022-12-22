@@ -13,9 +13,13 @@ pub(crate) enum Translation {
 }
 
 impl Translation {
-  const fn string(index: u16) -> Self {
+  fn string(index: u16) -> Self {
     unsafe {
-      let ptr = CONFUSABLES.offset(read_u16_le(CONFUSABLES.offset(2)) as isize + (index as isize));
+      let mut ptr = CONFUSABLES.offset(read_u16_le(CONFUSABLES.offset(2)) as isize);
+
+      for _ in 0..index {
+        ptr = ptr.offset(((*ptr) as isize) + 1);
+      }
 
       Self::String(str::from_utf8_unchecked(slice::from_raw_parts(
         ptr.offset(1),
@@ -67,7 +71,7 @@ impl Confusable {
     }
   }
 
-  pub(crate) const fn translation(&self, other: u32, other_lowercased: u32) -> Translation {
+  pub(crate) fn translation(&self, other: u32, other_lowercased: u32) -> Translation {
     let mut code = (self.0 >> 21) & 0x7f;
 
     if (self.0 & 0x20000000) != 0 {
