@@ -19,7 +19,7 @@ console.log(`- checking, expanding, and sorting ${confusables.length} confusable
 let expanded = []
 
 for (const conf of confusables) {
-  assert(Number.isSafeInteger(conf.codepoint) && conf.codepoint >= 0 && conf.codepoint < 0x110000, 'codepoint must be a valid number')
+  assert(Number.isSafeInteger(conf.codepoint) && conf.codepoint >= 0x80 && conf.codepoint < 0x110000, 'codepoint must be a valid number')
   assert(typeof conf.translation === 'string' && conf.translation.length >= 1, 'translation must be a string')
 
   if (typeof conf.rangeUntil === 'number') {
