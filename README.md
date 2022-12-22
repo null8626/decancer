@@ -7,7 +7,7 @@ Pros:
 - BLAZINGLY FAST™ 🚀🚀🚀, no use of regex whatsoever!
 - No use of any external dependencies.
 - Very simple to use!
-- Supports more than **2500 unicode codepoints**. This should cover the vast majority of confusables, including emojis, zalgos, etc.
+- Supports more than **3000 unicode codepoints**. This should cover the vast majority of confusables, including emojis, zalgos, etc.
 
 Con:
 
