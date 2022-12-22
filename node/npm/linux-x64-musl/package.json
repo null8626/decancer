@@ -20,7 +20,7 @@
   ],
   "author": "null8626",
   "homepage": "https://github.com/null8626/decancer",
-  "description": "A tiny package that removes common confusables from strings. (Binary port for darwin-arm64)",
+  "description": "A tiny package that removes common confusables from strings. (Binary port for linux-x64-musl)",
   "bugs": {
     "url": "https://github.com/null8626/decancer/issues"
   },
