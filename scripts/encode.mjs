@@ -105,7 +105,7 @@ const grandTotal = [...syncedSequences, ...notSyncedSequences, ...rest].sort((a,
 
 writeFileSync(process.argv[2].replace(/\.json$/i, 'Optimized.json'), JSON.stringify({ confusables: grandTotal, similar }, null, 2))
 
-console.log(`- condensed down from ${expanded.length} to ${grandTotal.length} (${Math.round((grandTotal.length / expanded.length) * 100)}%). (wrote refactored JSON output to ${process.argv[2].replace(/\.json$/i, 'Refactored.json')})`)
+console.log(`- condensed down from ${expanded.length} to ${grandTotal.length} (${Math.round((grandTotal.length / expanded.length) * 100)}%). (wrote refactored JSON output to ${process.argv[2].replace(/\.json$/i, 'Optimized.json')})`)
 
 const similarBytes = Buffer.concat(similar.map(x => Buffer.from([x.length, ...x.map(y => y.charCodeAt())])))
 const strings = []
