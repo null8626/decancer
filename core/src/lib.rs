@@ -54,6 +54,10 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
     }
 
     let code_lowercased = to_lowercase(code as _);
+    if code_lowercased < 0x80 {
+      return output.push_code(code_lowercased); // process of elimination
+    }
+
     let mut start = 0;
     let mut end = matcher::CONFUSABLES_COUNT;
 
