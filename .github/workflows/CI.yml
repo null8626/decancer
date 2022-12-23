@@ -460,6 +460,7 @@ jobs:
     needs:
       - prettier
       - build-node-freebsd
+      - build-node
       #- test-macOS-windows-node-binding
       #- test-linux-x64-gnu-node-binding
       #- test-linux-x64-musl-node-binding
