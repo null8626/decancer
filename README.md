@@ -16,7 +16,7 @@ Con:
 This library is available in the following languages:
 
 - [Rust](https://crates.io/crates/decancer)
-- JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Deno](https://deno.land/x/decancer@v1.4.1)/Browser)
+- JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Deno](https://deno.land/x/decancer@v1.5.0)/Browser)
 - [Python](https://pypi.org/project/decancer-py/) (unofficial)
 
 ## installation
