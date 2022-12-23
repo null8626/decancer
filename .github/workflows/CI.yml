@@ -225,168 +225,168 @@ jobs:
           name: bindings-freebsd
           path: ${{ env.APP_NAME }}.*.node
           if-no-files-found: error
-  test-macOS-windows-node-binding:
-    name: Test node bindings for MacOS and Windows
-    needs:
-      - build-node
-    defaults:
-      run:
-        working-directory: node
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install dependencies and Build TypeScript
-        run: |
-          yarn install
-          npx tsc
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-x86_64-pc-windows-msvc
-          path: node
-      - name: Test bindings
-        run: node test.cjs
-  test-linux-x64-gnu-node-binding:
-    name: Test node bindings for Linux-x64-gnu
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install dependencies and Build TypeScript
-        working-directory: node
-        run: |
-          yarn install
-          npx tsc
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-x86_64-unknown-linux-gnu
-          path: node
-      - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-slim node test.cjs
-  test-linux-x64-musl-node-binding:
-    name: Test node bindings for x86_64-unknown-linux-musl
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install dependencies and Build TypeScript
-        working-directory: node
-        run: |
-          yarn config set supportedArchitectures.libc "musl"
-          yarn install
-          npx tsc
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-x86_64-unknown-linux-musl
-          path: node
-      - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-alpine node test.cjs
-  test-linux-aarch64-gnu-node-binding:
-    name: Test node bindings for aarch64-unknown-linux-gnu
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-aarch64-unknown-linux-gnu
-          path: node
-      - name: Install dependencies and Build TypeScript
-        working-directory: node
-        run: |
-          yarn config set supportedArchitectures.cpu "arm64"
-          yarn config set supportedArchitectures.libc "glibc"
-          yarn install
-          npx tsc
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
-          run: |
-            set -e
-            node test.cjs
-  test-linux-aarch64-musl-node-binding:
-    name: Test node bindings for aarch64-unknown-linux-musl
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-aarch64-unknown-linux-musl
-          path: node
-      - name: Install dependencies and Build TypeScript
-        working-directory: node
-        run: |
-          yarn config set supportedArchitectures.cpu "arm64"
-          yarn config set supportedArchitectures.libc "musl"
-          yarn install
-          npx tsc
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: multiarch/alpine:aarch64-latest-stable
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
-          run: |
-            set -e
-            apk add nodejs npm yarn
-            node test.cjs
-  test-linux-arm-gnueabihf-node-binding:
-    name: Test node bindings for armv7-unknown-linux-gnueabihf
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-armv7-unknown-linux-gnueabihf
-          path: node
-      - name: Install dependencies and Build TypeScript
-        working-directory: node
-        run: |
-          yarn config set supportedArchitectures.cpu "arm"
-          yarn install --mode=skip-build
-          npx tsc
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
-          run: |
-            set -e
-            node test.cjs
+#  test-macOS-windows-node-binding:
+#    name: Test node bindings for MacOS and Windows
+#    needs:
+#      - build-node
+#    defaults:
+#      run:
+#        working-directory: node
+#    runs-on: windows-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#          check-latest: true
+#          cache: yarn
+#      - name: Install dependencies and Build TypeScript
+#        run: |
+#          yarn install
+#          npx tsc
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: bindings-x86_64-pc-windows-msvc
+#          path: node
+#      - name: Test bindings
+#        run: node test.cjs
+#  test-linux-x64-gnu-node-binding:
+#    name: Test node bindings for Linux-x64-gnu
+#    needs:
+#      - build-node
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#          check-latest: true
+#          cache: yarn
+#      - name: Install dependencies and Build TypeScript
+#        working-directory: node
+#        run: |
+#          yarn install
+#          npx tsc
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: bindings-x86_64-unknown-linux-gnu
+#          path: node
+#      - name: Test bindings
+#        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-slim node test.cjs
+#  test-linux-x64-musl-node-binding:
+#    name: Test node bindings for x86_64-unknown-linux-musl
+#    needs:
+#      - build-node
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#          check-latest: true
+#          cache: yarn
+#      - name: Install dependencies and Build TypeScript
+#        working-directory: node
+#        run: |
+#          yarn config set supportedArchitectures.libc "musl"
+#          yarn install
+#          npx tsc
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: bindings-x86_64-unknown-linux-musl
+#          path: node
+#      - name: Test bindings
+#        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-alpine node test.cjs
+#  test-linux-aarch64-gnu-node-binding:
+#    name: Test node bindings for aarch64-unknown-linux-gnu
+#    needs:
+#      - build-node
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+#      - uses: actions/checkout@v3
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: bindings-aarch64-unknown-linux-gnu
+#          path: node
+#      - name: Install dependencies and Build TypeScript
+#        working-directory: node
+#        run: |
+#          yarn config set supportedArchitectures.cpu "arm64"
+#          yarn config set supportedArchitectures.libc "glibc"
+#          yarn install
+#          npx tsc
+#      - name: Setup and run tests
+#        uses: addnab/docker-run-action@v3
+#        with:
+#          image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-18
+#          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+#          run: |
+#            set -e
+#            node test.cjs
+#  test-linux-aarch64-musl-node-binding:
+#    name: Test node bindings for aarch64-unknown-linux-musl
+#    needs:
+#      - build-node
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+#      - uses: actions/checkout@v3
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: bindings-aarch64-unknown-linux-musl
+#          path: node
+#      - name: Install dependencies and Build TypeScript
+#        working-directory: node
+#        run: |
+#          yarn config set supportedArchitectures.cpu "arm64"
+#          yarn config set supportedArchitectures.libc "musl"
+#          yarn install
+#          npx tsc
+#      - name: Setup and run tests
+#        uses: addnab/docker-run-action@v3
+#        with:
+#          image: multiarch/alpine:aarch64-latest-stable
+#          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+#          run: |
+#            set -e
+#            apk add nodejs npm yarn
+#            node test.cjs
+#  test-linux-arm-gnueabihf-node-binding:
+#    name: Test node bindings for armv7-unknown-linux-gnueabihf
+#    needs:
+#      - build-node
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
+#      - uses: actions/checkout@v3
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: bindings-armv7-unknown-linux-gnueabihf
+#          path: node
+#      - name: Install dependencies and Build TypeScript
+#        working-directory: node
+#        run: |
+#          yarn config set supportedArchitectures.cpu "arm"
+#          yarn install --mode=skip-build
+#          npx tsc
+#      - name: Setup and run tests
+#        uses: addnab/docker-run-action@v3
+#        with:
+#          image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
+#          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+#          run: |
+#            set -e
+#            node test.cjs
   wasm:
     name: Build wasm
     runs-on: ubuntu-latest
@@ -460,12 +460,12 @@ jobs:
     needs:
       - prettier
       - build-node-freebsd
-      - test-macOS-windows-node-binding
-      - test-linux-x64-gnu-node-binding
-      - test-linux-x64-musl-node-binding
-      - test-linux-aarch64-gnu-node-binding
-      - test-linux-aarch64-musl-node-binding
-      - test-linux-arm-gnueabihf-node-binding
+      #- test-macOS-windows-node-binding
+      #- test-linux-x64-gnu-node-binding
+      #- test-linux-x64-musl-node-binding
+      #- test-linux-aarch64-gnu-node-binding
+      #- test-linux-aarch64-musl-node-binding
+      #- test-linux-arm-gnueabihf-node-binding
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -480,25 +480,29 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: artifacts
+      - name: List 1
+        run: ls -R
       - name: Move artifacts
         run: yarn artifacts
+      - name: List 2
+        run: ls -R
       - name: Move README.md and Build TypeScript
         run: |
           mv ../README.md .
           npx tsc
-      - name: Publish
-        run: |
-          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --access public
-          elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --tag next --access public
-          else
-            echo "Not a release, skipping publish"
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #- name: Publish
+      #  run: |
+      #    if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+      #    then
+      #      echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      #      npm publish --access public
+      #    elif git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+";
+      #    then
+      #      echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      #      npm publish --tag next --access public
+      #    else
+      #      echo "Not a release, skipping publish"
+      #    fi
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
