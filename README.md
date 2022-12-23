@@ -1,6 +1,6 @@
 # decancer
 
-A tiny package that removes common confusables from strings. Available for Rust, Node.js, Deno, and the Browser.
+A tiny package that removes common confusables from strings.
 
 Pros:
 
@@ -12,6 +12,12 @@ Pros:
 Con:
 
 - Remember that this project is not perfect, false-positives may happen.
+
+This library is available in the following languages:
+
+- [Rust](https://crates.io/crates/decancer)
+- JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Deno](https://deno.land/x/decancer@v1.4.1)/Browser)
+- [Python](https://pypi.org/project/decancer-py/) (unofficial)
 
 ## installation
 
