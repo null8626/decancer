@@ -38,7 +38,7 @@ impl CuredString {
 
   #[inline(always)]
   pub(crate) fn finishing(&mut self) {
-    if self.is_last_space() {
+    if self.len() > 0 && self.is_last_space() {
       self.0.pop();
     }
   }
