@@ -480,9 +480,9 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: artifacts
+          path: node/artifacts
       - name: List 1
-        run: ls -R artifacts
+        run: ls -R
       - name: Move artifacts
         run: yarn artifacts
       - name: List 2
