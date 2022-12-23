@@ -1,4 +1,9 @@
-# decancer
+# decancer [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url]
+
+[npm-image]: https://img.shields.io/npm/v/decancer.svg
+[npm-url]: https://npmjs.org/package/decancer
+[downloads-image]: https://img.shields.io/npm/dm/decancer.svg
+[downloads-url]: https://npmjs.org/package/decancer
 
 A tiny package that removes common confusables from strings.
 
