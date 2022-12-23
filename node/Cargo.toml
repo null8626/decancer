@@ -3,7 +3,8 @@ name = "decancer_node"
 version = "1.5.0"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
-description = "A Rust module that removes common confusables from strings without the use of Regexes."
+description = "A tiny package that removes common confusables from strings.
+"
 repository = "https://github.com/null8626/decancer"
 license = "MIT"
 keywords = ["unicode", "string", "moderation", "confusables"]

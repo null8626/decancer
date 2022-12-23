@@ -1,6 +1,6 @@
 //! # decancer
 //! 
-//! A tiny package that removes common confusables from strings. Available for Rust, Node.js, Deno, and the Browser.
+//! A tiny package that removes common confusables from strings.
 //! 
 //! Pros:
 //! 
