@@ -24,7 +24,7 @@
 mod matcher;
 mod similar;
 mod string;
-mod util; // for internal use
+mod util;
 
 #[cfg(test)]
 mod tests;
