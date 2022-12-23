@@ -29,6 +29,7 @@ fn zalgo_test() {
 #[test]
 fn whitespace_test() {
   assert_eq!(cure("\u{A0}\u{1680}h\u{2000}\u{2001}h\u{2002}h\u{2003}\u{2004}\u{2005}\u{2006}\u{2007}\u{2008}\u{2009}\u{200A}\u{2028}\u{2029}\u{202F}\u{205F}\u{3000}\u{180E}\u{200B}\u{200C}\u{200D}h\u{2060}\u{FEFF}"), "h h h h");
+  assert_eq!(cure("   "), "");
 }
 
 #[test]
