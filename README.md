@@ -16,7 +16,7 @@ Con:
 This library is available in the following languages:
 
 - [Rust](https://crates.io/crates/decancer)
-- JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Deno](https://deno.land/x/decancer@v1.5.0)/Browser)
+- JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Deno](https://deno.land/x/decancer@v1.5.1)/Browser)
 - [Python](https://pypi.org/project/decancer-py/) (unofficial)
 
 ## installation
@@ -26,7 +26,7 @@ This library is available in the following languages:
 In your `Cargo.toml`:
 
 ```toml
-decancer = "1.5.0"
+decancer = "1.5.1"
 ```
 
 ### Node.js
@@ -48,7 +48,7 @@ const decancer = require('decancer')
 In your code:
 
 ```ts
-import init from "https://deno.land/x/decancer@v1.5.0/mod.ts"
+import init from "https://deno.land/x/decancer@v1.5.1/mod.ts"
 
 const decancer = await init()
 ```
@@ -59,7 +59,7 @@ In your code:
 
 ```html
 <script type="module">
-  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.0/decancer.min.js"
+  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.1/decancer.min.js"
 
   const decancer = await init()
 </script>
@@ -133,7 +133,7 @@ fn main() {
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.0/decancer.min.js"
+      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.1/decancer.min.js"
       
       const decancer = await init()
       
