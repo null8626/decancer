@@ -86,11 +86,11 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
           return;
         }
         Ordering::Greater => start = mid + 1,
-        _ => end = mid, // Ordering::Less
+        _ => end = mid,
       }
 
       if start == end {
-        let confusable2 = matcher::Confusable::at(start); // end works too
+        let confusable2 = matcher::Confusable::at(start);
 
         if confusable2.matches(code as _, code_lowercased) == Ordering::Equal {
           output.push_translation(confusable2.translation(code as _, code_lowercased));
