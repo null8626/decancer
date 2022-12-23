@@ -3,6 +3,7 @@ Cargo.lock
 .cargo
 npm
 rustfmt.toml
+test.cjs
 **/*.node
 index.js
 index.d.ts
