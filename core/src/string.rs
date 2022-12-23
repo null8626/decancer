@@ -7,14 +7,6 @@ use std::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 #[derive(Clone)]
 pub struct CuredString(String);
 
-fn compute_reversed_utf8(ptr: &mut *const u8) {
-  unsafe {
-    while **ptr >= 0x80 && **ptr < 0xC0 {
-      *ptr = ptr.offset(-1);
-    }
-  }
-}
-
 impl CuredString {
   #[inline(always)]
   pub(crate) fn with_capacity(n: usize) -> Self {
