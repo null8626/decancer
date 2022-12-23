@@ -3,8 +3,7 @@ name = "decancer_wasm"
 version = "1.5.0"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
-description = "A tiny package that removes common confusables from strings.
-"
+description = "A tiny package that removes common confusables from strings."
 repository = "https://github.com/null8626/decancer"
 license = "MIT"
 keywords = ["unicode", "string", "moderation", "confusables"]
