@@ -9,82 +9,149 @@ if (typeof process.argv[2] !== 'string') {
 
 const { confusables, similar } = JSON.parse(readFileSync(process.argv[2]))
 
-assert(Array.isArray(confusables) && confusables.length > 0, 'confusables must be an array')
-assert(Array.isArray(similar) && similar.length > 0 && similar.length <= 0x7f && similar.every(x => Array.isArray(x) && x.length > 0 && x.length <= 0xff && x.every(y => y.length === 1 && y.codePointAt() <= 0xff)), 'similar must be an array of an array of ASCII strings')
+assert(
+  Array.isArray(confusables) && confusables.length > 0,
+  'confusables must be an array'
+)
+assert(
+  Array.isArray(similar) &&
+    similar.length > 0 &&
+    similar.length <= 0x7f &&
+    similar.every(
+      (x) =>
+        Array.isArray(x) &&
+        x.length > 0 &&
+        x.length <= 0xff &&
+        x.every((y) => y.length === 1 && y.codePointAt() <= 0xff)
+    ),
+  'similar must be an array of an array of ASCII strings'
+)
 
-const isCaseSensitive = x => String.fromCodePoint(x).toLowerCase() !== String.fromCodePoint(x)
+const isCaseSensitive = (x) => {
+  const y = String.fromCodePoint(x)
 
-console.log(`- checking, expanding, and sorting ${confusables.length} confusables...`)
+  return y.toLowerCase() !== y
+}
+
+console.log(
+  `- checking, expanding, and sorting ${confusables.length.toLocaleString(
+    'en-US'
+  )} confusables...`
+)
 
 let expanded = []
 
 for (const conf of confusables) {
-  assert(Number.isSafeInteger(conf.codepoint) && conf.codepoint >= 0x80 && conf.codepoint < 0x110000, 'codepoint must be a valid number')
-  assert(typeof conf.translation === 'string' && conf.translation.length >= 1, 'translation must be a string')
+  assert(
+    Number.isSafeInteger(conf.codepoint) &&
+      conf.codepoint >= 0x80 &&
+      conf.codepoint < 0x110000,
+    'codepoint must be a valid number'
+  )
+  assert(
+    typeof conf.translation === 'string' && conf.translation.length >= 1,
+    'translation must be a string'
+  )
 
   if (typeof conf.rangeUntil === 'number') {
-    assert(Number.isSafeInteger(conf.rangeUntil) && conf.rangeUntil >= 0 && conf.rangeUntil < 0x110000 && (conf.rangeUntil - conf.codepoint) <= 0x7f, 'rangeUntil must be a valid number')
-    assert(conf.rangeUntil > conf.codepoint, `rangeUntil must be greater than codepoint. (rangeUntil: ${conf.rangeUntil}, codepoint: ${conf.codepoint})`)
+    assert(
+      Number.isSafeInteger(conf.rangeUntil) &&
+        conf.rangeUntil >= 0 &&
+        conf.rangeUntil < 0x110000 &&
+        conf.rangeUntil - conf.codepoint <= 0x7f,
+      'rangeUntil must be a valid number'
+    )
+    assert(
+      conf.rangeUntil > conf.codepoint,
+      `rangeUntil must be greater than codepoint. (rangeUntil: ${conf.rangeUntil}, codepoint: ${conf.codepoint})`
+    )
 
-    const ogTranslationCode = conf.syncedTranslation ? conf.translation.charCodeAt() : conf.translation
-  
-    for (let c = conf.codepoint; c <= conf.rangeUntil; c++) {
+    const ogTranslationCode = conf.syncedTranslation
+      ? conf.translation.charCodeAt()
+      : conf.translation
+
+    for (let c = conf.codepoint; c <= conf.rangeUntil; c++)
       expanded.push({
         codepoint: c,
-        translation: typeof ogTranslationCode === 'number' ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint)) : ogTranslationCode,
-        caseSensitive: isCaseSensitive(typeof ogTranslationCode === 'number' ? (ogTranslationCode + (c - conf.codepoint)) : ogTranslationCode.charCodeAt())
+        translation:
+          typeof ogTranslationCode === 'number'
+            ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint))
+            : ogTranslationCode,
+        caseSensitive: isCaseSensitive(
+          typeof ogTranslationCode === 'number'
+            ? ogTranslationCode + (c - conf.codepoint)
+            : ogTranslationCode.charCodeAt()
+        )
       })
-    }
-  } else {
+  } else
     expanded.push({
       codepoint: conf.codepoint,
       translation: conf.translation,
       caseSensitive: isCaseSensitive(conf.codepoint)
     })
-  }
 }
 
-console.log(`- expanded to a grand total of ${expanded.length} confusables.\n- searching for collisions...`)
+console.log(
+  `- expanded to a grand total of ${expanded.length.toLocaleString(
+    'en-US'
+  )} confusables.\n- searching for collisions...`
+)
 
 function retrieveCollisions(array, set) {
-  for (const part of set)
-    array.splice(array.indexOf(part), 1)
+  for (const part of set) array.splice(array.indexOf(part), 1)
 
   return array
 }
 
 {
-  const set = [...new Set(expanded.map(x => x.codepoint))]
-  assert(expanded.length === set.length, `discovered ${expanded.length - set.length} collisions. at codepoints: ${inspect(retrieveCollisions(expanded.map(x => x.codepoint), set))}`)
+  const set = Array.from(new Set(expanded.map((x) => x.codepoint)))
+  assert(
+    expanded.length === set.length,
+    `discovered ${(expanded.length - set.length).toLocaleString(
+      'en-US'
+    )} collisions. at codepoints: ${inspect(
+      retrieveCollisions(
+        expanded.map((x) => x.codepoint),
+        set
+      )
+    )}`
+  )
 }
 
-const notSyncedSequences = [], syncedSequences = [], rest = []
+const notSyncedSequences = [],
+  syncedSequences = [],
+  rest = []
 
 for (let i = 0, curr = null; i < expanded.length; i++) {
   const n = expanded[i]
-  
+
   if (n.translation.length === 1) {
     const next = expanded[i + 1]
-    const ordered = (n.codepoint + 1) === next?.codepoint && n.caseSensitive === next.caseSensitive
+    const ordered =
+      n.codepoint + 1 === next?.codepoint &&
+      n.caseSensitive === next.caseSensitive
 
     if (curr !== null) {
-      if (ordered && (curr.syncedTranslation ? ((n.translation.charCodeAt() + 1) === next.translation.charCodeAt()) : next.translation === n.translation)) {
+      if (
+        ordered &&
+        (curr.syncedTranslation
+          ? n.translation.charCodeAt() + 1 === next.translation.charCodeAt()
+          : next.translation === n.translation)
+      ) {
         curr.rangeUntil++
         continue
       }
-    
-      if (curr.syncedTranslation) {
-        syncedSequences.push(curr)
-      } else {
-        notSyncedSequences.push(curr)
-      }
-    
+
+      if (curr.syncedTranslation) syncedSequences.push(curr)
+      else notSyncedSequences.push(curr)
+
       curr = null
       continue
     }
-  
-    const synced = (n.translation.charCodeAt() + 1) === next?.translation?.charCodeAt()
-  
+
+    const synced =
+      n.translation.charCodeAt() + 1 === next?.translation?.charCodeAt()
+
     if (ordered && (synced || next?.translation === n.translation)) {
       curr = n
       curr.syncedTranslation = synced
@@ -99,59 +166,93 @@ for (let i = 0, curr = null; i < expanded.length; i++) {
 }
 
 const sequenceReduceFunc = (a, b) => a + (b.rangeUntil - b.codepoint) + 1
-console.log(`- discovered ${syncedSequences.length} (${Math.round((syncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100)}%) synced sequences and ${notSyncedSequences.length} (${Math.round((notSyncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100)}%) unsynced sequences.`)
+console.log(
+  `- discovered ${syncedSequences.length.toLocaleString('en-US')} (${Math.round(
+    (syncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100
+  )}%) synced sequences and ${notSyncedSequences.length.toLocaleString(
+    'en-US'
+  )} (${Math.round(
+    (notSyncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100
+  )}%) unsynced sequences.`
+)
 
-const grandTotal = [...syncedSequences, ...notSyncedSequences, ...rest].sort((a, b) => a.codepoint - b.codepoint)
+const grandTotal = [...syncedSequences, ...notSyncedSequences, ...rest].sort(
+  (a, b) => a.codepoint - b.codepoint
+)
 
-writeFileSync(process.argv[2].replace(/\.json$/i, 'Optimized.json'), JSON.stringify({ confusables: grandTotal, similar }, null, 2))
+writeFileSync(
+  process.argv[2].replace(/\.json$/i, 'Optimized.json'),
+  JSON.stringify({ confusables: grandTotal, similar }, null, 2)
+)
 
-console.log(`- condensed down from ${expanded.length} to ${grandTotal.length} (${Math.round((grandTotal.length / expanded.length) * 100)}%). (wrote refactored JSON output to ${process.argv[2].replace(/\.json$/i, 'Optimized.json')})`)
+console.log(
+  `- condensed down from ${expanded.length.toLocaleString(
+    'en-US'
+  )} to ${grandTotal.length.toLocaleString('en-US')} (${Math.round(
+    (grandTotal.length / expanded.length) * 100
+  )}%). (wrote refactored JSON output to ${process.argv[2].replace(
+    /\.json$/i,
+    'Optimized.json'
+  )})`
+)
 
-const similarBytes = Buffer.concat(similar.map(x => Buffer.from([x.length, ...x.map(y => y.charCodeAt())])))
+const similarBytes = Buffer.concat(
+  similar.map((x) => Buffer.from([x.length, ...x.map((y) => y.charCodeAt())]))
+)
 const strings = []
 const confusablesBuffers = []
 
-for (const { codepoint, translation, caseSensitive, rangeUntil, syncedTranslation } of grandTotal) {
+for (const {
+  codepoint,
+  translation,
+  caseSensitive,
+  rangeUntil,
+  syncedTranslation
+} of grandTotal) {
   const buf = Buffer.alloc(5)
   let integer = 0x100000000n | BigInt(codepoint)
   let secondByte = 0
-  
-  if (caseSensitive)
-    integer |= 0x40000000n
-  
-  if (syncedTranslation)
-    secondByte = 0x80
-  
+
+  if (caseSensitive) integer |= 0x40000000n
+
+  if (syncedTranslation) secondByte = 0x80
+
   if (rangeUntil !== null) {
     integer |= 0x10000000n
-    secondByte |= (rangeUntil - codepoint)
+    secondByte |= rangeUntil - codepoint
   }
-  
+
   if (translation.length > 1) {
-    if (!strings.includes(translation))
-      strings.push(translation)
-    
+    if (!strings.includes(translation)) strings.push(translation)
+
     integer |= 0x20000000n
-    integer |= (BigInt(strings.indexOf(translation)) << 21n)
+    integer |= BigInt(strings.indexOf(translation)) << 21n
   } else {
-    integer |= (BigInt(translation.charCodeAt()) << 21n)
+    integer |= BigInt(translation.charCodeAt()) << 21n
   }
-  
+
   buf.writeUint32LE(Number(integer & 0xffffffffn))
   buf.writeUint8(secondByte, 4)
-  
+
   confusablesBuffers.push(buf)
 }
 
 const headers = Buffer.alloc(4)
-headers.writeUint16LE(4 + (confusablesBuffers.length * 5))
+headers.writeUint16LE(4 + confusablesBuffers.length * 5)
 headers.writeUint16LE(headers.readUint16LE() + similarBytes.length, 2)
 
-writeFileSync('output.bin', Buffer.concat([
-  headers,
-  Buffer.concat(confusablesBuffers),
-  similarBytes,
-  Buffer.from(strings.map(x => [x.length, ...x.split('').map(y => y.charCodeAt())]).flat())
-]))
+writeFileSync(
+  'output.bin',
+  Buffer.concat([
+    headers,
+    Buffer.concat(confusablesBuffers),
+    similarBytes,
+    Buffer.from(
+      strings
+        .map((x) => [x.length, ...x.split('').map((y) => y.charCodeAt())])
+        .flat()
+    )
+  ])
+)
 
 console.log('- wrote to output.bin.')
