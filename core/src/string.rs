@@ -15,7 +15,7 @@ impl CuredString {
 
   fn is_last_space(&self) -> bool {
     let b = self.0.as_bytes();
-    return b[b.len() - 1] == 0x20;
+    b[b.len() - 1] == 0x20
   }
 
   pub(crate) fn push_translation(&mut self, t: Translation) {

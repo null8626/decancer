@@ -44,6 +44,8 @@ const fn valid_codepoint(x: u32) -> bool {
   ((x > 31 && x < 127) || (x > 159 && x < 0x300) || x > 0x36F)
     && x != 0x20E3
     && x != 0xFE0F
+    && x != 0xFEFF
+    && x != 0xFFFD
     && x != 0x489
 }
 
