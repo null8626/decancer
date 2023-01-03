@@ -12,12 +12,12 @@ pub struct CuredString(decancer::CuredString);
 
 #[napi]
 impl CuredString {
-  #[napi(js_name = "startsWith")]
+  #[napi]
   pub fn starts_with(&self, other: String) -> bool {
     self.0.starts_with(&other)
   }
 
-  #[napi(js_name = "endsWith")]
+  #[napi]
   pub fn ends_with(&self, other: String) -> bool {
     self.0.ends_with(&other)
   }
@@ -32,7 +32,7 @@ impl CuredString {
     self.0 == &other
   }
 
-  #[napi(js_name = "toString")]
+  #[napi]
   pub fn to_string(&self) -> String {
     self.0.clone().into_str()
   }
