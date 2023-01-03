@@ -13,9 +13,8 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-# Default enable napi4 feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
-napi = { version = "2.5.0", default-features = false, features = ["napi4"] }
-napi-derive = "2.5.0"
+napi = { version = "2.10.4", default-features = false, features = [] }
+napi-derive = "2.9.3"
 decancer = { path = "../core" } 
 
 [build-dependencies]
