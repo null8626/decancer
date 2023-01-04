@@ -78,6 +78,7 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
 
     let mut start = 0;
     let mut end = matcher::CONFUSABLES_COUNT;
+    let mut end_flag = false;
 
     loop {
       let mid = (((start + end) as f32) / 2f32).floor() as u16;
@@ -85,24 +86,17 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
 
       match confusable.matches(code as _, code_lowercased) {
         Ordering::Equal => {
-          output.push_translation(confusable.translation(code as _, code_lowercased));
-          return;
+          return output.push_translation(confusable.translation(code as _, code_lowercased))
         }
         Ordering::Greater => start = mid + 1,
         _ => end = mid,
+      };
+
+      if end_flag {
+        return output.push_code(code_lowercased);
       }
 
-      if start == end {
-        let confusable2 = matcher::Confusable::at(start);
-
-        if confusable2.matches(code as _, code_lowercased) == Ordering::Equal {
-          output.push_translation(confusable2.translation(code as _, code_lowercased));
-        } else {
-          output.push_code(code_lowercased);
-        }
-
-        return;
-      }
+      end_flag = start == end;
     }
   });
 
