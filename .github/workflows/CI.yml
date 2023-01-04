@@ -409,7 +409,7 @@ jobs:
           path: |
             decancer.wasm
   prettier:
-    name: Prettier files and Test Deno
+    name: Lint, prettier files, and Test Deno
     runs-on: ubuntu-latest
     needs:
       - core
@@ -419,22 +419,26 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - name: Prettier core crate
+      - name: Lint and prettier core crate
         working-directory: core
-        run: cargo fmt
-      - name: Prettier node crate
+        run: |
+          cargo clippy --fix --allow-dirty
+          cargo fmt
+      - name: Lint and prettier node crate
         working-directory: node
-        run: cargo fmt
-      - name: Prettier wasm crate
+        run: |
+          cargo clippy --fix --allow-dirty
+          cargo fmt
+      - name: Lint and prettier wasm crate
         working-directory: wasm
-        run: cargo fmt
+        run: |
+          cargo clippy --fix --allow-dirty
+          cargo fmt
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: decancer-wasm-binary
-          path: .
-      - name: Move artifact
-        run: mv ./decancer.wasm ./wasm/bin
+          path: ./wasm/bin
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:

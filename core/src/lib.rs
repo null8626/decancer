@@ -13,6 +13,7 @@
 //!
 //! - Remember that this project is not perfect, false-positives may happen.
 
+#![deny(clippy::all)]
 #![allow(
   clippy::transmute_int_to_char,
   clippy::or_fun_call,
