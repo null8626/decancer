@@ -1,5 +1,5 @@
-#![allow(dead_code)]
 #![deny(clippy::all)]
+#![allow(clippy::inherent_to_string, dead_code)]
 
 #[macro_use]
 extern crate napi_derive;
@@ -29,12 +29,12 @@ impl CuredString {
 
   #[napi]
   pub fn equals(&self, other: String) -> bool {
-    self.0 == &other
+    self.0 == other
   }
 
   #[napi]
   pub fn to_string(&self) -> String {
-    self.0.clone().into_str()
+    self.0.clone().into()
   }
 }
 
