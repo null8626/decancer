@@ -412,7 +412,6 @@ jobs:
     name: Lint, prettier files, and Test Deno
     runs-on: ubuntu-latest
     needs:
-      - core
       - wasm
     steps:
       - uses: actions/checkout@v3
