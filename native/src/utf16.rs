@@ -8,7 +8,7 @@ unsafe fn wstr_from_ptr(input_ptr: *mut u16, input_size: usize) -> String {
 #[no_mangle]
 pub unsafe extern "C" fn wdecancer_cure(input_str: *mut u16, input_size: usize) -> *mut c_void {
   let s = wstr_from_ptr(input_str, input_size);
-  
+
   Box::into_raw(Box::new(decancer::cure(&s))) as _
 }
 
@@ -19,7 +19,7 @@ pub unsafe extern "C" fn wdecancer_equals(
   other_size: usize,
 ) -> bool {
   let s = wstr_from_ptr(other_str, other_size);
-  
+
   *(cured as *mut decancer::CuredString) == s
 }
 
@@ -30,7 +30,7 @@ pub unsafe extern "C" fn wdecancer_contains(
   other_size: usize,
 ) -> bool {
   let s = wstr_from_ptr(other_str, other_size);
-  
+
   (*(cured as *mut decancer::CuredString)).contains(&s)
 }
 
@@ -61,14 +61,14 @@ pub unsafe extern "C" fn wdecancer_raw(cured: *mut c_void, output_size: *mut usi
   let cured = cured as *mut decancer::CuredString;
   let vec: Vec<_> = (*cured).encode_utf16().collect();
   *output_size = vec.len();
-  
+
   Box::into_raw(Box::new(vec)) as _
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn wdecancer_raw_ptr(cured_raw: *mut c_void) -> *const u16 {
   let cured_raw = cured_raw as *mut Vec<u16>;
-  
+
   (*cured_raw).as_ptr()
 }
 

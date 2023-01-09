@@ -51,6 +51,6 @@ pub unsafe extern "C" fn decancer_ends_with(
 pub unsafe extern "C" fn decancer_raw(cured: *mut c_void, output_size: *mut usize) -> *const u8 {
   let cured = cured as *mut decancer::CuredString;
   *output_size = (*cured).len();
-  
+
   (*cured).as_ptr()
 }
