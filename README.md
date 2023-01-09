@@ -217,7 +217,7 @@ int main(void) {
   
   // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
   size_t output_size;
-  const uint8_t * output_raw = wdecancer_raw(cured, &output_size);
+  const uint8_t * output_raw = decancer_raw(cured, &output_size);
   
   // free cured string (required)
   decancer_free(cured);
