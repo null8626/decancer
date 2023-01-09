@@ -27,16 +27,17 @@ This library is available in the following languages:
 
 ## installation
 
-### Rust
-
+<details>
+<summary>Rust</summary>
 In your `Cargo.toml`:
 
 ```toml
 decancer = "1.5.3"
 ```
+</details>
 
-### Node.js
-
+<details>
+<summary>Node.js</summary>
 In your shell:
 
 ```console
@@ -48,9 +49,10 @@ In your code:
 ```js
 const decancer = require('decancer')
 ```
+</details>
 
-### Deno
-
+<details>
+<summary>Deno</summary>
 In your code:
 
 ```ts
@@ -58,9 +60,10 @@ import init from "https://deno.land/x/decancer@v1.5.3/mod.ts"
 
 const decancer = await init()
 ```
+</details>
 
-### Browser
-
+<details>
+<summary>Browser</summary>
 In your code:
 
 ```html
@@ -70,13 +73,11 @@ In your code:
   const decancer = await init()
 </script>
 ```
+</details>
 
-## C/C++
-
-### Building from source
-
+<details>
+<summary>C/C++</summary>
 Prerequisites:
-
 - [Git](https://git-scm.com/)
 - [Rust](https://rustup.rs/)
 
@@ -86,12 +87,25 @@ $ cd decancer/native
 $ cargo build --release
 ```
 
+By default, the C/C++ supports UTF-8 and UTF-16. If you only want to use a specific feature, run this instead:
+
+```console
+$ cargo build --release --no-default-features -F [utf8|utf16]
+```
+
+Then, before you include the `decancer.h` header file:
+
+```c
+#define DECANCER_DISABLE_[UTF8|UTF16]
+```
+</details>
+
 ## examples
 
 > **NOTE:** cured output will ALWAYS be in lowercase.
 
-### JavaScript
-
+<details>
+<summary>JavaScript</summary>
 ```js
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
@@ -108,9 +122,10 @@ if (cured.equals('very funny text') && cured.startsWith('very') && cured.endsWit
 
 console.log(cured.toString()); // 'very funny text'
 ```
+</details>
 
-### Rust
-
+<details>
+<summary>Rust</summary>
 ```rust
 extern crate decancer;
 
@@ -128,9 +143,10 @@ fn main() {
   let _output_str = output.into_str(); // retrieve the String inside and consume the struct.
 }
 ```
+</details>
 
-### Web app example
-
+<details>
+<summary>Web app example</summary>
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -171,11 +187,10 @@ fn main() {
   </body>
 </html>
 ```
+</details>
 
-### C++11 example
-
-> **NOTE:** **ALL** input strings **MUST** be in the ASCII/UTF-8 encoding.
-
+<details>
+<summary>C++11 example (UTF-8)</summary>
 ```cpp
 #include <decancer.h>
 #include <cstdlib>
@@ -185,7 +200,7 @@ fn main() {
 static inline void assert(const bool expr, const char * message) {
   if (!expr) {
     fprintf(stderr, "assertion failed (%s)\n", message);
-	exit(1);
+    exit(1);
   }
 }
 
@@ -199,17 +214,60 @@ int main(void) {
   assert(decancer_equals(cured, "very funny text", 15), "equals");
   assert(decancer_starts_with(cured, "very", 4), "starts_with");
   assert(decancer_ends_with(cured, "text", 4), "ends_with");
-  assert(decancer_contains(cured, "funny", 15), "contains");
+  assert(decancer_contains(cured, "funny", 5), "contains");
   
   // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
-  uint8_t * output_raw;
-  const size_t output_size = decancer_cured_string(cured, &output_raw);
+  size_t output_size;
+  const uint8_t * output_raw = wdecancer_raw(cured, &output_size);
   
   // free cured string (required)
   decancer_free(cured);
   return 0;
 }
 ```
+</details>
+
+<details>
+<summary>C example (UTF-16)</summary>
+```cpp
+#include <decancer.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+// our quick assert function
+static inline void assert(const bool expr, const char * message) {
+  if (!expr) {
+    fprintf(stderr, "assertion failed (%s)\n", message);
+    exit(1);
+  }
+}
+
+int main(void) {
+  uint16_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+  
+  // cure string
+  decancer_cured_t cured = wdecancer_cure(string, sizeof(string) - sizeof(uint16_t));
+  
+  // comparisons
+  assert(wdecancer_equals(cured, L"very funny text", 15 * sizeof(uint16_t)), "equals");
+  assert(wdecancer_starts_with(cured, L"very", 4 * sizeof(uint16_t)), "starts_with");
+  assert(wdecancer_ends_with(cured, L"text", 4 * sizeof(uint16_t)), "ends_with");
+  assert(wdecancer_contains(cured, L"funny", 5 * sizeof(uint16_t)), "contains");
+  
+  // coerce output as a raw UTF-16 pointer and retrieve it's size (in bytes)
+  size_t output_size;
+  wdecancer_raw_cured_t output_raw = wdecancer_raw(cured, &output_size);
+  const uint16_t * output_raw_ptr = wdecancer_raw_ptr(output_raw);
+  
+  // free raw cured UTF-16 string (required)
+  wdecancer_raw_free(output_raw);
+  
+  // free cured string (required)
+  decancer_free(cured);
+  return 0;
+}
+```
+</details>
 
 ## contributing
 
