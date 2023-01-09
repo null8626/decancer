@@ -9,11 +9,6 @@ license = "MIT"
 keywords = ["unicode", "string", "moderation", "confusables"]
 publish = false
 
-[features]
-default = ["utf8", "utf16"]
-utf8 = []
-utf16 = []
-
 [lib]
 name = "decancer"
 crate-type = ["cdylib"]

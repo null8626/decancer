@@ -84,18 +84,6 @@ $ git clone https://github.com/null8626/decancer.git --depth 1
 $ cd decancer/native
 $ cargo build --release
 ```
-
-By default, the C/C++ binding supports UTF-8 and UTF-16. If you only want to use a specific feature, run this instead:
-
-```console
-$ cargo build --release --no-default-features -F [utf8|utf16]
-```
-
-Then, before you include the `decancer.h` header file:
-
-```c
-#define DECANCER_DISABLE_[UTF8|UTF16]
-```
 </details>
 
 ## examples
