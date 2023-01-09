@@ -25,10 +25,11 @@ This library is available in the following languages:
 - C/C++
 - [Python](https://pypi.org/project/decancer-py/) (unofficial)
 
-## installation
+## Installation
 
 <details>
 <summary>Rust</summary>
+
 In your `Cargo.toml`:
 
 ```toml
@@ -37,6 +38,7 @@ decancer = "1.5.3"
 </details>
 <details>
 <summary>Node.js</summary>
+
 In your shell:
 
 ```console
@@ -51,6 +53,7 @@ const decancer = require('decancer')
 </details>
 <details>
 <summary>Deno</summary>
+
 In your code:
 
 ```ts
@@ -61,6 +64,7 @@ const decancer = await init()
 </details>
 <details>
 <summary>Browser</summary>
+
 In your code:
 
 ```html
@@ -86,7 +90,7 @@ $ cargo build --release
 ```
 </details>
 
-## examples
+## Examples
 
 > **NOTE:** cured output will ALWAYS be in lowercase.
 
@@ -180,6 +184,7 @@ fn main() {
 
 ```cpp
 #include <decancer.h>
+
 #include <cstdlib>
 #include <cstdio>
 
@@ -218,6 +223,7 @@ int main(void) {
 
 ```c
 #include <decancer.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -256,12 +262,12 @@ int main(void) {
 ```
 </details>
 
-## contributing
+## Contributing
 
 If you want to contribute, i appreciate that!!! ❤️❤️❤️<br>
 Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
 
-## special thanks
+## Special thanks
 
 These are the primary resources that made this project possible.
 
