@@ -433,6 +433,11 @@ jobs:
         run: |
           cargo clippy --fix --allow-dirty
           cargo fmt
+      - name: Lint and prettier native crate
+        working-directory: native
+        run: |
+          cargo clippy --fix --allow-dirty
+          cargo fmt
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:

@@ -22,6 +22,7 @@ This library is available in the following languages:
 
 - [Rust](https://crates.io/crates/decancer)
 - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Deno](https://deno.land/x/decancer@v1.5.3)/Browser)
+- C/C++
 - [Python](https://pypi.org/project/decancer-py/) (unofficial)
 
 ## installation
@@ -68,6 +69,21 @@ In your code:
 
   const decancer = await init()
 </script>
+```
+
+## C/C++
+
+### Building from source
+
+Prerequisites:
+
+- [Git](https://git-scm.com/)
+- [Rust](https://rustup.rs/)
+
+```console
+$ git clone https://github.com/null8626/decancer.git --depth 1
+$ cd decancer/native
+$ cargo build --release
 ```
 
 ## examples
@@ -154,6 +170,45 @@ fn main() {
     </script>
   </body>
 </html>
+```
+
+### C++11 example
+
+> **NOTE:** **ALL** input strings **MUST** be in the ASCII/UTF-8 encoding.
+
+```cpp
+#include <decancer.h>
+#include <cstdlib>
+#include <cstdio>
+
+// our quick assert function
+static inline void assert(const bool expr, const char * message) {
+  if (!expr) {
+    fprintf(stderr, "assertion failed (%s)\n", message);
+	exit(1);
+  }
+}
+
+int main(void) {
+  uint8_t string[] = u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+  
+  // cure string
+  decancer_cured_t cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
+  
+  // comparisons
+  assert(decancer_equals(cured, "very funny text", 15), "equals");
+  assert(decancer_starts_with(cured, "very", 4), "starts_with");
+  assert(decancer_ends_with(cured, "text", 4), "ends_with");
+  assert(decancer_contains(cured, "funny", 15), "contains");
+  
+  // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
+  uint8_t * output_raw;
+  const size_t output_size = decancer_cured_string(cured, &output_raw);
+  
+  // free cured string (required)
+  decancer_free(cured);
+  return 0;
+}
 ```
 
 ## contributing

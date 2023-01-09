@@ -14,6 +14,7 @@ const updateTomlFunc = (x) =>
 update(join(ROOT_DIR, 'core', 'Cargo.toml'), updateTomlFunc)
 update(join(ROOT_DIR, 'node', 'Cargo.toml'), updateTomlFunc)
 update(join(ROOT_DIR, 'wasm', 'Cargo.toml'), updateTomlFunc)
+update(join(ROOT_DIR, 'native', 'Cargo.toml'), updateTomlFunc)
 
 const updateJsonFunc = (x) => {
   const json = JSON.parse(x)
