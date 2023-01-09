@@ -35,7 +35,6 @@ In your `Cargo.toml`:
 decancer = "1.5.3"
 ```
 </details>
-
 <details>
 <summary>Node.js</summary>
 In your shell:
@@ -50,7 +49,6 @@ In your code:
 const decancer = require('decancer')
 ```
 </details>
-
 <details>
 <summary>Deno</summary>
 In your code:
@@ -61,7 +59,6 @@ import init from "https://deno.land/x/decancer@v1.5.3/mod.ts"
 const decancer = await init()
 ```
 </details>
-
 <details>
 <summary>Browser</summary>
 In your code:
@@ -74,10 +71,11 @@ In your code:
 </script>
 ```
 </details>
-
 <details>
 <summary>C/C++</summary>
+
 Prerequisites:
+
 - [Git](https://git-scm.com/)
 - [Rust](https://rustup.rs/)
 
@@ -106,6 +104,7 @@ Then, before you include the `decancer.h` header file:
 
 <details>
 <summary>JavaScript</summary>
+
 ```js
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
@@ -123,9 +122,9 @@ if (cured.equals('very funny text') && cured.startsWith('very') && cured.endsWit
 console.log(cured.toString()); // 'very funny text'
 ```
 </details>
-
 <details>
 <summary>Rust</summary>
+
 ```rust
 extern crate decancer;
 
@@ -144,9 +143,9 @@ fn main() {
 }
 ```
 </details>
-
 <details>
 <summary>Web app example</summary>
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -188,9 +187,9 @@ fn main() {
 </html>
 ```
 </details>
-
 <details>
-<summary>C++11 example (UTF-8)</summary>
+<summary>C++11 UTF-8 example</summary>
+
 ```cpp
 #include <decancer.h>
 #include <cstdlib>
@@ -226,10 +225,10 @@ int main(void) {
 }
 ```
 </details>
-
 <details>
-<summary>C example (UTF-16)</summary>
-```cpp
+<summary>C UTF-16 example</summary>
+
+```c
 #include <decancer.h>
 #include <stdlib.h>
 #include <stdio.h>
