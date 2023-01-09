@@ -5,6 +5,7 @@
 **/*.cjs linguist-vendored=true eol=lf
 **/*.rs eol=lf
 **/*.ts eol=lf
+**/*.h eol=lf
 **/*.md eol=lf
 **/*.toml eol=lf
 **/*.json eol=lf
