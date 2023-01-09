@@ -60,7 +60,7 @@ pub unsafe extern "C" fn wdecancer_ends_with(
 pub unsafe extern "C" fn wdecancer_raw(cured: *mut c_void, output_size: *mut usize) -> *mut c_void {
   let cured = cured as *mut decancer::CuredString;
   let vec: Vec<_> = (*cured).encode_utf16().collect();
-  *output_size = vec.len();
+  *output_size = vec.len() * 2;
 
   Box::into_raw(Box::new(vec)) as _
 }
