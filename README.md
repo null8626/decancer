@@ -85,7 +85,7 @@ $ cd decancer/native
 $ cargo build --release
 ```
 
-By default, the C/C++ supports UTF-8 and UTF-16. If you only want to use a specific feature, run this instead:
+By default, the C/C++ binding supports UTF-8 and UTF-16. If you only want to use a specific feature, run this instead:
 
 ```console
 $ cargo build --release --no-default-features -F [utf8|utf16]
