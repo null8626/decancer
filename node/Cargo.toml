@@ -13,12 +13,12 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2.10.4", default-features = false, features = [] }
-napi-derive = "2.9.3"
+napi = { version = "2", default-features = false, features = [] }
+napi-derive = "2"
 decancer = { path = "../core" } 
 
 [build-dependencies]
-napi-build = "2.0.1"
+napi-build = "2"
 
 [profile.release]
 lto = true
