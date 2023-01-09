@@ -29,6 +29,7 @@ This library is available in the following languages:
 
 <details>
 <summary>Rust</summary>
+
 In your `Cargo.toml`:
 
 ```toml
@@ -37,6 +38,7 @@ decancer = "1.5.3"
 </details>
 <details>
 <summary>Node.js</summary>
+
 In your shell:
 
 ```console
@@ -51,6 +53,7 @@ const decancer = require('decancer')
 </details>
 <details>
 <summary>Deno</summary>
+
 In your code:
 
 ```ts
@@ -61,6 +64,7 @@ const decancer = await init()
 </details>
 <details>
 <summary>Browser</summary>
+
 In your code:
 
 ```html
