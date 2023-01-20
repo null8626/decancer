@@ -1,5 +1,5 @@
 [package]
-name = "decancer_node"
+name = "decancer_native"
 version = "1.5.3"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
@@ -10,15 +10,8 @@ keywords = ["unicode", "string", "moderation", "confusables"]
 publish = false
 
 [lib]
+name = "decancer"
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2", default-features = false, features = [] }
-napi-derive = "2"
-decancer = { path = "../core" } 
-
-[build-dependencies]
-napi-build = "2"
-
-[profile.release]
-lto = true
+decancer = { path = "../../core" }

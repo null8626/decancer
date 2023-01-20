@@ -57,9 +57,7 @@ const decancer = require('decancer')
 In your code:
 
 ```ts
-import init from "https://deno.land/x/decancer@v1.5.3/mod.ts"
-
-const decancer = await init()
+import decancer from "npm:decancer"
 ```
 </details>
 <details>
@@ -69,7 +67,7 @@ In your code:
 
 ```html
 <script type="module">
-  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/decancer.min.js"
+  import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js"
 
   const decancer = await init()
 </script>
@@ -85,7 +83,7 @@ Prerequisites:
 
 ```console
 $ git clone https://github.com/null8626/decancer.git --depth 1
-$ cd decancer/native
+$ cd decancer/bindings/native
 $ cargo build --release
 ```
 </details>
@@ -161,7 +159,7 @@ fn main() {
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/decancer.min.js"
+      import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js"
       
       const decancer = await init()
       
