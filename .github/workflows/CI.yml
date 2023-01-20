@@ -172,6 +172,9 @@ jobs:
         run: ${{ matrix.settings.build }}
         if: ${{ !matrix.settings.docker }}
         shell: bash
+      - name: ls crap
+        run: ls -R
+        shell: bash
       - name: Run tests
         working-directory: node
         run: |
