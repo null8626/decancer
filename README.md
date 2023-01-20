@@ -183,13 +183,18 @@ fn main() {
 ```cpp
 #include <decancer.h>
 
+#include <cstring>
 #include <cstdlib>
 #include <cstdio>
 
+// global variable for assertion purposes only
+decancer_cured_t cured;
+
 // our quick assert function
-static inline void assert(const bool expr, const char * message) {
+static inline void assert(const bool expr, char * message) {
   if (!expr) {
     fprintf(stderr, "assertion failed (%s)\n", message);
+    decancer_free(cured); // clean things up before exiting
     exit(1);
   }
 }
@@ -198,7 +203,7 @@ int main(void) {
   uint8_t string[] = u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
   
   // cure string
-  decancer_cured_t cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
+  cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
   
   // comparisons
   assert(decancer_equals(cured, "very funny text", 15), "equals");
@@ -209,6 +214,20 @@ int main(void) {
   // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
   size_t output_size;
   const uint8_t * output_raw = decancer_raw(cured, &output_size);
+  
+  // assert raw cured utf-8 size to be 15 bytes (size of "very funny text")
+  assert(output_size == 15, "raw output size");
+
+  // utf-8 bytes for "very funny text"
+  const uint8_t expected_raw[] = { 0x76, 0x65, 0x72, 0x79, 0x20,
+                                   0x66, 0x75, 0x6e, 0x6e, 0x79,
+                                   0x20, 0x74, 0x65, 0x78, 0x74 };
+
+  char assert_message[38];
+  for (uint32_t i = 0; i < sizeof(expected_raw); i++) {
+    sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
+    assert(output_raw[i] == expected_raw[i], assert_message);
+  }
   
   // free cured string (required)
   decancer_free(cured);
@@ -225,30 +244,56 @@ int main(void) {
 #include <stdlib.h>
 #include <stdio.h>
 
+// global variable for assertion purposes only
+decancer_cured_t cured;
+wdecancer_raw_cured_t output_raw = NULL;
+
 // our quick assert function
 static inline void assert(const bool expr, const char * message) {
   if (!expr) {
     fprintf(stderr, "assertion failed (%s)\n", message);
+    
+    // clean things up before exiting
+    if (output_raw != NULL) {
+      wdecancer_raw_free(output_raw);
+      output_raw = NULL;
+    }
+    
+    decancer_free(cured);
     exit(1);
   }
 }
 
 int main(void) {
-  uint16_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+  wchar_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
   
   // cure string
-  decancer_cured_t cured = wdecancer_cure(string, sizeof(string) - sizeof(uint16_t));
+  cured = wdecancer_cure(string, (sizeof(string) - sizeof(wchar_t)) / sizeof(wchar_t));
   
   // comparisons
-  assert(wdecancer_equals(cured, L"very funny text", 15 * sizeof(uint16_t)), "equals");
-  assert(wdecancer_starts_with(cured, L"very", 4 * sizeof(uint16_t)), "starts_with");
-  assert(wdecancer_ends_with(cured, L"text", 4 * sizeof(uint16_t)), "ends_with");
-  assert(wdecancer_contains(cured, L"funny", 5 * sizeof(uint16_t)), "contains");
+  assert(wdecancer_equals(cured, L"very funny text", 15), "wide equals");
+  assert(wdecancer_starts_with(cured, L"very", 4), "wide starts_with");
+  assert(wdecancer_ends_with(cured, L"text", 4), "wide ends_with");
+  assert(wdecancer_contains(cured, L"funny", 5), "wide contains");
   
-  // coerce output as a raw UTF-16 pointer and retrieve it's size (in bytes)
-  size_t output_size;
-  wdecancer_raw_cured_t output_raw = wdecancer_raw(cured, &output_size);
-  const uint16_t * output_raw_ptr = wdecancer_raw_ptr(output_raw);
+  // coerce output as a raw UTF-16 pointer and retrieve it's length (in CHARACTERS)
+  size_t output_length;
+  output_raw = wdecancer_raw(cured, &output_length);
+  const wchar_t * output_raw_ptr = wdecancer_raw_ptr(output_raw);
+  
+  // assert raw cured utf-16 length to be 15 characters (length of "very funny text", NOT in bytes)
+  assert(output_length == 15, "wide raw output size");
+
+  // utf-16 bytes for "very funny text"
+  const wchar_t expected_raw[] = { 0x76, 0x65, 0x72, 0x79, 0x20,
+                                   0x66, 0x75, 0x6e, 0x6e, 0x79,
+                                   0x20, 0x74, 0x65, 0x78, 0x74 };
+
+  char assert_message[39];
+  for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(wchar_t); i++) {
+    sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
+    assert(output_raw_ptr[i] == expected_raw[i], assert_message);
+  }
   
   // free raw cured UTF-16 string (required)
   wdecancer_raw_free(output_raw);
