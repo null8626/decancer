@@ -191,7 +191,7 @@ fn main() {
 decancer_cured_t cured;
 
 // our quick assert function
-static inline void assert(const bool expr, char * message) {
+static void assert(const bool expr, char * message) {
   if (!expr) {
     fprintf(stderr, "assertion failed (%s)\n", message);
     decancer_free(cured); // clean things up before exiting
@@ -249,7 +249,7 @@ decancer_cured_t cured;
 wdecancer_raw_cured_t output_raw = NULL;
 
 // our quick assert function
-static inline void assert(const bool expr, const char * message) {
+static void assert(const bool expr, const char * message) {
   if (!expr) {
     fprintf(stderr, "assertion failed (%s)\n", message);
     
