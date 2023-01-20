@@ -1,12 +1,13 @@
 .github/** eol=lf
 **/*.bin binary
 **/*.wasm binary
+**/*.h linguist-vendored=true eol=lf
+**/*.cpp linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
 **/*.js linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf
 **/*.rs eol=lf
 **/*.ts eol=lf
-**/*.h eol=lf
 **/*.md eol=lf
 **/*.toml eol=lf
 **/*.json eol=lf
