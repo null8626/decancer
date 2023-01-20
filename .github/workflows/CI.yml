@@ -276,7 +276,7 @@ jobs:
           name: bindings-x86_64-unknown-linux-gnu
           path: bindings/node
       - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-slim node test.cjs
+        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node node:18-slim node test.cjs
   test-linux-x64-musl-node-binding:
     name: Test node bindings for x86_64-unknown-linux-musl
     needs:
@@ -302,7 +302,7 @@ jobs:
           name: bindings-x86_64-unknown-linux-musl
           path: bindings/node
       - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-alpine node test.cjs
+        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node node:18-alpine node test.cjs
   test-linux-aarch64-gnu-node-binding:
     name: Test node bindings for aarch64-unknown-linux-gnu
     needs:
@@ -327,7 +327,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
           run: |
             set -e
             node test.cjs
@@ -355,7 +355,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: multiarch/alpine:aarch64-latest-stable
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
           run: |
             set -e
             apk add nodejs npm yarn
@@ -383,7 +383,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
           run: |
             set -e
             node test.cjs
