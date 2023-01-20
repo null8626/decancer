@@ -6,7 +6,7 @@
 decancer_cured_t cured;
 wdecancer_raw_cured_t output_raw = NULL;
 
-static inline void assert(const bool expr, const char * message) {
+static void assert(const bool expr, const char * message) {
   if (!expr) {
     fprintf(stderr, "assertion failed (%s)\n", message);
     
