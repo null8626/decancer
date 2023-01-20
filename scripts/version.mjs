@@ -12,9 +12,9 @@ const updateTomlFunc = (x) =>
   x.replace(/version = "\d\.\d\.\d"/, `version = "${process.argv[2]}"`)
 
 update(join(ROOT_DIR, 'core', 'Cargo.toml'), updateTomlFunc)
-update(join(ROOT_DIR, 'node', 'Cargo.toml'), updateTomlFunc)
-update(join(ROOT_DIR, 'wasm', 'Cargo.toml'), updateTomlFunc)
-update(join(ROOT_DIR, 'native', 'Cargo.toml'), updateTomlFunc)
+update(join(ROOT_DIR, 'bindings', 'node', 'Cargo.toml'), updateTomlFunc)
+update(join(ROOT_DIR, 'bindings', 'wasm', 'Cargo.toml'), updateTomlFunc)
+update(join(ROOT_DIR, 'bindings', 'native', 'Cargo.toml'), updateTomlFunc)
 
 const updateJsonFunc = (x) => {
   const json = JSON.parse(x)
@@ -23,10 +23,14 @@ const updateJsonFunc = (x) => {
   return JSON.stringify(json, null, 2)
 }
 
-update(join(ROOT_DIR, 'node', 'package.json'), updateJsonFunc)
+update(join(ROOT_DIR, 'bindings', 'node', 'package.json'), updateJsonFunc)
 
-for (const dir of readdirSync(join(ROOT_DIR, 'node', 'npm')))
-  update(join(ROOT_DIR, 'node', 'npm', dir, 'package.json'), updateJsonFunc)
+for (const dir of readdirSync(join(ROOT_DIR, 'bindings', 'node', 'npm')))
+  update(join(ROOT_DIR, 'bindings', 'node', 'npm', dir, 'package.json'), updateJsonFunc)
+
+update(join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js'), (x) =>
+  x.replace(/(\d\.\d\.\d)/g, process.argv[2])
+)
 
 update(join(ROOT_DIR, 'README.md'), (x) =>
   x.replace(/(\d\.\d\.\d)/g, process.argv[2])

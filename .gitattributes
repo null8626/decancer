@@ -1,5 +1,6 @@
 .github/** eol=lf
-**/bin/* binary
+**/*.bin binary
+**/*.wasm binary
 **/*.mjs linguist-vendored=true eol=lf
 **/*.js linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf

@@ -1,5 +1,5 @@
 [package]
-name = "decancer_native"
+name = "decancer_wasm"
 version = "1.5.3"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
@@ -10,8 +10,8 @@ keywords = ["unicode", "string", "moderation", "confusables"]
 publish = false
 
 [lib]
-name = "decancer"
 crate-type = ["cdylib"]
 
 [dependencies]
-decancer = { path = "../core" }
+wasm-bindgen = "0.2.81"
+decancer = { path = "../../core" }

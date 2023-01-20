@@ -135,10 +135,10 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
-            node/.cargo-cache/registry/index/
-            node/.cargo-cache/registry/cache/
-            node/.cargo-cache/git/db/
-            node/target/
+            bindings/node/.cargo-cache/registry/index/
+            bindings/node/.cargo-cache/registry/cache/
+            bindings/node/.cargo-cache/git/db/
+            bindings/node/target/
           key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
       - uses: goto-bus-stop/setup-zig@v2
         if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
@@ -153,7 +153,7 @@ jobs:
         run: yarn config set supportedArchitectures.cpu "ia32"
         shell: bash
       - name: Install dependencies
-        working-directory: node
+        working-directory: bindings/node
         run: yarn install
       - name: Setup node x86
         uses: actions/setup-node@v3
@@ -168,15 +168,15 @@ jobs:
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/node/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/node/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/node/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/node'
+          options: '--user 0:0 -v ${{ github.workspace }}/node/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/bindings/node/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/node/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/node'
           run: ${{ matrix.settings.build }}
       - name: Build
-        working-directory: node
+        working-directory: bindings/node
         run: ${{ matrix.settings.build }}
         if: ${{ !matrix.settings.docker }}
         shell: bash
       - name: Move artifact
-        run: mv ./node/${{ env.APP_NAME }}.*.node .
+        run: mv ./bindings/node/${{ env.APP_NAME }}.*.node .
         shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -210,7 +210,7 @@ jobs:
             sh rustup.sh -y --profile minimal --default-toolchain stable
           run: |
             export PATH="/usr/local/cargo/bin:$PATH"
-            cd node
+            cd bindings/node
             yarn install --mode=skip-build
             yarn build
             strip -x *.node
@@ -218,7 +218,7 @@ jobs:
             node test.cjs
             rm -rf node_modules
             rm -rf target
-            mv ${{ env.APP_NAME }}.*.node ..
+            mv ${{ env.APP_NAME }}.*.node ../..
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -231,7 +231,7 @@ jobs:
       - build-node
     defaults:
       run:
-        working-directory: node
+        working-directory: bindings/node
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -249,7 +249,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-pc-windows-msvc
-          path: node
+          path: bindings/node
       - name: Test bindings
         run: node test.cjs
   test-linux-x64-gnu-node-binding:
@@ -266,7 +266,7 @@ jobs:
           check-latest: true
           cache: yarn
       - name: Install dependencies and Build TypeScript
-        working-directory: node
+        working-directory: bindings/node
         run: |
           yarn install
           npx tsc
@@ -274,9 +274,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-gnu
-          path: node
+          path: bindings/node
       - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-slim node test.cjs
+        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node node:18-slim node test.cjs
   test-linux-x64-musl-node-binding:
     name: Test node bindings for x86_64-unknown-linux-musl
     needs:
@@ -291,7 +291,7 @@ jobs:
           check-latest: true
           cache: yarn
       - name: Install dependencies and Build TypeScript
-        working-directory: node
+        working-directory: bindings/node
         run: |
           yarn config set supportedArchitectures.libc "musl"
           yarn install
@@ -300,9 +300,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-musl
-          path: node
+          path: bindings/node
       - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node node:18-alpine node test.cjs
+        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node node:18-alpine node test.cjs
   test-linux-aarch64-gnu-node-binding:
     name: Test node bindings for aarch64-unknown-linux-gnu
     needs:
@@ -315,9 +315,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-unknown-linux-gnu
-          path: node
+          path: bindings/node
       - name: Install dependencies and Build TypeScript
-        working-directory: node
+        working-directory: bindings/node
         run: |
           yarn config set supportedArchitectures.cpu "arm64"
           yarn config set supportedArchitectures.libc "glibc"
@@ -327,7 +327,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
           run: |
             set -e
             node test.cjs
@@ -343,9 +343,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-aarch64-unknown-linux-musl
-          path: node
+          path: bindings/node
       - name: Install dependencies and Build TypeScript
-        working-directory: node
+        working-directory: bindings/node
         run: |
           yarn config set supportedArchitectures.cpu "arm64"
           yarn config set supportedArchitectures.libc "musl"
@@ -355,7 +355,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: multiarch/alpine:aarch64-latest-stable
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
           run: |
             set -e
             apk add nodejs npm yarn
@@ -372,9 +372,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bindings-armv7-unknown-linux-gnueabihf
-          path: node
+          path: bindings/node
       - name: Install dependencies and Build TypeScript
-        working-directory: node
+        working-directory: bindings/node
         run: |
           yarn config set supportedArchitectures.cpu "arm"
           yarn install --mode=skip-build
@@ -383,7 +383,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/node'
+          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
           run: |
             set -e
             node test.cjs
@@ -397,11 +397,11 @@ jobs:
         with:
           rust-version: stable
       - name: Build wasm
-        working-directory: wasm
+        working-directory: bindings/wasm
         run: |
           cargo install wasm-pack
           wasm-pack build --no-typescript --release -t web
-          mv ./pkg/decancer_wasm_bg.wasm ../decancer.wasm
+          mv ./pkg/decancer_wasm_bg.wasm ../../decancer.wasm
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -409,7 +409,7 @@ jobs:
           path: |
             decancer.wasm
   prettier:
-    name: Lint, prettier files, and Test Deno
+    name: Lint and prettier files
     runs-on: ubuntu-latest
     needs:
       - wasm
@@ -424,17 +424,17 @@ jobs:
           cargo clippy --fix --allow-dirty
           cargo fmt
       - name: Lint and prettier node crate
-        working-directory: node
+        working-directory: bindings/node
         run: |
           cargo clippy --fix --allow-dirty
           cargo fmt
       - name: Lint and prettier wasm crate
-        working-directory: wasm
+        working-directory: bindings/wasm
         run: |
           cargo clippy --fix --allow-dirty
           cargo fmt
       - name: Lint and prettier native crate
-        working-directory: native
+        working-directory: bindings/native
         run: |
           cargo clippy --fix --allow-dirty
           cargo fmt
@@ -442,7 +442,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: decancer-wasm-binary
-          path: ./wasm/bin
+          path: bindings/wasm/bin
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
@@ -453,18 +453,12 @@ jobs:
         uses: geekyeggo/delete-artifact@v2
         with:
           name: decancer-wasm-binary
-      - name: Setup Deno
-        uses: denoland/setup-deno@v1
-        with:
-          deno-version: v1.x
-      - name: Test Deno
-        run: deno run --allow-net test_deno.ts
   publish-node:
     name: Publish node bindings
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: node
+        working-directory: bindings/node
     needs:
       - prettier
       - build-node-freebsd
@@ -487,12 +481,12 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: node/artifacts
+          path: bindings/node/artifacts
       - name: Move artifacts
         run: yarn artifacts
       - name: Move README.md and Build TypeScript
         run: |
-          mv ../README.md .
+          mv ../../README.md .
           npx tsc
       - name: Publish
         run: |
