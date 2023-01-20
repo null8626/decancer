@@ -126,12 +126,12 @@ fn main() {
   // cured here is a decancer::CuredString struct wrapping over the cured string
   // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
   
-  assert_eq!(output, "very funny text");
-  assert!(output.starts_with("very"));
-  assert!(output.contains("funny"));
-  assert!(output.ends_with("text"));
+  assert_eq!(cured, "very funny text");
+  assert!(cured.starts_with("very"));
+  assert!(cured.contains("funny"));
+  assert!(cured.ends_with("text"));
 
-  let _output_str = output.into_str(); // retrieve the String inside and consume the struct.
+  let _output_str = cured.into_str(); // retrieve the String inside and consume the struct.
 }
 ```
 </details>
