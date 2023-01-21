@@ -22,7 +22,8 @@ const coreAffected = filesChanged.some(
   (file) => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
 )
 
-console.log(Object.entries({
+console.log(
+  Object.entries({
     is_release: /^\d+\.\d+\.\d+$/.test(commit),
     core_affected: coreAffected,
     node_affected:
@@ -39,7 +40,8 @@ console.log(Object.entries({
           file === 'bindings/native/decancer.h'
       ),
     readme_affected: filesChanged.includes('README.md')
-  }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, ''))
+  }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, '')
+)
 
 appendFileSync(
   process.env.GITHUB_OUTPUT,
