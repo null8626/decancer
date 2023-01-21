@@ -12,7 +12,7 @@ const execute = (command, cwd) =>
 const [commit, filesChanged] = await Promise.all([
   execute('git log -1 --pretty=%B'),
   new Promise((resolve) =>
-    execute('git diff --name-only HEAD~1 HEAD').then((out) => out.split(EOL))
+    execute('git diff --name-only HEAD~1 HEAD').then((out) => resolve(out.split(EOL)))
   )
 ])
 
