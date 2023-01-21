@@ -11,3 +11,7 @@ bindings/node/artifacts/
 bindings/wasm/pkg/
 **/*output*
 **/*Optimized.json
+
+# CI creates temporary files in the root dir
+.prettierrc.json
+.prettierignore

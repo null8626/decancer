@@ -13,9 +13,33 @@ on:
       - '**/src/**/*.rs'
       - 'core/bin/confusables.bin'
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      is_release: ${{ steps.setup.outputs.is_release }}
+      core_affected: ${{ steps.setup.outputs.core_affected }}
+      node_affected: ${{ steps.setup.outputs.node_affected }}
+      wasm_affected: ${{ steps.setup.outputs.wasm_affected }}
+      native_affected: ${{ steps.setup.outputs.native_affected }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
+      - name: Setup
+        id: setup
+        run: node scripts/ci_setup.mjs
   core:
     name: Test core
     runs-on: ubuntu-latest
+    needs:
+      - setup
+    if: ${{ needs.setup.outputs.core_affected == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
@@ -25,7 +49,6 @@ jobs:
         working-directory: core
         run: cargo test
   build-node:
-    if: '!contains(github.event.head_commit.message, ''skip ci'')'
     strategy:
       matrix:
         settings:
@@ -109,6 +132,7 @@ jobs:
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
     needs: core
+    if: ${{ needs.core.needs.setup.outputs.is_release == 'true' || (needs.core.needs.setup.outputs.node_affected == 'true' && matrix.settings.target == 'x86_64-unknown-linux-gnu') }}
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -186,8 +210,9 @@ jobs:
           if-no-files-found: error
   build-node-freebsd:
     runs-on: macos-10.15
-    name: Build and test node bindings for FreeBSD
+    name: Build node bindings for FreeBSD
     needs: core
+    if: ${{ needs.core.needs.setup.outputs.is_release == 'true' || needs.core.needs.setup.outputs.node_affected == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -214,8 +239,6 @@ jobs:
             yarn install --mode=skip-build
             yarn build
             strip -x *.node
-            npx tsc
-            node test.cjs
             rm -rf node_modules
             rm -rf target
             mv ${{ env.APP_NAME }}.*.node ../..
@@ -225,35 +248,8 @@ jobs:
           name: bindings-freebsd
           path: ${{ env.APP_NAME }}.*.node
           if-no-files-found: error
-  test-macOS-windows-node-binding:
-    name: Test node bindings for MacOS and Windows
-    needs:
-      - build-node
-    defaults:
-      run:
-        working-directory: bindings/node
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install dependencies and Build TypeScript
-        run: |
-          yarn install
-          npx tsc
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-x86_64-pc-windows-msvc
-          path: bindings/node
-      - name: Test bindings
-        run: node test.cjs
-  test-linux-x64-gnu-node-binding:
-    name: Test node bindings for Linux-x64-gnu
+  test-node:
+    name: Test node bindings
     needs:
       - build-node
     runs-on: ubuntu-latest
@@ -277,120 +273,11 @@ jobs:
           path: bindings/node
       - name: Test bindings
         run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node node:18-slim node test.cjs
-  test-linux-x64-musl-node-binding:
-    name: Test node bindings for x86_64-unknown-linux-musl
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install dependencies and Build TypeScript
-        working-directory: bindings/node
-        run: |
-          yarn config set supportedArchitectures.libc "musl"
-          yarn install
-          npx tsc
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-x86_64-unknown-linux-musl
-          path: bindings/node
-      - name: Test bindings
-        run: docker run --rm -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node node:18-alpine node test.cjs
-  test-linux-aarch64-gnu-node-binding:
-    name: Test node bindings for aarch64-unknown-linux-gnu
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-aarch64-unknown-linux-gnu
-          path: bindings/node
-      - name: Install dependencies and Build TypeScript
-        working-directory: bindings/node
-        run: |
-          yarn config set supportedArchitectures.cpu "arm64"
-          yarn config set supportedArchitectures.libc "glibc"
-          yarn install
-          npx tsc
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/napi-rs/napi-rs/nodejs:aarch64-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
-          run: |
-            set -e
-            node test.cjs
-  test-linux-aarch64-musl-node-binding:
-    name: Test node bindings for aarch64-unknown-linux-musl
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-aarch64-unknown-linux-musl
-          path: bindings/node
-      - name: Install dependencies and Build TypeScript
-        working-directory: bindings/node
-        run: |
-          yarn config set supportedArchitectures.cpu "arm64"
-          yarn config set supportedArchitectures.libc "musl"
-          yarn install
-          npx tsc
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: multiarch/alpine:aarch64-latest-stable
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
-          run: |
-            set -e
-            apk add nodejs npm yarn
-            node test.cjs
-  test-linux-arm-gnueabihf-node-binding:
-    name: Test node bindings for armv7-unknown-linux-gnueabihf
-    needs:
-      - build-node
-    runs-on: ubuntu-latest
-    steps:
-      - run: docker run --rm --privileged multiarch/qemu-user-static:register --reset
-      - uses: actions/checkout@v3
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-armv7-unknown-linux-gnueabihf
-          path: bindings/node
-      - name: Install dependencies and Build TypeScript
-        working-directory: bindings/node
-        run: |
-          yarn config set supportedArchitectures.cpu "arm"
-          yarn install --mode=skip-build
-          npx tsc
-      - name: Setup and run tests
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ghcr.io/napi-rs/napi-rs/nodejs:armhf-18
-          options: '-v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}/bindings/node'
-          run: |
-            set -e
-            node test.cjs
   wasm:
     name: Build wasm
     runs-on: ubuntu-latest
     needs: core
+    if: ${{ needs.core.needs.setup.outputs.wasm_affected == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
@@ -418,27 +305,10 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - name: Lint and prettier core crate
-        working-directory: core
-        run: |
-          cargo clippy --fix --allow-dirty
-          cargo fmt
-      - name: Lint and prettier node crate
-        working-directory: bindings/node
-        run: |
-          cargo clippy --fix --allow-dirty
-          cargo fmt
-      - name: Lint and prettier wasm crate
-        working-directory: bindings/wasm
-        run: |
-          cargo clippy --fix --allow-dirty
-          cargo fmt
-      - name: Lint and prettier native crate
-        working-directory: bindings/native
-        run: |
-          cargo clippy --fix --allow-dirty
-          cargo fmt
+      - name: Prettier everything
+        run: node scripts/ci_pretty.mjs
       - name: Download artifact
+        if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
         uses: actions/download-artifact@v3
         with:
           name: decancer-wasm-binary
@@ -446,10 +316,11 @@ jobs:
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: update files on commit'
+          message: 'chore: prettier and update wasm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Remove wasm artifact
+        if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
         uses: geekyeggo/delete-artifact@v2
         with:
           name: decancer-wasm-binary
@@ -462,12 +333,8 @@ jobs:
     needs:
       - prettier
       - build-node-freebsd
-      - test-macOS-windows-node-binding
-      - test-linux-x64-gnu-node-binding
-      - test-linux-x64-musl-node-binding
-      - test-linux-aarch64-gnu-node-binding
-      - test-linux-aarch64-musl-node-binding
-      - test-linux-arm-gnueabihf-node-binding
+      - test-node
+    if: ${{ needs.build-node-freebsd.needs.core.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -490,13 +357,8 @@ jobs:
           npx tsc
       - name: Publish
         run: |
-          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
-          then
-            echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-            npm publish --access public
-          else
-            echo "Not a release, skipping publish"
-          fi
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+          npm publish --access public
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
