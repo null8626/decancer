@@ -1,4 +1,4 @@
-name: le CI
+name: CI
 env:
   DEBUG: napi:*
   APP_NAME: decancer
@@ -11,7 +11,13 @@ on:
       - '**'
     paths:
       - '**/src/**/*.rs'
+      - '**/*.cjs'
+      - '**/*.ts'
+      - '**/*.mjs'
+      - '**/*.json'
       - 'core/bin/confusables.bin'
+      - 'bindings/native/test.cpp'
+      - 'bindings/native/decancer.h'
 jobs:
   setup:
     name: Setup
@@ -132,7 +138,7 @@ jobs:
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
     needs: core
-    if: ${{ needs.core.needs.setup.outputs.is_release == 'true' || (needs.core.needs.setup.outputs.node_affected == 'true' && matrix.settings.target == 'x86_64-unknown-linux-gnu') }}
+    if: ${{ needs.core.needs.setup.outputs.is_release == 'true' || needs.core.needs.setup.outputs.node_affected == 'true' }}
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -305,6 +311,11 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          check-latest: true
       - name: Prettier everything
         run: node scripts/ci_pretty.mjs
       - name: Download artifact

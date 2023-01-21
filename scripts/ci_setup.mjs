@@ -14,7 +14,7 @@ const [commit, filesChanged] = await Promise.all([
 ])
 
 const coreAffected = filesChanged.some(
-  (file) => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
+  file => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
 )
 
 appendFileSync(
