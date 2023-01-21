@@ -346,6 +346,7 @@ jobs:
       - prettier
       - build-node-freebsd
       - test-node
+    if: ${{ needs.build-node-freebsd.needs.core.needs.setup.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node

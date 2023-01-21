@@ -15,3 +15,4 @@ bindings/wasm/pkg/
 # CI creates temporary files in the root dir
 .prettierrc.json
 .prettierignore
+package.json

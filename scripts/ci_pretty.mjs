@@ -90,7 +90,7 @@ function updateReadmePromise(resolve) {
         readme
           .split('\n')
           .map((line) => `//! ${line}`)
-          .join('\n') + libRs
+          .join('\n') + '\n' + libRs
       )
     ]).then(resolve)
   )
