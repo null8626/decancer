@@ -18,6 +18,9 @@ const [commit, filesChanged] = await Promise.all([
   )
 ])
 
+console.log(`commit: ${commit}`)
+console.log(`commit 2: ${filesChanged}`)
+
 const coreAffected = filesChanged.some(
   (file) => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
 )
