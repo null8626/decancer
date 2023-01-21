@@ -26,13 +26,10 @@ appendFileSync(
     is_release: /^\d+\.\d+\.\d+$/.test(commit),
     core_affected: coreAffected,
     node_affected:
-      coreAffected ||
       filesChanged.some((file) => file.startsWith('bindings/node/src')),
     wasm_affected:
-      coreAffected ||
       filesChanged.some((file) => file.startsWith('bindings/wasm/src')),
     native_affected:
-      coreAffected ||
       filesChanged.some(
         (file) =>
           file.startsWith('bindings/native/src') ||
