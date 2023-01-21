@@ -26,11 +26,11 @@ appendFileSync(
     is_release: /^\d+\.\d+\.\d+$/.test(commit),
     core_affected: coreAffected,
     node_affected:
-      filesChanged.some((file) => file.startsWith('bindings/node/src')),
+      coreAffected || filesChanged.some((file) => file.startsWith('bindings/node/src')),
     wasm_affected:
-      filesChanged.some((file) => file.startsWith('bindings/wasm/src')),
+      coreAffected || filesChanged.some((file) => file.startsWith('bindings/wasm/src')),
     native_affected:
-      filesChanged.some(
+      coreAffected || filesChanged.some(
         (file) =>
           file.startsWith('bindings/native/src') ||
           file === 'bindings/native/decancer.h'

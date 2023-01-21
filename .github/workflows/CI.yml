@@ -138,7 +138,7 @@ jobs:
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
     needs: core
-    if: ${{ needs.core.needs.setup.outputs.is_release == 'true' || needs.core.needs.setup.outputs.node_affected == 'true' }}
+    if: ${{ always() && (needs.core.needs.setup.outputs.is_release == 'true' || needs.core.needs.setup.outputs.node_affected == 'true') }}
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -218,7 +218,7 @@ jobs:
     runs-on: macos-10.15
     name: Build node bindings for FreeBSD
     needs: core
-    if: ${{ needs.core.needs.setup.outputs.is_release == 'true' || needs.core.needs.setup.outputs.node_affected == 'true' }}
+    if: ${{ always() && (needs.core.needs.setup.outputs.is_release == 'true' || needs.core.needs.setup.outputs.node_affected == 'true') }}
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -283,7 +283,7 @@ jobs:
     name: Build wasm
     runs-on: ubuntu-latest
     needs: core
-    if: ${{ needs.core.needs.setup.outputs.wasm_affected == 'true' }}
+    if: ${{ always() && needs.core.needs.setup.outputs.wasm_affected == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
@@ -305,8 +305,8 @@ jobs:
     name: Lint and prettier files
     runs-on: ubuntu-latest
     needs:
-      - setup
       - wasm
+    if: ${{ always() }}
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
@@ -346,7 +346,6 @@ jobs:
       - prettier
       - build-node-freebsd
       - test-node
-    if: ${{ needs.build-node-freebsd.needs.core.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
