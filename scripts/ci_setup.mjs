@@ -12,7 +12,9 @@ const execute = (command, cwd) =>
 const [commit, filesChanged] = await Promise.all([
   execute('git log -1 --pretty=%B'),
   new Promise((resolve) =>
-    execute('git diff --name-only HEAD~1 HEAD').then((out) => resolve(out.split(EOL)))
+    execute('git diff --name-only HEAD~1 HEAD').then((out) =>
+      resolve(out.split(EOL))
+    )
   )
 ])
 
@@ -26,11 +28,14 @@ appendFileSync(
     is_release: /^\d+\.\d+\.\d+$/.test(commit),
     core_affected: coreAffected,
     node_affected:
-      coreAffected || filesChanged.some((file) => file.startsWith('bindings/node/src')),
+      coreAffected ||
+      filesChanged.some((file) => file.startsWith('bindings/node/src')),
     wasm_affected:
-      coreAffected || filesChanged.some((file) => file.startsWith('bindings/wasm/src')),
+      coreAffected ||
+      filesChanged.some((file) => file.startsWith('bindings/wasm/src')),
     native_affected:
-      coreAffected || filesChanged.some(
+      coreAffected ||
+      filesChanged.some(
         (file) =>
           file.startsWith('bindings/native/src') ||
           file === 'bindings/native/decancer.h'

@@ -333,8 +333,7 @@
 //! - [Fancy Text Generator](https://lingojam.com/FancyTextGenerator)
 //! - [Unicode character inspector](https://apps.timwhitlock.info/unicode/inspect)
 //! - [`napi-rs` for integrating Rust into the Node.js ecosystem](https://napi.rs/)
-//! - [`wasm-bindgen` for making the development of WebAssembly modules in Rust easier](https://github.com/rustwasm/wasm-bindgen)
-#![deny(clippy::all)]
+//! - [`wasm-bindgen` for making the development of WebAssembly modules in Rust easier](https://github.com/rustwasm/wasm-bindgen)#![deny(clippy::all)]
 #![allow(
   clippy::transmute_int_to_char,
   clippy::or_fun_call,
