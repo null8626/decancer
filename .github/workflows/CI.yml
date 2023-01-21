@@ -272,7 +272,7 @@ jobs:
         run: |
           yarn install
           npx tsc
-      - name: Download artifacts
+      - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: bindings-x86_64-unknown-linux-gnu
@@ -319,7 +319,7 @@ jobs:
           check-latest: true
       - name: Prettier everything
         run: node scripts/ci_pretty.mjs
-      - name: Download artifact
+      - name: Download wasm artifact
         if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
         uses: actions/download-artifact@v3
         with:
