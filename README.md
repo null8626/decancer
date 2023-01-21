@@ -7,23 +7,22 @@
 
 A tiny package that removes common confusables from strings.
 
-Pros:
-
-- BLAZINGLY FAST™ 🚀🚀🚀, no use of regex whatsoever!
-- No use of any external dependencies.
-- Very simple to use!
-- Supports more than **3000 unicode codepoints**. This should cover the vast majority of confusables, including emojis, zalgos, etc.
-
-Con:
-
-- Remember that this project is not perfect, false-positives may happen.
-
-This library is available in the following languages:
-
-- [Rust](https://crates.io/crates/decancer)
-- JavaScript ([Node.js/Deno/Bun](https://www.npmjs.com/package/decancer)/Browser)
-- C/C++
-- [Python](https://pypi.org/project/decancer-py) (unofficial)
+- It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
+- It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
+- It supports curing **4,105 different confusables** into cured-lowercased-strings, including but not limited to:
+	- Accented characters
+	- [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
+	- [Control characters](https://en.wikipedia.org/wiki/Control_character)
+	- [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
+	- Several foreign characters, including but not limited to [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
+	- Several emojis
+	- [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
+	- [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
+- And it's supported in the following languages:
+	- [Rust](https://crates.io/crates/decancer)
+	- JavaScript ([Node.js/Deno/Bun](https://www.npmjs.com/package/decancer)/Browser)
+	- C/C++
+	- [Python](https://pypi.org/project/decancer-py) (unofficial)
 
 ## Installation
 
@@ -58,6 +57,21 @@ In your code:
 
 ```ts
 import decancer from "npm:decancer"
+```
+</details>
+<details>
+<summary>Bun</summary>
+
+In your shell:
+
+```console
+$ bun install decancer
+```
+
+In your code:
+
+```js
+const decancer = require('decancer')
 ```
 </details>
 <details>
@@ -307,8 +321,7 @@ int main(void) {
 
 ## Contributing
 
-If you want to contribute, i appreciate that!!! ❤️❤️❤️<br>
-Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
+Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
 
 ## Special thanks
 

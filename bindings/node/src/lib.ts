@@ -33,10 +33,8 @@ function loadBinding(name: string) {
   const path: string = join(__dirname, '..', `decancer.${name}.node`)
   let exported = null
 
-  if (existsSync(path))
-    exported = require(path)
-  else
-    exported = require(`@vierofernando/decancer-${name}`)
+  if (existsSync(path)) exported = require(path)
+  else exported = require(`@vierofernando/decancer-${name}`)
 
   module.exports = exported.decancer
 }
@@ -64,14 +62,15 @@ const platforms: Record<string, Record<string, Arch>> = {
 
 try {
   const data: Option<Arch> = platforms[process.platform][process.arch]
-  assert(data != null, `This platform (${process.platform} on a ${process.arch}) is not supported.`)
+  assert(
+    data != null,
+    `This platform (${process.platform} on a ${process.arch}) is not supported.`
+  )
 
   if (typeof data === 'string') loadBinding(data)
   else {
-    if (data.musl && isMusl())
-      loadBinding(`${data.name}-musl`)
-    else
-      loadBinding(`${data.name}-gnu`)
+    if (data.musl && isMusl()) loadBinding(`${data.name}-musl`)
+    else loadBinding(`${data.name}-gnu`)
   }
 } catch (err) {
   console.error(
