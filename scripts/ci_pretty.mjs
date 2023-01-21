@@ -24,7 +24,12 @@ bindings/wasm/pkg/**
 .prettierrc.json
 `.trim()
 
-const execute = (command, cwd) => exec(command, { cwd, stdio: 'inherit' })
+const execute = (command, cwd) =>
+  new Promise((resolve, reject) =>
+    exec(command, { cwd }, (error) =>
+      error ? reject(error?.stack) : resolve()
+    )
+  )
 
 function retrieveReadmePromise(resolve) {
   readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then((bin) => {

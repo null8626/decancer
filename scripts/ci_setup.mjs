@@ -2,19 +2,22 @@ import { exec } from 'node:child_process'
 import { appendFileSync } from 'node:fs'
 import { EOL } from 'node:os'
 
-const [commit, filesChanged] = await Promise.all([
-  new Promise((resolve) =>
-    exec('git log -1 --pretty=%B').then((out) => resolve(out.toString().trim()))
-  ),
-  new Promise((resolve) =>
-    exec('git diff --name-only HEAD~1 HEAD').then((out) =>
-      resolve(out.toString().trim().split(EOL))
+const execute = (command, cwd) =>
+  new Promise((resolve, reject) =>
+    exec(command, { cwd }, (error, stderr, stdout) =>
+      error ? reject(error?.stack) : resolve(stdout.toString().trim())
     )
+  )
+
+const [commit, filesChanged] = await Promise.all([
+  execute('git log -1 --pretty=%B'),
+  new Promise((resolve) =>
+    execute('git diff --name-only HEAD~1 HEAD').then((out) => out.split(EOL))
   )
 ])
 
 const coreAffected = filesChanged.some(
-  file => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
+  (file) => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
 )
 
 appendFileSync(

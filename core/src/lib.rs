@@ -9,7 +9,7 @@
 //! 
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-//! - It supports curing **4,105 different confusables**, including but not limited to:
+//! - It supports curing **4,105 different confusables** into cured-lowercased-strings, including but not limited to:
 //! 	- Accented characters
 //! 	- [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
 //! 	- [Control characters](https://en.wikipedia.org/wiki/Control_character)
@@ -57,6 +57,21 @@
 //! 
 //! ```ts
 //! import decancer from "npm:decancer"
+//! ```
+//! </details>
+//! <details>
+//! <summary>Bun</summary>
+//! 
+//! In your shell:
+//! 
+//! ```console
+//! $ bun install decancer
+//! ```
+//! 
+//! In your code:
+//! 
+//! ```js
+//! const decancer = require('decancer')
 //! ```
 //! </details>
 //! <details>
@@ -306,8 +321,7 @@
 //! 
 //! ## Contributing
 //! 
-//! If you want to contribute, i appreciate that!!! ❤️❤️❤️<br>
-//! Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for more details! ❤️
+//! Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
 //! 
 //! ## Special thanks
 //! 
@@ -319,7 +333,13 @@
 //! - [Fancy Text Generator](https://lingojam.com/FancyTextGenerator)
 //! - [Unicode character inspector](https://apps.timwhitlock.info/unicode/inspect)
 //! - [`napi-rs` for integrating Rust into the Node.js ecosystem](https://napi.rs/)
-//! - [`wasm-bindgen` for making the development of WebAssembly modules in Rust easier](https://github.com/rustwasm/wasm-bindgen)  clippy::from_over_into,
+//! - [`wasm-bindgen` for making the development of WebAssembly modules in Rust easier](https://github.com/rustwasm/wasm-bindgen)
+#![deny(clippy::all)]
+#![allow(
+  clippy::transmute_int_to_char,
+  clippy::or_fun_call,
+  clippy::ptr_offset_with_cast,
+  clippy::from_over_into,
   dead_code
 )]
 
