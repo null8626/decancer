@@ -317,6 +317,7 @@ jobs:
         with:
           node-version: 18
           check-latest: true
+      - run: echo "asdf ${{ needs.wasm.needs.core.needs.setup.outputs.core_affected }} ${{ needs.wasm.needs.core.needs.setup.outputs.node_affected }} ${{ needs.wasm.needs.core.needs.setup.outputs.is_release }} asdf"
       - name: Prettier everything
         run: node scripts/ci_pretty.mjs
       - name: Download wasm artifact
