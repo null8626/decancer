@@ -477,9 +477,6 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: bindings/node
     needs:
       - setup
       - node-freebsd
