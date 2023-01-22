@@ -17,8 +17,7 @@ const {
 } = await response.json()
 
 const coreAffected = files.some(
-  ({ filename }) =>
-    filename.startsWith('core/src/') || file === 'core/bin/confusables.bin'
+  ({ filename }) => filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
 )
 
 console.log(
@@ -45,7 +44,7 @@ console.log(
 appendFileSync(
   process.env.GITHUB_OUTPUT,
   Object.entries({
-    is_release: /^\d+\.\d+\.\d+$/.test(commit),
+    is_release: /^\d+\.\d+\.\d+$/.test(message),
     core_affected: coreAffected,
     node_affected:
       coreAffected ||
