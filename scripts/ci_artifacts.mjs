@@ -10,7 +10,7 @@ const ARTIFACTS = join(ROOT_DIR, 'artifacts')
 const execute = (command, cwd) =>
   new Promise((resolve, reject) =>
     exec(command, { cwd }, (error) =>
-      error ? reject(error?.stack) : resolve()
+      (error) ? reject(error.stack) : resolve()
     )
   )
 
@@ -21,7 +21,7 @@ const [artifacts] = await Promise.all([
 
 void await Promise.all(artifacts.map(artifact => {
   if (artifact.startsWith('native-')) {
-	return execute(`zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*.node`, ARTIFACTS)
+	return execute(`zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`, ARTIFACTS)
   } else {
 	return new Promise(resolve => {
 	  const artifactsDir = join(NODE_ARTIFACTS, artifact.replace(/^node\-/, 'bindings-'))
