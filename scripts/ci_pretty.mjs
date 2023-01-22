@@ -1,5 +1,6 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -14,7 +15,7 @@ const PRETTIERRC = JSON.stringify({
   semi: false,
   singleQuote: true,
   trailingComma: 'none',
-  allowParens: 'avoid',
+  arrowParens: 'avoid',
   htmlWhitespaceSensitivity: 'ignore'
 })
 
@@ -30,15 +31,10 @@ bindings/wasm/pkg/**
 .prettierrc.json
 `.trim()
 
-const execute = (command, cwd) =>
-  new Promise((resolve, reject) =>
-    exec(command, { cwd }, (error) =>
-      error ? reject(error?.stack) : resolve()
-    )
-  )
+const execute = promisify(exec)
 
 function retrieveReadmePromise(resolve) {
-  readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then((bin) => {
+  readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then(bin => {
     let confusablesCount = NON_BINARY_CONFUSABLES_COUNT
     const confusablesEnd = bin.readUint16LE()
 
@@ -57,14 +53,13 @@ function retrieveReadmePromise(resolve) {
         (integer & 0x40000000) === 0 &&
         String.fromCodePoint(codepoint).toUpperCase().codePointAt() !==
           codepoint
-      ) {
+      )
         toAdd *= 2
-      }
 
       confusablesCount += toAdd
     }
 
-    readFile(README_MD).then((readme) =>
+    readFile(README_MD).then(readme =>
       resolve(
         readme
           .toString()
@@ -79,7 +74,7 @@ function retrieveReadmePromise(resolve) {
 }
 
 function retrieveLibRsPromise(resolve) {
-  readFile(LIB_RS).then((libRs) => {
+  readFile(LIB_RS).then(libRs => {
     resolve(libRs.toString().replace(/\/\/!.*?\n/g, ''))
   })
 }
@@ -93,12 +88,10 @@ function updateReadmePromise(resolve) {
       writeFile(README_MD, readme),
       writeFile(
         LIB_RS,
-        readme
+        `${readme
           .split('\n')
-          .map((line) => `//! ${line}`)
-          .join('\n') +
-          '\n' +
-          libRs
+          .map(line => `//! ${line}`)
+          .join('\n')}\n${libRs}`
       )
     ]).then(resolve)
   )
@@ -106,22 +99,21 @@ function updateReadmePromise(resolve) {
 
 function prettierPromise(resolve) {
   Promise.all([
-    execute('npm i prettier', ROOT_DIR),
+    execute('npm i prettier', { cwd: ROOT_DIR }),
     writeFile(join(ROOT_DIR, '.prettierrc.json'), PRETTIERRC),
     writeFile(join(ROOT_DIR, '.prettierignore'), PRETTIERIGNORE)
   ]).then(() => {
-    Promise.all([
-      execute('npx prettier **/*.ts --write', ROOT_DIR),
-      execute('npx prettier **/*.mjs --write', ROOT_DIR),
-      execute('npx prettier **/*.cjs --write', ROOT_DIR),
-      execute('npx prettier **/*.json --write', ROOT_DIR)
-    ]).then(() => execute('git restore yarn.lock', ROOT_DIR).then(resolve))
+    execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
+      cwd: ROOT_DIR
+    }).then(() =>
+      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(resolve)
+    )
   })
 }
 
 async function handleCargo(cwd) {
-  await execute('cargo clippy --fix --allow-dirty', cwd)
-  await execute('cargo fmt', cwd)
+  await execute('cargo clippy --fix --allow-dirty', { cwd })
+  await execute('cargo fmt', { cwd })
 }
 
 async function handleCore() {
@@ -129,14 +121,11 @@ async function handleCore() {
   await new Promise(updateReadmePromise)
 }
 
-void (await Promise.all([
+await Promise.all([
   handleCore(),
   handleCargo(join(ROOT_DIR, 'bindings', 'node')),
   handleCargo(join(ROOT_DIR, 'bindings', 'wasm')),
   handleCargo(BINDINGS_NATIVE),
   new Promise(prettierPromise),
-  Promise.all([
-    execute('clang-format -i decancer.h', BINDINGS_NATIVE),
-    execute('clang-format -i test.cpp', BINDINGS_NATIVE)
-  ])
-]))
+  execute('clang-format -i decancer.h test.cpp', { cwd: BINDINGS_NATIVE })
+])

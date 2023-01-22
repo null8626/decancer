@@ -13,7 +13,7 @@ const similar = []
 while (bytes.length !== 0) {
   const length = bytes.readUint8()
   similar.push(
-    Array.from(bytes.subarray(1, 1 + length)).map((x) => String.fromCharCode(x))
+    Array.from(bytes.subarray(1, 1 + length)).map(x => String.fromCharCode(x))
   )
 
   bytes = bytes.subarray(1 + length)

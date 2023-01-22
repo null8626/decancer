@@ -29,31 +29,31 @@ The optional fields here are only optional when writing and encoding them back i
 
 ```ts
 interface Confusable {
-  codepoint: number;
-  translation: string;
-  caseSensitive?: boolean;
-  rangeUntil?: number | null;
-  syncedTranslation?: boolean;
+  codepoint: number
+  translation: string
+  caseSensitive?: boolean
+  rangeUntil?: number | null
+  syncedTranslation?: boolean
 }
 
 interface JsonContents {
-  confusables: Confusable[];
-  similar: string[][];
+  confusables: Confusable[]
+  similar: string[][]
 }
 ```
 
 - **Information regarding the `Confusable` structure:**
 
-	- The `JsonContents#confusables` array **must NOT be empty.** *(duh)*
-	- `Confusable#codepoint` is the Unicode codepoint of the desired confusable. It must be in the unicode range, and outside the ASCII range (`\x80` to `\u10FFFF`)
-	- `Confusable#translation` is the translation string, it must NOT be empty.
-	- `Confusable#caseSensitive` is a flag whether this `Confusable#codepoint` is case-sensitive or not. In other words, whether the `codepoint` changes when it is called with `.toLowerCase()`.
-	- `Confusable#rangeUntil` is an optional number that indicates where the range of this confusable should end. If it's `null`, then the confusable is not a range. For example: Say a confusable with the codepoints of `\xE0` to `\xE5` all translates to `a`, then the `codepoint` field would be `0x00EO` and the `rangeUntil` field would be `0x00E5`. **Please note that the range size MUST be around `1` to `127`.**
-	- `Confusable#syncedTranslation` is a flag whether this range's translation would change accordingly with the codepoint index. For example: `\xE0` translates to `a`, `\xE1` translates to `b`, `\xE2` translates to `c`, and so on.
+  - The `JsonContents#confusables` array **must NOT be empty.** _(duh)_
+  - `Confusable#codepoint` is the Unicode codepoint of the desired confusable. It must be in the unicode range, and outside the ASCII range (`\x80` to `\u10FFFF`)
+  - `Confusable#translation` is the translation string, it must NOT be empty.
+  - `Confusable#caseSensitive` is a flag whether this `Confusable#codepoint` is case-sensitive or not. In other words, whether the `codepoint` changes when it is called with `.toLowerCase()`.
+  - `Confusable#rangeUntil` is an optional number that indicates where the range of this confusable should end. If it's `null`, then the confusable is not a range. For example: Say a confusable with the codepoints of `\xE0` to `\xE5` all translates to `a`, then the `codepoint` field would be `0x00EO` and the `rangeUntil` field would be `0x00E5`. **Please note that the range size MUST be around `1` to `127`.**
+  - `Confusable#syncedTranslation` is a flag whether this range's translation would change accordingly with the codepoint index. For example: `\xE0` translates to `a`, `\xE1` translates to `b`, `\xE2` translates to `c`, and so on.
 
 - **Information regarding the `JsonContents#similar` field:**
 
-	- The `string[][]` two-dimensional array **must NOT be empty** and it's length **must NOT exceed `127`.**
-	- The `string[]` arrays **must NOT be empty** and their lengths **must NOT exceed `255`.**
-	- Each `string` **must ONLY be only one character in length.**
-	- Each `string` **must ONLY be in the UTF-1 range. This means only characters `\x00` to `\xFF` are allowed.**
+  - The `string[][]` two-dimensional array **must NOT be empty** and it's length **must NOT exceed `127`.**
+  - The `string[]` arrays **must NOT be empty** and their lengths **must NOT exceed `255`.**
+  - Each `string` **must ONLY be only one character in length.**
+  - Each `string` **must ONLY be in the UTF-1 range. This means only characters `\x00` to `\xFF` are allowed.**
