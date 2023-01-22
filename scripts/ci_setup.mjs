@@ -16,8 +16,8 @@ const {
   files
 } = await response.json()
 
-const coreAffected = filesChanged.some(
-  (file) => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
+const coreAffected = files.some(
+  ({ filename }) => filename.startsWith('core/src/') || file === 'core/bin/confusables.bin'
 )
 
 console.log(
@@ -32,12 +32,12 @@ console.log(
       files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
     native_affected:
       coreAffected ||
-      filesChanged.some(
+      files.some(
         ({ filename }) =>
           filename.startsWith('bindings/native/src') ||
           filename === 'bindings/native/decancer.h'
       ),
-    readme_affected: filename.some(({ filename }) => filename === 'README.md')
+    readme_affected: files.some(({ filename }) => filename === 'README.md')
   }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, '')
 )
 
@@ -48,17 +48,17 @@ appendFileSync(
     core_affected: coreAffected,
     node_affected:
       coreAffected ||
-      filesChanged.some((file) => file.startsWith('bindings/node/src')),
+      files.some(({ filename }) => filename.startsWith('bindings/node/src')),
     wasm_affected:
       coreAffected ||
-      filesChanged.some((file) => file.startsWith('bindings/wasm/src')),
+      files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
     native_affected:
       coreAffected ||
-      filesChanged.some(
-        (file) =>
-          file.startsWith('bindings/native/src') ||
-          file === 'bindings/native/decancer.h'
+      files.some(
+        ({ filename }) =>
+          filename.startsWith('bindings/native/src') ||
+          filename === 'bindings/native/decancer.h'
       ),
-    readme_affected: filesChanged.includes('README.md')
+    readme_affected: files.some(({ filename }) => filename === 'README.md')
   }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, '')
 )
