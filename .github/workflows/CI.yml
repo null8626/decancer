@@ -60,7 +60,7 @@ jobs:
             target: x86_64-apple-darwin
             build: |
               cargo build --release
-              strip ./target/release/libdecancer.dylib
+              strip -x ./target/release/libdecancer.dylib
               mv ./target/release/libdecancer.dylib ../../artifacts
           - host: windows-latest
             build: |
