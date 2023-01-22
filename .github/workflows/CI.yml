@@ -109,16 +109,16 @@ jobs:
               cargo build --release --target=armv7-unknown-linux-gnueabihf
               #arm-linux-gnueabihf-strip *.node
               ls -R target
-          - host: ubuntu-latest
-            target: aarch64-linux-android
-            build: |
-              export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
-              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
-              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
-              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
-              cargo build --release --target aarch64-linux-android
-              #llvm-strip *.node
-              ls -R target
+          #- host: ubuntu-latest
+          #  target: aarch64-linux-android
+          #  build: |
+          #    export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+          #    export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+          #    export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
+          #    export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+          #    cargo build --release --target aarch64-linux-android
+          #    #llvm-strip *.node
+          #    ls -R target
           #- host: ubuntu-latest
           #  target: armv7-linux-androideabi
           #  build: |
