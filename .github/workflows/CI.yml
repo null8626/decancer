@@ -60,29 +60,29 @@ jobs:
             target: x86_64-apple-darwin
             build: |
               cargo build --release
-              ls target/release
+              ls -R target
           - host: windows-latest
             build: |
               cargo build --release
-              ls target/release
+              ls -R target
             target: x86_64-pc-windows-msvc
           - host: windows-latest
             build: |
               cargo build --release --target i686-pc-windows-msvc
-              ls target/release
+              ls -R target
             target: i686-pc-windows-msvc
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             build: |
               cargo build --release --target x86_64-unknown-linux-gnu
               #strip *.node
-              ls target/release
+              ls -R target
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
             build: |
               cargo build --release
               #strip *.node
-              ls target/release
+              ls -R target
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
@@ -93,14 +93,14 @@ jobs:
               export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
               yarn build --target aarch64-apple-darwin
               #strip -x *.node
-              ls target/release
+              ls -R target
           - host: ubuntu-latest
             target: aarch64-unknown-linux-gnu
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             build: |
               cargo build --release --target aarch64-unknown-linux-gnu
               #aarch64-unknown-linux-gnu-strip *.node
-              ls target/release
+              ls -R target
           - host: ubuntu-latest
             target: armv7-unknown-linux-gnueabihf
             build: |
@@ -108,7 +108,7 @@ jobs:
               sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
               cargo build --release --target=armv7-unknown-linux-gnueabihf
               #arm-linux-gnueabihf-strip *.node
-              ls target/release
+              ls -R target
           - host: ubuntu-latest
             target: aarch64-linux-android
             build: |
@@ -118,17 +118,17 @@ jobs:
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               cargo build --release --target aarch64-linux-android
               #llvm-strip *.node
-              ls target/release
-          - host: ubuntu-latest
-            target: armv7-linux-androideabi
-            build: |
-              export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
-              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
-              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
-              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
-              cargo build --release --target armv7-linux-androideabi
-              #llvm-strip *.node
-              ls target/release
+              ls -R target
+          #- host: ubuntu-latest
+          #  target: armv7-linux-androideabi
+          #  build: |
+          #    export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+          #    export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+          #    export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
+          #    export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+          #    cargo build --release --target armv7-linux-androideabi
+          #    #llvm-strip *.node
+          #    ls -R target
           - host: ubuntu-latest
             target: aarch64-unknown-linux-musl
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
@@ -136,12 +136,12 @@ jobs:
               rustup target add aarch64-unknown-linux-musl
               cargo build --release --target aarch64-unknown-linux-musl
               #/aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
-              ls target/release
+              ls -R target
           - host: windows-latest
             target: aarch64-pc-windows-msvc
             build: |
               cargo build --release --target aarch64-pc-windows-msvc
-              ls target/release
+              ls -R target
     needs:
       - setup
       - core
@@ -205,6 +205,7 @@ jobs:
           usesh: true
           mem: 3000
           prepare: |
+            pkg install -y curl
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --profile minimal --default-toolchain stable
           run: |
@@ -212,7 +213,7 @@ jobs:
             cd bindings/native
             cargo build --release
             #strip -x *.node
-            ls target/release
+            ls -R target
             rm -rf target
       #- name: Upload artifact
       #  uses: actions/upload-artifact@v3
