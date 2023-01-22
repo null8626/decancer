@@ -104,7 +104,7 @@ jobs:
               export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               yarn build --target aarch64-linux-android
-              ${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip *.node
+              llvm-strip *.node
           - host: ubuntu-latest
             target: armv7-linux-androideabi
             build: |
@@ -113,14 +113,15 @@ jobs:
               export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               yarn build --target armv7-linux-androideabi
-              ${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip *.node
+              llvm-strip *.node
           - host: ubuntu-latest
             target: aarch64-unknown-linux-musl
-            build: |-
+            build: |
+              export PATH="/aarch64-linux-musl-cross/bin:${PATH}"
               set -e &&
               rustup target add aarch64-unknown-linux-musl &&
               yarn build --target aarch64-unknown-linux-musl &&
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
+              aarch64-linux-musl-strip *.node
           - host: windows-latest
             target: aarch64-pc-windows-msvc
             build: yarn build --target aarch64-pc-windows-msvc
