@@ -1,14 +1,20 @@
 import { appendFileSync } from 'node:fs'
 import { EOL } from 'node:os'
 
-const response = await fetch('https://api.github.com/repos/null8626/decancer/compare/HEAD~1...HEAD', {
-  headers: {
-	Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-	'Content-Type': 'application/json'
+const response = await fetch(
+  'https://api.github.com/repos/null8626/decancer/compare/HEAD~1...HEAD',
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+      'Content-Type': 'application/json'
+    }
   }
-})
+)
 
-const { base_commit: { message }, files } = await response.json()
+const {
+  base_commit: { message },
+  files
+} = await response.json()
 
 console.log(
   Object.entries({
