@@ -18,16 +18,16 @@ assert(
     similar.length > 0 &&
     similar.length <= 0x7f &&
     similar.every(
-      (x) =>
+      x =>
         Array.isArray(x) &&
         x.length > 0 &&
         x.length <= 0xff &&
-        x.every((y) => y.length === 1 && y.codePointAt() <= 0xff)
+        x.every(y => y.length === 1 && y.codePointAt() <= 0xff)
     ),
   'similar must be an array of an array of ASCII strings'
 )
 
-const isCaseSensitive = (x) => {
+const isCaseSensitive = x => {
   const y = String.fromCodePoint(x)
 
   return y.toLowerCase() !== y
@@ -104,14 +104,14 @@ function retrieveCollisions(array, set) {
 }
 
 {
-  const set = Array.from(new Set(expanded.map((x) => x.codepoint)))
+  const set = Array.from(new Set(expanded.map(x => x.codepoint)))
   assert(
     expanded.length === set.length,
     `discovered ${(expanded.length - set.length).toLocaleString(
       'en-US'
     )} collisions. at codepoints: ${inspect(
       retrieveCollisions(
-        expanded.map((x) => x.codepoint),
+        expanded.map(x => x.codepoint),
         set
       )
     )}`
@@ -197,7 +197,7 @@ console.log(
 )
 
 const similarBytes = Buffer.concat(
-  similar.map((x) => Buffer.from([x.length, ...x.map((y) => y.charCodeAt())]))
+  similar.map(x => Buffer.from([x.length, ...x.map(y => y.charCodeAt())]))
 )
 const strings = []
 const confusablesBuffers = []
@@ -249,7 +249,7 @@ writeFileSync(
     similarBytes,
     Buffer.from(
       strings
-        .map((x) => [x.length, ...x.split('').map((y) => y.charCodeAt())])
+        .map(x => [x.length, ...x.split('').map(y => y.charCodeAt())])
         .flat()
     )
   ])

@@ -10,19 +10,19 @@
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
 //! - It supports curing **4,105 different confusables** into cured-lowercased-strings, including but not limited to:
-//! 	- Accented characters
-//! 	- [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
-//! 	- [Control characters](https://en.wikipedia.org/wiki/Control_character)
-//! 	- [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-//! 	- Several foreign characters, including but not limited to [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
-//! 	- Several emojis
-//! 	- [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
-//! 	- [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
+//!   - Accented characters
+//!   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
+//!   - [Control characters](https://en.wikipedia.org/wiki/Control_character)
+//!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
+//!   - Several foreign characters, including but not limited to [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
+//!   - Several emojis
+//!   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
+//!   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
 //! - And it's supported in the following languages:
-//! 	- [Rust](https://crates.io/crates/decancer)
-//! 	- JavaScript ([Node.js/Deno/Bun](https://www.npmjs.com/package/decancer)/Browser)
-//! 	- C/C++
-//! 	- [Python](https://pypi.org/project/decancer-py) (unofficial)
+//!   - [Rust](https://crates.io/crates/decancer)
+//!   - JavaScript ([Node.js/Deno/Bun](https://www.npmjs.com/package/decancer)/Browser)
+//!   - C/C++
+//!   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 //! 
 //! ## Installation
 //! 
@@ -34,6 +34,7 @@
 //! ```toml
 //! decancer = "1.5.3"
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>Node.js</summary>
@@ -49,6 +50,7 @@
 //! ```js
 //! const decancer = require('decancer')
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>Deno</summary>
@@ -56,8 +58,9 @@
 //! In your code:
 //! 
 //! ```ts
-//! import decancer from "npm:decancer"
+//! import decancer from 'npm:decancer'
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>Bun</summary>
@@ -73,6 +76,7 @@
 //! ```js
 //! const decancer = require('decancer')
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>Browser</summary>
@@ -81,11 +85,12 @@
 //! 
 //! ```html
 //! <script type="module">
-//!   import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js"
+//!   import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js'
 //! 
 //!   const decancer = await init()
 //! </script>
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>C/C++</summary>
@@ -100,6 +105,7 @@
 //! $ cd decancer/bindings/native
 //! $ cargo build --release
 //! ```
+//! 
 //! </details>
 //! 
 //! ## Examples
@@ -119,12 +125,17 @@
 //!   console.log('found the funny')
 //! }
 //! 
-//! if (cured.equals('very funny text') && cured.startsWith('very') && cured.endsWith('text')) {
+//! if (
+//!   cured.equals('very funny text') &&
+//!   cured.startsWith('very') &&
+//!   cured.endsWith('text')
+//! ) {
 //!   console.log('it works!')
 //! }
 //! 
-//! console.log(cured.toString()); // 'very funny text'
+//! console.log(cured.toString()) // 'very funny text'
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>Rust</summary>
@@ -137,7 +148,7 @@
 //! 
 //!   // cured here is a decancer::CuredString struct wrapping over the cured string
 //!   // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
-//!   
+//! 
 //!   assert_eq!(cured, "very funny text");
 //!   assert!(cured.starts_with("very"));
 //!   assert!(cured.contains("funny"));
@@ -146,6 +157,7 @@
 //!   let _output_str = cured.into_str(); // retrieve the String inside and consume the struct.
 //! }
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>Web app example</summary>
@@ -154,13 +166,13 @@
 //! <!DOCTYPE html>
 //! <html lang="en">
 //!   <head>
-//!     <meta charset="utf-8">
+//!     <meta charset="utf-8" />
 //!     <title>Decancerer!!! (tm)</title>
 //!     <style>
 //!       textarea {
 //!         font-size: 30px;
 //!       }
-//!       
+//! 
 //!       #cure {
 //!         font-size: 20px;
 //!         padding: 5px 30px;
@@ -173,23 +185,24 @@
 //!     <br />
 //!     <button id="cure" onclick="cure()">cure!</button>
 //!     <script type="module">
-//!       import init from "https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js"
-//!       
+//!       import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js'
+//! 
 //!       const decancer = await init()
-//!       
+//! 
 //!       window.cure = function () {
-//!         const textarea = document.querySelector("textarea")
-//!         
+//!         const textarea = document.querySelector('textarea')
+//! 
 //!         if (!textarea.value.length) {
 //!           return alert("There's no text!!!")
 //!         }
-//!         
+//! 
 //!         textarea.value = decancer(textarea.value).toString()
 //!       }
 //!     </script>
 //!   </body>
 //! </html>
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>C++11 UTF-8 example</summary>
@@ -215,20 +228,20 @@
 //! 
 //! int main(void) {
 //!   uint8_t string[] = u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-//!   
+//! 
 //!   // cure string
 //!   cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
-//!   
+//! 
 //!   // comparisons
 //!   assert(decancer_equals(cured, "very funny text", 15), "equals");
 //!   assert(decancer_starts_with(cured, "very", 4), "starts_with");
 //!   assert(decancer_ends_with(cured, "text", 4), "ends_with");
 //!   assert(decancer_contains(cured, "funny", 5), "contains");
-//!   
+//! 
 //!   // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
 //!   size_t output_size;
 //!   const uint8_t * output_raw = decancer_raw(cured, &output_size);
-//!   
+//! 
 //!   // assert raw cured utf-8 size to be 15 bytes (size of "very funny text")
 //!   assert(output_size == 15, "raw output size");
 //! 
@@ -242,12 +255,13 @@
 //!     sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
 //!     assert(output_raw[i] == expected_raw[i], assert_message);
 //!   }
-//!   
+//! 
 //!   // free cured string (required)
 //!   decancer_free(cured);
 //!   return 0;
 //! }
 //! ```
+//! 
 //! </details>
 //! <details>
 //! <summary>C UTF-16 example</summary>
@@ -266,13 +280,13 @@
 //! static void assert(const bool expr, const char * message) {
 //!   if (!expr) {
 //!     fprintf(stderr, "assertion failed (%s)\n", message);
-//!     
+//! 
 //!     // clean things up before exiting
 //!     if (output_raw != NULL) {
 //!       wdecancer_raw_free(output_raw);
 //!       output_raw = NULL;
 //!     }
-//!     
+//! 
 //!     decancer_free(cured);
 //!     exit(1);
 //!   }
@@ -280,21 +294,21 @@
 //! 
 //! int main(void) {
 //!   wchar_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-//!   
+//! 
 //!   // cure string
 //!   cured = wdecancer_cure(string, (sizeof(string) - sizeof(wchar_t)) / sizeof(wchar_t));
-//!   
+//! 
 //!   // comparisons
 //!   assert(wdecancer_equals(cured, L"very funny text", 15), "wide equals");
 //!   assert(wdecancer_starts_with(cured, L"very", 4), "wide starts_with");
 //!   assert(wdecancer_ends_with(cured, L"text", 4), "wide ends_with");
 //!   assert(wdecancer_contains(cured, L"funny", 5), "wide contains");
-//!   
+//! 
 //!   // coerce output as a raw UTF-16 pointer and retrieve it's length (in CHARACTERS)
 //!   size_t output_length;
 //!   output_raw = wdecancer_raw(cured, &output_length);
 //!   const wchar_t * output_raw_ptr = wdecancer_raw_ptr(output_raw);
-//!   
+//! 
 //!   // assert raw cured utf-16 length to be 15 characters (length of "very funny text", NOT in bytes)
 //!   assert(output_length == 15, "wide raw output size");
 //! 
@@ -308,15 +322,16 @@
 //!     sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
 //!     assert(output_raw_ptr[i] == expected_raw[i], assert_message);
 //!   }
-//!   
+//! 
 //!   // free raw cured UTF-16 string (required)
 //!   wdecancer_raw_free(output_raw);
-//!   
+//! 
 //!   // free cured string (required)
 //!   decancer_free(cured);
 //!   return 0;
 //! }
 //! ```
+//! 
 //! </details>
 //! 
 //! ## Contributing

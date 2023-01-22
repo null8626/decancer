@@ -456,7 +456,7 @@ jobs:
           node-version: 18
           check-latest: true
       - name: Prettier everything
-        run: node scripts/ci_pretty.mjs
+        run: node scripts/pretty.mjs
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
         uses: actions/download-artifact@v3

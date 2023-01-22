@@ -1,20 +1,17 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const LIB_RS = join(ROOT_DIR, 'core', 'src', 'lib.rs')
-const README_MD = join(ROOT_DIR, 'README.md')
-const BINDINGS_NATIVE = join(ROOT_DIR, 'bindings', 'native')
-
 const NON_BINARY_CONFUSABLES_COUNT = 181
 
 const PRETTIERRC = JSON.stringify({
   semi: false,
   singleQuote: true,
   trailingComma: 'none',
-  allowParens: 'avoid',
+  arrowParens: 'avoid',
   htmlWhitespaceSensitivity: 'ignore'
 })
 
@@ -30,15 +27,14 @@ bindings/wasm/pkg/**
 .prettierrc.json
 `.trim()
 
-const execute = (command, cwd) =>
-  new Promise((resolve, reject) =>
-    exec(command, { cwd }, (error) =>
-      error ? reject(error?.stack) : resolve()
-    )
-  )
+const execute = promisify(exec)
 
 function retrieveReadmePromise(resolve) {
-  readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then((bin) => {
+  console.log('- [readme] reading confusables.bin...')
+
+  readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then(bin => {
+    console.log('- [readme] parsing confusables.bin...')
+
     let confusablesCount = NON_BINARY_CONFUSABLES_COUNT
     const confusablesEnd = bin.readUint16LE()
 
@@ -57,14 +53,14 @@ function retrieveReadmePromise(resolve) {
         (integer & 0x40000000) === 0 &&
         String.fromCodePoint(codepoint).toUpperCase().codePointAt() !==
           codepoint
-      ) {
+      )
         toAdd *= 2
-      }
 
       confusablesCount += toAdd
     }
 
-    readFile(README_MD).then((readme) =>
+    console.log('- [readme] reading README.md...')
+    readFile(join(ROOT_DIR, 'README.md')).then(readme =>
       resolve(
         readme
           .toString()
@@ -79,7 +75,7 @@ function retrieveReadmePromise(resolve) {
 }
 
 function retrieveLibRsPromise(resolve) {
-  readFile(LIB_RS).then((libRs) => {
+  readFile(join(ROOT_DIR, 'core', 'src', 'lib.rs')).then(libRs => {
     resolve(libRs.toString().replace(/\/\/!.*?\n/g, ''))
   })
 }
@@ -90,38 +86,46 @@ function updateReadmePromise(resolve) {
     new Promise(retrieveLibRsPromise)
   ]).then(([readme, libRs]) =>
     Promise.all([
-      writeFile(README_MD, readme),
+      writeFile(join(ROOT_DIR, 'README.md'), readme),
       writeFile(
-        LIB_RS,
-        readme
+        join(ROOT_DIR, 'core', 'src', 'lib.rs'),
+        `${readme
           .split('\n')
-          .map((line) => `//! ${line}`)
-          .join('\n') +
-          '\n' +
-          libRs
+          .map(line => `//! ${line}`)
+          .join('\n')}\n${libRs}`
       )
-    ]).then(resolve)
+    ]).then(() => {
+      console.log('- [readme] updated readme and lib.rs')
+      resolve()
+    })
   )
 }
 
 function prettierPromise(resolve) {
+  console.log('- [prettier] setting up prettier...')
+
   Promise.all([
-    execute('npm i prettier', ROOT_DIR),
+    execute('npm i prettier', { cwd: ROOT_DIR }),
     writeFile(join(ROOT_DIR, '.prettierrc.json'), PRETTIERRC),
     writeFile(join(ROOT_DIR, '.prettierignore'), PRETTIERIGNORE)
   ]).then(() => {
-    Promise.all([
-      execute('npx prettier **/*.ts --write', ROOT_DIR),
-      execute('npx prettier **/*.mjs --write', ROOT_DIR),
-      execute('npx prettier **/*.cjs --write', ROOT_DIR),
-      execute('npx prettier **/*.json --write', ROOT_DIR)
-    ]).then(() => execute('git restore yarn.lock', ROOT_DIR).then(resolve))
+    execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
+      cwd: ROOT_DIR
+    }).then(() =>
+      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() =>
+        console.log('- [prettier] completed prettifying files')
+      )
+    )
   })
 }
 
 async function handleCargo(cwd) {
-  await execute('cargo clippy --fix --allow-dirty', cwd)
-  await execute('cargo fmt', cwd)
+  console.log(`- [cargo -> ${cwd}] running clippy and rustfmt...`)
+
+  await execute('cargo clippy --fix --allow-dirty', { cwd })
+  await execute('cargo fmt', { cwd })
+
+  console.log(`- [cargo -> ${cwd}] completed`)
 }
 
 async function handleCore() {
@@ -133,10 +137,15 @@ void (await Promise.all([
   handleCore(),
   handleCargo(join(ROOT_DIR, 'bindings', 'node')),
   handleCargo(join(ROOT_DIR, 'bindings', 'wasm')),
-  handleCargo(BINDINGS_NATIVE),
+  handleCargo(join(ROOT_DIR, 'bindings', 'native')),
   new Promise(prettierPromise),
-  Promise.all([
-    execute('clang-format -i decancer.h', BINDINGS_NATIVE),
-    execute('clang-format -i test.cpp', BINDINGS_NATIVE)
-  ])
+  new Promise(resolve => {
+    console.log('- [clang-format] running...')
+
+    execute('clang-format -i decancer.h test.cpp', {
+      cwd: join(ROOT_DIR, 'bindings', 'native')
+    }).then(() => {
+      console.log('- [clang-format] completed')
+    })
+  })
 ]))
