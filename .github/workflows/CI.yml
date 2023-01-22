@@ -320,26 +320,26 @@ jobs:
       - name: Test
         run: echo $THING
         env:
-          THING: ${{ toJSON(needs.wasm.needs.core.needs.setup.outputs) }}
-      - name: Prettier everything
-        run: node scripts/ci_pretty.mjs
-      - name: Download wasm artifact
-        if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
-        uses: actions/download-artifact@v3
-        with:
-          name: decancer-wasm-binary
-          path: bindings/wasm/bin
-      - name: Commit
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: 'chore: prettier and update wasm'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Remove wasm artifact
-        if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: decancer-wasm-binary
+          THING: ${{ toJSON(needs) }}
+      #- name: Prettier everything
+      #  run: node scripts/ci_pretty.mjs
+      #- name: Download wasm artifact
+      #  if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
+      #  uses: actions/download-artifact@v3
+      #  with:
+      #    name: decancer-wasm-binary
+      #    path: bindings/wasm/bin
+      #- name: Commit
+      #  uses: EndBug/add-and-commit@v9
+      #  with:
+      #    message: 'chore: prettier and update wasm'
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Remove wasm artifact
+      #  if: ${{ needs.wasm.needs.core.needs.setup.outputs.wasm_affected == 'true' }}
+      #  uses: geekyeggo/delete-artifact@v2
+      #  with:
+      #    name: decancer-wasm-binary
   publish-node:
     name: Publish node bindings
     runs-on: ubuntu-latest
