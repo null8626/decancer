@@ -28,7 +28,7 @@ void await Promise.all(artifacts.map(artifact => {
 	  const originDir = join(ARTIFACTS, artifact)
 	  
 	  Promise.all([
-	    new Promise(resolve2 => readdir(originDir, resolve2)),
+	    new Promise((resolve2, reject) => readdir(originDir, (err, data) => err ? reject(err.stack) : resolve2(data))),
 	    new Promise(resolve2 => mkdir(artifactsDir, resolve2))
 	  ]).then(([[nodeBinary]]) => mkdir(artifactsDir, () => rename(join(originDir, nodeBinary), join(artifactsDir, nodeBinary), resolve)))
 	})
