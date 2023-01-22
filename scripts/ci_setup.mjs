@@ -26,10 +26,15 @@ appendFileSync(
   Object.entries({
     is_release: /^\d+\.\d+\.\d+$/.test(message),
     core_affected: coreAffected,
-    node_affected: coreAffected || files.some(({ filename }) => filename.startsWith('bindings/node/src')),
-    wasm_affected: coreAffected || files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
+    node_affected:
+      coreAffected ||
+      files.some(({ filename }) => filename.startsWith('bindings/node/src')),
+    wasm_affected:
+      coreAffected ||
+      files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
     native_affected:
-      coreAffected || files.some(
+      coreAffected ||
+      files.some(
         ({ filename }) =>
           filename.startsWith('bindings/native/src') ||
           filename === 'bindings/native/decancer.h'
