@@ -14,7 +14,7 @@ const execute = (command, cwd) =>
   )
 
 const [artifacts] = await Promise.all([
-  new Promise(resolve => readdir(ARTIFACTS, resolve))
+  new Promise(resolve => readdir(ARTIFACTS, resolve)),
   new Promise(resolve => mkdir(NODE_ARTIFACTS, resolve))
 ])
 
