@@ -483,6 +483,7 @@ jobs:
       - node-test
       - native
       - native-freebsd
+      - prettier
     if: ${{ always() && needs.setup.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
