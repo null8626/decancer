@@ -1,4 +1,5 @@
 import { readdir, rename, mkdir } from 'node:fs'
+import { exec } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
