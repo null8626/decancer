@@ -16,6 +16,10 @@ const {
   files
 } = await response.json()
 
+const coreAffected = filesChanged.some(
+  (file) => file.startsWith('core/src/') || file === 'core/bin/confusables.bin'
+)
+
 console.log(
   Object.entries({
     is_release: /^\d+\.\d+\.\d+$/.test(message),
