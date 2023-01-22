@@ -34,6 +34,11 @@ jobs:
         run: node scripts/ci_setup.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test
+        run: |
+          echo "a: ${{ steps.setup.outputs.is_release }}"
+          echo "a: ${{ steps.setup.outputs.core_affected }}"
+          echo "a: ${{ steps.setup.outputs.node_affected }}"
     outputs:
       is_release: ${{ steps.setup.outputs.is_release }}
       core_affected: ${{ steps.setup.outputs.core_affected }}
