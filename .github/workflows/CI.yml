@@ -167,7 +167,7 @@ jobs:
         if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/node/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/bindings/node/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/node/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/native'
+          options: '--user 0:0 -v ${{ github.workspace }}/native/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/bindings/native/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/native/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/native'
           run: ${{ matrix.settings.build }}
       - name: Build
         working-directory: bindings/native
@@ -450,53 +450,54 @@ jobs:
           name: decancer-wasm-binary
           path: |
             decancer.wasm
-  prettier:
-    name: Lint and prettier files
-    runs-on: ubuntu-latest
-    needs:
-      - setup
-      - wasm
-    if: ${{ always() }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ATiltedTree/setup-rust@v1
-        with:
-          rust-version: stable
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-      - name: Prettier everything
-        run: node scripts/ci_pretty.mjs
-      - name: Download wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
-        uses: actions/download-artifact@v3
-        with:
-          name: decancer-wasm-binary
-          path: bindings/wasm/bin
-      - name: Commit
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: 'chore: prettier and update wasm'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Remove wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: decancer-wasm-binary
-  publish-node:
-    name: Publish node bindings
+  #prettier:
+  #  name: Lint and prettier files
+  #  runs-on: ubuntu-latest
+  #  needs:
+  #    - setup
+  #    - wasm
+  #  if: ${{ always() }}
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: ATiltedTree/setup-rust@v1
+  #      with:
+  #        rust-version: stable
+  #    - name: Setup node
+  #      uses: actions/setup-node@v3
+  #      with:
+  #        node-version: 18
+  #        check-latest: true
+  #    - name: Prettier everything
+  #      run: node scripts/ci_pretty.mjs
+  #    - name: Download wasm artifact
+  #      if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
+  #      uses: actions/download-artifact@v3
+  #      with:
+  #        name: decancer-wasm-binary
+  #        path: bindings/wasm/bin
+  #    - name: Commit
+  #      uses: EndBug/add-and-commit@v9
+  #      with:
+  #        message: 'chore: prettier and update wasm'
+  #      env:
+  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #    - name: Remove wasm artifact
+  #      if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
+  #      uses: geekyeggo/delete-artifact@v2
+  #      with:
+  #        name: decancer-wasm-binary
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: bindings/node
     needs:
       - setup
-      - prettier
       - node-freebsd
       - node-test
+      - native
+      - native-freebsd
     if: ${{ always() && needs.setup.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
