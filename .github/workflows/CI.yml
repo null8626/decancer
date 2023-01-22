@@ -118,6 +118,7 @@ jobs:
             target: aarch64-unknown-linux-musl
             build: |
               export PATH="/aarch64-linux-musl-cross/bin:${PATH}"
+              ls /aarch64-linux-musl-cross/bin
               set -e &&
               rustup target add aarch64-unknown-linux-musl &&
               yarn build --target aarch64-unknown-linux-musl &&
