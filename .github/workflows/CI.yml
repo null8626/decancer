@@ -24,8 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
       - name: Setup node
         uses: actions/setup-node@v3
         with:
@@ -34,6 +32,8 @@ jobs:
       - name: Setup
         id: setup
         run: node scripts/ci_setup.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       is_release: ${{ steps.setup.outputs.is_release }}
       core_affected: ${{ steps.setup.outputs.core_affected }}
@@ -347,7 +347,7 @@ jobs:
       - prettier
       - build-node-freebsd
       - test-node
-    if: ${{ needs.build-node-freebsd.needs.core.needs.setup.outputs.is_release == 'true' }}
+    if: ${{ always() && needs.build-node-freebsd.needs.core.needs.setup.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
