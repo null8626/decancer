@@ -499,7 +499,8 @@ jobs:
           path: artifacts
       - name: Modify artifacts
         run: |
-          ls -R artifacts
+          node scripts/ci_artifacts.mjs
+          ls -R
       #- name: Install dependencies
       #  working-directory: bindings/node
       #  run: yarn install
