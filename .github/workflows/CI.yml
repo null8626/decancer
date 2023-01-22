@@ -52,7 +52,161 @@ jobs:
       - name: Run cargo test
         working-directory: core
         run: cargo test
-  build-node:
+  native:
+    strategy:
+      matrix:
+        settings:
+          - host: macos-latest
+            target: x86_64-apple-darwin
+            build: |
+              cargo build --release
+              strip -x ./target/release/libdecancer.dylib
+              mv ./target/release/libdecancer.dylib ../../artifacts
+          - host: windows-latest
+            build: |
+              cargo build --release
+              mv ./target/release/decancer.dll ../../artifacts
+              mv ./target/release/decancer.dll.lib ../../artifacts/decancer.lib
+            target: x86_64-pc-windows-msvc
+          - host: windows-latest
+            build: |
+              cargo build --release --target i686-pc-windows-msvc
+              mv ./target/i686-pc-windows-msvc/release/decancer.dll ../../artifacts
+              mv ./target/i686-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
+            target: i686-pc-windows-msvc
+          - host: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
+            build: |
+              cargo build --release --target x86_64-unknown-linux-gnu
+              strip ./target/x86_64-unknown-linux-gnu/release/libdecancer.so
+              mv ./target/x86_64-unknown-linux-gnu/release/libdecancer.so ../../artifacts
+          - host: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              cargo build --release
+              strip ./target/release/libdecancer.so
+              mv ./target/release/libdecancer.so ../../artifacts
+          - host: macos-latest
+            target: aarch64-apple-darwin
+            build: |
+              sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
+              export CC=$(xcrun -f clang);
+              export CXX=$(xcrun -f clang++);
+              SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
+              export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
+              cargo build --release --target aarch64-apple-darwin
+              strip -x ./target/aarch64-apple-darwin/release/libdecancer.dylib
+              mv ./target/aarch64-apple-darwin/release/libdecancer.dylib ../../artifacts
+          - host: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+            build: |
+              cargo build --release --target aarch64-unknown-linux-gnu
+              aarch64-unknown-linux-gnu-strip ./target/aarch64-unknown-linux-gnu/release/libdecancer.so
+              mv ./target/aarch64-unknown-linux-gnu/release/libdecancer.so ../../artifacts
+          - host: ubuntu-latest
+            target: armv7-unknown-linux-gnueabihf
+            build: |
+              sudo apt-get update
+              sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
+              cargo build --release --target=armv7-unknown-linux-gnueabihf
+              arm-linux-gnueabihf-strip ./target/armv7-unknown-linux-gnueabihf/release/libdecancer.so
+              mv ./target/armv7-unknown-linux-gnueabihf/release/libdecancer.so ../../artifacts
+          - host: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              rustup target add aarch64-unknown-linux-musl
+              cargo build --release --target aarch64-unknown-linux-musl
+              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
+              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts
+          - host: windows-latest
+            target: aarch64-pc-windows-msvc
+            build: |
+              cargo build --release --target aarch64-pc-windows-msvc
+              mv ./target/aarch64-pc-windows-msvc/release/decancer.dll ./artifacts
+              mv ./target/aarch64-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
+    needs:
+      - setup
+      - core
+    if: ${{ always() && (needs.setup.outputs.is_release == 'true' || needs.setup.outputs.native_affected == 'true') }}
+    name: Build native bindings on ${{ matrix.settings.target }}
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install
+        uses: actions-rs/toolchain@v1
+        if: ${{ !matrix.settings.docker }}
+        with:
+          profile: minimal
+          override: true
+          toolchain: stable
+          target: ${{ matrix.settings.target }}
+      - uses: goto-bus-stop/setup-zig@v2
+        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
+        with:
+          version: 0.10.0
+      - run: mkdir artifacts
+        shell: bash
+      - name: Build in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: '--user 0:0 -v ${{ github.workspace }}/native/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/bindings/native/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/native/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/native'
+          run: ${{ matrix.settings.build }}
+      - name: Build
+        working-directory: bindings/native
+        run: ${{ matrix.settings.build }}
+        if: ${{ !matrix.settings.docker }}
+        shell: bash
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: native-${{ matrix.settings.target }}
+          path: ./artifacts/**
+          if-no-files-found: error
+  native-freebsd:
+    runs-on: macos-10.15
+    name: Build native bindings on FreeBSD
+    needs:
+      - setup
+      - core
+    if: ${{ always() && (needs.setup.outputs.is_release == 'true' || needs.setup.outputs.native_affected == 'true') }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        id: build
+        uses: vmactions/freebsd-vm@v0.3.0
+        env:
+          DEBUG: napi:*
+          RUSTUP_HOME: /usr/local/rustup
+          CARGO_HOME: /usr/local/cargo
+          RUSTUP_IO_THREADS: 1
+        with:
+          envs: DEBUG RUSTUP_HOME CARGO_HOME RUSTUP_IO_THREADS
+          usesh: true
+          mem: 3000
+          prepare: |
+            pkg install -y curl
+            curl https://sh.rustup.rs -sSf --output rustup.sh
+            sh rustup.sh -y --profile minimal --default-toolchain stable
+          run: |
+            export PATH="/usr/local/cargo/bin:$PATH"
+            cd bindings/native
+            cargo build --release
+            strip -x ./target/release/libdecancer.so
+            mv ./target/release/libdecancer.so ../..
+            rm -rf target
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: native-freebsd
+          path: libdecancer.so
+          if-no-files-found: error
+  node:
     strategy:
       matrix:
         settings:
@@ -69,12 +223,16 @@ jobs:
             target: i686-pc-windows-msvc
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
             build: |
               yarn build --target x86_64-unknown-linux-gnu
               strip *.node
           - host: ubuntu-latest
             target: x86_64-unknown-linux-musl
-            build: yarn build && strip *.node
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              yarn build
+              strip *.node
           - host: macos-latest
             target: aarch64-apple-darwin
             build: |
@@ -149,18 +307,6 @@ jobs:
           override: true
           toolchain: stable
           target: ${{ matrix.settings.target }}
-      - name: Cache cargo
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            bindings/node/.cargo-cache/registry/index/
-            bindings/node/.cargo-cache/registry/cache/
-            bindings/node/.cargo-cache/git/db/
-            bindings/node/target/
-          key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
       - uses: goto-bus-stop/setup-zig@v2
         if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
         with:
@@ -198,12 +344,12 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: bindings-${{ matrix.settings.target }}
+          name: node-${{ matrix.settings.target }}
           path: decancer.*.node
           if-no-files-found: error
-  build-node-freebsd:
+  node-freebsd:
     runs-on: macos-10.15
-    name: Build node bindings for FreeBSD
+    name: Build node bindings on FreeBSD
     needs:
       - setup
       - core
@@ -240,13 +386,13 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: bindings-freebsd
+          name: node-freebsd
           path: decancer.*.node
           if-no-files-found: error
-  test-node:
+  node-test:
     name: Test node bindings
     needs:
-      - build-node
+      - node
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -264,7 +410,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: bindings-x86_64-unknown-linux-gnu
+          name: node-x86_64-unknown-linux-gnu
           path: bindings/node
       - name: Test bindings
         run: node test.cjs
@@ -289,7 +435,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: decancer-wasm-binary
+          name: wasm
           path: |
             decancer.wasm
   prettier:
@@ -315,7 +461,7 @@ jobs:
         if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
         uses: actions/download-artifact@v3
         with:
-          name: decancer-wasm-binary
+          name: wasm
           path: bindings/wasm/bin
       - name: Commit
         uses: EndBug/add-and-commit@v9
@@ -327,18 +473,16 @@ jobs:
         if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
         uses: geekyeggo/delete-artifact@v2
         with:
-          name: decancer-wasm-binary
-  publish-node:
-    name: Publish node bindings
+          name: wasm
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: bindings/node
     needs:
       - setup
-      - prettier
-      - build-node-freebsd
-      - test-node
+      - node-freebsd
+      - node-test
+      - native
+      - native-freebsd
     if: ${{ always() && needs.setup.outputs.is_release == 'true' }}
     steps:
       - uses: actions/checkout@v3
@@ -348,19 +492,25 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Install dependencies
-        run: yarn install
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
-          path: bindings/node/artifacts
+          path: artifacts
+      - name: Modify artifacts
+        run: node scripts/ci_artifacts.mjs
+      - name: Install dependencies
+        working-directory: bindings/node
+        run: yarn install
       - name: Move artifacts
+        working-directory: bindings/node
         run: yarn artifacts
       - name: Move README.md and Build TypeScript
+        working-directory: bindings/node
         run: |
           mv ../../README.md .
           npx tsc
       - name: Publish
+        working-directory: bindings/node
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
           npm publish --access public

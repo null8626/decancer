@@ -4,7 +4,12 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+const LIB_RS = join(ROOT_DIR, 'core', 'src', 'lib.rs')
+const README_MD = join(ROOT_DIR, 'README.md')
+const BINDINGS_NATIVE = join(ROOT_DIR, 'bindings', 'native')
+
 const NON_BINARY_CONFUSABLES_COUNT = 181
+
 const PRETTIERRC = JSON.stringify({
   semi: false,
   singleQuote: true,
@@ -12,6 +17,7 @@ const PRETTIERRC = JSON.stringify({
   allowParens: 'avoid',
   htmlWhitespaceSensitivity: 'ignore'
 })
+
 const PRETTIERIGNORE = `
 **/target/**
 **/node_modules/**
@@ -58,7 +64,7 @@ function retrieveReadmePromise(resolve) {
       confusablesCount += toAdd
     }
 
-    readFile(join(ROOT_DIR, 'README.md')).then((readme) =>
+    readFile(README_MD).then((readme) =>
       resolve(
         readme
           .toString()
@@ -73,7 +79,7 @@ function retrieveReadmePromise(resolve) {
 }
 
 function retrieveLibRsPromise(resolve) {
-  readFile(join(ROOT_DIR, 'core', 'src', 'lib.rs')).then((libRs) => {
+  readFile(LIB_RS).then((libRs) => {
     resolve(libRs.toString().replace(/\/\/!.*?\n/g, ''))
   })
 }
@@ -84,9 +90,9 @@ function updateReadmePromise(resolve) {
     new Promise(retrieveLibRsPromise)
   ]).then(([readme, libRs]) =>
     Promise.all([
-      writeFile(join(ROOT_DIR, 'README.md'), readme),
+      writeFile(README_MD, readme),
       writeFile(
-        join(ROOT_DIR, 'core', 'src', 'lib.rs'),
+        LIB_RS,
         readme
           .split('\n')
           .map((line) => `//! ${line}`)
@@ -127,10 +133,10 @@ void (await Promise.all([
   handleCore(),
   handleCargo(join(ROOT_DIR, 'bindings', 'node')),
   handleCargo(join(ROOT_DIR, 'bindings', 'wasm')),
-  handleCargo(join(ROOT_DIR, 'bindings', 'native')),
+  handleCargo(BINDINGS_NATIVE),
   new Promise(prettierPromise),
   Promise.all([
-    execute('clang-format -i decancer.h', join(ROOT_DIR, 'bindings', 'native')),
-    execute('clang-format -i test.cpp', join(ROOT_DIR, 'bindings', 'native'))
+    execute('clang-format -i decancer.h', BINDINGS_NATIVE),
+    execute('clang-format -i test.cpp', BINDINGS_NATIVE)
   ])
 ]))
