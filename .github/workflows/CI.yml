@@ -91,7 +91,7 @@ jobs:
               export CXX=$(xcrun -f clang++);
               SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
               export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
-              yarn build --target aarch64-apple-darwin
+              cargo build --release --target aarch64-apple-darwin
               #strip -x *.node
               ls -R target
           - host: ubuntu-latest
