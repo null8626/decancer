@@ -16,29 +16,21 @@ const {
   files
 } = await response.json()
 
-const coreAffected = files.some(
-  ({ filename }) =>
-    filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
-)
-
 appendFileSync(
   process.env.GITHUB_OUTPUT,
   Object.entries({
     is_release: /^\d+\.\d+\.\d+$/.test(message),
-    core_affected: coreAffected,
-    node_affected:
-      coreAffected ||
-      files.some(({ filename }) => filename.startsWith('bindings/node/src')),
-    wasm_affected:
-      coreAffected ||
-      files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
+    core_affected: files.some(
+  ({ filename }) =>
+    filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
+),
+    node_affected: files.some(({ filename }) => filename.startsWith('bindings/node/src')),
+    wasm_affected: files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
     native_affected:
-      coreAffected ||
       files.some(
         ({ filename }) =>
           filename.startsWith('bindings/native/src') ||
           filename === 'bindings/native/decancer.h'
-      ),
-    readme_affected: files.some(({ filename }) => filename === 'README.md')
+      )
   }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, '')
 )
