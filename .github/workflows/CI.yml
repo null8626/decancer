@@ -121,9 +121,8 @@ jobs:
           - host: ubuntu-latest
             target: aarch64-unknown-linux-musl
             build: |
-              export PATH="/aarch64-linux-musl-cross/bin:${PATH}"
+              sudo apt-get install gcc-aarch64-linux-musl
               rustup target add aarch64-unknown-linux-musl
-              ls /aarch64-linux-musl-cross/bin
               yarn build --target aarch64-unknown-linux-musl
               aarch64-linux-musl-strip *.node
           - host: windows-latest
