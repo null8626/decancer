@@ -17,7 +17,8 @@ const {
 } = await response.json()
 
 const coreAffected = files.some(
-  ({ filename }) => filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
+  ({ filename }) =>
+    filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
 )
 
 console.log(
