@@ -413,6 +413,7 @@ jobs:
           name: node-x86_64-unknown-linux-gnu
           path: bindings/node
       - name: Test bindings
+        working-directory: bindings/node
         run: node test.cjs
   wasm:
     name: Build wasm
