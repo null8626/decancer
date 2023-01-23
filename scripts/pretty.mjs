@@ -133,7 +133,7 @@ async function handleCore() {
   await new Promise(updateReadmePromise)
 }
 
-await Promise.all([
+void (await Promise.all([
   handleCore(),
   handleCargo(join(ROOT_DIR, 'bindings', 'node')),
   handleCargo(join(ROOT_DIR, 'bindings', 'wasm')),
@@ -148,4 +148,4 @@ await Promise.all([
       console.log('- [clang-format] completed')
     })
   })
-])
+]))
