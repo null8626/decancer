@@ -112,10 +112,10 @@ function prettierPromise(resolve) {
     execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
       cwd: ROOT_DIR
     }).then(() =>
-      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() =>
+      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
         console.log('- [prettier] completed prettifying files')
 		resolve()
-      )
+      })
     )
   })
 }
