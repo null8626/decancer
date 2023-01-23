@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     outputs:
-      is_release: ${{ steps.setup.outputs.is_release }}
+      release: ${{ steps.setup.outputs.release }}
       core_affected: ${{ steps.setup.outputs.core_affected }}
       node_affected: ${{ steps.setup.outputs.node_affected }}
       wasm_affected: ${{ steps.setup.outputs.wasm_affected }}
@@ -139,7 +139,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && (needs.setup.outputs.is_release == 'true' || needs.setup.outputs.native_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     name: Build native bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -182,7 +182,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && (needs.setup.outputs.is_release == 'true' || needs.setup.outputs.native_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -295,7 +295,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && (needs.setup.outputs.is_release == 'true' || needs.setup.outputs.node_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -361,7 +361,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && (needs.setup.outputs.is_release == 'true' || needs.setup.outputs.node_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     steps:
       - uses: actions/checkout@v3
       - name: Build
@@ -493,7 +493,7 @@ jobs:
       - native
       - native-freebsd
       - prettier
-    if: ${{ always() && needs.setup.outputs.is_release == 'true' }}
+    if: ${{ always() && needs.setup.outputs.release != 'null' }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup node
@@ -512,10 +512,10 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "*.zip"
-          body: "This is the GitHub Release for decancer v${{ github.event.head_commit.message }}."
-          name: "v${{ github.event.head_commit.message }}"
+          body: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
+          name: "v${{ needs.setup.outputs.release }}"
           prerelease: false
-          tag_name: "v${{ github.event.head_commit.message }}"
+          tag_name: "v${{ needs.setup.outputs.release }}"
       - name: Install dependencies
         working-directory: bindings/node
         run: yarn install

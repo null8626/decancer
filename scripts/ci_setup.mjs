@@ -12,7 +12,7 @@ const response = await fetch(
 )
 
 const {
-  base_commit: { message },
+  base_commit: { commit: { message } },
   files
 } = await response.json()
 
@@ -21,12 +21,10 @@ const coreAffected = files.some(
     filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
 )
 
-console.log(`message: "${message}"\ntest: "${/^\d+\.\d+\.\d+$/.test(message)}"`)
-
 appendFileSync(
   process.env.GITHUB_OUTPUT,
   Object.entries({
-    is_release: /^\d+\.\d+\.\d+$/.test(message),
+    release: /^\d+\.\d+\.\d+$/.test(message) ? message : 'null',
     core_affected: coreAffected,
     node_affected:
       coreAffected ||
