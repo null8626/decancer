@@ -49,6 +49,14 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
+      - name: Setup node
+        uses: actions/setup-node@v3
+        if: ${{ !matrix.settings.docker }}
+        with:
+          node-version: 18
+          check-latest: true
+      - name: Check for corruption
+        run: node scripts/check_binary.mjs
       - name: Run cargo test
         working-directory: core
         run: cargo test
