@@ -1,32 +1,29 @@
 import { readdir, rename, mkdir } from 'node:fs/promises'
 import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const NODE_ARTIFACTS = join(ROOT_DIR, 'bindings', 'node', 'artifacts')
-const ARTIFACTS = join(ROOT_DIR, 'artifacts')
-
 const execute = promisify(exec)
 
 const [artifacts] = await Promise.all([
-  readdir(ARTIFACTS),
-  mkdir(NODE_ARTIFACTS)
+  readdir(join(ROOT_DIR, 'artifacts')),
+  mkdir(join(ROOT_DIR, 'bindings', 'node', 'artifacts'))
 ])
 
 await Promise.all(
   artifacts.map(artifact =>
     artifact.startsWith('native-')
       ? execute(`zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`, {
-          cwd: ARTIFACTS
+          cwd: join(ROOT_DIR, 'artifacts')
         })
       : new Promise(resolve => {
           const artifactsDir = join(
-            NODE_ARTIFACTS,
+            join(ROOT_DIR, 'bindings', 'node', 'artifacts'),
             artifact.replace(/^node-/, 'bindings-')
           )
-          const originDir = join(ARTIFACTS, artifact)
+          const originDir = join(ROOT_DIR, 'artifacts', artifact)
 
           Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
             ([[nodeBinary]]) =>

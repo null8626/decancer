@@ -57,3 +57,25 @@ interface JsonContents {
   - The `string[]` arrays **must NOT be empty** and their lengths **must NOT exceed `255`.**
   - Each `string` **must ONLY be only one character in length.**
   - Each `string` **must ONLY be in the UTF-1 range. This means only characters `\x00` to `\xFF` are allowed.**
+
+## Other scripts
+
+Other useful scripts have been added as a utility for the maintenance of `decancer`.
+
+### Pretty source code files
+
+Prerequisites:
+
+- [Clang](https://clang.llvm.org)
+- [Git](https://git-scm.com/)
+- [Rust](https://www.rust-lang.org)
+
+```console
+$ node scripts/pretty.mjs
+```
+
+### Bump version number
+
+```console
+$ node scripts/version.mjs 1.2.3
+```
