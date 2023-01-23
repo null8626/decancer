@@ -12,7 +12,10 @@ const [artifacts] = await Promise.all([
   mkdir(join(ROOT_DIR, 'bindings', 'node', 'artifacts'))
 ])
 
-const targets = artifacts.reduce((a, b) => a.add(b.match(/^(native|node)-(.+)/)[2]), new Set())
+const targets = artifacts.reduce(
+  (a, b) => a.add(b.match(/^(native|node)-(.+)/)[2]),
+  new Set()
+)
 
 void (await Promise.all(
   artifacts.map(artifact =>

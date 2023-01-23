@@ -114,7 +114,7 @@ function prettierPromise(resolve) {
     }).then(() =>
       execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
         console.log('- [prettier] completed prettifying files')
-		resolve()
+        resolve()
       })
     )
   })
@@ -147,7 +147,7 @@ void (await Promise.all([
       cwd: join(ROOT_DIR, 'bindings', 'native')
     }).then(() => {
       console.log('- [clang-format] completed')
-	  resolve()
+      resolve()
     })
   })
 ]))
