@@ -8,7 +8,7 @@ const execute = promisify(exec)
 
 async function sha(file) {
   console.log(`- retrieving sha256sum for ${file}...`)
-  const [out] = (await execute(`sha256sum ${file}`)).split(' ')
+  const [out] = (await execute(`sha256sum ${file}`)).stdout.split(' ')
   
   console.log(`- retrieved sha256sum for ${file}: ${out}`)
   return out
