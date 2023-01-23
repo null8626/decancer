@@ -95,6 +95,22 @@ In your code:
 <details>
 <summary>C/C++</summary>
 
+### Download precompiled binaries
+
+- [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-pc-windows-msvc.zip)
+- [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-i686-pc-windows-msvc.zip)
+- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-pc-windows-msvc.zip)
+- [Download for 64-bit macOS (10.7+, Lion+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-apple-darwin.zip)
+- [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-apple-darwin.zip)
+- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-unknown-linux-gnu.zip)
+- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-unknown-linux-musl.zip)
+- [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-unknown-linux-gnu.zip)
+- [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-unknown-linux-musl.zip)
+- [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-armv7-unknown-linux-gnueabihf.zip)
+- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-freebsd.zip)
+
+### Building from source
+
 Prerequisites:
 
 - [Git](https://git-scm.com/)
