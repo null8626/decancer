@@ -12,7 +12,9 @@ const response = await fetch(
 )
 
 const {
-  base_commit: { commit: { message } },
+  base_commit: {
+    commit: { message }
+  },
   files
 } = await response.json()
 
