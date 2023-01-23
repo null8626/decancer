@@ -12,8 +12,12 @@ const [artifacts] = await Promise.all([
   mkdir(join(ROOT_DIR, 'bindings', 'node', 'artifacts'))
 ])
 
+const targets = artifacts.reduce((a, b) => a.add(b.match(/^(native|node)-(.+)/)[2]), new Set())
+
 void (await Promise.all(
-  artifacts.map(artifact =>
+  artifacts.map(artifact => {
+	const target 
+  })))
     artifact.startsWith('native-')
       ? execute(`zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`, {
           cwd: join(ROOT_DIR, 'artifacts')

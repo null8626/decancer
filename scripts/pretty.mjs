@@ -114,6 +114,7 @@ function prettierPromise(resolve) {
     }).then(() =>
       execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() =>
         console.log('- [prettier] completed prettifying files')
+		resolve()
       )
     )
   })
