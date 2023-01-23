@@ -21,7 +21,7 @@ const [ogBinarySha] = await Promise.all([
 
 const [ogJsonSha] = await Promise.all([
   sha(join(ROOT_DIR, 'output.json')),
-  execute(`node ${join(ROOT_DIR, 'scripts', 'encode.mjs')} ${join(ROOT_DIR, 'core', 'bin', 'output.json')}`, { cwd: ROOT_DIR })
+  execute(`node ${join(ROOT_DIR, 'scripts', 'encode.mjs')} ${join(ROOT_DIR, 'output.json')}`, { cwd: ROOT_DIR })
 ])
 
 const [newBinarySha] = await Promise.all([
