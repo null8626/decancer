@@ -147,6 +147,7 @@ void (await Promise.all([
       cwd: join(ROOT_DIR, 'bindings', 'native')
     }).then(() => {
       console.log('- [clang-format] completed')
+	  resolve()
     })
   })
 ]))
