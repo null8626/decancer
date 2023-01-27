@@ -55,6 +55,6 @@
     "artifacts": "napi artifacts",
     "build": "napi build --platform --release",
     "prepublishOnly": "napi prepublish -t npm --skip-gh-release",
-    "test": "echo \"IT WORKS!111\""
+    "test": "node test.cjs"
   }
 }

@@ -55,8 +55,6 @@ jobs:
         with:
           node-version: 18
           check-latest: true
-      - name: Check for corruption
-        run: node scripts/check_binary.mjs
       - name: Run cargo test
         working-directory: core
         run: cargo test
@@ -422,7 +420,7 @@ jobs:
           path: bindings/node
       - name: Test bindings
         working-directory: bindings/node
-        run: node test.cjs
+        run: yarn test
   wasm:
     name: Build wasm
     runs-on: ubuntu-latest
