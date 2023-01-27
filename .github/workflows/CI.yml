@@ -429,7 +429,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && needs.setup.outputs.wasm_affected == 'true' }}
+    if: ${{ always() && (needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null') }}
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
