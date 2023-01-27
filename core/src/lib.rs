@@ -446,7 +446,7 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
           return output.push_translation(confusable.translation(code as _, code_lowercased))
         }
         Ordering::Greater => start = mid + 1,
-        _ => end = mid,
+        _ => end = mid - 1,
       };
 
       if end_flag {
