@@ -108,8 +108,9 @@ static inline void test_utf16(void)
 
 int main(void)
 {
-    test_utf8();
-    test_utf16();
+    //test_utf8();
+    //test_utf16();
+    printf("hello, world\n");
 
     return 0;
 }

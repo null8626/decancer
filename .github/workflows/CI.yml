@@ -231,10 +231,6 @@ jobs:
       - name: Compile tests
         working-directory: bindings/native
         run: cl.exe /EHsc /nologo test.cpp decancer.lib
-      - name: List files
-        working-directory: bindings/native
-        run: ls
-        shell: bash
       - name: Run tests
         working-directory: bindings/native
         run: test.exe
