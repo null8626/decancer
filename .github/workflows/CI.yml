@@ -216,7 +216,9 @@ jobs:
   native-test:
     name: Test native bindings
     needs:
+      - setup
       - native
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -417,7 +419,9 @@ jobs:
   node-test:
     name: Test node bindings
     needs:
+      - setup
       - node
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
