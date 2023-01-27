@@ -14,7 +14,7 @@ on:
       - '**/*.mjs'
       - '**/*.json'
       - 'core/bin/confusables.bin'
-      - 'bindings/native/test.cpp'
+      - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
 jobs:
   setup:
@@ -142,7 +142,7 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         if: ${{ !matrix.settings.docker }}
         with:
@@ -212,6 +212,26 @@ jobs:
           name: native-freebsd
           path: libdecancer.so
           if-no-files-found: error
+  native-test:
+    name: Test native bindings
+    needs:
+      - setup
+      - native
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: native-x86_64-pc-windows-msvc
+          path: bindings/native
+      - name: Compile and run tests
+        working-directory: bindings/native
+        run: |
+          cl.exe /MD /nologo test.c decancer.lib
+          .\test.exe
   node:
     strategy:
       matrix:
@@ -305,7 +325,7 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Install
+      - name: Install Rust
         uses: actions-rs/toolchain@v1
         if: ${{ !matrix.settings.docker }}
         with:
@@ -398,7 +418,9 @@ jobs:
   node-test:
     name: Test node bindings
     needs:
+      - setup
       - node
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -488,8 +510,8 @@ jobs:
       - setup
       - node-freebsd
       - node-test
-      - native
       - native-freebsd
+      - native-test
       - prettier
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
     steps:

@@ -1,14 +1,14 @@
 extern crate decancer;
 
-use core::{ffi::c_void, ptr, str};
+use core::{ffi::c_void, slice, str};
 
 const unsafe fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> &'static str {
-  str::from_utf8_unchecked(&*ptr::slice_from_raw_parts(input_ptr, input_size))
+  str::from_utf8_unchecked(slice::from_raw_parts(input_ptr, input_size))
 }
 
 #[inline(always)]
 unsafe fn wstr_from_ptr(input_ptr: *mut u16, input_size: usize) -> String {
-  String::from_utf16_lossy(&*ptr::slice_from_raw_parts(input_ptr, input_size))
+  String::from_utf16_lossy(slice::from_raw_parts(input_ptr, input_size))
 }
 
 #[no_mangle]

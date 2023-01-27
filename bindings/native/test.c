@@ -1,7 +1,12 @@
 #include "decancer.h"
 
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wwritable-strings"
+#endif
 
 decancer_cured_t cured;
 wdecancer_raw_cured_t output_raw = NULL;
@@ -25,9 +30,12 @@ static void assert(const bool expr, const char *message)
 
 static inline void test_utf8(void)
 {
-    uint8_t string[] = u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+    // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+                        0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+                        0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
+    cured = decancer_cure(string, sizeof(string));
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
     assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with");
@@ -54,9 +62,11 @@ static inline void test_utf8(void)
 
 static inline void test_utf16(void)
 {
-    wchar_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+    // utf-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    wchar_t string[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c,
+                        0x0147, 0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3};
 
-    cured = wdecancer_cure(string, (sizeof(string) - sizeof(wchar_t)) / sizeof(wchar_t));
+    cured = wdecancer_cure(string, sizeof(string) / sizeof(wchar_t));
 
     assert(wdecancer_equals(cured, L"very funny text", 15), "wide equals");
     assert(wdecancer_starts_with(cured, L"very", 4), "wide starts_with");
@@ -87,6 +97,7 @@ int main(void)
 {
     test_utf8();
     test_utf16();
+    puts("ok");
 
     return 0;
 }

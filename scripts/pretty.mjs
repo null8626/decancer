@@ -143,7 +143,7 @@ void (await Promise.all([
   new Promise(resolve => {
     console.log('- [clang-format] running...')
 
-    execute('clang-format -i decancer.h test.cpp', {
+    execute('clang-format -i decancer.h test.c', {
       cwd: join(ROOT_DIR, 'bindings', 'native')
     }).then(() => {
       console.log('- [clang-format] completed')
