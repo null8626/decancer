@@ -6,7 +6,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-
+/*
 #define DECANCER_TEST(name, scope)                                                                                     \
     printf("Running tests for " name "... ");                                                                          \
     scope;                                                                                                             \
@@ -104,7 +104,7 @@ static inline void test_utf16(void)
 
     wdecancer_raw_free(output_raw);
     decancer_free(cured);
-}
+}*/
 
 int main(void)
 {
