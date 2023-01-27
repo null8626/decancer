@@ -222,20 +222,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Clang
-        uses: egor-tensin/setup-clang@v1
-        with:
-          version: latest
+      - uses: ilammy/msvc-dev-cmd@v1
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: native-x86_64-pc-windows-msvc
           path: bindings/native
-      - name: Compile and run tests
+      - name: Compile tests
         working-directory: bindings/native
-        run: |
-          clang-cl.exe /EHsc /nologo test.cpp decancer.lib
-          test.exe
+        run: cl.exe /EHsc /nologo test.cpp decancer.lib
+      - name: Run tests
+        working-directory: bindings/native
+        run: test.exe
   node:
     strategy:
       matrix:
