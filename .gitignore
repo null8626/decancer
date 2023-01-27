@@ -3,14 +3,15 @@
 **/Cargo.lock
 **/*.node
 **/target/
+*.bin
+*.json
+
 bindings/node/src/lib.js
 bindings/node/src/lib.d.ts
 bindings/node/index.js
 bindings/node/index.d.ts
 bindings/node/artifacts/
 bindings/wasm/pkg/
-**/*output*
-**/*Optimized.json
 
 # CI creates temporary files in the root dir
 .prettierrc.json

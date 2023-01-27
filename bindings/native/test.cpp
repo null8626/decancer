@@ -1,5 +1,9 @@
 #include "decancer.h"
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wwritable-strings"
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 
