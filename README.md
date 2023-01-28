@@ -128,8 +128,6 @@ And the binary files should be generated in the `target/release` directory.
 
 ## Examples
 
-> **NOTE:** cured output will ALWAYS be in lowercase.
-
 <details>
 <summary>JavaScript</summary>
 
