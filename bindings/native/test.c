@@ -62,6 +62,12 @@ static inline void test_utf8(void)
 static inline void test_utf16(void)
 {
     wchar_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+	
+	for (uint32_t i = 0; i < sizeof(string) / sizeof(wchar_t); i++) {
+		printf("%x ", string[i]);
+	}
+	
+	putchar('\n');
 
     cured = wdecancer_cure(string, (sizeof(string) - sizeof(wchar_t)) / sizeof(wchar_t));
 
