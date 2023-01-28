@@ -13,7 +13,7 @@ unsafe fn wstr_from_ptr(input_ptr: *mut u16, input_size: usize) -> String {
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure(input_str: *mut u8, input_size: usize) -> *mut c_void {
-  println!("in: '{}'", str_from_ptr(
+  println!("in: '{}'\nin: '{}'", slice::from_raw_parts(input_ptr, input_size), str_from_ptr(
     input_str, input_size,
   ));
   
