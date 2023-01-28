@@ -373,48 +373,6 @@ jobs:
           name: node-${{ matrix.settings.target }}
           path: decancer.*.node
           if-no-files-found: error
-  node-freebsd:
-    runs-on: macos-10.15
-    name: Build node bindings on FreeBSD
-    needs:
-      - setup
-      - core
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build
-        id: build
-        uses: vmactions/freebsd-vm@v0.3.0
-        env:
-          DEBUG: napi:*
-          RUSTUP_HOME: /usr/local/rustup
-          CARGO_HOME: /usr/local/cargo
-          RUSTUP_IO_THREADS: 1
-        with:
-          envs: DEBUG RUSTUP_HOME CARGO_HOME RUSTUP_IO_THREADS
-          usesh: true
-          mem: 3000
-          prepare: |
-            pkg install -y curl node16 python2
-            curl -qL https://www.npmjs.com/install.sh | sh
-            npm install -g yarn
-            curl https://sh.rustup.rs -sSf --output rustup.sh
-            sh rustup.sh -y --profile minimal --default-toolchain stable
-          run: |
-            export PATH="/usr/local/cargo/bin:$PATH"
-            cd bindings/node
-            yarn install --mode=skip-build
-            yarn build
-            strip -x *.node
-            rm -rf node_modules
-            rm -rf target
-            mv decancer.*.node ../..
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: node-freebsd
-          path: decancer.*.node
-          if-no-files-found: error
   node-test:
     name: Test node bindings
     needs:
@@ -508,7 +466,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
-      - node-freebsd
       - node-test
       - native-freebsd
       - native-test
