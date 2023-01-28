@@ -23,6 +23,8 @@ const coreAffected = files.some(
     filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
 )
 
+console.log(`message: "${message}"\nrelease: "${/^\d+\.\d+\.\d+$/.test(message) ? message : 'null'}"`)
+
 appendFileSync(
   process.env.GITHUB_OUTPUT,
   Object.entries({
