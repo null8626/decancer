@@ -122,6 +122,8 @@
 //! $ cargo build --release
 //! ```
 //! 
+//! And the binary files should be generated in the `target/release` directory.
+//! 
 //! </details>
 //! 
 //! ## Examples
