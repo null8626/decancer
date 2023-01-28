@@ -1,25 +1,25 @@
 extern crate decancer;
 
-use core::{ffi::c_void, ptr, str};
+use core::{ffi::c_void, slice, str};
 
 const unsafe fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> &'static str {
-  str::from_utf8_unchecked(&*ptr::slice_from_raw_parts(input_ptr, input_size))
+  str::from_utf8_unchecked(slice::from_raw_parts(input_ptr, input_size))
 }
 
 #[inline(always)]
 unsafe fn wstr_from_ptr(input_ptr: *mut u16, input_size: usize) -> String {
-  String::from_utf16_lossy(&*ptr::slice_from_raw_parts(input_ptr, input_size))
+  String::from_utf16_lossy(slice::from_raw_parts(input_ptr, input_size))
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure(input_str: *mut u8, input_size: usize) -> *mut c_void {
-  println!("'{}' {}", str_from_ptr(
+  let h = decancer::cure(str_from_ptr(
     input_str, input_size,
-  ), input_size);
+  ));
+  
+  println!("{}", h);
 
-  Box::into_raw(Box::new(decancer::cure(str_from_ptr(
-    input_str, input_size,
-  )))) as _
+  Box::into_raw(Box::new(h)) as _
 }
 
 #[no_mangle]
@@ -28,10 +28,6 @@ pub unsafe extern "C" fn decancer_equals(
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  println!("'{}' {}", str_from_ptr(
-    other_str, other_size,
-  ), other_size);
-
   *(cured as *mut decancer::CuredString) == str_from_ptr(other_str, other_size)
 }
 
