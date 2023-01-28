@@ -128,8 +128,6 @@
 //! 
 //! ## Examples
 //! 
-//! > **NOTE:** cured output will ALWAYS be in lowercase.
-//! 
 //! <details>
 //! <summary>JavaScript</summary>
 //! 
