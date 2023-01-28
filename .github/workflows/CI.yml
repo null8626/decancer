@@ -74,66 +74,66 @@ jobs:
               mv ./target/release/decancer.dll ../../artifacts
               mv ./target/release/decancer.dll.lib ../../artifacts/decancer.lib
             target: x86_64-pc-windows-msvc
-          - host: windows-latest
-            build: |
-              cargo build --release --target i686-pc-windows-msvc
-              mv ./target/i686-pc-windows-msvc/release/decancer.dll ../../artifacts
-              mv ./target/i686-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
-            target: i686-pc-windows-msvc
-          - host: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
-            build: |
-              cargo build --release --target x86_64-unknown-linux-gnu
-              strip ./target/x86_64-unknown-linux-gnu/release/libdecancer.so
-              mv ./target/x86_64-unknown-linux-gnu/release/libdecancer.so ../../artifacts
-          - host: ubuntu-latest
-            target: x86_64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              cargo build --release
-              strip ./target/release/libdecancer.so
-              mv ./target/release/libdecancer.so ../../artifacts
-          - host: macos-latest
-            target: aarch64-apple-darwin
-            build: |
-              sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
-              export CC=$(xcrun -f clang);
-              export CXX=$(xcrun -f clang++);
-              SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
-              export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
-              cargo build --release --target aarch64-apple-darwin
-              strip -x ./target/aarch64-apple-darwin/release/libdecancer.dylib
-              mv ./target/aarch64-apple-darwin/release/libdecancer.dylib ../../artifacts
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
-            build: |
-              cargo build --release --target aarch64-unknown-linux-gnu
-              aarch64-unknown-linux-gnu-strip ./target/aarch64-unknown-linux-gnu/release/libdecancer.so
-              mv ./target/aarch64-unknown-linux-gnu/release/libdecancer.so ../../artifacts
-          - host: ubuntu-latest
-            target: armv7-unknown-linux-gnueabihf
-            build: |
-              sudo apt-get update
-              sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
-              cargo build --release --target=armv7-unknown-linux-gnueabihf
-              arm-linux-gnueabihf-strip ./target/armv7-unknown-linux-gnueabihf/release/libdecancer.so
-              mv ./target/armv7-unknown-linux-gnueabihf/release/libdecancer.so ../../artifacts
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              rustup target add aarch64-unknown-linux-musl
-              cargo build --release --target aarch64-unknown-linux-musl
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
-              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts
-          - host: windows-latest
-            target: aarch64-pc-windows-msvc
-            build: |
-              cargo build --release --target aarch64-pc-windows-msvc
-              mv ./target/aarch64-pc-windows-msvc/release/decancer.dll ./artifacts
-              mv ./target/aarch64-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
+        #  - host: windows-latest
+        #    build: |
+        #      cargo build --release --target i686-pc-windows-msvc
+        #      mv ./target/i686-pc-windows-msvc/release/decancer.dll ../../artifacts
+        #      mv ./target/i686-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
+        #    target: i686-pc-windows-msvc
+        #  - host: ubuntu-latest
+        #    target: x86_64-unknown-linux-gnu
+        #    docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
+        #    build: |
+        #      cargo build --release --target x86_64-unknown-linux-gnu
+        #      strip ./target/x86_64-unknown-linux-gnu/release/libdecancer.so
+        #      mv ./target/x86_64-unknown-linux-gnu/release/libdecancer.so ../../artifacts
+        #  - host: ubuntu-latest
+        #    target: x86_64-unknown-linux-musl
+        #    docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+        #    build: |
+        #      cargo build --release
+        #      strip ./target/release/libdecancer.so
+        #      mv ./target/release/libdecancer.so ../../artifacts
+        #  - host: macos-latest
+        #    target: aarch64-apple-darwin
+        #    build: |
+        #      sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
+        #      export CC=$(xcrun -f clang);
+        #      export CXX=$(xcrun -f clang++);
+        #      SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
+        #      export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
+        #      cargo build --release --target aarch64-apple-darwin
+        #      strip -x ./target/aarch64-apple-darwin/release/libdecancer.dylib
+        #      mv ./target/aarch64-apple-darwin/release/libdecancer.dylib ../../artifacts
+        #  - host: ubuntu-latest
+        #    target: aarch64-unknown-linux-gnu
+        #    docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+        #    build: |
+        #      cargo build --release --target aarch64-unknown-linux-gnu
+        #      aarch64-unknown-linux-gnu-strip ./target/aarch64-unknown-linux-gnu/release/libdecancer.so
+        #      mv ./target/aarch64-unknown-linux-gnu/release/libdecancer.so ../../artifacts
+        #  - host: ubuntu-latest
+        #    target: armv7-unknown-linux-gnueabihf
+        #    build: |
+        #      sudo apt-get update
+        #      sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
+        #      cargo build --release --target=armv7-unknown-linux-gnueabihf
+        #      arm-linux-gnueabihf-strip ./target/armv7-unknown-linux-gnueabihf/release/libdecancer.so
+        #      mv ./target/armv7-unknown-linux-gnueabihf/release/libdecancer.so ../../artifacts
+        #  - host: ubuntu-latest
+        #    target: aarch64-unknown-linux-musl
+        #    docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+        #    build: |
+        #      rustup target add aarch64-unknown-linux-musl
+        #      cargo build --release --target aarch64-unknown-linux-musl
+        #      /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
+        #      mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts
+        #  - host: windows-latest
+        #    target: aarch64-pc-windows-msvc
+        #    build: |
+        #      cargo build --release --target aarch64-pc-windows-msvc
+        #      mv ./target/aarch64-pc-windows-msvc/release/decancer.dll ./artifacts
+        #      mv ./target/aarch64-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
     needs:
       - setup
       - core
@@ -233,7 +233,7 @@ jobs:
         run: cl.exe /EHsc /nologo test.cpp
       - name: Run tests
         working-directory: bindings/native
-        run: test.exe
+        run: .\test.exe
   #node:
   #  strategy:
   #    matrix:
