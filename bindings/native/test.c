@@ -61,15 +61,11 @@ static inline void test_utf8(void)
 
 static inline void test_utf16(void)
 {
-    wchar_t string[] = L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-	
-	for (uint32_t i = 0; i < sizeof(string) / sizeof(wchar_t); i++) {
-		printf("%x ", string[i]);
-	}
-	
-	putchar('\n');
+    // utf-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    wchar_t string[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c,
+                        0x0147, 0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3};
 
-    cured = wdecancer_cure(string, (sizeof(string) - sizeof(wchar_t)) / sizeof(wchar_t));
+    cured = wdecancer_cure(string, sizeof(string) / sizeof(wchar_t));
 
     assert(wdecancer_equals(cured, L"very funny text", 15), "wide equals");
     assert(wdecancer_starts_with(cured, L"very", 4), "wide starts_with");
