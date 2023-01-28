@@ -13,6 +13,10 @@ unsafe fn wstr_from_ptr(input_ptr: *mut u16, input_size: usize) -> String {
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure(input_str: *mut u8, input_size: usize) -> *mut c_void {
+  println!("'{}' {}", str_from_ptr(
+    input_str, input_size,
+  ), input_size);
+
   Box::into_raw(Box::new(decancer::cure(str_from_ptr(
     input_str, input_size,
   )))) as _
@@ -24,6 +28,10 @@ pub unsafe extern "C" fn decancer_equals(
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
+  println!("'{}' {}", str_from_ptr(
+    other_str, other_size,
+  ), other_size);
+
   *(cured as *mut decancer::CuredString) == str_from_ptr(other_str, other_size)
 }
 

@@ -31,6 +31,12 @@ static inline void test_utf8(void)
 {
     uint8_t string[] = u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
 
+    for (uint32_t i = 0; i < (sizeof(string) - sizeof(uint8_t)); i++) {
+      printf("%x ", string[i]);
+    }
+    
+    putchar('\n');
+
     cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
