@@ -27,10 +27,10 @@ assert(
   'similar must be an array of an array of ASCII strings'
 )
 
-const isCaseSensitive = x => {
+function isCaseSensitive(x) {
   const y = String.fromCodePoint(x)
 
-  return y.toLowerCase() !== y
+  return y.toUpperCase() === y && y !== y.toLowerCase()
 }
 
 console.log(
@@ -118,6 +118,31 @@ function retrieveCollisions(array, set) {
   )
 }
 
+const caseSensitiveCollisions = []
+
+for (const e of expanded) {
+  if (isCaseSensitive(e.codepoint)) {
+    const h = String.fromCodePoint(e.codepoint).toLowerCase().codePointAt()
+    const already = expanded.find(
+      ({ codepoint, translation }) =>
+        codepoint === h && translation === e.translation
+    )
+
+    if (already) {
+      caseSensitiveCollisions.push(e.codepoint)
+    }
+  }
+}
+
+assert(
+  caseSensitiveCollisions.length === 0,
+  `discovered ${caseSensitiveCollisions.length.toLocaleString(
+    'en-US'
+  )} case-sensitive collisions. at codepoints: ${inspect(
+    caseSensitiveCollisions
+  )}`
+)
+
 const notSyncedSequences = [],
   syncedSequences = [],
   rest = []
@@ -134,6 +159,7 @@ for (let i = 0, curr = null; i < expanded.length; i++) {
     if (curr !== null) {
       if (
         ordered &&
+        next.translation.length === 1 &&
         (curr.syncedTranslation
           ? n.translation.charCodeAt() + 1 === next.translation.charCodeAt()
           : next.translation === n.translation)
@@ -150,7 +176,8 @@ for (let i = 0, curr = null; i < expanded.length; i++) {
     }
 
     const synced =
-      n.translation.charCodeAt() + 1 === next?.translation?.charCodeAt()
+      n.translation.charCodeAt() + 1 === next?.translation?.charCodeAt() &&
+      next.translation.length === 1
 
     if (ordered && (synced || next?.translation === n.translation)) {
       curr = n
