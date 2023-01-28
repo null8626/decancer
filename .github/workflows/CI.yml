@@ -14,7 +14,7 @@ on:
       - '**/*.mjs'
       - '**/*.json'
       - 'core/bin/confusables.bin'
-      - 'bindings/native/test.cpp'
+      - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
 jobs:
   setup:
