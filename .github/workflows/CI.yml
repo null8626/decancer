@@ -62,18 +62,18 @@ jobs:
     strategy:
       matrix:
         settings:
-          - host: macos-latest
-            target: x86_64-apple-darwin
-            build: |
-              cargo build --release
-              strip -x ./target/release/libdecancer.dylib
-              mv ./target/release/libdecancer.dylib ../../artifacts
+    #      - host: macos-latest
+    #        target: x86_64-apple-darwin
+    #        build: |
+    #          cargo build --release
+    #          strip -x ./target/release/libdecancer.dylib
+    #          mv ./target/release/libdecancer.dylib ../../artifacts
           - host: windows-latest
             build: |
               cargo build --release
               mv ./target/release/decancer.dll ../../artifacts
               mv ./target/release/decancer.dll.lib ../../artifacts/decancer.lib
-    #        target: x86_64-pc-windows-msvc
+            target: x86_64-pc-windows-msvc
     #      - host: windows-latest
     #        build: |
     #          cargo build --release --target i686-pc-windows-msvc
