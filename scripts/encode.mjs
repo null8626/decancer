@@ -27,7 +27,7 @@ assert(
   'similar must be an array of an array of ASCII strings'
 )
 
-const isCaseSensitive = x => {
+function isCaseSensitive(x) {
   const y = String.fromCodePoint(x)
 
   return y.toLowerCase() !== y
