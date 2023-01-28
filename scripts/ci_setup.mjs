@@ -11,12 +11,7 @@ const response = await fetch(
   }
 )
 
-const {
-  base_commit: {
-    commit: { message }
-  },
-  files
-} = await response.json()
+const { files } = await response.json()
 
 const coreAffected = files.some(
   ({ filename }) =>
@@ -26,7 +21,9 @@ const coreAffected = files.some(
 appendFileSync(
   process.env.GITHUB_OUTPUT,
   Object.entries({
-    release: /^\d+\.\d+\.\d+$/.test(message) ? message : 'null',
+    release: /^\d+\.\d+\.\d+$/.test(process.env.COMMIT_MESSAGE)
+      ? process.env.COMMIT_MESSAGE
+      : 'null',
     core_affected: coreAffected,
     node_affected:
       coreAffected ||

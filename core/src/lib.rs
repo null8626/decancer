@@ -14,7 +14,7 @@
 //!   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
 //!   - [Control characters](https://en.wikipedia.org/wiki/Control_character)
 //!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-//!   - Several foreign characters, including but not limited to [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
+//!   - Several foreign characters, including but not limited to [Arabic](https://en.wikipedia.org/wiki/Arabic), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
 //!   - Several emojis
 //!   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
 //!   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
@@ -127,8 +127,6 @@
 //! </details>
 //! 
 //! ## Examples
-//! 
-//! > **NOTE:** cured output will ALWAYS be in lowercase.
 //! 
 //! <details>
 //! <summary>JavaScript</summary>
@@ -374,18 +372,6 @@
 //! ## Contributing
 //! 
 //! Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
-//! 
-//! ## Special thanks
-//! 
-//! These are the primary resources that made this project possible.
-//! 
-//! - [The Official Unicode Confusables List](https://util.unicode.org/UnicodeJsps/confusables.jsp)
-//! - [The Official Unicode Characters List](https://unicode.org/Public/UNIDATA/UnicodeData.txt)
-//! - [Wikipedia's list of Unicode Characters](https://en.wikipedia.org/wiki/List_of_Unicode_characters)
-//! - [Fancy Text Generator](https://lingojam.com/FancyTextGenerator)
-//! - [Unicode character inspector](https://apps.timwhitlock.info/unicode/inspect)
-//! - [`napi-rs` for integrating Rust into the Node.js ecosystem](https://napi.rs/)
-//! - [`wasm-bindgen` for making the development of WebAssembly modules in Rust easier](https://github.com/rustwasm/wasm-bindgen)
 
 #![deny(clippy::all)]
 #![allow(
