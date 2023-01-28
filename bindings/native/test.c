@@ -1,11 +1,11 @@
 #include "decancer.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wwritable-strings"
 #endif
-
-#include <cstdio>
-#include <cstdlib>
 
 decancer_cured_t cured;
 wdecancer_raw_cured_t output_raw = NULL;
@@ -29,9 +29,12 @@ static void assert(const bool expr, const char *message)
 
 static inline void test_utf8(void)
 {
-    uint8_t string[] = u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+    // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+                        0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+                        0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string) - sizeof(uint8_t));
+    cured = decancer_cure(string, sizeof(string));
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
     assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with");
@@ -91,6 +94,7 @@ int main(void)
 {
     test_utf8();
     test_utf16();
+    puts("ok");
 
     return 0;
 }

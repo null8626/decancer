@@ -230,7 +230,7 @@ jobs:
       - name: Compile and run tests
         working-directory: bindings/native
         run: |
-          cl.exe /EHsc /nologo test.cpp decancer.lib
+          cl.exe /MD /nologo test.c decancer.lib
           .\test.exe
   node:
     strategy:
