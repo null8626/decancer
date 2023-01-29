@@ -447,7 +447,7 @@ jobs:
       - name: Prettier everything
         run: node scripts/pretty.mjs
       - name: Download wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/download-artifact@v3
         with:
           name: wasm
@@ -459,7 +459,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Remove wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: geekyeggo/delete-artifact@v2
         with:
           name: wasm
