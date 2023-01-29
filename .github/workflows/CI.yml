@@ -506,9 +506,19 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
+      - name: Create Tag
+        uses: rickstaa/action-create-tag@v1
         with:
-          artifacts: "*.zip"
+          message: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
+          tag: "v${{ needs.setup.outputs.release }}"
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
           body: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
-          name: "v${{ needs.setup.outputs.release }}"
+          draft: false
+          prerelease: false
+          files: "*.zip"
+          tag_name: "v${{ needs.setup.outputs.release }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_REPOSITORY: null8626/decancer
