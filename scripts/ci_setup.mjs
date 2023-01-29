@@ -21,7 +21,9 @@ const coreAffected = files.some(
 appendFileSync(
   process.env.GITHUB_OUTPUT,
   Object.entries({
-    release: /^\d+\.\d+\.\d+$/.test(process.env.COMMIT_MESSAGE) ? process.env.COMMIT_MESSAGE : 'null',
+    release: /^\d+\.\d+\.\d+$/.test(process.env.COMMIT_MESSAGE)
+      ? process.env.COMMIT_MESSAGE
+      : 'null',
     core_affected: coreAffected,
     node_affected:
       coreAffected ||
