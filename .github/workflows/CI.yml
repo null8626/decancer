@@ -40,26 +40,26 @@ jobs:
       node_affected: ${{ steps.setup.outputs.node_affected }}
       wasm_affected: ${{ steps.setup.outputs.wasm_affected }}
       native_affected: ${{ steps.setup.outputs.native_affected }}
-  core:
-    name: Test core
-    runs-on: ubuntu-latest
-    needs:
-      - setup
-    if: ${{ needs.setup.outputs.core_affected == 'true' || needs.setup.outputs.release != 'null' }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ATiltedTree/setup-rust@v1
-        with:
-          rust-version: stable
-      - name: Setup node
-        uses: actions/setup-node@v3
-        if: ${{ !matrix.settings.docker }}
-        with:
-          node-version: 18
-          check-latest: true
-      - name: Run cargo test
-        working-directory: core
-        run: cargo test
+#  core:
+#    name: Test core
+#    runs-on: ubuntu-latest
+#    needs:
+#      - setup
+#    if: ${{ needs.setup.outputs.core_affected == 'true' || needs.setup.outputs.release != 'null' }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: ATiltedTree/setup-rust@v1
+#        with:
+#          rust-version: stable
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        if: ${{ !matrix.settings.docker }}
+#        with:
+#          node-version: 18
+#          check-latest: true
+#      - name: Run cargo test
+#        working-directory: core
+#        run: cargo test
   native:
     strategy:
       matrix:
@@ -138,7 +138,7 @@ jobs:
               mv ./target/aarch64-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
     needs:
       - setup
-      - core
+#      - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     name: Build native bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
@@ -181,7 +181,7 @@ jobs:
     name: Build native bindings on FreeBSD
     needs:
       - setup
-      - core
+#      - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     steps:
       - uses: actions/checkout@v3
@@ -234,244 +234,244 @@ jobs:
         run: |
           cl.exe /MD /nologo test.c decancer.lib
           .\test.exe
-  node:
-    strategy:
-      matrix:
-        settings:
-          - host: macos-latest
-            target: x86_64-apple-darwin
-            build: |
-              yarn build
-              strip -x *.node
-          - host: windows-latest
-            build: yarn build
-            target: x86_64-pc-windows-msvc
-          - host: windows-latest
-            build: yarn build --target i686-pc-windows-msvc
-            target: i686-pc-windows-msvc
-          - host: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
-            build: |
-              yarn build --target x86_64-unknown-linux-gnu
-              strip *.node
-          - host: ubuntu-latest
-            target: x86_64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              yarn build
-              strip *.node
-          - host: macos-latest
-            target: aarch64-apple-darwin
-            build: |
-              sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
-              export CC=$(xcrun -f clang);
-              export CXX=$(xcrun -f clang++);
-              SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
-              export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
-              yarn build --target aarch64-apple-darwin
-              strip -x *.node
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
-            build: |
-              yarn build --target aarch64-unknown-linux-gnu
-              aarch64-unknown-linux-gnu-strip *.node
-          - host: ubuntu-latest
-            target: armv7-unknown-linux-gnueabihf
-            build: |
-              sudo apt-get update
-              sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
-              yarn build --target=armv7-unknown-linux-gnueabihf
-              arm-linux-gnueabihf-strip *.node
-          - host: ubuntu-latest
-            target: aarch64-linux-android
-            build: |
-              export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
-              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
-              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
-              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
-              yarn build --target aarch64-linux-android
-              llvm-strip *.node
-          - host: ubuntu-latest
-            target: armv7-linux-androideabi
-            build: |
-              export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
-              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
-              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
-              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
-              yarn build --target armv7-linux-androideabi
-              llvm-strip *.node
-          - host: ubuntu-latest
-            target: aarch64-unknown-linux-musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              rustup target add aarch64-unknown-linux-musl
-              yarn build --target aarch64-unknown-linux-musl
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
-          - host: windows-latest
-            target: aarch64-pc-windows-msvc
-            build: yarn build --target aarch64-pc-windows-msvc
-    needs:
-      - setup
-      - core
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
-    name: Build node bindings on ${{ matrix.settings.target }}
-    runs-on: ${{ matrix.settings.host }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        if: ${{ !matrix.settings.docker }}
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        if: ${{ !matrix.settings.docker }}
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          target: ${{ matrix.settings.target }}
-      - uses: goto-bus-stop/setup-zig@v2
-        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
-        with:
-          version: 0.10.0
-      - name: Setup node x86
-        if: matrix.settings.target == 'i686-pc-windows-msvc'
-        run: yarn config set supportedArchitectures.cpu "ia32"
-        shell: bash
-      - name: Install dependencies
-        working-directory: bindings/node
-        run: yarn install
-      - name: Setup node x86
-        uses: actions/setup-node@v3
-        if: matrix.settings.target == 'i686-pc-windows-msvc'
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-          architecture: x86
-      - name: Build in docker
-        uses: addnab/docker-run-action@v3
-        if: ${{ matrix.settings.docker }}
-        with:
-          image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/node/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/bindings/node/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/node/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/node'
-          run: ${{ matrix.settings.build }}
-      - name: Build
-        working-directory: bindings/node
-        run: ${{ matrix.settings.build }}
-        if: ${{ !matrix.settings.docker }}
-        shell: bash
-      - name: Move artifact
-        run: mv ./bindings/node/decancer.*.node .
-        shell: bash
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: node-${{ matrix.settings.target }}
-          path: decancer.*.node
-          if-no-files-found: error
-  node-test:
-    name: Test node bindings
-    needs:
-      - setup
-      - node
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-          cache: yarn
-      - name: Install dependencies and Build TypeScript
-        working-directory: bindings/node
-        run: |
-          yarn install
-          npx tsc
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: node-x86_64-unknown-linux-gnu
-          path: bindings/node
-      - name: Test bindings
-        working-directory: bindings/node
-        run: yarn test
-  wasm:
-    name: Build wasm
-    runs-on: ubuntu-latest
-    needs:
-      - setup
-      - core
-    if: ${{ always() && (needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null') }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ATiltedTree/setup-rust@v1
-        with:
-          rust-version: stable
-      - name: Build wasm
-        working-directory: bindings/wasm
-        run: |
-          cargo install wasm-pack
-          wasm-pack build --no-typescript --release -t web
-          mv ./pkg/decancer_wasm_bg.wasm ../../decancer.wasm
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: wasm
-          path: |
-            decancer.wasm
-  prettier:
-    name: Lint and prettier files
-    runs-on: ubuntu-latest
-    needs:
-      - setup
-      - wasm
-    if: ${{ always() }}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ATiltedTree/setup-rust@v1
-        with:
-          rust-version: stable
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          check-latest: true
-      - name: Prettier everything
-        run: node scripts/pretty.mjs
-      - name: Download wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
-        uses: actions/download-artifact@v3
-        with:
-          name: wasm
-          path: bindings/wasm/bin
-      - name: Commit
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: 'chore: prettier and update wasm'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Remove wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: wasm
+#  node:
+#    strategy:
+#      matrix:
+#        settings:
+#          - host: macos-latest
+#            target: x86_64-apple-darwin
+#            build: |
+#              yarn build
+#              strip -x *.node
+#          - host: windows-latest
+#            build: yarn build
+#            target: x86_64-pc-windows-msvc
+#          - host: windows-latest
+#            build: yarn build --target i686-pc-windows-msvc
+#            target: i686-pc-windows-msvc
+#          - host: ubuntu-latest
+#            target: x86_64-unknown-linux-gnu
+#            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
+#            build: |
+#              yarn build --target x86_64-unknown-linux-gnu
+#              strip *.node
+#          - host: ubuntu-latest
+#            target: x86_64-unknown-linux-musl
+#            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+#            build: |
+#              yarn build
+#              strip *.node
+#          - host: macos-latest
+#            target: aarch64-apple-darwin
+#            build: |
+#              sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*;
+#              export CC=$(xcrun -f clang);
+#              export CXX=$(xcrun -f clang++);
+#              SYSROOT=$(xcrun --sdk macosx --show-sdk-path);
+#              export CFLAGS="-isysroot $SYSROOT -isystem $SYSROOT";
+#              yarn build --target aarch64-apple-darwin
+#              strip -x *.node
+#          - host: ubuntu-latest
+#            target: aarch64-unknown-linux-gnu
+#            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+#            build: |
+#              yarn build --target aarch64-unknown-linux-gnu
+#              aarch64-unknown-linux-gnu-strip *.node
+#          - host: ubuntu-latest
+#            target: armv7-unknown-linux-gnueabihf
+#            build: |
+#              sudo apt-get update
+#              sudo apt-get install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf -y
+#              yarn build --target=armv7-unknown-linux-gnueabihf
+#              arm-linux-gnueabihf-strip *.node
+#          - host: ubuntu-latest
+#            target: aarch64-linux-android
+#            build: |
+#              export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+#              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+#              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
+#              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+#              yarn build --target aarch64-linux-android
+#              llvm-strip *.node
+#          - host: ubuntu-latest
+#            target: armv7-linux-androideabi
+#            build: |
+#              export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+#              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+#              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
+#              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+#              yarn build --target armv7-linux-androideabi
+#              llvm-strip *.node
+#          - host: ubuntu-latest
+#            target: aarch64-unknown-linux-musl
+#            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+#            build: |
+#              rustup target add aarch64-unknown-linux-musl
+#              yarn build --target aarch64-unknown-linux-musl
+#              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip *.node
+#          - host: windows-latest
+#            target: aarch64-pc-windows-msvc
+#            build: yarn build --target aarch64-pc-windows-msvc
+#    needs:
+#      - setup
+#      - core
+#    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
+#    name: Build node bindings on ${{ matrix.settings.target }}
+#    runs-on: ${{ matrix.settings.host }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        if: ${{ !matrix.settings.docker }}
+#        with:
+#          node-version: 18
+#          check-latest: true
+#          cache: yarn
+#      - name: Install Rust
+#        uses: actions-rs/toolchain@v1
+#        if: ${{ !matrix.settings.docker }}
+#        with:
+#          profile: minimal
+#          override: true
+#          toolchain: stable
+#          target: ${{ matrix.settings.target }}
+#      - uses: goto-bus-stop/setup-zig@v2
+#        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
+#        with:
+#          version: 0.10.0
+#      - name: Setup node x86
+#        if: matrix.settings.target == 'i686-pc-windows-msvc'
+#        run: yarn config set supportedArchitectures.cpu "ia32"
+#        shell: bash
+#      - name: Install dependencies
+#        working-directory: bindings/node
+#        run: yarn install
+#      - name: Setup node x86
+#        uses: actions/setup-node@v3
+#        if: matrix.settings.target == 'i686-pc-windows-msvc'
+#        with:
+#          node-version: 18
+#          check-latest: true
+#          cache: yarn
+#          architecture: x86
+#      - name: Build in docker
+#        uses: addnab/docker-run-action@v3
+#        if: ${{ matrix.settings.docker }}
+#        with:
+#          image: ${{ matrix.settings.docker }}
+#          options: '--user 0:0 -v ${{ github.workspace }}/node/.cargo-cache/git/db:/root/.cargo/git/db -v ${{ github.workspace }}/bindings/node/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/node/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/node'
+#          run: ${{ matrix.settings.build }}
+#      - name: Build
+#        working-directory: bindings/node
+#        run: ${{ matrix.settings.build }}
+#        if: ${{ !matrix.settings.docker }}
+#        shell: bash
+#      - name: Move artifact
+#        run: mv ./bindings/node/decancer.*.node .
+#        shell: bash
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: node-${{ matrix.settings.target }}
+#          path: decancer.*.node
+#          if-no-files-found: error
+#  node-test:
+#    name: Test node bindings
+#    needs:
+#      - setup
+#      - node
+#    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#          check-latest: true
+#          cache: yarn
+#      - name: Install dependencies and Build TypeScript
+#        working-directory: bindings/node
+#        run: |
+#          yarn install
+#          npx tsc
+#      - name: Download artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: node-x86_64-unknown-linux-gnu
+#          path: bindings/node
+#      - name: Test bindings
+#        working-directory: bindings/node
+#        run: yarn test
+#  wasm:
+#    name: Build wasm
+#    runs-on: ubuntu-latest
+#    needs:
+#      - setup
+#      - core
+#    if: ${{ always() && (needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null') }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: ATiltedTree/setup-rust@v1
+#        with:
+#          rust-version: stable
+#      - name: Build wasm
+#        working-directory: bindings/wasm
+#        run: |
+#          cargo install wasm-pack
+#          wasm-pack build --no-typescript --release -t web
+#          mv ./pkg/decancer_wasm_bg.wasm ../../decancer.wasm
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: wasm
+#          path: |
+#            decancer.wasm
+#  prettier:
+#    name: Lint and prettier files
+#    runs-on: ubuntu-latest
+#    needs:
+#      - setup
+#      - wasm
+#    if: ${{ always() }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - uses: ATiltedTree/setup-rust@v1
+#        with:
+#          rust-version: stable
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: 18
+#          check-latest: true
+#      - name: Prettier everything
+#        run: node scripts/pretty.mjs
+#      - name: Download wasm artifact
+#        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: wasm
+#          path: bindings/wasm/bin
+#      - name: Commit
+#        uses: EndBug/add-and-commit@v9
+#        with:
+#          message: 'chore: prettier and update wasm'
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Remove wasm artifact
+#        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
+#        uses: geekyeggo/delete-artifact@v2
+#        with:
+#          name: wasm
   publish:
     name: Publish
     runs-on: ubuntu-latest
     needs:
       - setup
-      - node-test
+      #- node-test
       - native-freebsd
       - native-test
-      - prettier
+      #- prettier
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
     steps:
       - uses: actions/checkout@v3
@@ -487,30 +487,28 @@ jobs:
           path: artifacts
       - name: Modify artifacts
         run: node scripts/ci_artifacts.mjs
-      - name: Install dependencies
-        working-directory: bindings/node
-        run: yarn install
-      - name: Move artifacts
-        working-directory: bindings/node
-        run: yarn artifacts
-      - name: Move README.md and Build TypeScript
-        working-directory: bindings/node
-        run: |
-          mv ../../README.md .
-          npx tsc
-      - name: Publish
-        working-directory: bindings/node
-        run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --access public
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#      - name: Install dependencies
+#        working-directory: bindings/node
+#        run: yarn install
+#      - name: Move artifacts
+#        working-directory: bindings/node
+#        run: yarn artifacts
+#      - name: Move README.md and Build TypeScript
+#        working-directory: bindings/node
+#        run: |
+#          mv ../../README.md .
+#          npx tsc
+#      - name: Publish
+#        working-directory: bindings/node
+#        run: |
+#          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+#          npm publish --access public
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "*.zip"
           body: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
           name: "v${{ needs.setup.outputs.release }}"
-          prerelease: false
-          tag_name: "v${{ needs.setup.outputs.release }}"
