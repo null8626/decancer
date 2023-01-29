@@ -373,14 +373,7 @@
 //! 
 //! Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
 
-#![deny(clippy::all)]
-#![allow(
-  clippy::transmute_int_to_char,
-  clippy::or_fun_call,
-  clippy::ptr_offset_with_cast,
-  clippy::from_over_into,
-  dead_code
-)]
+#![allow(dead_code)]
 
 mod matcher;
 mod similar;
