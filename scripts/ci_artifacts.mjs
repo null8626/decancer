@@ -12,11 +12,6 @@ const [artifacts] = await Promise.all([
   mkdir(join(ROOT_DIR, 'bindings', 'node', 'artifacts'))
 ])
 
-const targets = artifacts.reduce(
-  (a, b) => a.add(b.match(/^(native|node)-(.+)/)[2]),
-  new Set()
-)
-
 void (await Promise.all(
   artifacts.map(artifact =>
     artifact.startsWith('native-')
@@ -32,12 +27,10 @@ void (await Promise.all(
 
           Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
             ([[nodeBinary]]) =>
-              mkdir(artifactsDir).then(() =>
-                rename(
-                  join(originDir, nodeBinary),
-                  join(artifactsDir, nodeBinary)
-                ).then(resolve)
-              )
+              rename(
+                join(originDir, nodeBinary),
+                join(artifactsDir, nodeBinary)
+              ).then(resolve)
           )
         })
   )
