@@ -123,7 +123,6 @@ function prettierPromise(resolve) {
 async function handleCargo(cwd) {
   console.log(`- [cargo -> ${cwd}] running clippy and rustfmt...`)
 
-  await execute('cargo clippy --fix --allow-dirty', { cwd })
   await execute('cargo fmt', { cwd })
 
   console.log(`- [cargo -> ${cwd}] completed`)
