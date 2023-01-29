@@ -1,5 +1,4 @@
-#![deny(clippy::all)]
-#![allow(clippy::inherent_to_string, dead_code)]
+#![allow(dead_code)]
 
 #[macro_use]
 extern crate napi_derive;

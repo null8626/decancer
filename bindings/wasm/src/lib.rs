@@ -1,4 +1,3 @@
-#![deny(clippy::all)]
 #![allow(non_snake_case)]
 // I'M SORRY FOR MY SINS BUT THIS HAS TO BE DONE
 
