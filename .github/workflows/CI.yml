@@ -138,7 +138,7 @@ jobs:
               mv ./target/aarch64-pc-windows-msvc/release/decancer.dll.lib ../../artifacts/decancer.lib
     needs:
       - setup
-      - core
+#      - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     name: Build native bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
@@ -181,7 +181,7 @@ jobs:
     name: Build native bindings on FreeBSD
     needs:
       - setup
-      - core
+#      - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     steps:
       - uses: actions/checkout@v3
@@ -314,7 +314,7 @@ jobs:
             build: yarn build --target aarch64-pc-windows-msvc
     needs:
       - setup
-      - core
+#      - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
