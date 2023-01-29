@@ -14,7 +14,7 @@
 //!   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
 //!   - [Control characters](https://en.wikipedia.org/wiki/Control_character)
 //!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-//!   - Several foreign characters, including but not limited to [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
+//!   - Several foreign characters, including but not limited to [Arabic](https://en.wikipedia.org/wiki/Arabic), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
 //!   - Several emojis
 //!   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
 //!   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
