@@ -11,4 +11,3 @@
 **/*.md eol=lf
 **/*.toml eol=lf
 **/*.json eol=lf
-* eol=lf
