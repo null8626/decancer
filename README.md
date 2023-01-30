@@ -240,12 +240,6 @@ static void assert(const bool expr, const char *message)
     {
         fprintf(stderr, "assertion failed (%s)\n", message);
 
-        if (output_raw != NULL)
-        {
-            wdecancer_raw_free(output_raw);
-            output_raw = NULL;
-        }
-
         decancer_free(cured);
         exit(1);
     }
