@@ -385,7 +385,6 @@ const fn invalid_codepoint(x: u32) -> bool {
 /// let cured_nothing = decancer::cure_char('\0');
 ///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));
-///
 /// ```
 pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
