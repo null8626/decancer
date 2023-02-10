@@ -406,23 +406,9 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   }
 
   let mut start = 0;
-  let mut end = confusables::CONFUSABLES_COUNT;
-
-  while start <= end {
-    let mid = (start + end) / 2;
-    let confusable = confusables::Confusable::at(mid);
-
-    match confusable.matches(code_lowercased) {
-      Ordering::Equal => return confusable.translation(code_lowercased),
-      Ordering::Greater => start = mid + 1,
-      _ => end = mid - 1,
-    };
-  }
+  let mut end = confusables::CASE_SENSITIVE_CONFUSABLES_COUNT;
 
   if code != code_lowercased {
-    start = 0;
-    end = confusables::CASE_SENSITIVE_CONFUSABLES_COUNT;
-
     while start <= end {
       let mid = (start + end) / 2;
       let confusable = confusables::Confusable::case_sensitive_at(mid);
@@ -433,6 +419,20 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
         _ => end = mid - 1,
       };
     }
+  }
+
+  start = 0;
+  end = confusables::CONFUSABLES_COUNT;
+
+  while start <= end {
+    let mid = (start + end) / 2;
+    let confusable = confusables::Confusable::at(mid);
+
+    match confusable.matches(code_lowercased) {
+      Ordering::Equal => return confusable.translation(code_lowercased),
+      Ordering::Greater => start = mid + 1,
+      _ => end = mid - 1,
+    };
   }
 
   Translation::character(unsafe { transmute(code_lowercased) })
