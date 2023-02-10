@@ -175,7 +175,7 @@
 //!     _ => unreachable!(),
 //!   }
 //!   
-//!   // control and whitespace characters
+//!   // control characters
 //!   let cured_nothing = decancer::cure_char('\0'); 
 //!   
 //!   assert!(matches!(cured_nothing, decancer::Translation::None));
@@ -382,7 +382,7 @@ const fn invalid_codepoint(x: u32) -> bool {
 ///   _ => unreachable!(),
 /// }
 ///
-/// // control and whitespace characters
+/// // control characters
 /// let cured_nothing = decancer::cure_char('\0');
 ///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));

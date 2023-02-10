@@ -175,7 +175,7 @@ fn main() {
     _ => unreachable!(),
   }
   
-  // control and whitespace characters
+  // control characters
   let cured_nothing = decancer::cure_char('\0'); 
   
   assert!(matches!(cured_nothing, decancer::Translation::None));
