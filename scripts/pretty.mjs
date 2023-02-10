@@ -37,22 +37,44 @@ function retrieveReadmePromise(resolve) {
 
     let confusablesCount = NON_BINARY_CONFUSABLES_COUNT
     const confusablesEnd = bin.readUint16LE()
+    const caseSensitiveConfusablesEnd = bin.readUint16LE(2)
+    const caseSensitiveConfusables = []
+    let offset = confusablesEnd
 
-    for (let offset = 4; offset < confusablesEnd; offset += 5) {
+    for (; offset < caseSensitiveConfusablesEnd; offset += 5) {
       const integer = bin.readUint32LE(offset)
       const codepoint = integer & 0x1fffff
       let toAdd = 1
 
-      if ((integer & 0x10000000) !== 0) {
-        const secondByte = bin.readUint8(offset + 4)
+      caseSensitiveConfusables.push(codepoint)
 
-        toAdd += secondByte & 0x7f
+      if ((integer & 0x10000000) !== 0) {
+        const rangeUntil = bin.readUint8(offset + 4) & 0x7f
+
+        caseSensitiveConfusables.push(
+          ...Array.from({ length: rangeUntil }, (_, i) => codepoint + 1 + i)
+        )
+        toAdd += rangeUntil
       }
 
+      confusablesCount += toAdd
+    }
+
+    for (offset = 6; offset < confusablesEnd; offset += 5) {
+      const integer = bin.readUint32LE(offset)
+      const codepoint = integer & 0x1fffff
+      let toAdd = 1
+
+      if ((integer & 0x10000000) !== 0)
+        toAdd += bin.readUint8(offset + 4) & 0x7f
+
+      const uppercasedCodepoint = String.fromCodePoint(codepoint)
+        .toUpperCase()
+        .codePointAt()
+
       if (
-        (integer & 0x40000000) === 0 &&
-        String.fromCodePoint(codepoint).toUpperCase().codePointAt() !==
-          codepoint
+        uppercasedCodepoint !== codepoint &&
+        !caseSensitiveConfusables.includes(uppercasedCodepoint)
       )
         toAdd *= 2
 

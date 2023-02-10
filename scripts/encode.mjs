@@ -28,9 +28,7 @@ assert(
 )
 
 function isCaseSensitive(x) {
-  const y = String.fromCodePoint(x)
-
-  return y.toUpperCase() === y && y !== y.toLowerCase()
+  return String.fromCodePoint(x).toLowerCase().codePointAt() !== x
 }
 
 console.log(
@@ -71,24 +69,13 @@ for (const conf of confusables) {
       : conf.translation
 
     for (let c = conf.codepoint; c <= conf.rangeUntil; c++)
-      expanded.push({
-        codepoint: c,
-        translation:
-          typeof ogTranslationCode === 'number'
-            ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint))
-            : ogTranslationCode,
-        caseSensitive: isCaseSensitive(
-          typeof ogTranslationCode === 'number'
-            ? ogTranslationCode + (c - conf.codepoint)
-            : ogTranslationCode.charCodeAt()
-        )
-      })
-  } else
-    expanded.push({
-      codepoint: conf.codepoint,
-      translation: conf.translation,
-      caseSensitive: isCaseSensitive(conf.codepoint)
-    })
+      expanded.push([
+        c,
+        typeof ogTranslationCode === 'number'
+          ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint))
+          : ogTranslationCode
+      ])
+  } else expanded.push([conf.codepoint, conf.translation])
 }
 
 console.log(
@@ -104,14 +91,14 @@ function retrieveCollisions(array, set) {
 }
 
 {
-  const set = Array.from(new Set(expanded.map(x => x.codepoint)))
+  const set = Array.from(new Set(expanded.map(([codepoint]) => codepoint)))
   assert(
     expanded.length === set.length,
     `discovered ${(expanded.length - set.length).toLocaleString(
       'en-US'
     )} collisions. at codepoints: ${inspect(
       retrieveCollisions(
-        expanded.map(x => x.codepoint),
+        expanded.map(([codepoint]) => codepoint),
         set
       )
     )}`
@@ -120,16 +107,18 @@ function retrieveCollisions(array, set) {
 
 const caseSensitiveCollisions = []
 
-for (const e of expanded) {
-  if (isCaseSensitive(e.codepoint)) {
-    const h = String.fromCodePoint(e.codepoint).toLowerCase().codePointAt()
+for (const [codepoint, translation] of expanded) {
+  if (isCaseSensitive(codepoint)) {
+    const lowercasedCodepoint = String.fromCodePoint(codepoint)
+      .toLowerCase()
+      .codePointAt()
     const already = expanded.find(
-      ({ codepoint, translation }) =>
-        codepoint === h && translation === e.translation
+      ([codepoint2, translation2]) =>
+        codepoint2 === lowercasedCodepoint && translation === translation2
     )
 
     if (already) {
-      caseSensitiveCollisions.push(e.codepoint)
+      caseSensitiveCollisions.push(codepoint)
     }
   }
 }
@@ -148,21 +137,21 @@ const notSyncedSequences = [],
   rest = []
 
 for (let i = 0, curr = null; i < expanded.length; i++) {
-  const n = expanded[i]
+  const [codepoint, translation] = expanded[i]
 
-  if (n.translation.length === 1) {
-    const next = expanded[i + 1]
+  if (translation.length === 1) {
+    const [nextCodepoint, nextTranslation] = expanded[i + 1] ?? []
     const ordered =
-      n.codepoint + 1 === next?.codepoint &&
-      n.caseSensitive === next.caseSensitive
+      codepoint + 1 === nextCodepoint &&
+      isCaseSensitive(codepoint) === isCaseSensitive(nextCodepoint)
 
     if (curr !== null) {
       if (
         ordered &&
-        next.translation.length === 1 &&
+        nextTranslation.length === 1 &&
         (curr.syncedTranslation
-          ? n.translation.charCodeAt() + 1 === next.translation.charCodeAt()
-          : next.translation === n.translation)
+          ? translation.charCodeAt() + 1 === nextTranslation.charCodeAt()
+          : nextTranslation === translation)
       ) {
         curr.rangeUntil++
         continue
@@ -176,20 +165,27 @@ for (let i = 0, curr = null; i < expanded.length; i++) {
     }
 
     const synced =
-      n.translation.charCodeAt() + 1 === next?.translation?.charCodeAt() &&
-      next.translation.length === 1
+      translation.charCodeAt() + 1 === nextTranslation.charCodeAt() &&
+      nextTranslation.length === 1
 
-    if (ordered && (synced || next?.translation === n.translation)) {
-      curr = n
-      curr.syncedTranslation = synced
-      curr.rangeUntil = n.codepoint + 1
+    if (ordered && (synced || nextTranslation === translation)) {
+      curr = {
+        codepoint,
+        translation,
+        rangeUntil: codepoint + 1,
+        syncedTranslation: synced
+      }
+
       continue
     }
   }
 
-  n.syncedTranslation = false
-  n.rangeUntil = null
-  rest.push(n)
+  rest.push({
+    codepoint,
+    translation,
+    rangeUntil: null,
+    syncedTranslation: false
+  })
 }
 
 const sequenceReduceFunc = (a, b) => a + (b.rangeUntil - b.codepoint) + 1
@@ -228,19 +224,17 @@ const similarBytes = Buffer.concat(
 )
 const strings = []
 const confusablesBuffers = []
+const caseSensitiveConfusablesBuffers = []
 
 for (const {
   codepoint,
   translation,
-  caseSensitive,
   rangeUntil,
   syncedTranslation
 } of grandTotal) {
   const buf = Buffer.alloc(5)
   let integer = 0x100000000n | BigInt(codepoint)
   let secondByte = 0
-
-  if (caseSensitive) integer |= 0x40000000n
 
   if (syncedTranslation) secondByte = 0x80
 
@@ -261,18 +255,27 @@ for (const {
   buf.writeUint32LE(Number(integer & 0xffffffffn))
   buf.writeUint8(secondByte, 4)
 
-  confusablesBuffers.push(buf)
+  if (isCaseSensitive(codepoint)) {
+    caseSensitiveConfusablesBuffers.push(buf)
+  } else {
+    confusablesBuffers.push(buf)
+  }
 }
 
-const headers = Buffer.alloc(4)
-headers.writeUint16LE(4 + confusablesBuffers.length * 5)
-headers.writeUint16LE(headers.readUint16LE() + similarBytes.length, 2)
+const headers = Buffer.alloc(6)
+headers.writeUint16LE(headers.byteLength + confusablesBuffers.length * 5)
+headers.writeUint16LE(
+  headers.readUint16LE() + caseSensitiveConfusablesBuffers.length * 5,
+  2
+)
+headers.writeUint16LE(headers.readUint16LE(2) + similarBytes.length, 4)
 
 writeFileSync(
   'output.bin',
   Buffer.concat([
     headers,
     Buffer.concat(confusablesBuffers),
+    Buffer.concat(caseSensitiveConfusablesBuffers),
     similarBytes,
     Buffer.from(
       strings

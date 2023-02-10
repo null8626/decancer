@@ -1,10 +1,5 @@
-use super::{cure, CuredString};
-use std::mem::transmute;
-
-#[test]
-fn example() {
-  assert_eq!(cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"), "very funny text");
-}
+use super::{cure, cure_char, CuredString, Translation};
+use core::mem::transmute;
 
 #[test]
 fn functions_test() {
