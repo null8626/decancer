@@ -160,25 +160,6 @@
 //! extern crate decancer;
 //! 
 //! fn main() {
-//!   let cured_e = decancer::cure_char('Ｅ');
-//!   
-//!   match cured_e {
-//!     decancer::Translation::Character(e) => assert_eq!(e, 'e'),
-//! 	_ => unreachable!(),
-//!   }
-//!   
-//!   let cured_ae = decancer::cure_char('ӕ');
-//!   
-//!   match cured_ae {
-//!     decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
-//! 	_ => unreachable!(),
-//!   }
-//!   
-//!   // control and whitespace characters
-//!   let cured_nothing = decancer::cure_char('\0'); 
-//!   
-//!   assert!(matches!(cured_nothing, decancer::Translation::None));
-//! 
 //!   let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 //! 
 //!   // cured here is a decancer::CuredString struct wrapping over the cured string
@@ -368,22 +349,22 @@ const fn invalid_codepoint(x: u32) -> bool {
 /// extern crate decancer;
 ///
 /// let cured_e = decancer::cure_char('Ｅ');
-///
+/// 
 /// match cured_e {
 ///   decancer::Translation::Character(e) => assert_eq!(e, 'e'),
 ///   _ => unreachable!(),
 /// }
-///
+/// 
 /// let cured_ae = decancer::cure_char('ӕ');
-///
+/// 
 /// match cured_ae {
 ///   decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
 ///   _ => unreachable!(),
 /// }
-///
+/// 
 /// // control and whitespace characters
-/// let cured_nothing = decancer::cure_char('\0');
-///
+/// let cured_nothing = decancer::cure_char('\0'); 
+/// 
 /// assert!(matches!(cured_nothing, decancer::Translation::None));
 ///
 /// ```
@@ -406,23 +387,9 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   }
 
   let mut start = 0;
-  let mut end = confusables::CONFUSABLES_COUNT;
-
-  while start <= end {
-    let mid = (start + end) / 2;
-    let confusable = confusables::Confusable::at(mid);
-
-    match confusable.matches(code_lowercased) {
-      Ordering::Equal => return confusable.translation(code_lowercased),
-      Ordering::Greater => start = mid + 1,
-      _ => end = mid - 1,
-    };
-  }
+  let mut end = confusables::CASE_SENSITIVE_CONFUSABLES_COUNT;
 
   if code != code_lowercased {
-    start = 0;
-    end = confusables::CASE_SENSITIVE_CONFUSABLES_COUNT;
-
     while start <= end {
       let mid = (start + end) / 2;
       let confusable = confusables::Confusable::case_sensitive_at(mid);
@@ -433,6 +400,20 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
         _ => end = mid - 1,
       };
     }
+  }
+  
+  start = 0;
+  end = confusables::CONFUSABLES_COUNT;
+
+  while start <= end {
+    let mid = (start + end) / 2;
+    let confusable = confusables::Confusable::at(mid);
+
+    match confusable.matches(code_lowercased) {
+      Ordering::Equal => return confusable.translation(code_lowercased),
+      Ordering::Greater => start = mid + 1,
+      _ => end = mid - 1,
+    };
   }
 
   Translation::character(unsafe { transmute(code_lowercased) })

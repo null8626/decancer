@@ -1,4 +1,4 @@
-use super::{cure, cure_char, CuredString, Translation};
+use super::{cure, CuredString};
 use core::mem::transmute;
 
 #[test]
