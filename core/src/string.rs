@@ -1,5 +1,5 @@
-use super::{matcher::Translation, similar};
-use std::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
+use super::{similar, translation::Translation};
+use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 
 /// This is a small wrapper around the [`String`] datatype.
 ///
@@ -18,7 +18,7 @@ impl CuredString {
     b[b.len() - 1] == 0x20
   }
 
-  pub(crate) fn push_translation(&mut self, t: Translation) {
+  pub(crate) fn push(&mut self, t: Translation) {
     match t {
       Translation::Character(c) => {
         if c != ' ' || (self.len() > 0 && !self.is_last_space()) {
@@ -26,21 +26,17 @@ impl CuredString {
         }
       }
       Translation::String(s) => self.0.push_str(s),
+      Translation::None => {}
     }
   }
 
   #[inline(always)]
-  pub(crate) fn push_code(&mut self, code: u32) {
-    if code != 0x20 || (self.len() > 0 && !self.is_last_space()) {
-      self.0.push(unsafe { transmute(code) })
-    }
-  }
-
-  #[inline(always)]
-  pub(crate) fn finishing(&mut self) {
+  pub(crate) fn finishing(mut self) -> Self {
     if self.len() > 0 && self.is_last_space() {
       self.0.pop();
     }
+
+    self
   }
 
   /// Coerces this data to a [`String`].

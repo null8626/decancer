@@ -7,7 +7,7 @@ if (typeof process.argv[2] !== 'string') {
 
 const binary = readFileSync(process.argv[2])
 
-let bytes = binary.subarray(binary.readUint16LE(), binary.readUint16LE(2))
+let bytes = binary.subarray(binary.readUint16LE(2), binary.readUint16LE(4))
 const similar = []
 
 while (bytes.length !== 0) {
@@ -19,7 +19,7 @@ while (bytes.length !== 0) {
   bytes = bytes.subarray(1 + length)
 }
 
-bytes = binary.subarray(binary.readUint16LE(2))
+bytes = binary.subarray(binary.readUint16LE(4))
 const strings = []
 
 while (bytes.length !== 0) {
@@ -34,10 +34,10 @@ while (bytes.length !== 0) {
   bytes = bytes.subarray(1 + length)
 }
 
-const confusablesEnd = binary.readUint16LE()
-const confusables = []
+let confusablesEnd = binary.readUint16LE()
+let confusables = []
 
-for (let offset = 4; offset < confusablesEnd; offset += 5) {
+for (let offset = 6; offset < confusablesEnd; offset += 5) {
   const integer = binary.readUint32LE(offset)
   const secondByte = binary.readUint8(offset + 4)
 
@@ -50,11 +50,41 @@ for (let offset = 4; offset < confusablesEnd; offset += 5) {
       (integer & 0x20000000) !== 0
         ? strings[translationCode]
         : String.fromCharCode(translationCode),
-    caseSensitive: (integer & 0x40000000) !== 0,
     rangeUntil:
       (integer & 0x10000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80
   })
 }
 
-writeFileSync('output.json', JSON.stringify({ confusables, similar }, null, 2))
+confusablesEnd = binary.readUint16LE(2)
+
+for (let offset = binary.readUint16LE(); offset < confusablesEnd; offset += 5) {
+  const integer = binary.readUint32LE(offset)
+  const secondByte = binary.readUint8(offset + 4)
+
+  const codepoint = integer & 0x1fffff
+  const translationCode = (integer >> 21) & 0x7f
+
+  confusables.push({
+    codepoint,
+    translation:
+      (integer & 0x20000000) !== 0
+        ? strings[translationCode]
+        : String.fromCharCode(translationCode),
+    rangeUntil:
+      (integer & 0x10000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
+    syncedTranslation: secondByte >= 0x80
+  })
+}
+
+writeFileSync(
+  'output.json',
+  JSON.stringify(
+    {
+      confusables: confusables.sort((a, b) => a.codepoint - b.codepoint),
+      similar
+    },
+    null,
+    2
+  )
+)

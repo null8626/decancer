@@ -1,7 +1,7 @@
-use super::{matcher::CONFUSABLES, util::read_u16_le};
+use super::{confusables::CONFUSABLES, util::read_u16_le};
 
-const SIMILAR_START: u16 = read_u16_le(CONFUSABLES);
-const SIMILAR_END: u16 = read_u16_le(unsafe { CONFUSABLES.offset(2) });
+const SIMILAR_START: u16 = read_u16_le(unsafe { CONFUSABLES.offset(2) });
+const SIMILAR_END: u16 = read_u16_le(unsafe { CONFUSABLES.offset(4) });
 
 pub(crate) fn is(a: u32, b: u32) -> bool {
   if a > 0xff || b > 0xff {

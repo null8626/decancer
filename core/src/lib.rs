@@ -9,7 +9,7 @@
 //! 
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-//! - It supports curing **4,800 different confusables** into cured-lowercased-strings, including but not limited to:
+//! - It supports curing **4,717 different confusables** into cured-lowercased-strings, including but not limited to:
 //!   - Accented characters
 //!   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
 //!   - [Control characters](https://en.wikipedia.org/wiki/Control_character)
@@ -32,7 +32,7 @@
 //! In your `Cargo.toml`:
 //! 
 //! ```toml
-//! decancer = "1.5.3"
+//! decancer = "1.5.4"
 //! ```
 //! 
 //! </details>
@@ -85,7 +85,7 @@
 //! 
 //! ```html
 //! <script type="module">
-//!   import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js'
+//!   import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.4/bindings/wasm/bin/decancer.min.js'
 //! 
 //!   const decancer = await init()
 //! </script>
@@ -97,17 +97,17 @@
 //! 
 //! ### Download precompiled binaries
 //! 
-//! - [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-pc-windows-msvc.zip)
-//! - [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-i686-pc-windows-msvc.zip)
-//! - [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-pc-windows-msvc.zip)
-//! - [Download for 64-bit macOS (10.7+, Lion+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-apple-darwin.zip)
-//! - [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-apple-darwin.zip)
-//! - [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-unknown-linux-gnu.zip)
-//! - [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-x86_64-unknown-linux-musl.zip)
-//! - [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-unknown-linux-gnu.zip)
-//! - [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-aarch64-unknown-linux-musl.zip)
-//! - [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-armv7-unknown-linux-gnueabihf.zip)
-//! - [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v1.5.3/decancer-freebsd.zip)
+//! - [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-x86_64-pc-windows-msvc.zip)
+//! - [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-i686-pc-windows-msvc.zip)
+//! - [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-aarch64-pc-windows-msvc.zip)
+//! - [Download for 64-bit macOS (10.7+, Lion+)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-x86_64-apple-darwin.zip)
+//! - [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-aarch64-apple-darwin.zip)
+//! - [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-x86_64-unknown-linux-gnu.zip)
+//! - [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-x86_64-unknown-linux-musl.zip)
+//! - [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-aarch64-unknown-linux-gnu.zip)
+//! - [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-aarch64-unknown-linux-musl.zip)
+//! - [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-armv7-unknown-linux-gnueabihf.zip)
+//! - [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v1.5.4/decancer-freebsd.zip)
 //! 
 //! ### Building from source
 //! 
@@ -201,7 +201,7 @@
 //!     <br />
 //!     <button id="cure" onclick="cure()">cure!</button>
 //!     <script type="module">
-//!       import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.3/bindings/wasm/bin/decancer.min.js'
+//!       import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.4/bindings/wasm/bin/decancer.min.js'
 //! 
 //!       const decancer = await init()
 //! 
@@ -246,6 +246,28 @@
 //! }
 //! 
 //! int main(void) {
+//!     decancer_translation_t char_translation;
+//! 
+//!     // cure the unicode character 'Ｅ' (U+FF25)
+//!     decancer_cure_char(0xFF25, &char_translation);
+//!     
+//!     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_CHARACTER, "char translation is a character");
+//!     assert(char_translation.contents.character == 0x65, "char translation is 'e' (0x65)");
+//! 
+//!     // cure the unicode character 'ӕ' (U+04D5)
+//!     decancer_cure_char(0x04D5, &char_translation);
+//!     
+//!     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_STRING, "char translation is an ASCII string");
+//!     assert(char_translation.contents.string.length == 2,
+//!            "char translation is an ASCII string with the length of 2 bytes");
+//!     assert(char_translation.contents.string.contents[0] == 'a' && char_translation.contents.string.contents[1] == 'e',
+//!            "char translation is the ASCII string \"ae\".");
+//! 
+//!     // try to cure the null terminator (\0)
+//!     decancer_cure_char(0, &char_translation);
+//!     
+//!     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_NONE, "char translation is an empty string ('')");
+//! 
 //!     // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
 //!     uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
 //!                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
@@ -286,82 +308,6 @@
 //! ```
 //! 
 //! </details>
-//! <details>
-//! <summary>C/C++ UTF-16 example</summary>
-//! 
-//! ```c
-//! #include <decancer.h>
-//! 
-//! #include <string.h>
-//! #include <stdlib.h>
-//! #include <stdio.h>
-//! 
-//! // global variable for assertion purposes only
-//! decancer_cured_t cured;
-//! wdecancer_raw_cured_t output_raw = NULL;
-//! 
-//! // our quick assert function
-//! static void assert(const bool expr, const char *message)
-//! {
-//!     if (!expr)
-//!     {
-//!         fprintf(stderr, "assertion failed (%s)\n", message);
-//! 
-//!         if (output_raw != NULL)
-//!         {
-//!             wdecancer_raw_free(output_raw);
-//!             output_raw = NULL;
-//!         }
-//! 
-//!         decancer_free(cured);
-//!         exit(1);
-//!     }
-//! }
-//! 
-//! int main(void) {
-//!     // utf-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-//!     wchar_t string[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c,
-//!                         0x0147, 0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3};
-//! 
-//!     // cure string
-//!     cured = wdecancer_cure(string, sizeof(string) / sizeof(wchar_t));
-//! 
-//!     // comparisons
-//!     assert(wdecancer_equals(cured, L"very funny text", 15), "wide equals");
-//!     assert(wdecancer_starts_with(cured, L"very", 4), "wide starts_with");
-//!     assert(wdecancer_ends_with(cured, L"text", 4), "wide ends_with");
-//!     assert(wdecancer_contains(cured, L"funny", 5), "wide contains");
-//! 
-//!     // coerce output as a raw UTF-16 pointer and retrieve it's length (in CHARACTERS)
-//!     size_t output_length;
-//!     output_raw = wdecancer_raw(cured, &output_length);
-//!     const wchar_t *output_raw_ptr = wdecancer_raw_ptr(output_raw);
-//! 
-//!     // assert raw cured utf-16 length to be 15 characters (length of "very funny text", NOT in bytes)
-//!     assert(output_length == 15, "wide raw output length");
-//! 
-//!     // utf-16 bytes for "very funny text"
-//!     const wchar_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
-//!                                     0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
-//! 
-//!     char assert_message[39];
-//!     for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(wchar_t); i++)
-//!     {
-//!         sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
-//!         assert(output_raw_ptr[i] == expected_raw[i], assert_message);
-//!     }
-//! 
-//!     // free raw cured UTF-16 string (required)
-//!     wdecancer_raw_free(output_raw);
-//! 
-//!     // free cured string (required)
-//!     decancer_free(cured);
-//!     
-//!     return 0;
-//! }
-//! ```
-//! 
-//! </details>
 //! 
 //! ## Contributing
 //! 
@@ -369,26 +315,18 @@
 
 #![allow(dead_code)]
 
-mod matcher;
+mod confusables;
 mod similar;
 mod string;
+mod translation;
 mod util;
 
 #[cfg(test)]
 mod tests;
 
-use std::{cmp::Ordering, mem::transmute};
+use core::{cmp::Ordering, mem::transmute};
 pub use string::CuredString;
-
-#[inline(always)]
-fn to_lowercase(code: u32) -> u32 {
-  unsafe {
-    transmute::<_, char>(code)
-      .to_lowercase()
-      .next()
-      .unwrap_unchecked() as _
-  }
-}
+pub use translation::Translation;
 
 const fn invalid_codepoint(x: u32) -> bool {
   x <= 31
@@ -399,6 +337,86 @@ const fn invalid_codepoint(x: u32) -> bool {
     || x == 0xFEFF
     || x == 0xFFFD
     || x == 0x489
+}
+
+/// Cures a single character.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// extern crate decancer;
+///
+/// let cured_e = decancer::cure_char('Ｅ');
+/// 
+/// match cured_e {
+///   decancer::Translation::Character(e) => assert_eq!(e, 'e'),
+///   _ => unreachable!(),
+/// }
+/// 
+/// let cured_ae = decancer::cure_char('ӕ');
+/// 
+/// match cured_ae {
+///   decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
+///   _ => unreachable!(),
+/// }
+/// 
+/// // control and whitespace characters
+/// let cured_nothing = decancer::cure_char('\0'); 
+/// 
+/// assert!(matches!(cured_nothing, decancer::Translation::None));
+///
+/// ```
+pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
+  let code = code.into();
+
+  if invalid_codepoint(code) {
+    return Translation::None;
+  }
+
+  let code_lowercased = unsafe {
+    transmute::<_, char>(code)
+      .to_lowercase()
+      .next()
+      .unwrap_unchecked() as _
+  };
+
+  if code_lowercased < 0x80 {
+    return Translation::character(unsafe { transmute(code_lowercased) });
+  }
+
+  let mut start = 0;
+  let mut end = confusables::CONFUSABLES_COUNT;
+
+  while start <= end {
+    let mid = (start + end) / 2;
+    let confusable = confusables::Confusable::at(mid);
+
+    match confusable.matches(code_lowercased) {
+      Ordering::Equal => return confusable.translation(code_lowercased),
+      Ordering::Greater => start = mid + 1,
+      _ => end = mid - 1,
+    };
+  }
+
+  if code != code_lowercased {
+    start = 0;
+    end = confusables::CASE_SENSITIVE_CONFUSABLES_COUNT;
+
+    while start <= end {
+      let mid = (start + end) / 2;
+      let confusable = confusables::Confusable::case_sensitive_at(mid);
+
+      match confusable.matches(code) {
+        Ordering::Equal => return confusable.translation(code),
+        Ordering::Greater => start = mid + 1,
+        _ => end = mid - 1,
+      };
+    }
+  }
+
+  Translation::character(unsafe { transmute(code_lowercased) })
 }
 
 /// Cures a string.
@@ -417,40 +435,9 @@ pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
   let input_s = input.as_ref();
   let mut output = CuredString::with_capacity(input_s.len());
 
-  input_s.chars().for_each(|code| {
-    if invalid_codepoint(code as _) {
-      return;
-    }
+  input_s
+    .chars()
+    .for_each(|code| output.push(cure_char(code)));
 
-    let code_lowercased = to_lowercase(code as _);
-    if code_lowercased < 0x80 {
-      return output.push_code(code_lowercased); // process of elimination
-    }
-
-    let mut start = 0;
-    let mut end = matcher::CONFUSABLES_COUNT;
-    let mut end_flag = false;
-
-    loop {
-      let mid = (((start + end) as f32) / 2f32).floor() as u16;
-      let confusable = matcher::Confusable::at(mid);
-
-      match confusable.matches(code as _, code_lowercased) {
-        Ordering::Equal => {
-          return output.push_translation(confusable.translation(code as _, code_lowercased))
-        }
-        Ordering::Greater => start = mid + 1,
-        _ => end = mid - 1,
-      };
-
-      if end_flag {
-        return output.push_code(code_lowercased);
-      }
-
-      end_flag = start == end;
-    }
-  });
-
-  output.finishing();
-  output
+  output.finishing()
 }
