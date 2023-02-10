@@ -165,14 +165,14 @@ fn main() {
   
   match cured_e {
     decancer::Translation::Character(e) => assert_eq!(e, 'e'),
-	_ => unreachable!(),
+    _ => unreachable!(),
   }
   
   let cured_ae = decancer::cure_char('ӕ');
   
   match cured_ae {
     decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
-	_ => unreachable!(),
+    _ => unreachable!(),
   }
   
   // control and whitespace characters
