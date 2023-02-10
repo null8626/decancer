@@ -3,9 +3,14 @@ use core::{cmp::PartialEq, fmt, mem::transmute, ops::AddAssign, slice, str};
 
 const STRINGS_OFFSET: u16 = unsafe { read_u16_le(CONFUSABLES.offset(4)) };
 
+/// The translation for a single character/confusable.
 pub enum Translation {
+  /// A single unicode character.
   Character(char),
+  /// A multi-character ASCII string.
   String(&'static str),
+  /// This suggests that the translation is an empty string.
+  /// You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character).
   None,
 }
 
