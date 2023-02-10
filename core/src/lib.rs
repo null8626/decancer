@@ -160,6 +160,25 @@
 //! extern crate decancer;
 //! 
 //! fn main() {
+//!   let cured_e = decancer::cure_char('Ｅ');
+//!   
+//!   match cured_e {
+//!     decancer::Translation::Character(e) => assert_eq!(e, 'e'),
+//! 	_ => unreachable!(),
+//!   }
+//!   
+//!   let cured_ae = decancer::cure_char('ӕ');
+//!   
+//!   match cured_ae {
+//!     decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
+//! 	_ => unreachable!(),
+//!   }
+//!   
+//!   // control and whitespace characters
+//!   let cured_nothing = decancer::cure_char('\0'); 
+//!   
+//!   assert!(matches!(cured_nothing, decancer::Translation::None));
+//! 
 //!   let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 //! 
 //!   // cured here is a decancer::CuredString struct wrapping over the cured string
@@ -349,22 +368,22 @@ const fn invalid_codepoint(x: u32) -> bool {
 /// extern crate decancer;
 ///
 /// let cured_e = decancer::cure_char('Ｅ');
-/// 
+///
 /// match cured_e {
 ///   decancer::Translation::Character(e) => assert_eq!(e, 'e'),
 ///   _ => unreachable!(),
 /// }
-/// 
+///
 /// let cured_ae = decancer::cure_char('ӕ');
-/// 
+///
 /// match cured_ae {
 ///   decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
 ///   _ => unreachable!(),
 /// }
-/// 
+///
 /// // control and whitespace characters
-/// let cured_nothing = decancer::cure_char('\0'); 
-/// 
+/// let cured_nothing = decancer::cure_char('\0');
+///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));
 ///
 /// ```
