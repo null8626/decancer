@@ -387,6 +387,7 @@ const fn invalid_codepoint(x: u32) -> bool {
 ///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));
 /// ```
+#[must_use]
 pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
 
@@ -450,6 +451,7 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 /// assert_eq!(cured, "very funny text");
 /// ```
+#[must_use]
 pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
   let input_s = input.as_ref();
   let mut output = CuredString::with_capacity(input_s.len());
