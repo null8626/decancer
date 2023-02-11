@@ -42,16 +42,16 @@ for (let offset = 6; offset < confusablesEnd; offset += 5) {
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & 0x1fffff
-  const translationCode = (integer >> 21) & 0x7f
+  const translationCode = (integer >> 21) & 0xff
 
   confusables.push({
     codepoint,
     translation:
-      (integer & 0x20000000) !== 0
+      (integer & 0x40000000) !== 0
         ? strings[translationCode]
         : String.fromCharCode(translationCode),
     rangeUntil:
-      (integer & 0x10000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
+      (integer & 0x20000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80
   })
 }
@@ -63,16 +63,16 @@ for (let offset = binary.readUint16LE(); offset < confusablesEnd; offset += 5) {
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & 0x1fffff
-  const translationCode = (integer >> 21) & 0x7f
+  const translationCode = (integer >> 21) & 0xff
 
   confusables.push({
     codepoint,
     translation:
-      (integer & 0x20000000) !== 0
+      (integer & 0x40000000) !== 0
         ? strings[translationCode]
         : String.fromCharCode(translationCode),
     rangeUntil:
-      (integer & 0x10000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
+      (integer & 0x20000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80
   })
 }
