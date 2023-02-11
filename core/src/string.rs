@@ -5,7 +5,7 @@ use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone)]
-pub struct CuredString(String);
+pub struct CuredString(pub(crate) String);
 
 impl CuredString {
   #[inline(always)]
@@ -193,10 +193,10 @@ impl CuredString {
   }
 }
 
-impl Into<String> for CuredString {
+impl From<CuredString> for String {
   #[inline(always)]
-  fn into(self) -> String {
-    self.into_str()
+  fn from(val: CuredString) -> Self {
+    val.into_str()
   }
 }
 

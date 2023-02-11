@@ -10,7 +10,7 @@
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It virtually has **no third-party dependencies** - it only depends on itself.
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-//! - It supports curing **4,761 different confusables** into cured-lowercased-strings, including but not limited to:
+//! - It supports curing **5,486 different confusables** into cured-lowercased-strings, including but not limited to:
 //!   - Accented characters
 //!   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
 //!   - [Control characters](https://en.wikipedia.org/wiki/Control_character)
@@ -344,7 +344,7 @@ mod util;
 #[cfg(test)]
 mod tests;
 
-use core::{cmp::Ordering, mem::transmute};
+use core::cmp::Ordering;
 pub use string::CuredString;
 pub use translation::Translation;
 
@@ -396,14 +396,14 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   }
 
   let code_lowercased = unsafe {
-    transmute::<_, char>(code)
+    char::from_u32_unchecked(code)
       .to_lowercase()
       .next()
       .unwrap_unchecked() as _
   };
 
   if code_lowercased < 0x80 {
-    return Translation::character(unsafe { transmute(code_lowercased) });
+    return Translation::character(code_lowercased);
   }
 
   let mut start = 0;
@@ -436,7 +436,7 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
     };
   }
 
-  Translation::character(unsafe { transmute(code_lowercased) })
+  Translation::character(code_lowercased)
 }
 
 /// Cures a string.
