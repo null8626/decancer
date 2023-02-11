@@ -130,7 +130,7 @@ And the binary files should be generated in the `target/release` directory.
 ## Examples
 
 <details>
-<summary>JavaScript</summary>
+<summary>JavaScript (Node.js/Deno/Bun)</summary>
 
 ```js
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
@@ -151,6 +151,51 @@ if (
 }
 
 console.log(cured.toString()) // 'very funny text'
+```
+
+</details>
+<details>
+<summary>JavaScript (Browser)</summary>
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Decancerer!!! (tm)</title>
+    <style>
+      textarea {
+        font-size: 30px;
+      }
+
+      #cure {
+        font-size: 20px;
+        padding: 5px 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Input cancerous text here:</h3>
+    <textarea rows="10" cols="30"></textarea>
+    <br />
+    <button id="cure" onclick="cure()">cure!</button>
+    <script type="module">
+      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.4/bindings/wasm/bin/decancer.min.js'
+
+      const decancer = await init()
+
+      window.cure = function () {
+        const textarea = document.querySelector('textarea')
+
+        if (!textarea.value.length) {
+          return alert("There's no text!!!")
+        }
+
+        textarea.value = decancer(textarea.value).toString()
+      }
+    </script>
+  </body>
+</html>
 ```
 
 </details>
@@ -196,52 +241,7 @@ fn main() {
 
 </details>
 <details>
-<summary>Web app example</summary>
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Decancerer!!! (tm)</title>
-    <style>
-      textarea {
-        font-size: 30px;
-      }
-
-      #cure {
-        font-size: 20px;
-        padding: 5px 30px;
-      }
-    </style>
-  </head>
-  <body>
-    <h3>Input cancerous text here:</h3>
-    <textarea rows="10" cols="30"></textarea>
-    <br />
-    <button id="cure" onclick="cure()">cure!</button>
-    <script type="module">
-      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.5.4/bindings/wasm/bin/decancer.min.js'
-
-      const decancer = await init()
-
-      window.cure = function () {
-        const textarea = document.querySelector('textarea')
-
-        if (!textarea.value.length) {
-          return alert("There's no text!!!")
-        }
-
-        textarea.value = decancer(textarea.value).toString()
-      }
-    </script>
-  </body>
-</html>
-```
-
-</details>
-<details>
-<summary>C/C++ UTF-8 example</summary>
+<summary>C/C++</summary>
 
 ```c
 #include <decancer.h>
