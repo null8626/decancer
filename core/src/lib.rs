@@ -449,16 +449,20 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// extern crate decancer;
 ///  
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
 /// assert_eq!(cured, "very funny text");
+/// assert!(cured.starts_with("very"));
+/// assert!(cured.ends_with("text"));
+/// assert!(cured.contains("funny"));
 /// ```
 #[must_use]
 pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
   let input_s = input.as_ref();
   let mut output = CuredString::with_capacity(input_s.len());
 
-  input_s
-    .chars()
-    .for_each(|code| output.push(cure_char(code)));
+  for code in input_s.chars().map(cure_char) {
+    output.push(code);
+  }
 
   output.finishing()
 }

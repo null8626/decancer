@@ -2,18 +2,12 @@ use super::{cure, CuredString};
 use core::mem::transmute;
 
 #[test]
-fn functions_test() {
-  let cured = cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+fn similar_test() {
+  let cured = unsafe { transmute::<_, CuredString>(String::from("vwv (vnt 111")) };
 
-  assert!(cured.starts_with("very"));
-  assert!(cured.ends_with("text"));
-  assert!(cured.contains("funny"));
-
-  let cured2 = unsafe { transmute::<_, CuredString>(String::from("vwv (vnt 111")) };
-
-  assert!(cured2.starts_with("uwu"));
-  assert!(cured2.ends_with("lil"));
-  assert!(cured2.contains("cunt"));
+  assert!(cured.starts_with("uwu"));
+  assert!(cured.ends_with("lil"));
+  assert!(cured.contains("cunt"));
 }
 
 #[test]
