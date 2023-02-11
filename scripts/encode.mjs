@@ -240,14 +240,14 @@ for (const {
   if (syncedTranslation) secondByte = 0x80
 
   if (rangeUntil !== null) {
-    integer |= 0x10000000n
+    integer |= 0x20000000n
     secondByte |= rangeUntil - codepoint
   }
 
   if (translation.length > 1) {
     if (!strings.includes(translation)) strings.push(translation)
 
-    integer |= 0x20000000n
+    integer |= 0x40000000n
     integer |= BigInt(strings.indexOf(translation)) << 21n
   } else {
     integer |= BigInt(translation.charCodeAt()) << 21n

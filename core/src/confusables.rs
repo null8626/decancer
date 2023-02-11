@@ -35,7 +35,7 @@ impl Confusable {
   pub(crate) const fn matches(&self, other: u32) -> Ordering {
     let conf: u32 = self.0 & 0x1fffff;
 
-    if (self.0 & 0x10000000) != 0 {
+    if (self.0 & 0x20000000) != 0 {
       if other < conf {
         Ordering::Less
       } else if other > (conf + ((self.1 & 0x7f) as u32)) {
@@ -53,9 +53,9 @@ impl Confusable {
   }
 
   pub(crate) fn translation(&self, other: u32) -> Translation {
-    let mut code = (self.0 >> 21) & 0x7f;
+    let mut code = (self.0 >> 21) & 0xff;
 
-    if (self.0 & 0x20000000) != 0 {
+    if (self.0 & 0x40000000) != 0 {
       Translation::string(code as _)
     } else {
       if self.1 >= 0x80 {

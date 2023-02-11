@@ -48,7 +48,7 @@ function retrieveReadmePromise(resolve) {
 
       caseSensitiveConfusables.push(codepoint)
 
-      if ((integer & 0x10000000) !== 0) {
+      if ((integer & 0x20000000) !== 0) {
         const rangeUntil = bin.readUint8(offset + 4) & 0x7f
 
         caseSensitiveConfusables.push(
@@ -65,7 +65,7 @@ function retrieveReadmePromise(resolve) {
       const codepoint = integer & 0x1fffff
       let toAdd = 1
 
-      if ((integer & 0x10000000) !== 0)
+      if ((integer & 0x20000000) !== 0)
         toAdd += bin.readUint8(offset + 4) & 0x7f
 
       const uppercasedCodepoint = String.fromCodePoint(codepoint)
