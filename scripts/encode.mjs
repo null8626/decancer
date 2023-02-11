@@ -165,6 +165,7 @@ for (let i = 0, curr = null; i < expanded.length; i++) {
     }
 
     const synced =
+      nextTranslation &&
       translation.charCodeAt() + 1 === nextTranslation.charCodeAt() &&
       nextTranslation.length === 1
 
