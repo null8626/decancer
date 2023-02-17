@@ -177,7 +177,11 @@ function retrieveCollisions(array, set) {
 const caseSensitiveCollisions = []
 
 for (const [codepoint, translation] of expanded) {
-  assert((codepoint < 0xD800 || codepoint > 0xDBFF) && (codepoint < 0xDC00 || codepoint > 0xDFFF), `surrogates are not allowed: ${codepoint}`)
+  assert(
+    (codepoint < 0xd800 || codepoint > 0xdbff) &&
+      (codepoint < 0xdc00 || codepoint > 0xdfff),
+    `surrogates are not allowed: ${codepoint}`
+  )
 
   if (isCaseSensitive(codepoint)) {
     const lowercasedCodepoint = String.fromCodePoint(codepoint)
