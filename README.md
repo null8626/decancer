@@ -10,7 +10,7 @@ A tiny package that removes common confusables from strings.
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
 - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-- It supports curing **4,790 different confusables** into cured-lowercased-strings, including but not limited to:
+- It supports curing **5,486 different confusables** into cured-lowercased-strings, including but not limited to:
   - Accented characters
   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
   - [Control characters](https://en.wikipedia.org/wiki/Control_character)

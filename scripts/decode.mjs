@@ -19,19 +19,11 @@ while (bytes.length !== 0) {
   bytes = bytes.subarray(1 + length)
 }
 
-bytes = binary.subarray(binary.readUint16LE(4))
-const strings = []
+function getTranslation(integer, secondByte) {
+  const offset =
+    binary.readUint16LE(4) + ((((integer >> 21) & 0x0f) << 8) | secondByte)
 
-while (bytes.length !== 0) {
-  const length = bytes.readUint8()
-  strings.push(
-    Array.from(bytes.subarray(1, 1 + length)).reduce(
-      (a, b) => a + String.fromCharCode(b),
-      ''
-    )
-  )
-
-  bytes = bytes.subarray(1 + length)
+  return binary.subarray(offset, offset + ((integer >> 25) & 0x0f)).toString()
 }
 
 let confusablesEnd = binary.readUint16LE()
@@ -42,14 +34,13 @@ for (let offset = 6; offset < confusablesEnd; offset += 5) {
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & 0x1fffff
-  const translationCode = (integer >> 21) & 0xff
 
   confusables.push({
     codepoint,
     translation:
       (integer & 0x40000000) !== 0
-        ? strings[translationCode]
-        : String.fromCharCode(translationCode),
+        ? getTranslation(integer, secondByte)
+        : String.fromCharCode((integer >> 21) & 0xff),
     rangeUntil:
       (integer & 0x20000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80
@@ -63,14 +54,13 @@ for (let offset = binary.readUint16LE(); offset < confusablesEnd; offset += 5) {
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & 0x1fffff
-  const translationCode = (integer >> 21) & 0xff
 
   confusables.push({
     codepoint,
     translation:
       (integer & 0x40000000) !== 0
-        ? strings[translationCode]
-        : String.fromCharCode(translationCode),
+        ? getTranslation(integer, secondByte)
+        : String.fromCharCode((integer >> 21) & 0xff),
     rangeUntil:
       (integer & 0x20000000) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80

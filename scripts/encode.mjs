@@ -47,8 +47,10 @@ for (const conf of confusables) {
     'codepoint must be a valid number'
   )
   assert(
-    typeof conf.translation === 'string' && conf.translation.length >= 1,
-    'translation must be a string'
+    typeof conf.translation === 'string' &&
+      conf.translation.length >= 1 &&
+      conf.translation.length <= 15,
+    'translation must be a valid string'
   )
 
   if (typeof conf.rangeUntil === 'number') {
@@ -83,6 +85,73 @@ console.log(
     'en-US'
   )} confusables.\n- searching for collisions...`
 )
+
+function merge(a, b, recurse = true) {
+  if (a.includes(b)) {
+    return a
+  } else if (b.includes(a)) {
+    return b
+  }
+
+  const minimumLength = Math.min(a.length, b.length)
+  let maxLimit
+
+  for (let limit = 1; limit <= minimumLength; limit++) {
+    if (a.slice(0, limit) === b.slice(-limit)) {
+      maxLimit = limit
+    }
+  }
+
+  if (maxLimit === undefined) {
+    if (recurse) {
+      return merge(b, a, false)
+    }
+  } else {
+    return b.slice(0, -maxLimit) + a
+  }
+}
+
+function mergeArray(arr, recurse = true) {
+  const mergedSections = []
+
+  while (true) {
+    let index = 0
+
+    for (; index < arr.length; index++) {
+      if (arr[index] !== undefined) {
+        break
+      }
+    }
+
+    if (index === arr.length) {
+      break
+    }
+
+    let section = arr[index]
+    arr[index] = undefined
+
+    for (index++; index < arr.length; index++) {
+      if (arr[index] === undefined) {
+        continue
+      }
+
+      const newSection = merge(section, arr[index])
+
+      if (newSection) {
+        section = newSection
+        arr[index] = undefined
+      }
+    }
+
+    mergedSections.push(section)
+  }
+
+  if (recurse) {
+    return mergeArray(mergedSections, false)
+  } else {
+    return mergedSections.reduce((a, b) => a + b, '')
+  }
+}
 
 function retrieveCollisions(array, set) {
   for (const part of set) array.splice(array.indexOf(part), 1)
@@ -223,7 +292,13 @@ console.log(
 const similarBytes = Buffer.concat(
   similar.map(x => Buffer.from([x.length, ...x.map(y => y.charCodeAt())]))
 )
-const strings = []
+const strings = mergeArray([
+  ...new Set(
+    grandTotal
+      .filter(({ translation }) => translation.length !== 1)
+      .map(({ translation }) => translation)
+  )
+])
 const confusablesBuffers = []
 const caseSensitiveConfusablesBuffers = []
 
@@ -234,26 +309,27 @@ for (const {
   syncedTranslation
 } of grandTotal) {
   const buf = Buffer.alloc(5)
-  let integer = 0x100000000n | BigInt(codepoint)
+  let integer = BigInt(codepoint)
   let secondByte = 0
 
-  if (syncedTranslation) secondByte = 0x80
-
-  if (rangeUntil !== null) {
-    integer |= 0x20000000n
-    secondByte |= rangeUntil - codepoint
-  }
-
   if (translation.length > 1) {
-    if (!strings.includes(translation)) strings.push(translation)
+    const offset = strings.indexOf(translation)
 
     integer |= 0x40000000n
-    integer |= BigInt(strings.indexOf(translation)) << 21n
+    integer |= (BigInt(translation.length << 4) | BigInt(offset >> 8)) << 21n
+    secondByte = offset & 0xff
   } else {
+    if (rangeUntil !== null) {
+      if (syncedTranslation) secondByte = 0x80
+
+      integer |= 0x20000000n
+      secondByte |= rangeUntil - codepoint
+    }
+
     integer |= BigInt(translation.charCodeAt()) << 21n
   }
 
-  buf.writeUint32LE(Number(integer & 0xffffffffn))
+  buf.writeUint32LE(Number(integer))
   buf.writeUint8(secondByte, 4)
 
   if (isCaseSensitive(codepoint)) {
@@ -262,6 +338,11 @@ for (const {
     confusablesBuffers.push(buf)
   }
 }
+
+assert(
+  strings.length <= 0xfff,
+  `strings size must be equal or less than ${0xfff}. (got ${strings.length})`
+)
 
 const headers = Buffer.alloc(6)
 headers.writeUint16LE(headers.byteLength + confusablesBuffers.length * 5)
@@ -278,11 +359,7 @@ writeFileSync(
     Buffer.concat(confusablesBuffers),
     Buffer.concat(caseSensitiveConfusablesBuffers),
     similarBytes,
-    Buffer.from(
-      strings
-        .map(x => [x.length, ...x.split('').map(y => y.charCodeAt())])
-        .flat()
-    )
+    Buffer.from(strings)
   ])
 )
 

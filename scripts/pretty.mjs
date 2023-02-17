@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises'
+import { exists } from 'node:fs'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { dirname, join } from 'node:path'
@@ -28,6 +29,7 @@ bindings/wasm/pkg/**
 `.trim()
 
 const execute = promisify(exec)
+const exist = promisify(exists)
 
 function retrieveReadmePromise(resolve) {
   console.log('- [readme] reading confusables.bin...')
@@ -123,22 +125,30 @@ function updateReadmePromise(resolve) {
   )
 }
 
+function innerPrettierPromise(resolve) {
+  execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
+    cwd: ROOT_DIR
+  }).then(() =>
+    execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
+      console.log('- [prettier] completed prettifying files')
+      resolve()
+    })
+  )
+}
+
 function prettierPromise(resolve) {
   console.log('- [prettier] setting up prettier...')
 
-  Promise.all([
-    execute('npm i prettier', { cwd: ROOT_DIR }),
-    writeFile(join(ROOT_DIR, '.prettierrc.json'), PRETTIERRC),
-    writeFile(join(ROOT_DIR, '.prettierignore'), PRETTIERIGNORE)
-  ]).then(() => {
-    execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
-      cwd: ROOT_DIR
-    }).then(() =>
-      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
-        console.log('- [prettier] completed prettifying files')
-        resolve()
-      })
-    )
+  exist(join(ROOT_DIR, '.prettierrc.json')).then(yes => {
+    if (yes) {
+      innerPrettierPromise(resolve)
+    } else {
+      Promise.all([
+        execute('npm i prettier', { cwd: ROOT_DIR }),
+        writeFile(join(ROOT_DIR, '.prettierrc.json'), PRETTIERRC),
+        writeFile(join(ROOT_DIR, '.prettierignore'), PRETTIERIGNORE)
+      ]).then(() => innerPrettierPromise(resolve))
+    }
   })
 }
 

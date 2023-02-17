@@ -15,17 +15,13 @@ pub enum Translation {
 }
 
 impl Translation {
-  pub(crate) fn string(index: u16) -> Self {
+  pub(crate) const fn string(integer: u32, second_byte: u8) -> Self {
     unsafe {
-      let mut ptr = CONFUSABLES.offset(STRINGS_OFFSET as _);
-
-      for _ in 0..index {
-        ptr = ptr.offset(((*ptr) as isize) + 1);
-      }
-
       Self::String(str::from_utf8_unchecked(slice::from_raw_parts(
-        ptr.offset(1),
-        (*ptr) as _,
+        CONFUSABLES.offset(
+          (STRINGS_OFFSET + (((((integer >> 21) as u16) & 0x0f) << 8) | (second_byte as u16))) as _,
+        ),
+        ((integer >> 25) & 0x0f) as _,
       )))
     }
   }
@@ -83,8 +79,8 @@ impl fmt::Display for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      Translation::Character(ch) => write!(f, "{}", ch),
-      Translation::String(s) => write!(f, "{}", s),
+      Translation::Character(ch) => write!(f, "{ch}"),
+      Translation::String(s) => write!(f, "{s}"),
       Translation::None => fmt::Result::Ok(()),
     }
   }

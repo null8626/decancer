@@ -52,12 +52,12 @@ impl Confusable {
     }
   }
 
-  pub(crate) fn translation(&self, other: u32) -> Translation {
-    let mut code = (self.0 >> 21) & 0xff;
-
+  pub(crate) const fn translation(&self, other: u32) -> Translation {
     if (self.0 & 0x40000000) != 0 {
-      Translation::string(code as _)
+      Translation::string(self.0, self.1)
     } else {
+      let mut code = (self.0 >> 21) & 0xff;
+
       if self.1 >= 0x80 {
         code += other - (self.0 & 0x1fffff);
       }

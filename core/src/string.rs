@@ -193,10 +193,10 @@ impl CuredString {
   }
 }
 
-impl Into<String> for CuredString {
+impl From<CuredString> for String {
   #[inline(always)]
-  fn into(self) -> String {
-    self.into_str()
+  fn from(val: CuredString) -> Self {
+	val.into_str()
   }
 }
 
