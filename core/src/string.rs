@@ -196,7 +196,7 @@ impl CuredString {
 impl From<CuredString> for String {
   #[inline(always)]
   fn from(val: CuredString) -> Self {
-	val.into_str()
+    val.into_str()
   }
 }
 
