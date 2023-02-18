@@ -169,7 +169,10 @@ function retrieveCollisions(array, set) {
       retrieveCollisions(
         expanded.map(([codepoint]) => codepoint),
         set
-      )
+      ),
+	  {
+		maxArrayLength: Infinity
+	  }
     )}`
   )
 }
@@ -187,12 +190,11 @@ for (const [codepoint, translation] of expanded) {
     const lowercasedCodepoint = String.fromCodePoint(codepoint)
       .toLowerCase()
       .codePointAt()
-    const already = expanded.find(
+
+    if (expanded.find(
       ([codepoint2, translation2]) =>
         codepoint2 === lowercasedCodepoint && translation === translation2
-    )
-
-    if (already) {
+    )) {
       caseSensitiveCollisions.push(codepoint)
     }
   }
@@ -203,7 +205,11 @@ assert(
   `discovered ${caseSensitiveCollisions.length.toLocaleString(
     'en-US'
   )} case-sensitive collisions. at codepoints: ${inspect(
-    caseSensitiveCollisions
+    caseSensitiveCollisions,
+	
+	  {
+		maxArrayLength: Infinity
+	  }
   )}`
 )
 
