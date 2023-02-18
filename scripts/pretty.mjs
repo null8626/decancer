@@ -6,7 +6,6 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const NON_BINARY_CONFUSABLES_COUNT = 181
 
 const PRETTIERRC = JSON.stringify({
   semi: false,
@@ -37,7 +36,7 @@ function retrieveReadmePromise(resolve) {
   readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then(bin => {
     console.log('- [readme] parsing confusables.bin...')
 
-    let confusablesCount = NON_BINARY_CONFUSABLES_COUNT
+    let confusablesCount = 0
     const confusablesEnd = bin.readUint16LE()
     const caseSensitiveConfusablesEnd = bin.readUint16LE(2)
     const caseSensitiveConfusables = []
