@@ -349,8 +349,8 @@ pub use translation::Translation;
 const fn invalid_codepoint(x: u32) -> bool {
   x <= 31
     || (x >= 127 && x <= 159)
-    || x == 0x489
     || (x >= 0x300 && x <= 0x36F)
+    || x == 0x489
     || x == 0x20E3
     || (x >= 0xD800 && x <= 0xDBFF)
     || (x >= 0xDC00 && x <= 0xDFFF)
