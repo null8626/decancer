@@ -12,10 +12,8 @@ A tiny package that removes common confusables from strings.
 - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
 - It supports curing **5,416 different confusables** into cured-lowercased-strings, including:
   - Accented characters
-  - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
-  - [Control characters](https://en.wikipedia.org/wiki/Control_character)
   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-  - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
+  - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
   - Several emojis
   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)

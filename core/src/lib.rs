@@ -12,10 +12,8 @@
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
 //! - It supports curing **5,416 different confusables** into cured-lowercased-strings, including:
 //!   - Accented characters
-//!   - [Byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark)
-//!   - [Control characters](https://en.wikipedia.org/wiki/Control_character)
 //!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-//!   - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), and [Japanese](https://en.wikipedia.org/wiki/Kanji)
+//!   - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
 //!   - Several emojis
 //!   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
 //!   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
@@ -351,12 +349,13 @@ pub use translation::Translation;
 const fn invalid_codepoint(x: u32) -> bool {
   x <= 31
     || (x >= 127 && x <= 159)
+    || x == 0x489
     || (x >= 0x300 && x <= 0x36F)
     || x == 0x20E3
+    || (x >= 0xD800 && x <= 0xDBFF)
+    || (x >= 0xDC00 && x <= 0xDFFF)
     || x == 0xFE0F
-    || x == 0xFEFF
-    || x == 0xFFFD
-    || x == 0x489
+    || (x >= 0xFFF0 && x <= 0xFFFF)
 }
 
 /// Cures a single character.
