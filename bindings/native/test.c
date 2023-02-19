@@ -8,7 +8,7 @@
 #pragma clang diagnostic ignored "-Wwritable-strings"
 #endif
 
-decancer_cured_t cured;
+decancer_cured_t cured = NULL;
 
 static void assert(const bool expr, const char *message)
 {
@@ -16,7 +16,11 @@ static void assert(const bool expr, const char *message)
     {
         fprintf(stderr, "assertion failed (%s)\n", message);
 
-        decancer_free(cured);
+        if (cured != NULL)
+        {
+            decancer_free(cured);
+        }
+
         exit(1);
     }
 }
