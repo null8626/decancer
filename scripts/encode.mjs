@@ -50,7 +50,7 @@ for (const conf of confusables) {
     typeof conf.translation === 'string' &&
       conf.translation.length >= 1 &&
       conf.translation.length <= 15,
-    'translation must be a valid string'
+    `translation must be a valid string: '${conf.translation}'`
   )
 
   if (typeof conf.rangeUntil === 'number') {
@@ -181,9 +181,16 @@ const caseSensitiveCollisions = []
 
 for (const [codepoint, translation] of expanded) {
   assert(
-    (codepoint < 0xd800 || codepoint > 0xdbff) &&
-      (codepoint < 0xdc00 || codepoint > 0xdfff),
-    `surrogates are not allowed: ${codepoint}`
+    codepoint > 31
+    && (codepoint < 127 || codepoint > 159)
+    && (codepoint < 0x300 || codepoint > 0x36F)
+    && codepoint !== 0x489
+    && codepoint !== 0x20E3
+    && (codepoint < 0xD800 || codepoint > 0xDBFF)
+    && (codepoint < 0xDC00 || codepoint > 0xDFFF)
+    && codepoint !== 0xFE0F
+    && (codepoint < 0xFFF0 || codepoint > 0xFFFF),
+    `this codepoint is not allowed: ${codepoint}`
   )
 
   if (isCaseSensitive(codepoint)) {
