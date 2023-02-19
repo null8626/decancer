@@ -331,8 +331,6 @@
 //! 
 //! Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
 
-#![allow(dead_code)]
-
 mod confusables;
 mod similar;
 mod string;
