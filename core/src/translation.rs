@@ -1,7 +1,5 @@
-use super::{confusables::CONFUSABLES, util::read_u16_le};
+use super::{confusables::CONFUSABLES, similar::SIMILAR_END as STRINGS_OFFSET};
 use core::{cmp::PartialEq, fmt, mem::transmute, ops::AddAssign, slice, str};
-
-const STRINGS_OFFSET: u16 = unsafe { read_u16_le(CONFUSABLES.offset(4)) };
 
 /// The translation for a single character/confusable.
 pub enum Translation {

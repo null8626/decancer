@@ -16,13 +16,11 @@ assert(
 assert(
   Array.isArray(similar) &&
     similar.length > 0 &&
-    similar.length <= 0x7f &&
     similar.every(
       x =>
         Array.isArray(x) &&
-        x.length > 0 &&
-        x.length <= 0xff &&
-        x.every(y => y.length === 1 && y.codePointAt() <= 0xff)
+		x.length >= 2 &&
+        x.every(y => typeof y === 'string' && y.length === 1 && y.codePointAt() <= 0x7f)
     ),
   'similar must be an array of an array of ASCII strings'
 )
@@ -310,9 +308,8 @@ console.log(
   )})`
 )
 
-const similarBytes = Buffer.concat(
-  similar.map(x => Buffer.from([x.length, ...x.map(y => y.charCodeAt())]))
-)
+const similarBytes = Buffer.from(similar.reduce((a, b) => [...a, ...b.slice(0, -1).map(x => x.charCodeAt()), b.at(-1).charCodeAt() | 0x80], []))
+
 const strings = mergeArray([
   ...new Set(
     grandTotal

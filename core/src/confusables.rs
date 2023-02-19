@@ -1,4 +1,5 @@
 use super::{
+  similar::SIMILAR_START,
   translation::Translation,
   util::{read_u16_le, read_u32_le},
 };
@@ -9,7 +10,7 @@ pub(crate) const CONFUSABLES: *const u8 = include_bytes!("../bin/confusables.bin
 const CASE_SENSITIVE_CONFUSABLES_OFFSET: u16 = read_u16_le(CONFUSABLES);
 pub(crate) const CONFUSABLES_COUNT: u16 = ((CASE_SENSITIVE_CONFUSABLES_OFFSET - 6) / 5) - 1;
 pub(crate) const CASE_SENSITIVE_CONFUSABLES_COUNT: u16 =
-  ((read_u16_le(unsafe { CONFUSABLES.offset(2) }) - CASE_SENSITIVE_CONFUSABLES_OFFSET) / 5) - 1;
+  ((SIMILAR_START - CASE_SENSITIVE_CONFUSABLES_OFFSET) / 5) - 1;
 
 pub(crate) struct Confusable(u32, u8);
 
