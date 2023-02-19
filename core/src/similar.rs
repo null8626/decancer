@@ -14,30 +14,30 @@ pub(crate) fn is(a: u32, b: u32) -> bool {
     let mut contains_b = false;
 
     loop {
-	  let cur = unsafe { *(CONFUSABLES.offset(offset as _)) };
-	  let sim = if cur >= 0x80 { cur & 0x7f } else { cur };
-	  
-	  if sim == (a as u8) {
-		contains_a = true;
-	  }
-	  
-	  if sim == (b as u8) {
-		contains_b = true;
-	  }
-	  
-	  if contains_a && contains_b {
-		return true;
-	  }
-	  
-	  if cur >= 0x80 {
-		contains_a = false;
-		contains_b = false;
-	  }
-	  
-	  offset += 1;
-	  if offset == SIMILAR_END {
-		return false;
-	  }
-	}
+      let cur = unsafe { *(CONFUSABLES.offset(offset as _)) };
+      let sim = if cur >= 0x80 { cur & 0x7f } else { cur };
+
+      if sim == (a as u8) {
+        contains_a = true;
+      }
+
+      if sim == (b as u8) {
+        contains_b = true;
+      }
+
+      if contains_a && contains_b {
+        return true;
+      }
+
+      if cur >= 0x80 {
+        contains_a = false;
+        contains_b = false;
+      }
+
+      offset += 1;
+      if offset == SIMILAR_END {
+        return false;
+      }
+    }
   }
 }

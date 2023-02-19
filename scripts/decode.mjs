@@ -15,12 +15,12 @@ const offsetEnd = binary.readUint16LE(4)
 
 do {
   const current = binary.readUint8(offset)
-  
+
   if (current >= 0x80) {
     similar.push([...currentSimilar, String.fromCharCode(current & 0x7f)])
-	currentSimilar = []
+    currentSimilar = []
   } else {
-	currentSimilar.push(String.fromCharCode(current))
+    currentSimilar.push(String.fromCharCode(current))
   }
 
   offset++
