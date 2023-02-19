@@ -7,17 +7,24 @@ if (typeof process.argv[2] !== 'string') {
 
 const binary = readFileSync(process.argv[2])
 
-let bytes = binary.subarray(binary.readUint16LE(2), binary.readUint16LE(4))
 const similar = []
+let currentSimilar = []
 
-while (bytes.length !== 0) {
-  const length = bytes.readUint8()
-  similar.push(
-    Array.from(bytes.subarray(1, 1 + length)).map(x => String.fromCharCode(x))
-  )
+let offset = binary.readUint16LE(2)
+const offsetEnd = binary.readUint16LE(4)
 
-  bytes = bytes.subarray(1 + length)
-}
+do {
+  const current = binary.readUint8(offset)
+
+  if (current >= 0x80) {
+    similar.push([...currentSimilar, String.fromCharCode(current & 0x7f)])
+    currentSimilar = []
+  } else {
+    currentSimilar.push(String.fromCharCode(current))
+  }
+
+  offset++
+} while (offset < offsetEnd)
 
 function getTranslation(integer, secondByte) {
   const offset =
