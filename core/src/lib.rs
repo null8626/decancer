@@ -388,6 +388,23 @@ const fn invalid_codepoint(x: u32) -> bool {
 ///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));
 /// ```
+///
+/// Using iterators:
+///
+/// ```rust
+/// extern crate decancer;
+///
+/// // note: it's more recommended to use `decancer::cure` instead for curing strings.
+/// let cured = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+///   .chars()
+///   .map(decancer::cure_char)
+///   .collect::<decancer::CuredString>();
+///
+/// assert_eq!(cured, "very funny text");
+/// assert!(cured.starts_with("very"));
+/// assert!(cured.ends_with("text"));
+/// assert!(cured.contains("funny"));
+/// ```
 #[must_use]
 pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
@@ -457,13 +474,7 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// assert!(cured.contains("funny"));
 /// ```
 #[must_use]
+#[inline]
 pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
-  let input_s = input.as_ref();
-  let mut output = CuredString::with_capacity(input_s.len());
-
-  for code in input_s.chars().map(cure_char) {
-    output.push(code);
-  }
-
-  output.finishing()
+  input.as_ref().chars().map(cure_char).collect()
 }
