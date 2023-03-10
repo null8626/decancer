@@ -345,7 +345,11 @@ mod util;
 mod tests;
 
 use core::cmp::Ordering;
+
+/// A small wrapper around the [`String`] datatype for comparison purposes.
 pub use string::CuredString;
+
+/// The translation for a single character/confusable.
 pub use translation::Translation;
 
 const fn invalid_codepoint(x: u32) -> bool {
