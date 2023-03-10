@@ -7,7 +7,7 @@ use core::{
   ops::Deref,
 };
 
-/// This is a small wrapper around the [`String`] datatype.
+/// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone)]
@@ -199,6 +199,26 @@ impl CuredString {
   }
 }
 
+/// Collects [`crate::Translation`] and shoves them into a [`crate::CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// extern crate decancer;
+///
+/// // note: it's more recommended to use `decancer::cure` instead for curing strings.
+/// let cured = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+///   .chars()
+///   .map(decancer::cure_char)
+///   .collect::<decancer::CuredString>();
+///
+/// assert_eq!(cured, "very funny text");
+/// assert!(cured.starts_with("very"));
+/// assert!(cured.ends_with("text"));
+/// assert!(cured.contains("funny"));
+/// ```
 impl FromIterator<Translation> for CuredString {
   fn from_iter<I: IntoIterator<Item = Translation>>(it: I) -> Self {
     let it = it.into_iter();
