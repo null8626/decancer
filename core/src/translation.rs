@@ -30,7 +30,7 @@ impl Translation {
 }
 
 impl AddAssign<Translation> for String {
-  #[inline(always)]
+  #[inline]
   fn add_assign(&mut self, rhs: Translation) {
     match rhs {
       Translation::Character(c) => self.push(c),
@@ -65,7 +65,7 @@ where
 }
 
 impl fmt::Debug for Translation {
-  #[inline(always)]
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "\"")?;
     fmt::Display::fmt(self, f)?;
@@ -74,7 +74,7 @@ impl fmt::Debug for Translation {
 }
 
 impl fmt::Display for Translation {
-  #[inline(always)]
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       Translation::Character(ch) => write!(f, "{ch}"),

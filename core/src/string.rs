@@ -1,5 +1,11 @@
 use super::{similar, translation::Translation};
-use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
+use core::{
+  cmp::PartialEq,
+  fmt,
+  iter::{FromIterator, IntoIterator},
+  mem::transmute,
+  ops::Deref,
+};
 
 /// This is a small wrapper around the [`String`] datatype.
 ///
@@ -8,7 +14,7 @@ use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  #[inline(always)]
+  #[inline]
   pub(crate) fn with_capacity(n: usize) -> Self {
     Self(String::with_capacity(n))
   }
@@ -30,7 +36,7 @@ impl CuredString {
     }
   }
 
-  #[inline(always)]
+  #[inline]
   pub(crate) fn finishing(mut self) -> Self {
     if self.len() > 0 && self.is_last_space() {
       self.0.pop();
@@ -193,15 +199,30 @@ impl CuredString {
   }
 }
 
+impl FromIterator<Translation> for CuredString {
+  fn from_iter<I: IntoIterator<Item = Translation>>(it: I) -> Self {
+    let it = it.into_iter();
+    let (min_size, max_size) = it.size_hint();
+
+    let mut s = Self::with_capacity(max_size.unwrap_or(min_size));
+
+    for next in it {
+      s.push(next);
+    }
+
+    s.finishing()
+  }
+}
+
 impl From<CuredString> for String {
-  #[inline(always)]
+  #[inline]
   fn from(val: CuredString) -> Self {
     val.into_str()
   }
 }
 
 impl AsRef<str> for CuredString {
-  #[inline(always)]
+  #[inline]
   fn as_ref(&self) -> &str {
     &self.0
   }
@@ -258,14 +279,14 @@ where
 }
 
 impl fmt::Debug for CuredString {
-  #[inline(always)]
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "\"{}\"", self.0)
   }
 }
 
 impl fmt::Display for CuredString {
-  #[inline(always)]
+  #[inline]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}", self.0)
   }
@@ -274,7 +295,7 @@ impl fmt::Display for CuredString {
 impl Deref for CuredString {
   type Target = String;
 
-  #[inline(always)]
+  #[inline]
   fn deref(&self) -> &Self::Target {
     &self.0
   }
