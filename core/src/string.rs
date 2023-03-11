@@ -11,7 +11,7 @@ use core::{
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone)]
-pub struct CuredString(pub(crate) String);
+pub struct CuredString(String);
 
 impl CuredString {
   fn is_last_space(&self) -> bool {
