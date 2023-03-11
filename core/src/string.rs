@@ -14,11 +14,6 @@ use core::{
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  #[inline]
-  pub(crate) fn with_capacity(n: usize) -> Self {
-    Self(String::with_capacity(n))
-  }
-
   fn is_last_space(&self) -> bool {
     let b = self.0.as_bytes();
     b[b.len() - 1] == 0x20
@@ -224,7 +219,7 @@ impl FromIterator<Translation> for CuredString {
     let it = it.into_iter();
     let (min_size, _) = it.size_hint();
 
-    let mut s = Self::with_capacity(min_size);
+    let mut s = Self(String::with_capacity(min_size));
 
     for next in it {
       s.push(next);
