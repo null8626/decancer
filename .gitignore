@@ -3,8 +3,6 @@
 **/Cargo.lock
 **/*.node
 **/target/
-*.bin
-*.json
 
 bindings/native/*.exe
 bindings/native/*.dll
