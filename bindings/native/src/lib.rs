@@ -1,5 +1,3 @@
-extern crate decancer;
-
 use core::{ffi::c_void, slice, str};
 
 #[repr(C)]

@@ -201,8 +201,6 @@
 //! <summary>Rust</summary>
 //! 
 //! ```rust
-//! extern crate decancer;
-//! 
 //! fn main() {
 //!   let cured_e = decancer::cure_char('Ｅ');
 //!   
@@ -371,8 +369,6 @@ const fn invalid_codepoint(x: u32) -> bool {
 /// Basic usage:
 ///
 /// ```rust
-/// extern crate decancer;
-///
 /// let cured_e = decancer::cure_char('Ｅ');
 ///
 /// match cured_e {
@@ -396,8 +392,6 @@ const fn invalid_codepoint(x: u32) -> bool {
 /// Using iterators:
 ///
 /// ```rust
-/// extern crate decancer;
-///
 /// // note: it's more recommended to use `decancer::cure` instead for curing strings.
 /// let cured = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
 ///   .chars()
@@ -468,8 +462,6 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// Basic usage:
 ///
 /// ```rust
-/// extern crate decancer;
-///  
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 ///
 /// assert_eq!(cured, "very funny text");
