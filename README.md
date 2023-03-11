@@ -201,8 +201,6 @@ console.log(cured.toString()) // 'very funny text'
 <summary>Rust</summary>
 
 ```rust
-extern crate decancer;
-
 fn main() {
   let cured_e = decancer::cure_char('Ｅ');
   

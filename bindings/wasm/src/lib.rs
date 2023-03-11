@@ -1,8 +1,4 @@
 #![allow(non_snake_case)]
-// I'M SORRY FOR MY SINS BUT THIS HAS TO BE DONE
-
-extern crate decancer;
-extern crate wasm_bindgen;
 
 use wasm_bindgen::prelude::*;
 

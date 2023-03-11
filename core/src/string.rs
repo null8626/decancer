@@ -48,8 +48,6 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///  
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   /// assert_eq!(cured.into_str(), String::from("very funny text"));
   /// ```
@@ -64,8 +62,6 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///  
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   /// assert!(cured.starts_with("very"));
   /// ```
@@ -73,8 +69,6 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///
   /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
   /// assert!(cured.starts_with("uwu")); // it assumes that v is similar to u as well
   /// ```
@@ -109,8 +103,6 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///  
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   /// assert!(cured.ends_with("text"));
   /// ```
@@ -118,8 +110,6 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///
   /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
   /// assert!(cured.ends_with("lil")); // it assumes that 1 is similar to l and i as well
   /// ```
@@ -154,8 +144,6 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///  
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   /// assert!(cured.contains("funny"));
   /// ```
@@ -163,8 +151,6 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// extern crate decancer;
-  ///
   /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
   /// assert!(cured.contains("cunt")); // it assumes that ( is similar to c and v is similar to u as well
   /// ```
@@ -201,8 +187,6 @@ impl CuredString {
 /// Basic usage:
 ///
 /// ```rust
-/// extern crate decancer;
-///
 /// // note: it's more recommended to use `decancer::cure` instead for curing strings.
 /// let cured = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
 ///   .chars()
@@ -250,8 +234,6 @@ impl AsRef<str> for CuredString {
 /// Basic usage:
 ///
 /// ```rust
-/// extern crate decancer;
-///  
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 /// assert!(cured == "very funny text");
 /// ```
@@ -259,8 +241,6 @@ impl AsRef<str> for CuredString {
 /// And since it checks if the strings are similar, please note that this is valid too.
 ///
 /// ```rust
-/// extern crate decancer;
-///
 /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
 /// assert!(cured == "uwu cunt lil");
 /// ```

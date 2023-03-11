@@ -3,9 +3,6 @@
 #[macro_use]
 extern crate napi_derive;
 
-extern crate decancer;
-extern crate napi;
-
 #[napi]
 pub struct CuredString(decancer::CuredString);
 
