@@ -1,5 +1,4 @@
 import { readFile, writeFile } from 'node:fs/promises'
-import { exists } from 'node:fs'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { dirname, join } from 'node:path'
@@ -7,28 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
-const PRETTIERRC = JSON.stringify({
-  semi: false,
-  singleQuote: true,
-  trailingComma: 'none',
-  arrowParens: 'avoid',
-  htmlWhitespaceSensitivity: 'ignore'
-})
-
-const PRETTIERIGNORE = `
-**/target/**
-**/node_modules/**
-**/package-lock.json
-bindings/node/src/lib.js
-bindings/node/src/lib.d.ts
-bindings/node/index.js
-bindings/node/index.d.ts
-bindings/wasm/pkg/**
-.prettierrc.json
-`.trim()
-
 const execute = promisify(exec)
-const exist = promisify(exists)
 
 function retrieveReadmePromise(resolve) {
   console.log('- [readme] reading confusables.bin...')
@@ -124,31 +102,19 @@ function updateReadmePromise(resolve) {
   )
 }
 
-function innerPrettierPromise(resolve) {
-  execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
-    cwd: ROOT_DIR
-  }).then(() =>
-    execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
-      console.log('- [prettier] completed prettifying files')
-      resolve()
-    })
-  )
-}
-
 function prettierPromise(resolve) {
   console.log('- [prettier] setting up prettier...')
 
-  exist(join(ROOT_DIR, '.prettierrc.json')).then(yes => {
-    if (yes) {
-      innerPrettierPromise(resolve)
-    } else {
-      Promise.all([
-        execute('npm i prettier', { cwd: ROOT_DIR }),
-        writeFile(join(ROOT_DIR, '.prettierrc.json'), PRETTIERRC),
-        writeFile(join(ROOT_DIR, '.prettierignore'), PRETTIERIGNORE)
-      ]).then(() => innerPrettierPromise(resolve))
-    }
-  })
+  execute('npm i prettier', { cwd: ROOT_DIR }).then(() =>
+    execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
+      cwd: ROOT_DIR
+    }).then(() =>
+      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
+        console.log('- [prettier] completed prettifying files')
+        resolve()
+      })
+    )
+  )
 }
 
 async function handleCargo(cwd) {

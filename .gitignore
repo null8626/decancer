@@ -17,7 +17,5 @@ bindings/node/index.d.ts
 bindings/node/artifacts/
 bindings/wasm/pkg/
 
-# CI creates temporary files in the root dir
-.prettierrc.json
-.prettierignore
+# CI can create random files in the root dir
 package.json
