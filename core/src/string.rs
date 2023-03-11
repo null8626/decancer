@@ -222,9 +222,9 @@ impl CuredString {
 impl FromIterator<Translation> for CuredString {
   fn from_iter<I: IntoIterator<Item = Translation>>(it: I) -> Self {
     let it = it.into_iter();
-    let (min_size, max_size) = it.size_hint();
+    let (min_size, _) = it.size_hint();
 
-    let mut s = Self::with_capacity(max_size.unwrap_or(min_size));
+    let mut s = Self::with_capacity(min_size);
 
     for next in it {
       s.push(next);
