@@ -1,4 +1,4 @@
-use super::{cure, CuredString};
+use crate::{cure, CuredString};
 use core::mem::transmute;
 
 #[test]

@@ -1,4 +1,4 @@
-use super::{
+use crate::{
   similar::SIMILAR_START,
   translation::Translation,
   util::{read_u16_le, read_u32_le},

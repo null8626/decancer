@@ -1,4 +1,4 @@
-use super::{similar, translation::Translation};
+use crate::{similar, translation::Translation};
 use core::{
   cmp::PartialEq,
   fmt,

@@ -1,4 +1,4 @@
-use super::{confusables::CONFUSABLES, similar::SIMILAR_END as STRINGS_OFFSET};
+use crate::{confusables::CONFUSABLES, similar::SIMILAR_END as STRINGS_OFFSET};
 use core::{cmp::PartialEq, fmt, mem::transmute, ops::AddAssign, slice, str};
 
 /// The translation for a single character/confusable.
