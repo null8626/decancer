@@ -31,7 +31,7 @@ impl CuredString {
     }
   }
 
-  #[inline]
+  #[inline(always)]
   pub(crate) fn finishing(mut self) -> Self {
     if self.len() > 0 && self.is_last_space() {
       self.0.pop();
@@ -214,14 +214,14 @@ impl FromIterator<Translation> for CuredString {
 }
 
 impl From<CuredString> for String {
-  #[inline]
+  #[inline(always)]
   fn from(val: CuredString) -> Self {
     val.into_str()
   }
 }
 
 impl AsRef<str> for CuredString {
-  #[inline]
+  #[inline(always)]
   fn as_ref(&self) -> &str {
     &self.0
   }
@@ -274,14 +274,14 @@ where
 }
 
 impl fmt::Debug for CuredString {
-  #[inline]
+  #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "\"{}\"", self.0)
   }
 }
 
 impl fmt::Display for CuredString {
-  #[inline]
+  #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     write!(f, "{}", self.0)
   }
@@ -290,7 +290,7 @@ impl fmt::Display for CuredString {
 impl Deref for CuredString {
   type Target = String;
 
-  #[inline]
+  #[inline(always)]
   fn deref(&self) -> &Self::Target {
     &self.0
   }

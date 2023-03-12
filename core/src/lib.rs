@@ -470,7 +470,7 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// assert!(cured.contains("funny"));
 /// ```
 #[must_use]
-#[inline]
+#[inline(always)]
 pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
   input.as_ref().chars().map(cure_char).collect()
 }
