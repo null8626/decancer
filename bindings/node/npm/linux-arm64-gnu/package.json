@@ -30,6 +30,7 @@
     "zalgo",
     "regexp",
     "confusables",
-    "moderation"
+    "moderation",
+    "homoglyph"
   ]
 }
