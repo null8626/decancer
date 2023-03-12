@@ -1,4 +1,4 @@
-use super::{confusables::CONFUSABLES, util::read_u16_le};
+use crate::{confusables::CONFUSABLES, util::read_u16_le};
 
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CONFUSABLES.offset(2) });
 pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CONFUSABLES.offset(4) });
