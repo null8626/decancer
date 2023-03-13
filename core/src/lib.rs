@@ -1,4 +1,4 @@
-//! # decancer [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![github vulnerabilities][github-vulnerabilities-image]][github-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![libraries.io dependents][libraries-io-dependents-image]][libraries-io-url] [![libraries.io score][libraries-io-score-image]][libraries-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
+//! # decancer [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![libraries.io dependents][libraries-io-dependents-image]][libraries-io-url] [![libraries.io score][libraries-io-score-image]][libraries-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
 //! 
 //! [npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
 //! [npm-url]: https://npmjs.org/package/decancer
@@ -10,7 +10,6 @@
 //! [ci-url]: https://github.com/null8626/decancer/actions
 //! [npm-vulnerabilities-image]: https://img.shields.io/snyk/vulnerabilities/npm/decancer?style=flat-square
 //! [npm-vulnerabilities-url]: https://snyk.io/advisor/npm-package/decancer
-//! [github-vulnerabilities-image]: https://img.shields.io/snyk/vulnerabilities/github/null8626/decancer?style=flat-square
 //! [languages-image]: https://img.shields.io/github/languages/top/null8626/decancer?style=flat-square
 //! [npms-io-url]: https://npms.io/search?q=decancer
 //! [npms-io-popularity-image]: https://img.shields.io/npms-io/popularity-score/decancer?style=flat-square
