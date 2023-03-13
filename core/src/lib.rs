@@ -1,9 +1,33 @@
-//! # decancer [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url]
+//! # decancer [![npm][npm-image]][npm-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io][crates-io-image]][crates-io-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![libraries.io dependents][libraries-io-dependents-image]][libraries-io-url] [![libraries.io score][libraries-io-score-image]][libraries-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
 //! 
-//! [npm-image]: https://img.shields.io/npm/v/decancer.svg
+//! [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
+//! [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
+//! [crates-io-url]: https://crates.io/crates/decancer
+//! [npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
 //! [npm-url]: https://npmjs.org/package/decancer
-//! [downloads-image]: https://img.shields.io/npm/dm/decancer.svg
+//! [downloads-image]: https://img.shields.io/npm/dm/decancer.svg?style=flat-square
 //! [downloads-url]: https://npmjs.org/package/decancer
+//! [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
+//! [prettier-url]: https://github.com/prettier/prettier
+//! [ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
+//! [ci-url]: https://github.com/null8626/decancer/actions
+//! [npm-vulnerabilities-image]: https://img.shields.io/snyk/vulnerabilities/npm/decancer?style=flat-square
+//! [npm-vulnerabilities-url]: https://snyk.io/advisor/npm-package/decancer
+//! [languages-image]: https://img.shields.io/github/languages/top/null8626/decancer?style=flat-square
+//! [npms-io-url]: https://npms.io/search?q=decancer
+//! [npms-io-popularity-image]: https://img.shields.io/npms-io/popularity-score/decancer?style=flat-square
+//! [npms-io-quality-image]: https://img.shields.io/npms-io/quality-score/decancer?style=flat-square
+//! [npms-io-maintenance-image]: https://img.shields.io/npms-io/maintenance-score/decancer?style=flat-square
+//! [npms-io-final-image]: https://img.shields.io/npms-io/final-score/decancer?style=flat-square
+//! [libraries-io-dependents-image]: https://img.shields.io/librariesio/dependents/npm/decancer?style=flat-square
+//! [libraries-io-score-image]: https://img.shields.io/librariesio/sourcerank/npm/decancer?style=flat-square
+//! [libraries-io-url]: https://libraries.io/npm/decancer
+//! [github-url]: https://github.com/null8626/decancer
+//! [github-code-size-image]: https://img.shields.io/github/languages/code-size/null8626/decancer?style=flat-square
+//! [github-license-image]: https://img.shields.io/npm/l/decancer?style=flat-square
+//! [github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
+//! [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
+//! [blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
 //! 
 //! A tiny package that removes common confusables from strings.
 //! 
