@@ -43,7 +43,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@napi-rs/cli": "2.13.3",
+    "@napi-rs/cli": "2.14.8",
     "@types/node": "18.11.17",
     "typescript": "5.0.2"
   },
