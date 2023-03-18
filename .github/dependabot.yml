@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/core"
+    commit-message:
+      prefix: "deps[core]: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "06:00"
+  - package-ecosystem: "cargo"
+    directory: "/bindings/node"
+    commit-message:
+      prefix: "deps[node]: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "06:05"
+  - package-ecosystem: "npm"
+    directory: "/bindings/node"
+    commit-message:
+      prefix: "deps[node]: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "06:10"
+  - package-ecosystem: "cargo"
+    directory: "/bindings/wasm"
+    commit-message:
+      prefix: "deps[wasm]: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "06:15"
