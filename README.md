@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io][crates-io-image]][crates-io-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![libraries.io dependents][libraries-io-dependents-image]][libraries-io-url] [![libraries.io score][libraries-io-score-image]][libraries-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
+# decancer [![npm][npm-image]][npm-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io][crates-io-image]][crates-io-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -19,9 +19,6 @@
 [npms-io-quality-image]: https://img.shields.io/npms-io/quality-score/decancer?style=flat-square
 [npms-io-maintenance-image]: https://img.shields.io/npms-io/maintenance-score/decancer?style=flat-square
 [npms-io-final-image]: https://img.shields.io/npms-io/final-score/decancer?style=flat-square
-[libraries-io-dependents-image]: https://img.shields.io/librariesio/dependents/npm/decancer?style=flat-square
-[libraries-io-score-image]: https://img.shields.io/librariesio/sourcerank/npm/decancer?style=flat-square
-[libraries-io-url]: https://libraries.io/npm/decancer
 [github-url]: https://github.com/null8626/decancer
 [github-code-size-image]: https://img.shields.io/github/languages/code-size/null8626/decancer?style=flat-square
 [github-license-image]: https://img.shields.io/npm/l/decancer?style=flat-square
@@ -355,4 +352,4 @@ int main(void) {
 
 ## Contributing
 
-Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
+Please read [`CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!

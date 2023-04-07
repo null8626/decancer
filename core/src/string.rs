@@ -19,6 +19,7 @@ impl CuredString {
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   /// assert_eq!(cured.into_str(), String::from("very funny text"));
   /// ```
+  #[must_use]
   pub const fn into_str(self) -> String {
     unsafe { transmute(self) }
   }
