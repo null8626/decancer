@@ -357,6 +357,8 @@
 //! 
 //! Please [read `CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!
 
+#![allow(clippy::needless_doctest_main)]
+
 mod confusables;
 mod similar;
 mod string;
@@ -412,23 +414,11 @@ const fn invalid_codepoint(x: u32) -> bool {
 ///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));
 /// ```
-///
-/// Using iterators:
-///
-/// ```rust
-/// // note: it's more recommended to use `decancer::cure` instead for curing strings.
-/// let cured = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-///   .chars()
-///   .map(decancer::cure_char)
-///   .collect::<decancer::CuredString>();
-///
-/// assert_eq!(cured, "very funny text");
-/// assert!(cured.starts_with("very"));
-/// assert!(cured.ends_with("text"));
-/// assert!(cured.contains("funny"));
-/// ```
 #[must_use]
-pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
+pub fn cure_char<C>(code: C) -> Translation
+where
+  C: Into<u32>,
+{
   let code = code.into();
 
   if invalid_codepoint(code) {
@@ -494,7 +484,17 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// assert!(cured.contains("funny"));
 /// ```
 #[must_use]
-#[inline(always)]
-pub fn cure<S: AsRef<str> + ?Sized>(input: &S) -> CuredString {
-  input.as_ref().chars().map(cure_char).collect()
+pub fn cure<S>(input: &S) -> CuredString
+where
+  S: AsRef<str> + ?Sized,
+{
+  let input = input.as_ref();
+
+  CuredString(input.chars().map(cure_char).fold(
+    String::with_capacity(input.len()),
+    |mut res, acc| {
+      res += acc;
+      res
+    },
+  ))
 }
