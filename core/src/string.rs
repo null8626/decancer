@@ -1,45 +1,13 @@
-use crate::{similar, translation::Translation};
-use core::{
-  cmp::PartialEq,
-  fmt,
-  iter::{FromIterator, IntoIterator},
-  mem::transmute,
-  ops::Deref,
-};
+use crate::similar;
+use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref};
 
 /// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone)]
-pub struct CuredString(String);
+pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  fn is_last_space(&self) -> bool {
-    let b = self.0.as_bytes();
-    b[b.len() - 1] == 0x20
-  }
-
-  pub(crate) fn push(&mut self, t: Translation) {
-    match t {
-      Translation::Character(c) => {
-        if c != ' ' || (self.len() > 0 && !self.is_last_space()) {
-          self.0.push(c);
-        }
-      }
-      Translation::String(s) => self.0.push_str(s),
-      Translation::None => {}
-    }
-  }
-
-  #[inline(always)]
-  pub(crate) fn finishing(mut self) -> Self {
-    if self.len() > 0 && self.is_last_space() {
-      self.0.pop();
-    }
-
-    self
-  }
-
   /// Coerces this data to a [`String`].
   /// [`transmuting`][std::mem::transmute] works too.
   ///
@@ -72,7 +40,11 @@ impl CuredString {
   /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
   /// assert!(cured.starts_with("uwu")); // it assumes that v is similar to u as well
   /// ```
-  pub fn starts_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
+  #[must_use]
+  pub fn starts_with<S>(&self, other: &S) -> bool
+  where
+    S: AsRef<str> + ?Sized,
+  {
     let o = other.as_ref();
 
     if o.len() > self.len() {
@@ -113,7 +85,11 @@ impl CuredString {
   /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
   /// assert!(cured.ends_with("lil")); // it assumes that 1 is similar to l and i as well
   /// ```
-  pub fn ends_with<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
+  #[must_use]
+  pub fn ends_with<S>(&self, other: &S) -> bool
+  where
+    S: AsRef<str> + ?Sized,
+  {
     let o = other.as_ref();
 
     if o.len() > self.len() {
@@ -154,7 +130,11 @@ impl CuredString {
   /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
   /// assert!(cured.contains("cunt")); // it assumes that ( is similar to c and v is similar to u as well
   /// ```
-  pub fn contains<S: AsRef<str> + ?Sized>(&self, other: &S) -> bool {
+  #[must_use]
+  pub fn contains<S>(&self, other: &S) -> bool
+  where
+    S: AsRef<str> + ?Sized,
+  {
     let o = other.as_ref();
 
     if o.len() > self.len() {
@@ -177,39 +157,6 @@ impl CuredString {
     }
 
     false
-  }
-}
-
-/// Collects [`crate::Translation`] and shoves them into a [`crate::CuredString`].
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// // note: it's more recommended to use `decancer::cure` instead for curing strings.
-/// let cured = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-///   .chars()
-///   .map(decancer::cure_char)
-///   .collect::<decancer::CuredString>();
-///
-/// assert_eq!(cured, "very funny text");
-/// assert!(cured.starts_with("very"));
-/// assert!(cured.ends_with("text"));
-/// assert!(cured.contains("funny"));
-/// ```
-impl FromIterator<Translation> for CuredString {
-  fn from_iter<I: IntoIterator<Item = Translation>>(it: I) -> Self {
-    let it = it.into_iter();
-    let (min_size, _) = it.size_hint();
-
-    let mut s = Self(String::with_capacity(min_size));
-
-    for next in it {
-      s.push(next);
-    }
-
-    s.finishing()
   }
 }
 
@@ -276,14 +223,14 @@ where
 impl fmt::Debug for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "\"{}\"", self.0)
+    fmt::Debug::fmt(&self.0, f)
   }
 }
 
 impl fmt::Display for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "{}", self.0)
+    fmt::Display::fmt(&self.0, f)
   }
 }
 
