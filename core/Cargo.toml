@@ -8,3 +8,4 @@ readme = "../README.md"
 repository = "https://github.com/null8626/decancer"
 license = "MIT"
 keywords = ["unicode", "string", "moderation", "confusables", "homoglyph"]
+categories = ["parsing", "text-processing", "value-formatting"]
