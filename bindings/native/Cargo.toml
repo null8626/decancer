@@ -2,11 +2,6 @@
 name = "decancer_native"
 version = "1.5.4"
 edition = "2021"
-authors = ["null (https://github.com/null8626)"]
-description = "A tiny package that removes common confusables from strings."
-repository = "https://github.com/null8626/decancer"
-license = "MIT"
-keywords = ["unicode", "string", "moderation", "confusables", "homoglyph"]
 publish = false
 
 [lib]
