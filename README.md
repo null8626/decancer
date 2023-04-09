@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io][crates-io-image]][crates-io-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![npm vulnerabilities][npm-vulnerabilities-image]][npm-vulnerabilities-url] [![languages][languages-image]][github-url] [![npms.io popularity score][npms-io-popularity-image]][npms-io-url] [![npms.io quality score][npms-io-quality-image]][npms-io-url] [![npms.io maintenance score][npms-io-maintenance-image]][npms-io-url] [![npms.io final score][npms-io-final-image]][npms-io-url] [![github code size][github-code-size-image]][github-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -13,14 +13,7 @@
 [ci-url]: https://github.com/null8626/decancer/actions
 [npm-vulnerabilities-image]: https://img.shields.io/snyk/vulnerabilities/npm/decancer?style=flat-square
 [npm-vulnerabilities-url]: https://snyk.io/advisor/npm-package/decancer
-[languages-image]: https://img.shields.io/github/languages/top/null8626/decancer?style=flat-square
-[npms-io-url]: https://npms.io/search?q=decancer
-[npms-io-popularity-image]: https://img.shields.io/npms-io/popularity-score/decancer?style=flat-square
-[npms-io-quality-image]: https://img.shields.io/npms-io/quality-score/decancer?style=flat-square
-[npms-io-maintenance-image]: https://img.shields.io/npms-io/maintenance-score/decancer?style=flat-square
-[npms-io-final-image]: https://img.shields.io/npms-io/final-score/decancer?style=flat-square
 [github-url]: https://github.com/null8626/decancer
-[github-code-size-image]: https://img.shields.io/github/languages/code-size/null8626/decancer?style=flat-square
 [github-license-image]: https://img.shields.io/npm/l/decancer?style=flat-square
 [github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
