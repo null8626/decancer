@@ -47,7 +47,7 @@ decancer = "1.5.5"
 
 </details>
 <details>
-<summary>Node.js</summary>
+<summary>JavaScript (Node.js)</summary>
 
 In your shell:
 
@@ -63,7 +63,7 @@ const decancer = require('decancer')
 
 </details>
 <details>
-<summary>Deno</summary>
+<summary>JavaScript (Deno)</summary>
 
 In your code:
 
@@ -73,7 +73,7 @@ import decancer from 'npm:decancer'
 
 </details>
 <details>
-<summary>Bun</summary>
+<summary>JavaScript (Bun)</summary>
 
 In your shell:
 
@@ -89,7 +89,7 @@ const decancer = require('decancer')
 
 </details>
 <details>
-<summary>Browser</summary>
+<summary>JavaScript (Browser)</summary>
 
 In your code:
 
