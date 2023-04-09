@@ -1,6 +1,6 @@
 [package]
 name = "decancer_wasm"
-version = "1.5.5"
+version = "1.5.4"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
 description = "A tiny package that removes common confusables from strings."
