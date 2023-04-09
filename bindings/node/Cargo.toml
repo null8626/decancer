@@ -2,19 +2,14 @@
 name = "decancer_node"
 version = "1.5.4"
 edition = "2021"
-authors = ["null (https://github.com/null8626)"]
-description = "A tiny package that removes common confusables from strings."
-repository = "https://github.com/null8626/decancer"
-license = "MIT"
-keywords = ["unicode", "string", "moderation", "confusables", "homoglyph"]
 publish = false
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2", default-features = false, features = [] }
-napi-derive = { version = "2", default-features = false, features = [] }
+napi = { version = "2", default-features = false }
+napi-derive = { version = "2", default-features = false }
 decancer = { path = "../../core" } 
 
 [build-dependencies]

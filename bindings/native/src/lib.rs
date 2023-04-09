@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use core::{ffi::c_void, slice, str};
 
 #[repr(C)]
