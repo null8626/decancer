@@ -8,7 +8,7 @@ pub struct CuredString(decancer::CuredString);
 #[wasm_bindgen]
 impl CuredString {
   pub fn startsWith(&self, other: &str) -> bool {
-     self.0.starts_with(other)
+    self.0.starts_with(other)
   }
 
   pub fn endsWith(&self, other: &str) -> bool {
