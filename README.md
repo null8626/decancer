@@ -16,7 +16,7 @@
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
 [blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
 
-A tiny package that removes common confusables from strings.
+A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
