@@ -67,9 +67,7 @@ where
 impl fmt::Debug for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "\"")?;
-    fmt::Display::fmt(self, f)?;
-    write!(f, "\"")
+    write!(f, "\"{self}\"")
   }
 }
 
@@ -77,8 +75,8 @@ impl fmt::Display for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      Translation::Character(ch) => write!(f, "{ch}"),
-      Translation::String(s) => write!(f, "{s}"),
+      Translation::Character(ch) => fmt::Display::fmt(ch, f),
+      Translation::String(s) => fmt::Display::fmt(s, f),
       Translation::None => fmt::Result::Ok(()),
     }
   }

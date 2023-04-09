@@ -31,6 +31,7 @@ void (await Promise.all([
     directUpdateFunc
   ),
   update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
+  update(join(ROOT_DIR, 'core', 'src', 'lib.rs'), directUpdateFunc),
   new Promise(resolve => {
     readdir(join(ROOT_DIR, 'bindings', 'node', 'npm')).then(files => {
       Promise.all(
