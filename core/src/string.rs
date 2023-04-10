@@ -56,8 +56,8 @@ impl CuredString {
 
     for self_char in self.chars() {
       match other_iter.next() {
-        Some(other_char) => {
-          if !similar::is(self_char as _, other_char as _) {
+        Some(other_char) => {          
+          if !similar::is(self_char as _, other_char) {
             return false;
           }
         }
@@ -102,7 +102,7 @@ impl CuredString {
     for self_char in self.chars().rev() {
       match other_iter.next() {
         Some(other_char) => {
-          if !similar::is(self_char as _, other_char as _) {
+          if !similar::is(self_char as _, other_char) {
             return false;
           }
         }
@@ -146,7 +146,7 @@ impl CuredString {
     let mut other_index = 0usize;
 
     for self_char in self.chars() {
-      if similar::is(other_chars[other_index] as _, self_char as _) {
+      if similar::is(self_char as _, other_chars[other_index]) {
         other_index += 1;
 
         if other_index == other_chars.len() {
@@ -207,7 +207,7 @@ where
       for self_char in self.chars() {
         match other_iter.next() {
           Some(other_char) => {
-            if !similar::is(self_char as _, other_char as _) {
+            if !similar::is(self_char as _, other_char) {
               return false;
             }
           }
