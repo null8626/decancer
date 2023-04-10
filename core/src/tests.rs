@@ -3,7 +3,7 @@ use core::mem::transmute;
 
 #[test]
 fn similar_test() {
-  let cured = unsafe { transmute::<_, CuredString>(String::from("vwv (vnt 111")) };
+  let cured = unsafe { transmute::<_, CuredString>(String::from("vwv (vnt 1l1")) };
 
   assert!(cured.starts_with("uwu"));
   assert!(cured.ends_with("lil"));

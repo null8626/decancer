@@ -15,7 +15,7 @@ pub(crate) fn is(a: u32, b: u32) -> bool {
 
     loop {
       let cur = unsafe { *(CONFUSABLES.offset(offset as _)) };
-      let sim = if cur >= 0x80 { cur & 0x7f } else { cur };
+      let sim = cur & 0x7f;
 
       if sim == (a as u8) {
         contains_a = true;
@@ -35,6 +35,7 @@ pub(crate) fn is(a: u32, b: u32) -> bool {
       }
 
       offset += 1;
+
       if offset == SIMILAR_END {
         return false;
       }
