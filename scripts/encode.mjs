@@ -190,7 +190,12 @@ for (const [codepoint, translation] of expanded) {
       (codepoint < 0xd800 || codepoint > 0xdbff) &&
       (codepoint < 0xdc00 || codepoint > 0xdfff) &&
       codepoint !== 0xfe0f &&
-      (codepoint < 0xfff0 || codepoint > 0xffff),
+      (codepoint < 0xfff0 || codepoint > 0xffff) &&
+      (codepoint < 0x10500 || codepoint > 0x1052f) &&
+      (codepoint < 0x11700 || codepoint > 0x1173f) &&
+      (codepoint < 0x118a0 || codepoint > 0x118ff) &&
+      (codepoint < 0x16f00 || codepoint > 0x16f9f) &&
+      (codepoint < 0x1e800 || codepoint > 0x1e8df),
     `this codepoint is not allowed: ${codepoint}`
   )
 

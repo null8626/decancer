@@ -38,7 +38,7 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+  /// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
   /// assert!(cured.starts_with("uwu")); // it assumes that v is similar to u as well
   /// ```
   #[must_use]
@@ -83,7 +83,7 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+  /// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
   /// assert!(cured.ends_with("lil")); // it assumes that 1 is similar to l and i as well
   /// ```
   #[must_use]
@@ -128,7 +128,7 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+  /// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
   /// assert!(cured.contains("cunt")); // it assumes that ( is similar to c and v is similar to u as well
   /// ```
   #[must_use]
@@ -189,7 +189,7 @@ impl AsRef<str> for CuredString {
 /// And since it checks if the strings are similar, please note that this is valid too.
 ///
 /// ```rust
-/// let cured = decancer::cure("vwv (vnt 111"); // assume this has no effect
+/// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
 /// assert!(cured == "uwu cunt lil");
 /// ```
 impl<S> PartialEq<S> for CuredString
