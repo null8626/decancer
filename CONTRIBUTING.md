@@ -11,6 +11,12 @@ If you want to see/modify on the confusables supported and/or their respective t
 node scripts/decode.mjs core/bin/confusables.bin
 ```
 
+Or if you want an expanded, unoptimized, full version without ranges and all of that nonsenese, run:
+
+```console
+node scripts/decode.mjs core/bin/confusables.bin --full
+```
+
 And a file called `output.json` should be generated in the same directory.
 
 - **And to validate, optimize, and convert the JSON back into a binary, do the following:**

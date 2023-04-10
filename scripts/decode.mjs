@@ -5,6 +5,41 @@ if (typeof process.argv[2] !== 'string') {
   process.exit(1)
 }
 
+class Confusables {
+  #inner
+
+  constructor() {
+    this.#inner = []
+  }
+
+  push({ codepoint, translation, rangeUntil, syncedTranslation }) {
+    if (process.argv[3] === '--full') {
+      if (rangeUntil === null) {
+        this.#inner.push({ codepoint, translation })
+      } else {
+        const ogTranslationCode = syncedTranslation
+          ? translation.charCodeAt()
+          : translation
+
+        for (let c = codepoint; c <= rangeUntil; c++)
+          this.#inner.push({
+            codepoint: c,
+            translation:
+              typeof ogTranslationCode === 'number'
+                ? String.fromCharCode(ogTranslationCode + (c - codepoint))
+                : ogTranslationCode
+          })
+      }
+    } else {
+      this.#inner.push(arguments[0])
+    }
+  }
+
+  get inner() {
+    return this.#inner
+  }
+}
+
 const binary = readFileSync(process.argv[2])
 
 const similar = []
@@ -34,7 +69,7 @@ function getTranslation(integer, secondByte) {
 }
 
 let confusablesEnd = binary.readUint16LE()
-let confusables = []
+let confusables = new Confusables()
 
 for (let offset = 6; offset < confusablesEnd; offset += 5) {
   const integer = binary.readUint32LE(offset)
@@ -78,7 +113,7 @@ writeFileSync(
   'output.json',
   JSON.stringify(
     {
-      confusables: confusables.sort((a, b) => a.codepoint - b.codepoint),
+      confusables: confusables.inner.sort((a, b) => a.codepoint - b.codepoint),
       similar
     },
     null,

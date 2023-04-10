@@ -15,5 +15,8 @@ bindings/node/index.d.ts
 bindings/node/artifacts/
 bindings/wasm/pkg/
 
+output*.json
+*.bin
+
 # CI can create random files in the root dir
 package.json
