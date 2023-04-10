@@ -56,7 +56,7 @@ impl CuredString {
 
     for self_char in self.chars() {
       match other_iter.next() {
-        Some(other_char) => {          
+        Some(other_char) => {
           if !similar::is(self_char as _, other_char) {
             return false;
           }
