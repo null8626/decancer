@@ -436,7 +436,7 @@ where
       match confusable.matches(code) {
         Ordering::Equal => return confusable.translation(code),
         Ordering::Greater => start = mid + 1,
-        _ => end = mid - 1,
+        Ordering::Less => end = mid - 1,
       };
     }
   }
@@ -451,7 +451,7 @@ where
     match confusable.matches(code_lowercased) {
       Ordering::Equal => return confusable.translation(code_lowercased),
       Ordering::Greater => start = mid + 1,
-      _ => end = mid - 1,
+      Ordering::Less => end = mid - 1,
     };
   }
 

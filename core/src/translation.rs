@@ -51,10 +51,9 @@ where
       Translation::Character(ch) => {
         let mut chars = o.chars();
 
-        if let Some(next_char) = chars.next() {
-          next_char == *ch && chars.next().is_none()
-        } else {
-          false
+        match chars.next() {
+          Some(next_char) => next_char == *ch && chars.next().is_none(),
+          None => false,
         }
       }
 
