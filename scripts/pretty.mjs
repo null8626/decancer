@@ -8,116 +8,111 @@ const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 const execute = promisify(exec)
 
-function retrieveReadmePromise(resolve) {
+async function readme() {
   console.log('- [readme] reading confusables.bin...')
 
-  readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin')).then(bin => {
-    console.log('- [readme] parsing confusables.bin...')
+  const bin = await readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin'))
 
-    let confusablesCount = 0
-    const confusablesEnd = bin.readUint16LE()
-    const caseSensitiveConfusablesEnd = bin.readUint16LE(2)
-    const caseSensitiveConfusables = []
-    let offset = confusablesEnd
+  console.log('- [readme] parsing confusables.bin...')
 
-    for (; offset < caseSensitiveConfusablesEnd; offset += 5) {
-      const integer = bin.readUint32LE(offset)
-      const codepoint = integer & 0x1fffff
-      let toAdd = 1
+  let confusablesCount = 0
+  const confusablesEnd = bin.readUint16LE()
+  const caseSensitiveConfusablesEnd = bin.readUint16LE(2)
+  const caseSensitiveConfusables = []
+  let offset = confusablesEnd
 
-      caseSensitiveConfusables.push(codepoint)
+  for (; offset < caseSensitiveConfusablesEnd; offset += 5) {
+    const integer = bin.readUint32LE(offset)
+    const codepoint = integer & 0x1fffff
+    let toAdd = 1
 
-      if ((integer & 0x20000000) !== 0) {
-        const rangeUntil = bin.readUint8(offset + 4) & 0x7f
+    caseSensitiveConfusables.push(codepoint)
 
-        caseSensitiveConfusables.push(
-          ...Array.from({ length: rangeUntil }, (_, i) => codepoint + 1 + i)
-        )
-        toAdd += rangeUntil
-      }
+    if ((integer & 0x20000000) !== 0) {
+      const rangeUntil = bin.readUint8(offset + 4) & 0x7f
 
-      confusablesCount += toAdd
+      caseSensitiveConfusables.push(
+        ...Array.from({ length: rangeUntil }, (_, i) => codepoint + 1 + i)
+      )
+      toAdd += rangeUntil
     }
 
-    for (offset = 6; offset < confusablesEnd; offset += 5) {
-      const integer = bin.readUint32LE(offset)
-      const codepoint = integer & 0x1fffff
-      let toAdd = 1
+    confusablesCount += toAdd
+  }
 
-      if ((integer & 0x20000000) !== 0)
-        toAdd += bin.readUint8(offset + 4) & 0x7f
+  for (offset = 6; offset < confusablesEnd; offset += 5) {
+    const integer = bin.readUint32LE(offset)
+    const codepoint = integer & 0x1fffff
+    let toAdd = 1
 
-      const uppercasedCodepoint = String.fromCodePoint(codepoint)
-        .toUpperCase()
-        .codePointAt()
+    if ((integer & 0x20000000) !== 0) toAdd += bin.readUint8(offset + 4) & 0x7f
 
-      if (
-        uppercasedCodepoint !== codepoint &&
-        !caseSensitiveConfusables.includes(uppercasedCodepoint)
-      )
-        toAdd *= 2
+    const uppercasedCodepoint = String.fromCodePoint(codepoint)
+      .toUpperCase()
+      .codePointAt()
 
-      confusablesCount += toAdd
-    }
-
-    console.log('- [readme] reading README.md...')
-    readFile(join(ROOT_DIR, 'README.md')).then(readme =>
-      resolve(
-        readme
-          .toString()
-          .trim()
-          .replace(
-            /\*\*[\d,]+ different confusables\*\*/,
-            `**${confusablesCount.toLocaleString()} different confusables**`
-          )
-      )
+    if (
+      uppercasedCodepoint !== codepoint &&
+      !caseSensitiveConfusables.includes(uppercasedCodepoint)
     )
-  })
-}
+      toAdd *= 2
 
-function retrieveLibRsPromise(resolve) {
-  readFile(join(ROOT_DIR, 'core', 'src', 'lib.rs')).then(libRs => {
-    resolve(libRs.toString().replace(/\/\/!.*?\n/g, ''))
-  })
-}
+    confusablesCount += toAdd
+  }
 
-function updateReadmePromise(resolve) {
-  Promise.all([
-    new Promise(retrieveReadmePromise),
-    new Promise(retrieveLibRsPromise)
-  ]).then(([readme, libRs]) =>
-    Promise.all([
-      writeFile(join(ROOT_DIR, 'README.md'), readme),
-      writeFile(
-        join(ROOT_DIR, 'core', 'src', 'lib.rs'),
-        `${readme
-          .split('\n')
-          .map(line => `//! ${line}`)
-          .join('\n')}\n${libRs}`
-      )
-    ]).then(() => {
-      console.log('- [readme] updated readme and lib.rs')
-      resolve()
-    })
-  )
-}
+  console.log('- [readme] reading README.md...')
 
-function prettierPromise(resolve) {
-  console.log('- [prettier] setting up prettier...')
+  const readme = await readFile(join(ROOT_DIR, 'README.md'))
 
-  execute('npm i prettier', { cwd: ROOT_DIR }).then(() =>
-    execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
-      cwd: ROOT_DIR
-    }).then(() =>
-      execute('git restore yarn.lock', { cwd: ROOT_DIR }).then(() => {
-        console.log('- [prettier] completed prettifying files')
-        resolve()
-      })
+  return readme
+    .toString()
+    .trim()
+    .replace(
+      /\*\*[\d,]+ different confusables\*\*/,
+      `**${confusablesCount.toLocaleString()} different confusables**`
     )
-  )
 }
 
-async function handleCargo(cwd) {
+async function librs() {
+  const contents = await readFile(join(ROOT_DIR, 'core', 'src', 'lib.rs'))
+
+  return contents.toString().replace(/\/\/!.*?\n/g, '')
+}
+
+async function updateReadme() {
+  const [readmeContents, librsContents] = await Promise.all([readme(), librs()])
+
+  void (await Promise.all([
+    writeFile(join(ROOT_DIR, 'README.md'), readmeContents),
+    writeFile(
+      join(ROOT_DIR, 'core', 'src', 'lib.rs'),
+      `${readmeContents
+        .split('\n')
+        .map(line => `//! ${line}`)
+        .join('\n')}\n${librsContents}`
+    )
+  ]))
+
+  console.log('- [readme] updated readme and lib.rs')
+}
+
+async function prettier() {
+  try {
+    await execute('npm list -g prettier')
+  } catch {
+    await execute('npm i -g prettier')
+  }
+
+  await execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
+    cwd: ROOT_DIR
+  })
+
+  await execute('git restore yarn.lock', { cwd: ROOT_DIR })
+
+  console.log('- [prettier] completed prettifying files')
+}
+
+async function cargo(cwd) {
   console.log(`- [cargo -> ${cwd}] running clippy and rustfmt...`)
 
   await execute('cargo fmt', { cwd })
@@ -125,25 +120,26 @@ async function handleCargo(cwd) {
   console.log(`- [cargo -> ${cwd}] completed`)
 }
 
-async function handleCore() {
-  await handleCargo(join(ROOT_DIR, 'core'))
-  await new Promise(updateReadmePromise)
+async function core() {
+  await cargo(join(ROOT_DIR, 'core'))
+  await updateReadme()
+}
+
+async function clangFormat() {
+  console.log('- [clang-format] running...')
+
+  await execute('clang-format -i decancer.h test.c', {
+    cwd: join(ROOT_DIR, 'bindings', 'native')
+  })
+
+  console.log('- [clang-format] completed')
 }
 
 void (await Promise.all([
-  handleCore(),
-  handleCargo(join(ROOT_DIR, 'bindings', 'node')),
-  handleCargo(join(ROOT_DIR, 'bindings', 'wasm')),
-  handleCargo(join(ROOT_DIR, 'bindings', 'native')),
-  new Promise(prettierPromise),
-  new Promise(resolve => {
-    console.log('- [clang-format] running...')
-
-    execute('clang-format -i decancer.h test.c', {
-      cwd: join(ROOT_DIR, 'bindings', 'native')
-    }).then(() => {
-      console.log('- [clang-format] completed')
-      resolve()
-    })
-  })
+  core(),
+  cargo(join(ROOT_DIR, 'bindings', 'node')),
+  cargo(join(ROOT_DIR, 'bindings', 'wasm')),
+  cargo(join(ROOT_DIR, 'bindings', 'native')),
+  prettier(),
+  clangFormat()
 ]))
