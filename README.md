@@ -158,9 +158,9 @@ fn main() {
   }
   
   // control characters, surrogates, combining characters, private use characters, byte order marks, etc.
-  let cured_nothing = decancer::cure_char('\u{D800}'); 
+  let cured_surrogate = decancer::cure_char(unsafe { char::from_u32_unchecked(0xD800) }); 
   
-  assert!(matches!(cured_nothing, decancer::Translation::None));
+  assert!(matches!(cured_surrogate, decancer::Translation::None));
 
   let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 
