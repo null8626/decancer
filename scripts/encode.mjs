@@ -194,18 +194,22 @@ for (const [codepoint, translation] of expanded) {
   assert(
     codepoint > 31 &&
       (codepoint < 127 || codepoint > 159) &&
-      (codepoint < 0x300 || codepoint > 0x36f) &&
-      codepoint !== 0x489 &&
-      codepoint !== 0x20e3 &&
-      (codepoint < 0xd800 || codepoint > 0xdbff) &&
-      (codepoint < 0xdc00 || codepoint > 0xdfff) &&
-      codepoint !== 0xfe0f &&
-      (codepoint < 0xfff0 || codepoint > 0xffff) &&
-      (codepoint < 0x10500 || codepoint > 0x1052f) &&
-      (codepoint < 0x11700 || codepoint > 0x1173f) &&
-      (codepoint < 0x118a0 || codepoint > 0x118ff) &&
-      (codepoint < 0x16f00 || codepoint > 0x16f9f) &&
-      (codepoint < 0x1e800 || codepoint > 0x1e8df),
+      (codepoint < 0x300 || codepoint > 0x36F) &&
+      (codepoint < 0x483 || codepoint > 0x489) &&
+      (codepoint < 0x1AB0 || codepoint > 0x1AFF) &&
+      (codepoint < 0x1DC0 || codepoint > 0x1DFF) &&
+      (codepoint < 0x20D0 || codepoint > 0x20FF) &&
+      (codepoint < 0xD800 || codepoint > 0xF8FF) &&
+      (codepoint < 0xFE00 || codepoint > 0xFE0F) &&
+      codepoint !== 0xFEFF &&
+      (codepoint < 0xFFF0 || codepoint > 0xFFFF) &&
+      (codepoint < 0x10500 || codepoint > 0x1052F) &&
+      (codepoint < 0x11700 || codepoint > 0x1173F) &&
+      (codepoint < 0x118A0 || codepoint > 0x118FF) &&
+      (codepoint < 0x16F00 || codepoint > 0x16F9F) &&
+      (codepoint < 0x1E800 || codepoint > 0x1E8DF) &&
+      (codepoint < 0xE0100 || codepoint > 0xE01EF) &&
+      codepoint < 0xF0000,
     `this codepoint is not allowed: ${codepoint}`
   )
 

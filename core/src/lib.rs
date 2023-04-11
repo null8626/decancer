@@ -10,7 +10,7 @@
 //! [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 //! [prettier-url]: https://github.com/prettier/prettier
 //! [ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
-//! [ci-url]: https://github.com/null8626/decancer/actions
+//! [ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
 //! [github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
 //! [github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
 //! [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
@@ -157,7 +157,7 @@
 //!     _ => unreachable!(),
 //!   }
 //!   
-//!   // control characters
+//!   // control characters, surrogates, combining characters, private use characters, byte order marks, etc.
 //!   let cured_nothing = decancer::cure_char('\0'); 
 //!   
 //!   assert!(matches!(cured_nothing, decancer::Translation::None));
@@ -369,12 +369,16 @@ const fn invalid_codepoint(x: u32) -> bool {
   x <= 31
     || (x >= 127 && x <= 159)
     || (x >= 0x300 && x <= 0x36F)
-    || x == 0x489
-    || x == 0x20E3
-    || (x >= 0xD800 && x <= 0xDBFF)
-    || (x >= 0xDC00 && x <= 0xDFFF)
-    || x == 0xFE0F
+    || (x >= 0x483 && x <= 0x489)
+    || (x >= 0x1AB0 && x <= 0x1AFF)
+    || (x >= 0x1DC0 && x <= 0x1DFF)
+    || (x >= 0x20D0 && x <= 0x20FF)
+    || (x >= 0xD800 && x <= 0xF8FF)
+    || (x >= 0xFE00 && x <= 0xFE0F)
+    || x == 0xFEFF
     || (x >= 0xFFF0 && x <= 0xFFFF)
+    || (x >= 0xE0100 && x <= 0xE01EF)
+    || x >= 0xF0000
 }
 
 /// Cures a single character.
@@ -398,7 +402,7 @@ const fn invalid_codepoint(x: u32) -> bool {
 ///   _ => unreachable!(),
 /// }
 ///
-/// // control characters
+/// // control characters, surrogates, combining characters, private use characters, byte order characters, etc.
 /// let cured_nothing = decancer::cure_char('\0');
 ///
 /// assert!(matches!(cured_nothing, decancer::Translation::None));

@@ -10,7 +10,7 @@
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
 [ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/decancer/actions
+[ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
 [github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
 [github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
@@ -157,7 +157,7 @@ fn main() {
     _ => unreachable!(),
   }
   
-  // control characters
+  // control characters, surrogates, combining characters, private use characters, byte order marks, etc.
   let cured_nothing = decancer::cure_char('\0'); 
   
   assert!(matches!(cured_nothing, decancer::Translation::None));
