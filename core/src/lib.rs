@@ -21,7 +21,7 @@
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It virtually has **no third-party dependencies** - it only depends on itself.
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-//! - It supports curing **6,064 different confusables** into cured-lowercased-strings, including:
+//! - It supports curing **6,052 different confusables** into cured-lowercased-strings, including:
 //!   - Accented characters
 //!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
 //!   - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
@@ -158,7 +158,7 @@
 //!   }
 //!   
 //!   // control characters, surrogates, combining characters, private use characters, byte order marks, etc.
-//!   let cured_nothing = decancer::cure_char('\0'); 
+//!   let cured_nothing = decancer::cure_char('\u{D800}'); 
 //!   
 //!   assert!(matches!(cured_nothing, decancer::Translation::None));
 //! 
@@ -290,14 +290,16 @@
 //!     // cure the unicode character 'ӕ' (U+04D5)
 //!     decancer_cure_char(0x04D5, &char_translation);
 //!     
+//!     // char_translation.contents.string.contents here is NOT null-terminated.
+//!     // modifying so will result in undefined behavior.
 //!     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_STRING, "char translation is an ASCII string");
 //!     assert(char_translation.contents.string.length == 2,
 //!            "char translation is an ASCII string with the length of 2 bytes");
 //!     assert(char_translation.contents.string.contents[0] == 'a' && char_translation.contents.string.contents[1] == 'e',
 //!            "char translation is the ASCII string \"ae\".");
 //! 
-//!     // try to cure the null terminator (\0)
-//!     decancer_cure_char(0, &char_translation);
+//!     // try to cure a surrogate
+//!     decancer_cure_char(0xD800, &char_translation);
 //!     
 //!     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_NONE, "char translation is an empty string ('')");
 //! 

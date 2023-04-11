@@ -42,9 +42,7 @@ let expanded = []
 
 for (const conf of confusables) {
   assert(
-    Number.isSafeInteger(conf.codepoint) &&
-      conf.codepoint >= 0x80 &&
-      conf.codepoint < 0x110000,
+    Number.isSafeInteger(conf.codepoint) && conf.codepoint < 0x110000,
     'codepoint must be a valid number'
   )
   assert(
@@ -192,8 +190,7 @@ const caseSensitiveCollisions = []
 
 for (const [codepoint, translation] of expanded) {
   assert(
-    codepoint > 31 &&
-      (codepoint < 127 || codepoint > 159) &&
+    codepoint > 159 &&
       (codepoint < 0x300 || codepoint > 0x36f) &&
       (codepoint < 0x483 || codepoint > 0x489) &&
       (codepoint < 0x1ab0 || codepoint > 0x1aff) &&
