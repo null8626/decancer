@@ -8,7 +8,7 @@ pub enum Translation {
   /// A multi-character ASCII string.
   String(&'static str),
   /// This suggests that the translation is an empty string.
-  /// You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character).
+  /// You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), etc.
   None,
 }
 
