@@ -49,6 +49,9 @@ for (const conf of confusables) {
   )
   assert(
     typeof conf.translation === 'string' &&
+      [...conf.translation].every(
+        c => c.codePointAt() <= 0x7f && !isCaseSensitive(c.codePointAt())
+      ) &&
       conf.translation.length >= 1 &&
       conf.translation.length <= 15,
     `translation must be a valid string: '${conf.translation}'`
@@ -66,6 +69,13 @@ for (const conf of confusables) {
       conf.rangeUntil > conf.codepoint,
       `rangeUntil must be greater than codepoint. (rangeUntil: ${conf.rangeUntil}, codepoint: ${conf.codepoint})`
     )
+
+    if (conf.syncedTranslation) {
+      assert(
+        conf.translation.length === 1,
+        `translation length for confusables with syncedTranslation must be one character in length, got '${conf.translation}'`
+      )
+    }
 
     const ogTranslationCode = conf.syncedTranslation
       ? conf.translation.charCodeAt()
