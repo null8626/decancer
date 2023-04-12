@@ -28,7 +28,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - Several emojis
   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
-- And it's supported in the following languages:
+- And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js/Deno/Bun](https://www.npmjs.com/package/decancer)/Browser)
   - C/C++
