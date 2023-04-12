@@ -12,26 +12,35 @@ class Confusables {
     this.#inner = []
   }
 
-  push({ codepoint, translation, rangeUntil, syncedTranslation }) {
+  push(input) {
+    if (input.translation === '\0') {
+      input.translation = ''
+    }
+
     if (process.argv[3] === '--full') {
       if (rangeUntil === null) {
-        this.#inner.push({ codepoint, translation })
+        this.#inner.push({
+          codepoint: input.codepoint,
+          translation: input.translation
+        })
       } else {
-        const ogTranslationCode = syncedTranslation
-          ? translation.charCodeAt()
-          : translation
+        const ogTranslationCode = input.syncedTranslation
+          ? input.translation.charCodeAt()
+          : input.translation
 
-        for (let c = codepoint; c <= rangeUntil; c++)
+        for (let c = input.codepoint; c <= input.rangeUntil; c++)
           this.#inner.push({
             codepoint: c,
             translation:
               typeof ogTranslationCode === 'number'
-                ? String.fromCharCode(ogTranslationCode + (c - codepoint))
+                ? String.fromCharCode(
+                    ogTranslationCode + (c - input, codepoint)
+                  )
                 : ogTranslationCode
           })
       }
     } else {
-      this.#inner.push(arguments[0])
+      this.#inner.push(input)
     }
   }
 

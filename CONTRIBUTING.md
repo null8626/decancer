@@ -51,7 +51,7 @@ interface JsonContents {
 
   - The `JsonContents#confusables` array **must NOT be empty.** _(duh)_
   - `Confusable#codepoint` is the Unicode codepoint of the desired confusable. It must be in the unicode range, and must NOT be an [ASCII character](https://en.wikipedia.org/wiki/ASCII), [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), or [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark).
-  - `Confusable#translation` is the translation string, it's length must be between `1` and `15`, it must be in lowercase, and it must be in ASCII.
+  - `Confusable#translation` is the translation string, it's length must not exceed `15`, it must be in lowercase, and it must be in ASCII.
   - `Confusable#rangeUntil` is an optional number that indicates where the range of this confusable should end. If it's `null`, then the confusable is not a range. For example: Say a confusable with the codepoints of `\xE0` to `\xE5` all translates to `a`, then the `codepoint` field would be `0x00EO` and the `rangeUntil` field would be `0x00E5`. **Please note that the range size MUST be around `1` to `127`.**
   - `Confusable#syncedTranslation` is a flag whether this range's translation would change accordingly with the codepoint index. For example: `\xE0` translates to `a`, `\xE1` translates to `b`, `\xE2` translates to `c`, and so on (the translation property's length must be `1`).
 

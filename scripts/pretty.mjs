@@ -23,6 +23,11 @@ async function readme() {
 
   for (; offset < caseSensitiveConfusablesEnd; offset += 5) {
     const integer = bin.readUint32LE(offset)
+
+    if ((integer & 0x40000000) === 0 && ((integer >> 21) & 0xff) === 0) {
+      continue
+    }
+
     const codepoint = integer & 0x1fffff
     let toAdd = 1
 
@@ -42,6 +47,11 @@ async function readme() {
 
   for (offset = 6; offset < confusablesEnd; offset += 5) {
     const integer = bin.readUint32LE(offset)
+
+    if ((integer & 0x40000000) === 0 && ((integer >> 21) & 0xff) === 0) {
+      continue
+    }
+
     const codepoint = integer & 0x1fffff
     let toAdd = 1
 
