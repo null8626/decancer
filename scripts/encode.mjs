@@ -199,6 +199,7 @@ const caseSensitiveCollisions = []
 for (const [codepoint, translation] of expanded) {
   assert(
     codepoint > 127 &&
+      (codepoint < 0xA6A0 || codepoint > 0xA6FF) &&
       (codepoint < 0xd800 || codepoint > 0xf8ff) &&
       (codepoint < 0x10500 || codepoint > 0x1052f) &&
       (codepoint < 0x11700 || codepoint > 0x1173f) &&
