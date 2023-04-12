@@ -21,7 +21,7 @@
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It virtually has **no third-party dependencies** - it only depends on itself.
 //! - It stores it's huge collection of confusables in a [customized binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-//! - It supports curing **6,052 different confusables** into cured-lowercased-strings, including:
+//! - It supports curing **6,050 different confusables** into cured-lowercased-strings, including:
 //!   - Accented characters
 //!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
 //!   - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
@@ -158,7 +158,7 @@
 //!   }
 //!   
 //!   // control characters, surrogates, combining characters, private use characters, byte order marks, etc.
-//!   let cured_surrogate = decancer::cure_char(unsafe { char::from_u32_unchecked(0xD800) }); 
+//!   let cured_surrogate = decancer::cure_char(0xD800u32); 
 //!   
 //!   assert!(matches!(cured_surrogate, decancer::Translation::None));
 //! 
@@ -367,22 +367,6 @@ pub use string::CuredString;
 /// The translation for a single character/confusable.
 pub use translation::Translation;
 
-const fn invalid_codepoint(x: u32) -> bool {
-  x <= 31
-    || (x >= 127 && x <= 159)
-    || (x >= 0x300 && x <= 0x36F)
-    || (x >= 0x483 && x <= 0x489)
-    || (x >= 0x1AB0 && x <= 0x1AFF)
-    || (x >= 0x1DC0 && x <= 0x1DFF)
-    || (x >= 0x20D0 && x <= 0x20FF)
-    || (x >= 0xD800 && x <= 0xF8FF)
-    || (x >= 0xFE00 && x <= 0xFE0F)
-    || x == 0xFEFF
-    || (x >= 0xFFF0 && x <= 0xFFFF)
-    || (x >= 0xE0100 && x <= 0xE01EF)
-    || x >= 0xF0000
-}
-
 /// Cures a single character.
 ///
 /// # Examples
@@ -405,7 +389,7 @@ const fn invalid_codepoint(x: u32) -> bool {
 /// }
 ///
 /// // control characters, surrogates, combining characters, private use characters, byte order characters, etc.
-/// let cured_surrogate = decancer::cure_char('\0');
+/// let cured_surrogate = decancer::cure_char(0xD800u32);
 ///
 /// assert!(matches!(cured_surrogate, decancer::Translation::None));
 /// ```
@@ -416,7 +400,12 @@ where
 {
   let code = code.into();
 
-  if invalid_codepoint(code) {
+  if code <= 31
+    || code == 127
+    || (0xD800..=0xF8FF).contains(&code)
+    || (0xE0100..=0xE01EF).contains(&code)
+    || code >= 0xF0000
+  {
     return Translation::None;
   }
 
@@ -445,9 +434,10 @@ where
         Ordering::Less => end = mid - 1,
       };
     }
+
+    start = 0;
   }
 
-  start = 0;
   end = confusables::CONFUSABLES_COUNT;
 
   while start <= end {

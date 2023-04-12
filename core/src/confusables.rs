@@ -59,6 +59,10 @@ impl Confusable {
     } else {
       let mut code = (self.0 >> 21) & 0xff;
 
+      if code == 0 {
+        return Translation::None;
+      }
+
       if self.1 >= 0x80 {
         code += other - (self.0 & 0x1fffff);
       }

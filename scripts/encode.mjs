@@ -50,15 +50,23 @@ for (const conf of confusables) {
       [...conf.translation].every(
         c => c.codePointAt() <= 0x7f && !isCaseSensitive(c.codePointAt())
       ) &&
-      conf.translation.length >= 1 &&
       conf.translation.length <= 15,
     `translation must be a valid string: '${conf.translation}'`
   )
 
+  if (conf.translation.length === 0) {
+    assert(
+      !conf.syncedTranslation,
+      'syncedTranslation is not allowed in empty translations'
+    )
+
+    conf.translation = '\0'
+  }
+
   if (typeof conf.rangeUntil === 'number') {
     assert(
       Number.isSafeInteger(conf.rangeUntil) &&
-        conf.rangeUntil >= 0 &&
+        conf.rangeUntil > conf.codepoint &&
         conf.rangeUntil < 0x110000 &&
         conf.rangeUntil - conf.codepoint <= 0x7f,
       'rangeUntil must be a valid number'
@@ -190,16 +198,8 @@ const caseSensitiveCollisions = []
 
 for (const [codepoint, translation] of expanded) {
   assert(
-    codepoint > 159 &&
-      (codepoint < 0x300 || codepoint > 0x36f) &&
-      (codepoint < 0x483 || codepoint > 0x489) &&
-      (codepoint < 0x1ab0 || codepoint > 0x1aff) &&
-      (codepoint < 0x1dc0 || codepoint > 0x1dff) &&
-      (codepoint < 0x20d0 || codepoint > 0x20ff) &&
+    codepoint > 127 &&
       (codepoint < 0xd800 || codepoint > 0xf8ff) &&
-      (codepoint < 0xfe00 || codepoint > 0xfe0f) &&
-      codepoint !== 0xfeff &&
-      (codepoint < 0xfff0 || codepoint > 0xffff) &&
       (codepoint < 0x10500 || codepoint > 0x1052f) &&
       (codepoint < 0x11700 || codepoint > 0x1173f) &&
       (codepoint < 0x118a0 || codepoint > 0x118ff) &&
@@ -297,6 +297,7 @@ for (let i = 0, curr = null; i < expanded.length; i++) {
 }
 
 const sequenceReduceFunc = (a, b) => a + (b.rangeUntil - b.codepoint) + 1
+
 console.log(
   `- discovered ${syncedSequences.length.toLocaleString('en-US')} (${Math.round(
     (syncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100
@@ -311,20 +312,12 @@ const grandTotal = [...syncedSequences, ...notSyncedSequences, ...rest].sort(
   (a, b) => a.codepoint - b.codepoint
 )
 
-writeFileSync(
-  process.argv[2].replace(/\.json$/i, 'Optimized.json'),
-  JSON.stringify({ confusables: grandTotal, similar }, null, 2)
-)
-
 console.log(
   `- condensed down from ${expanded.length.toLocaleString(
     'en-US'
   )} to ${grandTotal.length.toLocaleString('en-US')} (${Math.round(
     (grandTotal.length / expanded.length) * 100
-  )}%). (wrote refactored JSON output to ${process.argv[2].replace(
-    /\.json$/i,
-    'Optimized.json'
-  )})`
+  )}%).`
 )
 
 const similarBytes = Buffer.from(
