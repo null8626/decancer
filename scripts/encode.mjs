@@ -199,21 +199,25 @@ let i = 0
 
 while (i < expanded.length) {
   const [codepoint, translation] = expanded[i]
-  
-  if (codepoint <= 127 ||
-      (codepoint >= 0xa6a0 &&  codepoint <= 0xa6ff)  ||
-      (codepoint >= 0xd800 &&  codepoint <= 0xf8ff)  ||
-      (codepoint >= 0x10500 && codepoint <= 0x1052f) ||
-      (codepoint >= 0x11700 && codepoint <= 0x1173f) ||
-      (codepoint >= 0x118a0 && codepoint <= 0x118ff) ||
-      (codepoint >= 0x16f00 && codepoint <= 0x16f9f) ||
-      (codepoint >= 0x1e800 && codepoint <= 0x1e8df) ||
-      (codepoint >= 0xe0100 && codepoint <= 0xe01ef) ||
-      codepoint >= 0xf0000) {
-        console.warn(`- [warn] this codepoint is not allowed: ${codepoint} (ignored)`)
-        expanded.splice(i, 1)
-        continue
-      }
+
+  if (
+    codepoint <= 127 ||
+    (codepoint >= 0xa6a0 && codepoint <= 0xa6ff) ||
+    (codepoint >= 0xd800 && codepoint <= 0xf8ff) ||
+    (codepoint >= 0x10500 && codepoint <= 0x1052f) ||
+    (codepoint >= 0x11700 && codepoint <= 0x1173f) ||
+    (codepoint >= 0x118a0 && codepoint <= 0x118ff) ||
+    (codepoint >= 0x16f00 && codepoint <= 0x16f9f) ||
+    (codepoint >= 0x1e800 && codepoint <= 0x1e8df) ||
+    (codepoint >= 0xe0100 && codepoint <= 0xe01ef) ||
+    codepoint >= 0xf0000
+  ) {
+    console.warn(
+      `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
+    )
+    expanded.splice(i, 1)
+    continue
+  }
 
   if (isCaseSensitive(codepoint)) {
     const lowercasedCodepoint = String.fromCodePoint(codepoint)
@@ -229,7 +233,7 @@ while (i < expanded.length) {
       caseSensitiveCollisions.push(codepoint)
     }
   }
-  
+
   i++
 }
 
