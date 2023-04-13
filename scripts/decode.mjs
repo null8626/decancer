@@ -18,7 +18,7 @@ class Confusables {
     }
 
     if (process.argv[3] === '--full') {
-      if (rangeUntil === null) {
+      if (input.rangeUntil === null) {
         this.#inner.push({
           codepoint: input.codepoint,
           translation: input.translation
@@ -33,9 +33,7 @@ class Confusables {
             codepoint: c,
             translation:
               typeof ogTranslationCode === 'number'
-                ? String.fromCharCode(
-                    ogTranslationCode + (c - input, codepoint)
-                  )
+                ? String.fromCharCode(ogTranslationCode + (c - input.codepoint))
                 : ogTranslationCode
           })
       }
