@@ -195,8 +195,11 @@ function retrieveCollisions(array, set) {
 }
 
 const caseSensitiveCollisions = []
+let i = 0
 
-for (const [codepoint, translation] of expanded) {
+while (i < expanded.length) {
+  const [codepoint, translation] = expanded[i]
+
   if (
     codepoint <= 127 ||
     (codepoint >= 0xa6a0 && codepoint <= 0xa6ff) ||
@@ -212,6 +215,7 @@ for (const [codepoint, translation] of expanded) {
     console.warn(
       `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
     )
+    expanded.splice(i, 1)
     continue
   }
 
@@ -229,6 +233,8 @@ for (const [codepoint, translation] of expanded) {
       caseSensitiveCollisions.push(codepoint)
     }
   }
+
+  i++
 }
 
 assert(
@@ -248,7 +254,8 @@ const notSyncedSequences = [],
   syncedSequences = [],
   rest = []
 
-for (let i = 0, curr = null; i < expanded.length; i++) {
+let curr
+for (i = 0, curr = null; i < expanded.length; i++) {
   const [codepoint, translation] = expanded[i]
 
   if (translation.length === 1) {
