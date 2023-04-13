@@ -73,6 +73,7 @@ async function readme() {
   console.log('- [readme] reading README.md...')
 
   const readme = await readFile(join(ROOT_DIR, 'README.md'))
+  const sizeExponent = Math.floor(Math.log2(bin.byteLength) / 10)
 
   return readme
     .toString()
@@ -80,6 +81,12 @@ async function readme() {
     .replace(
       /\*\*[\d,]+ different confusables\*\*/,
       `**${confusablesCount.toLocaleString()} different confusables**`
+    )
+    .replace(
+      /customized [\d\.]+ \w?B binary file/,
+      `customized ${(bin.byteLength / Math.pow(1000, sizeExponent)).toFixed(
+        2
+      )} ${sizeExponent > 0 ? 'KMG'[sizeExponent - 1] : ''}B binary file`
     )
 }
 
