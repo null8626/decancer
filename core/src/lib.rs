@@ -20,8 +20,8 @@
 //! 
 //! - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 //! - It virtually has **no third-party dependencies** - it only depends on itself.
-//! - It stores it's huge collection of confusables in a [customized 19.71 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-//! - It supports curing **6,383 different confusables** into cured-lowercased-strings, including:
+//! - It stores it's huge collection of confusables in a [customized 18.36 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
+//! - It supports curing **6,029 different confusables** into cured-lowercased-strings, including:
 //!   - Accented characters
 //!   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
 //!   - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.

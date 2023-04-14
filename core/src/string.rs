@@ -128,8 +128,8 @@ impl CuredString {
   /// And since it checks if the strings are similar, please note that this is valid too.
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
-  /// assert!(cured.contains("cunt")); // it assumes that ( is similar to c and v is similar to u as well
+  /// let cured = decancer::cure("vwv cvnt 1l1"); // assume this has no effect
+  /// assert!(cured.contains("cunt")); // it assumes that v is similar to u
   /// ```
   #[must_use]
   pub fn contains<S>(&self, other: &S) -> bool
@@ -189,8 +189,8 @@ impl AsRef<str> for CuredString {
 /// And since it checks if the strings are similar, please note that this is valid too.
 ///
 /// ```rust
-/// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
-/// assert!(cured == "uwu cunt lil");
+/// let cured = decancer::cure("vwv cvnt 1l1"); // assume this has no effect
+/// assert!(cured == "uwu cunt lil"); // it assumes that v is similar to u
 /// ```
 impl<S> PartialEq<S> for CuredString
 where
