@@ -72,11 +72,11 @@ async function updateReadme() {
 
   console.log('- [readme] reading README.md...')
 
-  const readme = await readFile(join(ROOT_DIR, 'README.md'))
+  const readme = await readFile(join(ROOT_DIR, 'core', 'README.md'))
   const sizeExponent = Math.floor(Math.log2(bin.byteLength) / 10)
 
   await writeFile(
-    join(ROOT_DIR, 'README.md'),
+    join(ROOT_DIR, 'core', 'README.md'),
     readme
       .toString()
       .trim()

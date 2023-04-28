@@ -13,7 +13,7 @@ on:
       - '**/*.ts'
       - '**/*.mjs'
       - '**/*.json'
-      - 'README.md'
+      - 'core/README.md'
       - 'core/bin/confusables.bin'
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
@@ -493,10 +493,10 @@ jobs:
       - name: Move artifacts
         working-directory: bindings/node
         run: yarn artifacts
-      - name: Move README.md and Build TypeScript
+      - name: Copy README.md and Build TypeScript
         working-directory: bindings/node
         run: |
-          mv ../../README.md .
+          cp ../../core/README.md .
           npx tsc
       - name: Publish
         working-directory: bindings/node
