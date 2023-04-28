@@ -8,7 +8,7 @@ const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 const execute = promisify(exec)
 
-async function readme() {
+async function updateReadme() {
   console.log('- [readme] reading confusables.bin...')
 
   const bin = await readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin'))
@@ -75,42 +75,24 @@ async function readme() {
   const readme = await readFile(join(ROOT_DIR, 'README.md'))
   const sizeExponent = Math.floor(Math.log2(bin.byteLength) / 10)
 
-  return readme
-    .toString()
-    .trim()
-    .replace(
-      /\*\*[\d,]+ different confusables\*\*/,
-      `**${confusablesCount.toLocaleString()} different confusables**`
-    )
-    .replace(
-      /customized [\d\.]+ \w?B binary file/,
-      `customized ${(bin.byteLength / Math.pow(1000, sizeExponent)).toFixed(
-        2
-      )} ${sizeExponent > 0 ? 'KMG'[sizeExponent - 1] : ''}B binary file`
-    )
-}
+  await writeFile(
+    join(ROOT_DIR, 'README.md'),
+    readme
+      .toString()
+      .trim()
+      .replace(
+        /\*\*[\d,]+ different confusables\*\*/,
+        `**${confusablesCount.toLocaleString()} different confusables**`
+      )
+      .replace(
+        /customized [\d\.]+ \w?B binary file/,
+        `customized ${(bin.byteLength / Math.pow(1000, sizeExponent)).toFixed(
+          2
+        )} ${sizeExponent > 0 ? 'KMG'[sizeExponent - 1] : ''}B binary file`
+      )
+  )
 
-async function librs() {
-  const contents = await readFile(join(ROOT_DIR, 'core', 'src', 'lib.rs'))
-
-  return contents.toString().replace(/\/\/!.*?\n/g, '')
-}
-
-async function updateReadme() {
-  const [readmeContents, librsContents] = await Promise.all([readme(), librs()])
-
-  void (await Promise.all([
-    writeFile(join(ROOT_DIR, 'README.md'), readmeContents),
-    writeFile(
-      join(ROOT_DIR, 'core', 'src', 'lib.rs'),
-      `${readmeContents
-        .split('\n')
-        .map(line => `//! ${line}`)
-        .join('\n')}\n${librsContents}`
-    )
-  ]))
-
-  console.log('- [readme] updated readme and lib.rs')
+  console.log('- [readme] updated')
 }
 
 async function prettier() {
@@ -137,11 +119,6 @@ async function cargo(cwd) {
   console.log(`- [cargo -> ${cwd}] completed`)
 }
 
-async function core() {
-  await cargo(join(ROOT_DIR, 'core'))
-  await updateReadme()
-}
-
 async function clangFormat() {
   console.log('- [clang-format] running...')
 
@@ -153,10 +130,11 @@ async function clangFormat() {
 }
 
 void (await Promise.all([
-  core(),
+  cargo(join(ROOT_DIR, 'core')),
   cargo(join(ROOT_DIR, 'bindings', 'node')),
   cargo(join(ROOT_DIR, 'bindings', 'wasm')),
   cargo(join(ROOT_DIR, 'bindings', 'native')),
+  clangFormat(),
   prettier(),
-  clangFormat()
+  updateReadme()
 ]))

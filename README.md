@@ -37,7 +37,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 ## Installation
 
 <details>
-<summary>Rust</summary>
+<summary><b>Rust</b></summary>
 
 In your `Cargo.toml`:
 
@@ -47,7 +47,7 @@ decancer = "1.5.5"
 
 </details>
 <details>
-<summary>JavaScript (Node.js)</summary>
+<summary><b>JavaScript (Node.js)</b></summary>
 
 In your shell:
 
@@ -63,7 +63,7 @@ const decancer = require('decancer')
 
 </details>
 <details>
-<summary>JavaScript (Deno)</summary>
+<summary><b>JavaScript (Deno)</b></summary>
 
 In your code:
 
@@ -73,7 +73,7 @@ import decancer from 'npm:decancer'
 
 </details>
 <details>
-<summary>JavaScript (Bun)</summary>
+<summary><b>JavaScript (Bun)</b></summary>
 
 In your shell:
 
@@ -89,7 +89,7 @@ const decancer = require('decancer')
 
 </details>
 <details>
-<summary>JavaScript (Browser)</summary>
+<summary><b>JavaScript (Browser)</b></summary>
 
 In your code:
 
@@ -103,7 +103,7 @@ In your code:
 
 </details>
 <details>
-<summary>C/C++</summary>
+<summary><b>C/C++</b></summary>
 
 ### Download precompiled binaries
 
@@ -139,7 +139,7 @@ And the binary files should be generated in the `target/release` directory.
 ## Examples
 
 <details>
-<summary>Rust</summary>
+<summary><b>Rust</b></summary>
 
 ```rust
 fn main() {
@@ -178,7 +178,7 @@ fn main() {
 
 </details>
 <details>
-<summary>JavaScript (Node.js/Deno/Bun)</summary>
+<summary><b>JavaScript (Node.js/Deno/Bun)</b></summary>
 
 ```js
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
@@ -203,7 +203,7 @@ console.log(cured.toString()) // 'very funny text'
 
 </details>
 <details>
-<summary>JavaScript (Browser)</summary>
+<summary><b>JavaScript (Browser)</b></summary>
 
 ```html
 <!DOCTYPE html>
@@ -248,7 +248,7 @@ console.log(cured.toString()) // 'very funny text'
 
 </details>
 <details>
-<summary>C/C++</summary>
+<summary><b>C/C++</b></summary>
 
 > **NOTE:** `decancer.h` can be retrieved from the [`bindings/native` directory.](https://github.com/null8626/decancer/blob/main/bindings/native/decancer.h)
 
