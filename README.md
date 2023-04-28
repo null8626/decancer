@@ -5,7 +5,7 @@
 [crates-io-url]: https://crates.io/crates/decancer
 [npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/decancer
-[downloads-image]: https://img.shields.io/npm/dm/decancer.svg?style=flat-square
+[downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/decancer
 [prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
 [prettier-url]: https://github.com/prettier/prettier
@@ -20,8 +20,8 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
-- It stores it's huge collection of confusables in a [customized 21.18 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
-- It supports curing **6,753 different confusables** into cured-lowercased-strings, including:
+- It stores it's huge collection of confusables in a [customized 21.05 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
+- It supports curing **6,729 different confusables** into cured-lowercased-strings, including:
   - Accented characters
   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
