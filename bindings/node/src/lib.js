@@ -48,13 +48,6 @@ function getBinding(name) {
 try {
   const data = PLATFORMS[process.platform][process.arch]
 
-  console.log(
-    data,
-    typeof data === 'string'
-      ? data
-      : `${data.name}-${data.musl && isMusl() ? 'musl' : 'gnu'}`
-  )
-
   assert(
     data != null,
     `This platform (${process.platform} on a ${process.arch}) is not supported.`
@@ -67,7 +60,7 @@ try {
   ).decancer
 } catch (err) {
   console.error(
-    `Error: cannot load module. OS: ${process.platform} Arch: ${process.arch} may not be supported.\nError:\n${err.stack}`
+    `Error: cannot load module. OS: ${process.platform} Arch: ${process.arch} may not be supported.`
   )
 
   throw err
