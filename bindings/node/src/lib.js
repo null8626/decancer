@@ -33,7 +33,9 @@ function isMusl() {
       return true
     }
   } else {
-    return process.report.getReport().header.glibcVersionRuntime
+    const { glibcVersionRuntime } = process.report.getReport().header
+
+    return !glibcVersionRuntime
   }
 }
 
