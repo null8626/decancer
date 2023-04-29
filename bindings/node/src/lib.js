@@ -43,6 +43,8 @@ function getBinding(name) {
   return require(existsSync(path) ? path : `@vierofernando/decancer-${name}`)
 }
 
+console.log(process.platform, process.arch)
+
 try {
   const data = PLATFORMS[process.platform][process.arch]
 
