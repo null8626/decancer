@@ -5,10 +5,5 @@ npm
 rustfmt.toml
 test.cjs
 **/*.node
-index.js
-index.d.ts
 **/*.rs
-src/lib.ts
-src/lib.d.ts
 Cargo.toml
-tsconfig.json

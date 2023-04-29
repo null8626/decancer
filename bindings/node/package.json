@@ -2,7 +2,7 @@
   "name": "decancer",
   "version": "1.5.5",
   "main": "src/lib.js",
-  "typings": "src/typings.d.ts",
+  "typings": "typings.d.ts",
   "description": "A tiny package that removes common confusables from strings.",
   "keywords": [
     "string",
@@ -43,16 +43,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@napi-rs/cli": "^2.0.0",
-    "@types/node": "^18.0.0",
-    "typescript": "^5.0.0"
+    "@napi-rs/cli": "^2.15.2"
   },
   "engines": {
     "node": ">= 10"
   },
   "scripts": {
     "artifacts": "napi artifacts",
-    "build": "napi build --platform --release",
+    "build": "napi build --no-dts-header --platform --release",
     "prepublishOnly": "napi prepublish -t npm --skip-gh-release",
     "test": "node test.cjs"
   }

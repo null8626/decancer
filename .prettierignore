@@ -1,9 +1,4 @@
 **/target/**
 **/node_modules/**
 **/package-lock.json
-bindings/node/src/lib.js
-bindings/node/src/lib.d.ts
-bindings/node/index.js
-bindings/node/index.d.ts
 bindings/wasm/pkg/**
-.prettierrc.json

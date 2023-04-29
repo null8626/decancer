@@ -8,10 +8,6 @@ bindings/native/*.exe
 bindings/native/*.dll
 bindings/native/*.lib
 bindings/native/*.obj
-bindings/node/src/lib.js
-bindings/node/src/lib.d.ts
-bindings/node/index.js
-bindings/node/index.d.ts
 bindings/node/artifacts/
 bindings/wasm/pkg/
 
