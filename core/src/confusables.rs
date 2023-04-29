@@ -7,7 +7,6 @@ use core::cmp::Ordering;
 
 pub(crate) const CONFUSABLES: *const u8 = include_bytes!("../bin/confusables.bin").as_ptr();
 
-
 const CASE_SENSITIVE_CONFUSABLES_OFFSET: u16 = read_u16_le(CONFUSABLES);
 pub(crate) const CONFUSABLES_COUNT: u16 = ((CASE_SENSITIVE_CONFUSABLES_OFFSET - 6) / 5) - 1;
 pub(crate) const CASE_SENSITIVE_CONFUSABLES_COUNT: u16 =

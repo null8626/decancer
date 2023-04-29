@@ -34,7 +34,7 @@ function isMusl() {
     }
   } else {
     const { glibcVersionRuntime } = process.report.getReport().header
-    
+
     return !glibcVersionRuntime
   }
 }
@@ -48,9 +48,12 @@ function getBinding(name) {
 try {
   const data = PLATFORMS[process.platform][process.arch]
 
-  console.log(data, typeof data === 'string'
+  console.log(
+    data,
+    typeof data === 'string'
       ? data
-      : `${data.name}-${data.musl && isMusl() ? 'musl' : 'gnu'}`)
+      : `${data.name}-${data.musl && isMusl() ? 'musl' : 'gnu'}`
+  )
 
   assert(
     data != null,
