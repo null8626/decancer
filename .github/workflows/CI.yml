@@ -390,11 +390,9 @@ jobs:
           node-version: 18
           check-latest: true
           cache: yarn
-      - name: Install dependencies and Build TypeScript
+      - name: Install dependencies
         working-directory: bindings/node
-        run: |
-          yarn install
-          npx tsc
+        run: yarn install
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
@@ -493,11 +491,9 @@ jobs:
       - name: Move artifacts
         working-directory: bindings/node
         run: yarn artifacts
-      - name: Copy README.md and Build TypeScript
+      - name: Copy README.md
         working-directory: bindings/node
-        run: |
-          cp ../../core/README.md .
-          npx tsc
+        run: cp ../../core/README.md .
       - name: Publish
         working-directory: bindings/node
         run: |

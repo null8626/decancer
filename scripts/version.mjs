@@ -30,7 +30,7 @@ void (await Promise.all([
     join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js'),
     directUpdateFunc
   ),
-  update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
+  update(join(ROOT_DIR, 'core', 'README.md'), directUpdateFunc),
   update(join(ROOT_DIR, 'core', 'src', 'lib.rs'), directUpdateFunc),
   new Promise(resolve => {
     readdir(join(ROOT_DIR, 'bindings', 'node', 'npm')).then(files => {

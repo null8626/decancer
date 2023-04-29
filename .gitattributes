@@ -3,9 +3,9 @@
 **/*.wasm binary
 **/*.c linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
-**/*.js linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf
 **/*.rs eol=lf
+**/*.js eol=lf
 **/*.ts eol=lf
 **/*.md eol=lf
 **/*.toml eol=lf

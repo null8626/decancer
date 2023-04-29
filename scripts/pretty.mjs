@@ -102,7 +102,7 @@ async function prettier() {
     await execute('npm i -g prettier')
   }
 
-  await execute('npx prettier **/*.{ts,mjs,cjs,json} --write', {
+  await execute('npx prettier **/*.{js,ts,mjs,cjs,json} --write', {
     cwd: ROOT_DIR
   })
 
