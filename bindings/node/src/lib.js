@@ -43,10 +43,12 @@ function getBinding(name) {
   return require(existsSync(path) ? path : `@vierofernando/decancer-${name}`)
 }
 
-console.log(process.platform, process.arch)
-
 try {
   const data = PLATFORMS[process.platform][process.arch]
+
+  console.log(data, typeof data === 'string'
+      ? data
+      : `${data.name}-${data.musl && isMusl() ? 'musl' : 'gnu'}`)
 
   assert(
     data != null,
@@ -60,7 +62,7 @@ try {
   ).decancer
 } catch (err) {
   console.error(
-    `Error: cannot load module. OS: ${process.platform} Arch: ${process.arch} may not be supported.`
+    `Error: cannot load module. OS: ${process.platform} Arch: ${process.arch} may not be supported.\nError:\n${err.stack}`
   )
 
   throw err
