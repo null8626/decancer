@@ -1,8 +1,8 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
