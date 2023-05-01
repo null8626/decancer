@@ -22,10 +22,12 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
     .split('\n')
     .map(x => x.split(';'))
 
-  UNICACHE.rtl = unicode
+  UNICACHE.extraDisallowed = unicode
     .filter(
-      ([, , , , bidirectionalType]) =>
-        bidirectionalType.startsWith('R') || bidirectionalType === 'AL'
+      ([, , category, , bidirectionalType]) =>
+        category === 'Mc' ||
+        bidirectionalType.startsWith('R') ||
+        bidirectionalType === 'AL'
     )
     .map(([codepoint]) => parseInt(codepoint, 16))
 
@@ -263,7 +265,7 @@ while (i < expanded.length) {
     (codepoint >= 0x1e800 && codepoint <= 0x1e8df) ||
     (codepoint >= 0xe0100 && codepoint <= 0xe01ef) ||
     codepoint >= 0xf0000 ||
-    binarySearchExists(UNICACHE.rtl, codepoint)
+    binarySearchExists(UNICACHE.extraDisallowed, codepoint)
   ) {
     console.warn(
       `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
