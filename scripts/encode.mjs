@@ -25,7 +25,9 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
   UNICACHE.extraDisallowed = unicode
     .filter(
       ([, , category, , bidirectionalType]) =>
-        category === 'Mc' || bidirectionalType.startsWith('R') || bidirectionalType === 'AL'
+        category === 'Mc' ||
+        bidirectionalType.startsWith('R') ||
+        bidirectionalType === 'AL'
     )
     .map(([codepoint]) => parseInt(codepoint, 16))
 
