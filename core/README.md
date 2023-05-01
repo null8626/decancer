@@ -20,7 +20,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
-- It stores it's huge collection of confusables in a [customized 25.08 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
+- It stores it's huge collection of confusables in a [customized 24.80 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/confusables.bin) instead of a huge JSON or text file to optimize it's bundle size!
 - It's capable of filtering **9,379 different unicode codepoints**, including:
   - Accented characters
   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
