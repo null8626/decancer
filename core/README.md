@@ -24,7 +24,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 - It supports curing **7,714 different confusables** into cured-lowercased-strings, including:
   - Accented characters
   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-  - Several foreign characters, including [Arabic](https://en.wikipedia.org/wiki/Arabic), [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
+  - Several foreign characters, including [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Hindi](https://en.wikipedia.org/wiki/Devanagari) [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
   - Several emojis
   - [Whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
