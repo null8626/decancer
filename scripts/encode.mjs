@@ -12,13 +12,23 @@ console.log('- fetching unicode data...')
 if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
   UNICACHE = JSON.parse(readFileSync(join(ROOT_DIR, '.unicache.json')))
 } else {
-  const response = await fetch('https://unicode.org/Public/UNIDATA/UnicodeData.txt')
-  
+  const response = await fetch(
+    'https://unicode.org/Public/UNIDATA/UnicodeData.txt'
+  )
+
   console.log('- parsing unicode data...')
-  const unicode = (await response.text()).trimRight().split('\n').map(x => x.split(';'))
-  
-  UNICACHE.rtl = unicode.filter(([,,,,bidirectionalType]) => bidirectionalType.startsWith('R') || bidirectionalType === 'AL').map(([codepoint]) => parseInt(codepoint, 16))
-  
+  const unicode = (await response.text())
+    .trimRight()
+    .split('\n')
+    .map(x => x.split(';'))
+
+  UNICACHE.rtl = unicode
+    .filter(
+      ([, , , , bidirectionalType]) =>
+        bidirectionalType.startsWith('R') || bidirectionalType === 'AL'
+    )
+    .map(([codepoint]) => parseInt(codepoint, 16))
+
   console.log('- writing to cache...')
   writeFileSync(join(ROOT_DIR, '.unicache.json'), JSON.stringify(UNICACHE))
 }
@@ -214,7 +224,7 @@ function binarySearchExists(arr, val) {
       start = mid + 1
     }
   }
-  
+
   return false
 }
 
