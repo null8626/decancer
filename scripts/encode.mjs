@@ -1,6 +1,27 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
+
+const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+let UNICACHE = {}
+
+console.log('- fetching unicode data...')
+
+if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
+  UNICACHE = JSON.parse(readFileSync(join(ROOT_DIR, '.unicache.json')))
+} else {
+  const response = await fetch('https://unicode.org/Public/UNIDATA/UnicodeData.txt')
+  
+  console.log('- parsing unicode data...')
+  const unicode = (await response.text()).trimRight().split('\n').map(x => x.split(';'))
+  
+  UNICACHE.rtl = unicode.filter(([,,,,bidirectionalType]) => bidirectionalType.startsWith('R') || bidirectionalType === 'AL').map(([codepoint]) => parseInt(codepoint, 16))
+  
+  console.log('- writing to cache...')
+  writeFileSync(join(ROOT_DIR, '.unicache.json'), JSON.stringify(UNICACHE))
+}
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing json file path.')
@@ -176,6 +197,27 @@ function retrieveCollisions(array, set) {
   return array
 }
 
+function binarySearchExists(arr, val) {
+  let start = 0
+  let end = arr.length - 1
+
+  while (start <= end) {
+    const mid = Math.floor((start + end) / 2)
+
+    if (arr[mid] === val) {
+      return true
+    }
+
+    if (val < arr[mid]) {
+      end = mid - 1
+    } else {
+      start = mid + 1
+    }
+  }
+  
+  return false
+}
+
 {
   const set = Array.from(new Set(expanded.map(([codepoint]) => codepoint)))
   assert(
@@ -210,7 +252,8 @@ while (i < expanded.length) {
     (codepoint >= 0x16f00 && codepoint <= 0x16f9f) ||
     (codepoint >= 0x1e800 && codepoint <= 0x1e8df) ||
     (codepoint >= 0xe0100 && codepoint <= 0xe01ef) ||
-    codepoint >= 0xf0000
+    codepoint >= 0xf0000 ||
+    binarySearchExists(UNICACHE.rtl, codepoint)
   ) {
     console.warn(
       `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
