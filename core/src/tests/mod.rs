@@ -1,5 +1,10 @@
-use crate::{cure, CuredString};
+use crate::{cure, cure_reader, CuredString};
 use core::mem::transmute;
+use std::io::Cursor;
+
+#[cfg(feature = "serde")]
+#[cfg(test)]
+mod serde;
 
 #[test]
 fn similar_test() {
@@ -55,4 +60,12 @@ fn fonts_test() {
   assert_eq!(cure("\u{1D535}\u{1D51B}\u{1D59D}\u{1D583}\u{1D501}\u{1D4E7}\u{1D4CD}\u{1D4B3}\u{1D569}\u{1D54F}\u{FF58}\u{FF38}\u{1F147}\u{24E7}\u{24CD}\u{1D431}\u{1D417}\u{1D605}\u{1D5EB}\u{1D639}\u{1D61F}\u{1D66D}\u{1D653}\u{1D6A1}\u{1D687}\u{1F187}\u{1D6D8}\u{1D6DE}\u{1D718}\u{1D786}\u{1D78C}\u{1D7C0}\u{1D7C6}"), "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
   assert_eq!(cure("\u{1D536}\u{1D51C}\u{1D59E}\u{1D584}\u{1D502}\u{1D4E8}\u{1D4CE}\u{1D4B4}\u{1D56A}\u{1D550}\u{FF59}\u{FF39}\u{1F148}\u{24E8}\u{24CE}\u{1D432}\u{1D418}\u{1D606}\u{1D5EC}\u{1D63A}\u{1D620}\u{1D66E}\u{1D654}\u{1D6A2}\u{1D688}\u{1F188}\u{1D6BC}\u{1D6C4}\u{1D6F6}\u{1D7AC}"), "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
   assert_eq!(cure("\u{1D537}\u{1D59F}\u{1D585}\u{1D503}\u{1D4E9}\u{1D4CF}\u{1D4B5}\u{1D56B}\u{FF5A}\u{FF3A}\u{1F149}\u{24E9}\u{24CF}\u{1D433}\u{1D419}\u{1D607}\u{1D5ED}\u{1D63B}\u{1D621}\u{1D66F}\u{1D655}\u{1D6A3}\u{1D689}\u{1F189}"), "zzzzzzzzzzzzzzzzzzzzzzzz");
+}
+
+#[test]
+fn reader_test() {
+  let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+  let reader = Cursor::new(text.as_bytes());
+
+  assert_eq!(cure_reader(reader).unwrap(), "very funny text");
 }

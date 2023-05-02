@@ -58,9 +58,12 @@ jobs:
         with:
           node-version: 18
           check-latest: true
+      - name: Ensure no_std is working
+        working-directory: core
+        run: cargo c --no-default-features
       - name: Run cargo test
         working-directory: core
-        run: cargo test
+        run: cargo test --all-features
   native:
     strategy:
       matrix:
