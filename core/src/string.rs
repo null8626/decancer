@@ -10,8 +10,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  /// Coerces this data to a [`String`].
-  /// [`transmuting`][std::mem::transmute] works too.
+  /// Coerces this [`CuredString`] to a [`String`].
   ///
   /// # Examples
   ///
@@ -19,14 +18,14 @@ impl CuredString {
   ///
   /// ```rust
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-  /// assert_eq!(cured.into_str(), String::from("very funny text"));
+  /// assert_eq!(cured.into_str(), "very funny text");
   /// ```
   #[must_use]
   pub const fn into_str(self) -> String {
     unsafe { transmute(self) }
   }
 
-  /// Checks if this string ***similarly*** starts with another string.
+  /// Checks if this [`CuredString`] ***similarly*** starts with another string.
   ///
   /// # Examples
   ///
@@ -74,7 +73,7 @@ impl CuredString {
     false
   }
 
-  /// Checks if this string ***similarly*** ends with another string.
+  /// Checks if this [`CuredString`] ***similarly*** ends with another string.
   ///
   /// # Examples
   ///
@@ -122,7 +121,7 @@ impl CuredString {
     false
   }
 
-  /// Checks if this string ***similarly*** contains another string.
+  /// Checks if this [`CuredString`] ***similarly*** contains another string.
   ///
   /// # Examples
   ///
@@ -191,6 +190,7 @@ impl From<Translation> for CuredString {
   }
 }
 
+/// Alias for [`cure`]. This never errors.
 impl FromStr for CuredString {
   type Err = ();
 
@@ -200,14 +200,36 @@ impl FromStr for CuredString {
   }
 }
 
+/// Coerces this [`CuredString`] to a [`String`]. Alias for [`into_str`][CuredString::into_str].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// let cured: String = cured.into();
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
 #[allow(clippy::from_over_into)]
 impl Into<String> for CuredString {
   #[inline(always)]
   fn into(self) -> String {
-    self.0
+    self.into_str()
   }
 }
 
+/// Coerces this [`CuredString`] to a [`&str`][str].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// assert_eq!(cured.as_ref(), "very funny text");
+/// ```
 impl AsRef<str> for CuredString {
   #[inline(always)]
   fn as_ref(&self) -> &str {
@@ -215,7 +237,7 @@ impl AsRef<str> for CuredString {
   }
 }
 
-/// Checks if this string is ***similar*** to another string.
+/// Checks if this [`CuredString`] is ***similar*** to another string.
 ///
 /// # Examples
 ///
@@ -245,6 +267,7 @@ where
   }
 }
 
+/// Formats this `CuredString`. Behaves like formatting your typical `String`.
 impl fmt::Debug for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -252,6 +275,7 @@ impl fmt::Debug for CuredString {
   }
 }
 
+/// Formats this `CuredString`. Behaves like formatting your typical `String`.
 impl fmt::Display for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -259,6 +283,18 @@ impl fmt::Display for CuredString {
   }
 }
 
+/// A helper implementation for implicitly inheriting [`String`] and subsequently [`&str`][str]'s methods.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
+/// // cured.len() here is str's method!
+/// assert_eq!(cured.len(), 15);
+/// ```
 impl Deref for CuredString {
   type Target = String;
 
