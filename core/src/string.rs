@@ -288,6 +288,7 @@ impl Deref for CuredString {
 /// assert_eq!(serde_json::to_string(&decancered).unwrap(), r#"{"cured_string":"very funny text"}"#);
 /// ```
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl Serialize for CuredString {
   #[inline(always)]
   fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -319,6 +320,7 @@ impl Serialize for CuredString {
 /// assert_eq!(decancered.cured_string, "very funny text");
 /// ```
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 #[allow(clippy::redundant_closure)]
 impl<'de> Deserialize<'de> for CuredString {
   #[inline(always)]

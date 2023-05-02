@@ -101,6 +101,7 @@ impl fmt::Display for Translation {
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl core::ops::AddAssign<Translation> for String {
   #[inline(always)]
   fn add_assign(&mut self, rhs: Translation) {
@@ -113,6 +114,7 @@ impl core::ops::AddAssign<Translation> for String {
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[allow(clippy::from_over_into)]
 impl Into<Option<String>> for Translation {
   #[inline(always)]
@@ -125,6 +127,7 @@ impl Into<Option<String>> for Translation {
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl FromIterator<Translation> for String {
   fn from_iter<I>(iter: I) -> Self
   where
@@ -141,6 +144,7 @@ impl FromIterator<Translation> for String {
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl FromIterator<Translation> for crate::CuredString {
   #[inline(always)]
   fn from_iter<I>(iter: I) -> Self
@@ -177,6 +181,7 @@ impl FromIterator<Translation> for crate::CuredString {
 /// assert_eq!(serde_json::to_string(&decancered).unwrap(), r#"{"translation":"ae"}"#);
 /// ```
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl Serialize for Translation {
   fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
   where
@@ -211,6 +216,7 @@ impl Serialize for Translation {
 /// assert!(matches!(decancered.translation, Translation::String("ae")));
 /// ```
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<'de> Deserialize<'de> for Translation {
   #[inline(always)]
   fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

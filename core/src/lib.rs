@@ -1,5 +1,6 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod confusables;
 mod similar;
@@ -12,6 +13,7 @@ mod translation;
 mod util;
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 pub use string::CuredString;
 pub use translation::Translation;
 
@@ -125,6 +127,7 @@ where
 /// assert!(cured.contains("funny"));
 /// ```
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[must_use]
 #[inline(always)]
 pub fn cure<S>(input: &S) -> CuredString
@@ -135,6 +138,7 @@ where
 }
 
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[allow(invalid_value, clippy::uninit_assumed_init)]
 fn cure_next_bytes<R>(reader: &mut R) -> io::Result<Option<Translation>>
 where
@@ -216,6 +220,7 @@ where
 /// assert!(cured.contains("funny"));
 /// ```
 #[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 pub fn cure_reader<R>(mut reader: R) -> io::Result<CuredString>
 where
   R: Read,
