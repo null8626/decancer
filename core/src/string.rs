@@ -92,7 +92,7 @@ impl CuredString {
   /// let cured = decancer::cure("vwv (vnt 1l1");
   ///
   /// // it assumes that 1 is similar to l and i as well
-  /// assert!(cured.ends_with("lil")); 
+  /// assert!(cured.ends_with("lil"));
   /// ```
   #[must_use]
   pub fn ends_with<S>(&self, other: &S) -> bool
