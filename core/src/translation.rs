@@ -79,6 +79,7 @@ where
   }
 }
 
+/// Alias for [`cure_char`].
 impl<C> From<C> for Translation
 where
   C: Into<u32>,

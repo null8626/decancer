@@ -172,6 +172,7 @@ impl CuredString {
   }
 }
 
+/// Alias for [`cure`].
 impl<S> From<&S> for CuredString
 where
   S: AsRef<str> + ?Sized,
@@ -182,6 +183,7 @@ where
   }
 }
 
+/// Coerces a [`Translation`] to a [`CuredString`].
 impl From<Translation> for CuredString {
   #[inline(always)]
   fn from(other: Translation) -> Self {
