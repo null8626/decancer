@@ -144,38 +144,17 @@ And the binary files should be generated in the `target/release` directory.
 <summary><b>Rust</b></summary>
 
 ```rust
-fn main() {
-  let cured_e = decancer::cure_char('Ｅ');
-  
-  match cured_e {
-    decancer::Translation::Character(e) => assert_eq!(e, 'e'),
-    _ => unreachable!(),
-  }
-  
-  let cured_ae = decancer::cure_char('ӕ');
-  
-  match cured_ae {
-    decancer::Translation::String(ae) => assert_eq!(ae, "ae"),
-    _ => unreachable!(),
-  }
-  
-  // control characters, surrogates, combining characters, private use characters, byte order marks, etc.
-  let cured_surrogate = decancer::cure_char(0xD800u32); 
-  
-  assert!(matches!(cured_surrogate, decancer::Translation::None));
+let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 
-  let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+// cured here is a decancer::CuredString struct wrapping over the cured string
+// for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
 
-  // cured here is a decancer::CuredString struct wrapping over the cured string
-  // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
+assert_eq!(cured, "very funny text");
+assert!(cured.starts_with("very"));
+assert!(cured.contains("funny"));
+assert!(cured.ends_with("text"));
 
-  assert_eq!(cured, "very funny text");
-  assert!(cured.starts_with("very"));
-  assert!(cured.contains("funny"));
-  assert!(cured.ends_with("text"));
-
-  let _output_str = cured.into_str(); // retrieve the String inside and consume the struct.
-}
+let _output_str = cured.into_str(); // retrieve the String inside and consume the struct.
 ```
 
 </details>
@@ -253,7 +232,7 @@ console.log(cured.toString())
 <details>
 <summary><b>C/C++</b></summary>
 
-> **NOTE:** `decancer.h` can be retrieved from the [`bindings/native` directory.](https://github.com/null8626/decancer/blob/main/bindings/native/decancer.h)
+> **note:** `decancer.h` can be retrieved from the [`bindings/native` directory.](https://github.com/null8626/decancer/blob/main/bindings/native/decancer.h)
 
 ```c
 #include <decancer.h>
@@ -263,7 +242,7 @@ console.log(cured.toString())
 #include <stdio.h>
 
 // global variable for assertion purposes only
-decancer_cured_t cured = NULL;
+decancer_cured_t cured;
 
 // our quick assert function
 static void assert(const bool expr, const char *message)
@@ -271,47 +250,18 @@ static void assert(const bool expr, const char *message)
     if (!expr)
     {
         fprintf(stderr, "assertion failed (%s)\n", message);
-
-        if (cured != NULL)
-        {
-            decancer_free(cured);
-        }
+        decancer_free(cured);
         
         exit(1);
     }
 }
 
 int main(void) {
-    decancer_translation_t char_translation;
-
-    // cure the unicode character 'Ｅ' (U+FF25)
-    decancer_cure_char(0xFF25, &char_translation);
-    
-    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_CHARACTER, "char translation is a character");
-    assert(char_translation.contents.character == 0x65, "char translation is 'e' (0x65)");
-
-    // cure the unicode character 'ӕ' (U+04D5)
-    decancer_cure_char(0x04D5, &char_translation);
-    
-    // char_translation.contents.string.contents here is NOT null-terminated.
-    // modifying so will result in undefined behavior.
-    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_STRING, "char translation is an ASCII string");
-    assert(char_translation.contents.string.length == 2,
-           "char translation is an ASCII string with the length of 2 bytes");
-    assert(char_translation.contents.string.contents[0] == 'a' && char_translation.contents.string.contents[1] == 'e',
-           "char translation is the ASCII string \"ae\".");
-
-    // try to cure a surrogate
-    decancer_cure_char(0xD800, &char_translation);
-    
-    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_NONE, "char translation is an empty string ('')");
-
     // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
     uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    // cure string
     cured = decancer_cure(string, sizeof(string));
 
     // comparisons

@@ -44,3 +44,25 @@ pub(crate) fn is(self_char: u32, other_char: char) -> bool {
     }
   }
 }
+
+pub(crate) fn is_str<'a>(s: &'a str, o: &'a str) -> bool {
+  if s.len() != o.len() {
+    false
+  } else {
+    let mut other_iter = o.chars();
+
+    for self_char in s.chars() {
+      match other_iter.next() {
+        Some(other_char) => {
+          if !is(self_char as _, other_char) {
+            return false;
+          }
+        }
+
+        None => return false,
+      };
+    }
+
+    true
+  }
+}

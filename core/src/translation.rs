@@ -1,7 +1,14 @@
-use crate::{confusables::CONFUSABLES, similar::SIMILAR_END as STRINGS_OFFSET};
-use core::{cmp::PartialEq, fmt, mem::transmute, ops::AddAssign, slice, str};
+use crate::{
+  confusables::CONFUSABLES,
+  cure_char,
+  similar::{self, SIMILAR_END as STRINGS_OFFSET},
+};
+use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// The translation for a single character/confusable.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Translation {
   /// A single unicode character.
   Character(char),
@@ -29,17 +36,6 @@ impl Translation {
   }
 }
 
-impl AddAssign<Translation> for String {
-  #[inline(always)]
-  fn add_assign(&mut self, rhs: Translation) {
-    match rhs {
-      Translation::Character(c) => self.push(c),
-      Translation::String(s) => self.push_str(s),
-      Translation::None => {}
-    }
-  }
-}
-
 impl<S> PartialEq<S> for Translation
 where
   S: AsRef<str> + ?Sized,
@@ -48,25 +44,28 @@ where
     let o = other.as_ref();
 
     match self {
-      Translation::Character(ch) => {
+      Self::Character(ch) => {
         let mut chars = o.chars();
 
         match chars.next() {
-          Some(next_char) => next_char == *ch && chars.next().is_none(),
+          Some(next_char) => chars.next().is_none() && similar::is(*ch as _, next_char),
           None => false,
         }
       }
 
-      Translation::String(s) => &o == s,
-      Translation::None => o.is_empty(),
+      Self::String(s) => similar::is_str(s, o),
+      _ => o.is_empty(),
     }
   }
 }
 
-impl fmt::Debug for Translation {
+impl<C> From<C> for Translation
+where
+  C: Into<u32>,
+{
   #[inline(always)]
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "\"{self}\"")
+  fn from(ch: C) -> Self {
+    cure_char(ch)
   }
 }
 
@@ -74,9 +73,130 @@ impl fmt::Display for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      Translation::Character(ch) => fmt::Display::fmt(ch, f),
-      Translation::String(s) => fmt::Display::fmt(s, f),
-      Translation::None => fmt::Result::Ok(()),
+      Self::Character(ch) => fmt::Display::fmt(ch, f),
+      Self::String(s) => fmt::Display::fmt(s, f),
+      _ => fmt::Result::Ok(()),
     }
+  }
+}
+
+#[cfg(feature = "std")]
+impl core::ops::AddAssign<Translation> for String {
+  #[inline(always)]
+  fn add_assign(&mut self, rhs: Translation) {
+    match rhs {
+      Translation::Character(c) => self.push(c),
+      Translation::String(s) => self.push_str(s),
+      _ => {}
+    }
+  }
+}
+
+#[cfg(feature = "std")]
+#[allow(clippy::from_over_into)]
+impl Into<Option<String>> for Translation {
+  #[inline(always)]
+  fn into(self) -> Option<String> {
+    match self {
+      Self::None => None,
+      _ => Some(self.to_string()),
+    }
+  }
+}
+
+#[cfg(feature = "std")]
+impl FromIterator<Translation> for String {
+  fn from_iter<I>(iter: I) -> Self
+  where
+    I: IntoIterator<Item = Translation>,
+  {
+    let iter = iter.into_iter();
+    let (size_hint, _) = iter.size_hint();
+
+    iter.fold(String::with_capacity(size_hint), |mut res, acc| {
+      res += acc;
+      res
+    })
+  }
+}
+
+#[cfg(feature = "std")]
+impl FromIterator<Translation> for crate::CuredString {
+  #[inline(always)]
+  fn from_iter<I>(iter: I) -> Self
+  where
+    I: IntoIterator<Item = Translation>,
+  {
+    Self(iter.into_iter().collect())
+  }
+}
+
+/// Serializes this [`Translation`].
+///
+/// - A [`Translation::Character`] would serialize into a [`character`][Serializer::serialize_char].
+/// - A [`Translation::String`] would serialize into a [`string`][Serializer::serialize_str].
+/// - A [`Translation::None`] would serialize into a [`unit`][Serializer::serialize_unit].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use decancer::Translation;
+/// use serde::Serialize;
+///
+/// #[derive(Serialize)]
+/// struct Decancered {
+///   translation: Translation,
+/// }
+///
+/// let decancered = Decancered {
+///   translation: decancer::cure_char('ӕ')
+/// };
+///
+/// assert_eq!(serde_json::to_string(&decancered).unwrap(), r#"{"translation":"ae"}"#);
+/// ```
+#[cfg(feature = "serde")]
+impl Serialize for Translation {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: Serializer,
+  {
+    match self {
+      Self::Character(ch) => serializer.serialize_char(*ch),
+      Self::String(s) => serializer.serialize_str(s),
+      _ => serializer.serialize_unit(),
+    }
+  }
+}
+
+/// Deserializes and [cures][cure_char] a [`character`][Deserializer::deserialize_char].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use decancer::Translation;
+/// use serde::Deserialize;
+///
+/// #[derive(Deserialize)]
+/// struct Decancered {
+///   translation: Translation,
+/// }
+///
+/// let json = r#"{"translation": "ӕ"}"#;
+/// let decancered: Decancered = serde_json::from_str(json).unwrap();
+///
+/// assert!(matches!(decancered.translation, Translation::String("ae")));
+/// ```
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for Translation {
+  #[inline(always)]
+  fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+  where
+    D: Deserializer<'de>,
+  {
+    char::deserialize(deserializer).map(cure_char)
   }
 }
