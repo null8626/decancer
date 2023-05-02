@@ -90,6 +90,7 @@ where
   }
 }
 
+/// Formats this `Translation`. Behaves like formatting your typical `String`.
 impl fmt::Display for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -101,6 +102,25 @@ impl fmt::Display for Translation {
   }
 }
 
+/// A helper implementation for appending a [`Translation`] to a [`String`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// > **note:** this is for demonstration purposes only - in production, it's more recommended to use [`decancer::cure`][crate::cure].
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = String::with_capacity(text.len());
+///
+/// for cured_char in text.chars().map(decancer::cure_char) {
+///   cured += cured_char;
+/// }
+///
+/// // note: direct comparisons like this are not recommended, please use a decancer::CuredString struct.
+/// assert_eq!(cured, "very funny text");
+/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl core::ops::AddAssign<Translation> for String {
@@ -114,6 +134,33 @@ impl core::ops::AddAssign<Translation> for String {
   }
 }
 
+/// Coerces this [`Translation`] to an [`Option<String>`][Option].
+///
+/// # Examples
+///
+/// A non-[`Translation::None`] value would yield a [`Some(String)`][Option::Some]:
+///
+/// ```rust
+/// use decancer::Translation;
+///
+/// let cured_e = decancer::cure_char('Ｅ');
+/// assert!(matches!(cured_e, Translation::Character('e')));
+///
+/// let cured_e: Option<String> = cured_e.into();
+/// assert_eq!(cured_e, Some(String::from("e")));
+/// ```
+///
+/// Otherwise, a [`Translation::None`] value would yield a [`None`][Option::None]:
+///
+/// ```rust
+/// use decancer::Translation;
+///
+/// let cured_surrogate = decancer::cure_char(0xD800u32);
+/// assert!(matches!(cured_surrogate, Translation::None));
+///
+/// let cured_surrogate: Option<String> = cured_surrogate.into();
+/// assert!(cured_surrogate.is_none());
+/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[allow(clippy::from_over_into)]
@@ -127,6 +174,21 @@ impl Into<Option<String>> for Translation {
   }
 }
 
+/// A helper implementation for joining several [`Translation`]s into one [`String`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// > **note:** this is for demonstration purposes only - in production, it's more recommended to use [`decancer::cure`][crate::cure].
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let cured = text.chars().map(decancer::cure_char).collect::<String>();
+///
+/// // note: direct comparisons like this are not recommended, please use a decancer::CuredString struct.
+/// assert_eq!(cured, "very funny text");
+/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl FromIterator<Translation> for String {
@@ -144,6 +206,22 @@ impl FromIterator<Translation> for String {
   }
 }
 
+/// A helper implementation for joining several [`Translation`]s into one [`CuredString`][crate::CuredString].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// > **note:** this is for demonstration purposes only - in production, it's more recommended to use [`decancer::cure`][crate::cure].
+///
+/// ```rust
+/// use decancer::CuredString;
+///
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let cured = text.chars().map(decancer::cure_char).collect::<CuredString>();
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl FromIterator<Translation> for crate::CuredString {
