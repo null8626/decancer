@@ -15,7 +15,7 @@ pub enum Translation {
   /// A multi-character [ASCII](https://en.wikipedia.org/wiki/ASCII) string.
   String(&'static str),
   /// This suggests that the translation is an empty string.
-  /// You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), etc.
+  /// You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]).
   None,
 }
 
@@ -36,6 +36,26 @@ impl Translation {
   }
 }
 
+/// Checks if this [`Translation`] is ***similar*** to another string.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let cured = decancer::cure_char('Ｅ');
+///
+/// assert_eq!(cured, "e");
+/// ```
+///
+/// And since it checks if the strings are similar, please note that this is valid too:
+///
+/// ```rust
+/// let cured = decancer::cure_char('Ｅ');
+///
+/// // it assumes that e is similar to 3
+/// assert_eq!(cured, "3");
+/// ```
 impl<S> PartialEq<S> for Translation
 where
   S: AsRef<str> + ?Sized,

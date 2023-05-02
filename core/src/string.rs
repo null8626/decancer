@@ -37,11 +37,14 @@ impl CuredString {
   /// assert!(cured.starts_with("very"));
   /// ```
   ///
-  /// And since it checks if the strings are similar, please note that this is valid too.
+  /// And since it checks if the strings are similar, please note that this is valid too:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
-  /// assert!(cured.starts_with("uwu")); // it assumes that v is similar to u as well
+  /// // assume this has no effect
+  /// let cured = decancer::cure("vwv (vnt 1l1");
+  ///
+  /// // it assumes that v is similar to u as well
+  /// assert!(cured.starts_with("uwu"));
   /// ```
   #[must_use]
   pub fn starts_with<S>(&self, other: &S) -> bool
@@ -82,11 +85,14 @@ impl CuredString {
   /// assert!(cured.ends_with("text"));
   /// ```
   ///
-  /// And since it checks if the strings are similar, please note that this is valid too.
+  /// And since it checks if the strings are similar, please note that this is valid too:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv (vnt 1l1"); // assume this has no effect
-  /// assert!(cured.ends_with("lil")); // it assumes that 1 is similar to l and i as well
+  /// // assume this has no effect
+  /// let cured = decancer::cure("vwv (vnt 1l1");
+  ///
+  /// // it assumes that 1 is similar to l and i as well
+  /// assert!(cured.ends_with("lil")); 
   /// ```
   #[must_use]
   pub fn ends_with<S>(&self, other: &S) -> bool
@@ -127,11 +133,14 @@ impl CuredString {
   /// assert!(cured.contains("funny"));
   /// ```
   ///
-  /// And since it checks if the strings are similar, please note that this is valid too.
+  /// And since it checks if the strings are similar, please note that this is valid too;
   ///
   /// ```rust
-  /// let cured = decancer::cure("vwv cvnt 1l1"); // assume this has no effect
-  /// assert!(cured.contains("cunt")); // it assumes that v is similar to u
+  /// // assume this has no effect
+  /// let cured = decancer::cure("vwv cvnt 1l1");
+  ///
+  /// // it assumes that v is similar to u
+  /// assert!(cured.contains("cunt"));
   /// ```
   #[must_use]
   pub fn contains<S>(&self, other: &S) -> bool
@@ -212,14 +221,17 @@ impl AsRef<str> for CuredString {
 ///
 /// ```rust
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-/// assert!(cured == "very funny text");
+/// assert_eq!(cured, "very funny text");
 /// ```
 ///
-/// And since it checks if the strings are similar, please note that this is valid too.
+/// And since it checks if the strings are similar, please note that this is valid too:
 ///
 /// ```rust
-/// let cured = decancer::cure("vwv cvnt 1l1"); // assume this has no effect
-/// assert!(cured == "uwu cunt lil"); // it assumes that v is similar to u
+/// // assume this has no effect
+/// let cured = decancer::cure("vwv cvnt 1l1");
+///
+/// // it assumes that v is similar to u
+/// assert_eq!(cured, "uwu cunt lil");
 /// ```
 impl<S> PartialEq<S> for CuredString
 where

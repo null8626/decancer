@@ -32,7 +32,7 @@ use std::io::{self, ErrorKind, Read};
 /// assert!(matches!(cured_e, Translation::Character('e')));
 /// ```
 ///
-/// However, for several special cases, it would yield an ASCII string in the form of a [`&'static str`][str]:
+/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) string in the form of a [`&'static str`][str]:
 ///
 /// ```rust
 /// use decancer::Translation;
