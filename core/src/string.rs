@@ -52,25 +52,7 @@ impl CuredString {
   {
     let o = other.as_ref();
 
-    if o.len() > self.len() {
-      return false;
-    }
-
-    let mut other_iter = o.chars();
-
-    for self_char in self.chars() {
-      match other_iter.next() {
-        Some(other_char) => {
-          if !similar::is(self_char as _, other_char) {
-            return false;
-          }
-        }
-
-        None => return true,
-      };
-    }
-
-    false
+    self.len() >= o.len() && similar::is_str(self, o)
   }
 
   /// Checks if this [`CuredString`] ***similarly*** ends with another string.
@@ -100,25 +82,7 @@ impl CuredString {
   {
     let o = other.as_ref();
 
-    if o.len() > self.len() {
-      return false;
-    }
-
-    let mut other_iter = o.chars().rev();
-
-    for self_char in self.chars().rev() {
-      match other_iter.next() {
-        Some(other_char) => {
-          if !similar::is(self_char as _, other_char) {
-            return false;
-          }
-        }
-
-        None => return true,
-      };
-    }
-
-    false
+    self.len() >= o.len() && similar::is_iter(self.chars().rev(), o.chars().rev())
   }
 
   /// Checks if this [`CuredString`] ***similarly*** contains another string.
@@ -263,7 +227,9 @@ where
 {
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
-    similar::is_str(self, other.as_ref())
+    let other = other.as_ref();
+
+    self.len() == other.len() && similar::is_str(self, other)
   }
 }
 

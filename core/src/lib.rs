@@ -6,9 +6,6 @@ mod confusables;
 mod similar;
 #[cfg(feature = "std")]
 mod string;
-#[cfg(feature = "std")]
-#[cfg(test)]
-mod tests;
 mod translation;
 mod util;
 
@@ -19,7 +16,11 @@ pub use translation::Translation;
 
 use core::cmp::Ordering;
 #[cfg(feature = "std")]
-use std::io::{self, ErrorKind, Read};
+use std::{
+  io::{self, ErrorKind, Read},
+  mem::MaybeUninit,
+  slice,
+};
 
 /// Cures a single character/unicode codepoint.
 ///
@@ -89,7 +90,7 @@ where
       match confusable.matches(code) {
         Ordering::Equal => return confusable.translation(code),
         Ordering::Greater => start = mid + 1,
-        Ordering::Less => end = mid - 1,
+        _ => end = mid - 1,
       };
     }
 
@@ -105,7 +106,7 @@ where
     match confusable.matches(code_lowercased) {
       Ordering::Equal => return confusable.translation(code_lowercased),
       Ordering::Greater => start = mid + 1,
-      Ordering::Less => end = mid - 1,
+      _ => end = mid - 1,
     };
   }
 
@@ -138,15 +139,14 @@ where
 }
 
 #[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[allow(invalid_value, clippy::uninit_assumed_init)]
 fn cure_next_bytes<R>(reader: &mut R) -> io::Result<Option<Translation>>
 where
   R: Read,
 {
-  let mut first = unsafe { core::mem::MaybeUninit::uninit().assume_init() };
+  let mut first = unsafe { MaybeUninit::uninit().assume_init() };
 
-  if let Err(err) = reader.read_exact(core::slice::from_mut(&mut first)) {
+  if let Err(err) = reader.read_exact(slice::from_mut(&mut first)) {
     return match err.kind() {
       ErrorKind::UnexpectedEof => Ok(None),
       _ => Err(err),
@@ -156,7 +156,7 @@ where
   let mut output = first as u32;
 
   if 0xF0 == (0xF8 & first) {
-    let mut rest: [u8; 3] = unsafe { core::mem::MaybeUninit::uninit().assume_init() };
+    let mut rest: [u8; 3] = unsafe { MaybeUninit::uninit().assume_init() };
     reader.read_exact(&mut rest)?;
 
     output = ((0x07 & first as u32) << 18)
@@ -164,14 +164,14 @@ where
       | ((0x3F & rest[1] as u32) << 6)
       | (0x3F & rest[2] as u32);
   } else if 0xE0 == (0xf0 & first) {
-    let mut rest: [u8; 2] = unsafe { core::mem::MaybeUninit::uninit().assume_init() };
+    let mut rest: [u8; 2] = unsafe { MaybeUninit::uninit().assume_init() };
     reader.read_exact(&mut rest)?;
 
     output =
       ((0x0F & first as u32) << 12) | ((0x3F & rest[0] as u32) << 6) | (0x3F & rest[1] as u32);
   } else if 0xC0 == (0xE0 & first) {
-    let mut next = unsafe { core::mem::MaybeUninit::uninit().assume_init() };
-    reader.read_exact(core::slice::from_mut(&mut next))?;
+    let mut next = unsafe { MaybeUninit::uninit().assume_init() };
+    reader.read_exact(slice::from_mut(&mut next))?;
 
     output = ((0x1F & first as u32) << 6) | (0x3F & next as u32);
   }

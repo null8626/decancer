@@ -67,13 +67,13 @@ where
       Self::Character(ch) => {
         let mut chars = o.chars();
 
-        match chars.next() {
-          Some(next_char) => chars.next().is_none() && similar::is(*ch as _, next_char),
-          None => false,
-        }
+        chars
+          .next()
+          .map(|next_char| chars.next().is_none() && similar::is(*ch as _, next_char))
+          .unwrap_or_default()
       }
 
-      Self::String(s) => similar::is_str(s, o),
+      Self::String(s) => s.len() == o.len() && similar::is_str(s, o),
       _ => o.is_empty(),
     }
   }
