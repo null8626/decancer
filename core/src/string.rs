@@ -116,7 +116,7 @@ impl CuredString {
       return false;
     }
 
-    let other_chars = o.chars().collect::<Vec<_>>();
+    let other_chars: Vec<_> = o.chars().collect();
     let mut other_index = 0usize;
 
     for self_char in self.chars() {
