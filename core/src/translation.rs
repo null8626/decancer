@@ -3,6 +3,8 @@ use crate::{
   cure_char,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
+#[cfg(feature = "std")]
+use core::ops::AddAssign;
 use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -123,7 +125,7 @@ impl fmt::Display for Translation {
 /// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl core::ops::AddAssign<Translation> for String {
+impl AddAssign<Translation> for String {
   #[inline(always)]
   fn add_assign(&mut self, rhs: Translation) {
     match rhs {
@@ -184,7 +186,7 @@ impl Into<Option<String>> for Translation {
 ///
 /// ```rust
 /// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let cured = text.chars().map(decancer::cure_char).collect::<String>();
+/// let cured: String = text.chars().map(decancer::cure_char).collect();
 ///
 /// // note: direct comparisons like this are not recommended, please use a decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
@@ -218,7 +220,7 @@ impl FromIterator<Translation> for String {
 /// use decancer::CuredString;
 ///
 /// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let cured = text.chars().map(decancer::cure_char).collect::<CuredString>();
+/// let cured: CuredString = text.chars().map(decancer::cure_char).collect();
 ///
 /// assert_eq!(cured, "very funny text");
 /// ```
