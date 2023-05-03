@@ -3,9 +3,9 @@ use crate::{
   cure_char,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
-use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
 #[cfg(feature = "std")]
 use core::ops::AddAssign;
+use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
