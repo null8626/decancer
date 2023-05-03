@@ -52,7 +52,6 @@ use std::{
 /// let cured_surrogate = decancer::cure_char(0xD800u32);
 /// assert!(matches!(cured_surrogate, Translation::None));
 /// ```
-#[must_use]
 pub fn cure_char<C>(code: C) -> Translation
 where
   C: Into<u32>,
@@ -129,7 +128,6 @@ where
 /// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-#[must_use]
 #[inline(always)]
 pub fn cure<S>(input: &S) -> CuredString
 where
