@@ -221,7 +221,7 @@ impl Extend<Translation> for crate::CuredString {
 /// use decancer::Translation;
 ///
 /// let cured_e: Option<String> = decancer::cure_char('Ｅ').into();
-/// 
+///
 /// assert_eq!(cured_e, Some(String::from("e")));
 /// ```
 ///
