@@ -1,4 +1,4 @@
-use crate::{cure, similar, Translation};
+use crate::{cure, similar};
 use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref, str::FromStr};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -18,8 +18,9 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-  /// assert_eq!(cured.into_str(), "very funny text");
+  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").into_str();
+  ///
+  /// assert_eq!(cured, "very funny text");
   /// ```
   #[must_use]
   pub const fn into_str(self) -> String {
@@ -34,6 +35,7 @@ impl CuredString {
   ///
   /// ```rust
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  ///
   /// assert!(cured.starts_with("very"));
   /// ```
   ///
@@ -64,6 +66,7 @@ impl CuredString {
   ///
   /// ```rust
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  ///
   /// assert!(cured.ends_with("text"));
   /// ```
   ///
@@ -94,6 +97,7 @@ impl CuredString {
   ///
   /// ```rust
   /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  ///
   /// assert!(cured.contains("funny"));
   /// ```
   ///
@@ -136,7 +140,48 @@ impl CuredString {
   }
 }
 
-/// Alias for [`cure`].
+/// Extends a [`String`] with an iterator that yields [`CuredString`]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut text = String::new();
+/// text.extend([
+///   decancer::cure("vＥⓡ𝔂 "),
+///   decancer::cure("𝔽𝕌Ňℕｙ "),
+///   decancer::cure("ţ乇𝕏𝓣")
+/// ]);
+///
+/// assert_eq!(text, "very funny text");
+/// ```
+impl Extend<CuredString> for String {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = CuredString>
+  {
+    self.extend(iter.into_iter().map(|s| s.into_str()))
+  }
+}
+
+/// Cures a string. Alias for [`cure`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use decancer::CuredString;
+///
+/// let cured = CuredString::from("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
+/// assert_eq!(cured, "very funny text");
+/// assert!(cured.starts_with("very"));
+/// assert!(cured.ends_with("text"));
+/// assert!(cured.contains("funny"));
+/// ```
 impl<S> From<&S> for CuredString
 where
   S: AsRef<str> + ?Sized,
@@ -147,41 +192,47 @@ where
   }
 }
 
-/// Coerces a [`Translation`] to a [`CuredString`].
-impl From<Translation> for CuredString {
-  #[inline(always)]
-  fn from(other: Translation) -> Self {
-    Self(other.to_string())
-  }
-}
-
-/// Alias for [`cure`]. This never errors.
-impl FromStr for CuredString {
-  type Err = ();
-
-  #[inline(always)]
-  fn from_str(s: &str) -> Result<Self, Self::Err> {
-    Ok(cure(s))
-  }
-}
-
-/// Coerces this [`CuredString`] to a [`String`]. Alias for [`into_str`][CuredString::into_str].
+/// Coerces a [`CuredString`] into a [`String`].
 ///
 /// # Examples
 ///
 /// Basic usage:
 ///
 /// ```rust
-/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-/// let cured: String = cured.into();
+/// let cured: String = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").into();
 ///
 /// assert_eq!(cured, "very funny text");
 /// ```
-#[allow(clippy::from_over_into)]
-impl Into<String> for CuredString {
+impl From<CuredString> for String {
   #[inline(always)]
-  fn into(self) -> String {
-    self.into_str()
+  fn from(val: CuredString) -> Self {
+    val.into_str()
+  }
+}
+
+/// Alias for [`cure`]. This never errors.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use decancer::CuredString;
+///
+/// // the function never returns an Err, so we can safely unwrap_unchecked this
+/// let cured: CuredString = unsafe { "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣".parse().unwrap_unchecked() };
+///
+/// assert_eq!(cured, "very funny text");
+/// assert!(cured.starts_with("very"));
+/// assert!(cured.ends_with("text"));
+/// assert!(cured.contains("funny"));
+/// ```
+impl FromStr for CuredString {
+  type Err = ();
+
+  #[inline(always)]
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
+    Ok(cure(s))
   }
 }
 
@@ -193,6 +244,7 @@ impl Into<String> for CuredString {
 ///
 /// ```rust
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
 /// assert_eq!(cured.as_ref(), "very funny text");
 /// ```
 impl AsRef<str> for CuredString {
@@ -210,6 +262,7 @@ impl AsRef<str> for CuredString {
 ///
 /// ```rust
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// 
 /// assert_eq!(cured, "very funny text");
 /// ```
 ///
@@ -234,7 +287,7 @@ where
   }
 }
 
-/// Formats this `CuredString`. Behaves like formatting your typical `String`.
+/// Formats this `CuredString`. Behaves exactly just like formatting your typical `String`.
 impl fmt::Debug for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -242,7 +295,7 @@ impl fmt::Debug for CuredString {
   }
 }
 
-/// Formats this `CuredString`. Behaves like formatting your typical `String`.
+/// Formats this `CuredString`. Behaves exactly just like formatting your typical `String`.
 impl fmt::Display for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -271,7 +324,7 @@ impl Deref for CuredString {
   }
 }
 
-/// Serializes this [`CuredString`] into a [`string`][Serializer::serialize_str].
+/// [Serializes][Serialize] this [`CuredString`] into a [`string`][Serializer::serialize_str].
 ///
 /// # Examples
 ///
@@ -304,7 +357,7 @@ impl Serialize for CuredString {
   }
 }
 
-/// Deserializes and [cures][cure] a [`string`][Deserializer::deserialize_str].
+/// [Deserializes][Deserialize] and [cures][cure] a [`string`][Deserializer::deserialize_str].
 ///
 /// # Examples
 ///
