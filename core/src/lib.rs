@@ -32,15 +32,17 @@ use std::{
 /// use decancer::Translation;
 ///
 /// let cured_e = decancer::cure_char('Ｅ');
+/// 
 /// assert!(matches!(cured_e, Translation::Character('e')));
 /// ```
 ///
-/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) string in the form of a [`&'static str`][str]:
+/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) [`&'static str`][str]:
 ///
 /// ```rust
 /// use decancer::Translation;
 ///
 /// let cured_ae = decancer::cure_char('ӕ');
+/// 
 /// assert!(matches!(cured_ae, Translation::String("ae")));
 /// ```
 ///
@@ -50,6 +52,7 @@ use std::{
 /// use decancer::Translation;
 ///
 /// let cured_surrogate = decancer::cure_char(0xD800u32);
+/// 
 /// assert!(matches!(cured_surrogate, Translation::None));
 /// ```
 pub fn cure_char<C>(code: C) -> Translation

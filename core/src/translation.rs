@@ -4,7 +4,7 @@ use crate::{
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
 #[cfg(feature = "std")]
-use core::ops::AddAssign;
+use core::ops::{Add, AddAssign};
 use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -99,7 +99,7 @@ impl fmt::Display for Translation {
     match self {
       Self::Character(ch) => fmt::Display::fmt(ch, f),
       Self::String(s) => fmt::Display::fmt(s, f),
-      _ => fmt::Result::Ok(()),
+      _ => Ok(()),
     }
   }
 }
@@ -110,7 +110,33 @@ impl fmt::Display for Translation {
 ///
 /// Basic usage:
 ///
-/// > **note:** this is for demonstration purposes only - in production, it's more recommended to use [`decancer::cure`][crate::cure].
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = String::with_capacity(text.len());
+///
+/// for cured_char in text.chars().map(decancer::cure_char) {
+///   cured = cured + cured_char;
+/// }
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
+#[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+impl Add<Translation> for String {
+  type Output = Self;
+
+  #[inline(always)]
+  fn add(mut self, rhs: Translation) -> Self::Output {
+    self += rhs;
+    self
+  }
+}
+
+/// A helper implementation for appending a [`Translation`] to a [`String`].
+///
+/// # Examples
+///
+/// Basic usage:
 ///
 /// ```rust
 /// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
@@ -120,7 +146,6 @@ impl fmt::Display for Translation {
 ///   cured += cured_char;
 /// }
 ///
-/// // note: direct comparisons like this are not recommended, please use a decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
 /// ```
 #[cfg(feature = "std")]
@@ -136,6 +161,56 @@ impl AddAssign<Translation> for String {
   }
 }
 
+/// Extends a [`String`] with an iterator that yields [`Translation`]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut text = String::new();
+/// text.extend([decancer::cure_char('Ｅ'), decancer::cure_char('Ｅ')]);
+///
+/// assert_eq!(text, "ee");
+/// ```
+#[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+impl Extend<Translation> for String {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = Translation>,
+  {
+    for part in iter {
+      *self += part;
+    }
+  }
+}
+
+/// Extends a [`CuredString`][crate::CuredString] with an iterator that yields [`Translation`]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut text = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// text.extend([decancer::cure_char('Ｅ'), decancer::cure_char('Ｅ')]);
+///
+/// assert_eq!(text, "very funny textee");
+/// ```
+#[cfg(feature = "std")]
+#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
+impl Extend<Translation> for crate::CuredString {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = Translation>,
+  {
+    self.0.extend(iter)
+  }
+}
+
 /// Coerces this [`Translation`] to an [`Option<String>`][Option].
 ///
 /// # Examples
@@ -145,10 +220,8 @@ impl AddAssign<Translation> for String {
 /// ```rust
 /// use decancer::Translation;
 ///
-/// let cured_e = decancer::cure_char('Ｅ');
-/// assert!(matches!(cured_e, Translation::Character('e')));
-///
-/// let cured_e: Option<String> = cured_e.into();
+/// let cured_e: Option<String> = decancer::cure_char('Ｅ').into();
+/// 
 /// assert_eq!(cured_e, Some(String::from("e")));
 /// ```
 ///
@@ -157,10 +230,8 @@ impl AddAssign<Translation> for String {
 /// ```rust
 /// use decancer::Translation;
 ///
-/// let cured_surrogate = decancer::cure_char(0xD800u32);
-/// assert!(matches!(cured_surrogate, Translation::None));
+/// let cured_surrogate: Option<String> = decancer::cure_char(0xD800u32).into();
 ///
-/// let cured_surrogate: Option<String> = cured_surrogate.into();
 /// assert!(cured_surrogate.is_none());
 /// ```
 #[cfg(feature = "std")]
@@ -182,13 +253,10 @@ impl Into<Option<String>> for Translation {
 ///
 /// Basic usage:
 ///
-/// > **note:** this is for demonstration purposes only - in production, it's more recommended to use [`decancer::cure`][crate::cure].
-///
 /// ```rust
 /// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
 /// let cured: String = text.chars().map(decancer::cure_char).collect();
 ///
-/// // note: direct comparisons like this are not recommended, please use a decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
 /// ```
 #[cfg(feature = "std")]
@@ -214,8 +282,6 @@ impl FromIterator<Translation> for String {
 ///
 /// Basic usage:
 ///
-/// > **note:** this is for demonstration purposes only - in production, it's more recommended to use [`decancer::cure`][crate::cure].
-///
 /// ```rust
 /// use decancer::CuredString;
 ///
@@ -236,7 +302,7 @@ impl FromIterator<Translation> for crate::CuredString {
   }
 }
 
-/// Serializes this [`Translation`].
+/// [Serializes][Serialize] this [`Translation`].
 ///
 /// - A [`Translation::Character`] would serialize into a [`character`][Serializer::serialize_char].
 /// - A [`Translation::String`] would serialize into a [`string`][Serializer::serialize_str].
@@ -276,7 +342,7 @@ impl Serialize for Translation {
   }
 }
 
-/// Deserializes and [cures][cure_char] a [`character`][Deserializer::deserialize_char].
+/// [Deserializes][Deserialize] and [cures][cure_char] a [`character`][Deserializer::deserialize_char].
 ///
 /// # Examples
 ///
