@@ -32,7 +32,7 @@ use std::{
 /// use decancer::Translation;
 ///
 /// let cured_e = decancer::cure_char('Ｅ');
-/// 
+///
 /// assert!(matches!(cured_e, Translation::Character('e')));
 /// ```
 ///
@@ -42,7 +42,7 @@ use std::{
 /// use decancer::Translation;
 ///
 /// let cured_ae = decancer::cure_char('ӕ');
-/// 
+///
 /// assert!(matches!(cured_ae, Translation::String("ae")));
 /// ```
 ///
@@ -52,7 +52,7 @@ use std::{
 /// use decancer::Translation;
 ///
 /// let cured_surrogate = decancer::cure_char(0xD800u32);
-/// 
+///
 /// assert!(matches!(cured_surrogate, Translation::None));
 /// ```
 pub fn cure_char<C>(code: C) -> Translation

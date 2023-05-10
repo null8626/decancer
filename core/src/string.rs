@@ -160,7 +160,7 @@ impl Extend<CuredString> for String {
   #[inline(always)]
   fn extend<I>(&mut self, iter: I)
   where
-    I: IntoIterator<Item = CuredString>
+    I: IntoIterator<Item = CuredString>,
   {
     self.extend(iter.into_iter().map(|s| s.into_str()))
   }
@@ -262,7 +262,7 @@ impl AsRef<str> for CuredString {
 ///
 /// ```rust
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-/// 
+///
 /// assert_eq!(cured, "very funny text");
 /// ```
 ///
