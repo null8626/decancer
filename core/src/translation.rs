@@ -82,6 +82,38 @@ where
 }
 
 /// Alias for [`cure_char`].
+///
+/// # Examples
+///
+/// Most of the time, this would yield only a single unicode character:
+///
+/// ```rust
+/// use decancer::Translation;
+///
+/// let cured_e = Translation::from('Ｅ');
+///
+/// assert!(matches!(cured_e, Translation::Character('e')));
+/// ```
+///
+/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) [`&'static str`][str]:
+///
+/// ```rust
+/// use decancer::Translation;
+///
+/// let cured_ae = Translation::from('ӕ');
+///
+/// assert!(matches!(cured_ae, Translation::String("ae")));
+/// ```
+///
+/// If your unicode character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]), you would get [`None`][Translation::None]:
+///
+/// ```rust
+/// use decancer::Translation;
+///
+/// let cured_surrogate = Translation::from(0xD800u32);
+///
+/// assert!(matches!(cured_surrogate, Translation::None));
+/// ```
 impl<C> From<C> for Translation
 where
   C: Into<u32>,
