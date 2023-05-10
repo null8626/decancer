@@ -25,15 +25,9 @@ appendFileSync(
       ? process.env.COMMIT_MESSAGE
       : 'null',
     core_affected: coreAffected,
-    node_affected:
-      coreAffected ||
-      files.some(({ filename }) => filename.startsWith('bindings/node/src')),
-    wasm_affected:
-      coreAffected ||
-      files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
-    native_affected:
-      coreAffected ||
-      files.some(
+    node_affected: files.some(({ filename }) => filename.startsWith('bindings/node/src')),
+    wasm_affected: coreAffected || files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
+    native_affected: files.some(
         ({ filename }) =>
           filename.startsWith('bindings/native/src') ||
           filename === 'bindings/native/decancer.h'
