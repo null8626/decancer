@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
-    if: ${{ needs.setup.outputs.core_affected == 'true' || needs.setup.outputs.release != 'null' }}
+    if: ${{ needs.setup.outputs.release != 'null' || needs.setup.outputs.core_affected == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - uses: ATiltedTree/setup-rust@v1
