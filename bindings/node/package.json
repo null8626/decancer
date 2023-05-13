@@ -46,7 +46,7 @@
     "@napi-rs/cli": "^2.15.2"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 16"
   },
   "scripts": {
     "artifacts": "napi artifacts",

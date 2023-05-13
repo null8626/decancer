@@ -164,7 +164,7 @@ where
       | ((0x3F & rest[0] as u32) << 12)
       | ((0x3F & rest[1] as u32) << 6)
       | (0x3F & rest[2] as u32);
-  } else if 0xE0 == (0xf0 & first) {
+  } else if 0xE0 == (0xF0 & first) {
     let mut rest: [u8; 2] = unsafe { MaybeUninit::uninit().assume_init() };
     reader.read_exact(&mut rest)?;
 
