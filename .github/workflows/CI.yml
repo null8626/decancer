@@ -181,7 +181,7 @@ jobs:
           path: ./artifacts/**
           if-no-files-found: error
   native-freebsd:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     name: Build native bindings on FreeBSD
     needs:
       - setup
