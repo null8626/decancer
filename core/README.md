@@ -37,7 +37,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 ## Installation
 
 <details>
-<summary><b>Rust</b></summary>
+<summary><b>Rust (v1.64 or later)</b></summary>
 
 In your `Cargo.toml`:
 
@@ -47,7 +47,7 @@ decancer = "1.6.0"
 
 </details>
 <details>
-<summary><b>JavaScript (Node.js)</b></summary>
+<summary><b>JavaScript (Node.js v16 or later)</b></summary>
 
 In your shell:
 
@@ -63,7 +63,7 @@ const decancer = require('decancer')
 
 </details>
 <details>
-<summary><b>JavaScript (Deno)</b></summary>
+<summary><b>JavaScript (Deno v1.28 or later)</b></summary>
 
 In your code:
 
@@ -124,7 +124,7 @@ In your code:
 Prerequisites:
 
 - [Git](https://git-scm.com/)
-- [Rust](https://rustup.rs/)
+- [Rust v1.64 or later](https://rustup.rs/)
 
 ```console
 $ git clone https://github.com/null8626/decancer.git --depth 1
