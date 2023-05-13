@@ -10,8 +10,8 @@ use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// The translation for a single character/confusable.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[must_use]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Translation {
   /// A single unicode character.
   Character(char),
