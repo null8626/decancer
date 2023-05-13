@@ -3,6 +3,8 @@
 #[macro_use]
 extern crate napi_derive;
 
+use napi::{Env, JsBuffer, JsString, Result};
+
 #[napi]
 pub struct CuredString(decancer::CuredString);
 
@@ -29,8 +31,15 @@ impl CuredString {
   }
 
   #[napi]
-  pub fn to_string(&self) -> String {
-    self.0.clone().into()
+  pub fn to_buffer(&self, env: Env) -> Result<JsBuffer> {
+    env
+      .create_buffer_with_data(self.0.clone().into_str().into_bytes())
+      .map(|b| b.into_raw())
+  }
+
+  #[napi]
+  pub fn to_string(&self, env: Env) -> Result<JsString> {
+    env.create_string(&self.0)
   }
 }
 
