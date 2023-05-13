@@ -1,13 +1,19 @@
 use crate::{cure, similar};
-use core::{cmp::PartialEq, fmt, mem::transmute, ops::Deref, str::FromStr};
+use core::{
+  cmp::PartialEq,
+  fmt::{self, Debug, Display, Formatter},
+  mem::transmute,
+  ops::Deref,
+  str::FromStr,
+};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
-#[derive(Clone, Eq)]
 #[must_use]
+#[derive(Clone, Eq)]
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
@@ -288,18 +294,18 @@ where
 }
 
 /// Formats this `CuredString`. Behaves exactly just like formatting your typical `String`.
-impl fmt::Debug for CuredString {
+impl Debug for CuredString {
   #[inline(always)]
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    fmt::Debug::fmt(&self.0, f)
+  fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    Debug::fmt(&self.0, f)
   }
 }
 
 /// Formats this `CuredString`. Behaves exactly just like formatting your typical `String`.
-impl fmt::Display for CuredString {
+impl Display for CuredString {
   #[inline(always)]
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    fmt::Display::fmt(&self.0, f)
+  fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    Display::fmt(&self.0, f)
   }
 }
 
