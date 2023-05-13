@@ -42,7 +42,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 In your `Cargo.toml`:
 
 ```toml
-decancer = "1.6.0"
+decancer = "1.6.1"
 ```
 
 </details>
@@ -95,7 +95,7 @@ In your code:
 
 ```html
 <script type="module">
-  import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.6.0/bindings/wasm/bin/decancer.min.js'
+  import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.6.1/bindings/wasm/bin/decancer.min.js'
 
   const decancer = await init()
 </script>
@@ -107,17 +107,17 @@ In your code:
 
 ### Download precompiled binaries
 
-- [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-x86_64-pc-windows-msvc.zip)
-- [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-i686-pc-windows-msvc.zip)
-- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-aarch64-pc-windows-msvc.zip)
-- [Download for 64-bit macOS (10.7+, Lion+)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-x86_64-apple-darwin.zip)
-- [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-aarch64-apple-darwin.zip)
-- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-x86_64-unknown-linux-gnu.zip)
-- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-x86_64-unknown-linux-musl.zip)
-- [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-aarch64-unknown-linux-gnu.zip)
-- [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-aarch64-unknown-linux-musl.zip)
-- [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-armv7-unknown-linux-gnueabihf.zip)
-- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v1.6.0/decancer-freebsd.zip)
+- [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-x86_64-pc-windows-msvc.zip)
+- [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-i686-pc-windows-msvc.zip)
+- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-aarch64-pc-windows-msvc.zip)
+- [Download for 64-bit macOS (10.7+, Lion+)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-x86_64-apple-darwin.zip)
+- [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-aarch64-apple-darwin.zip)
+- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-x86_64-unknown-linux-gnu.zip)
+- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-x86_64-unknown-linux-musl.zip)
+- [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-aarch64-unknown-linux-gnu.zip)
+- [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-aarch64-unknown-linux-musl.zip)
+- [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-armv7-unknown-linux-gnueabihf.zip)
+- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v1.6.1/decancer-freebsd.zip)
 
 ### Building from source
 
@@ -210,7 +210,7 @@ console.log(cured.toString())
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.6.0/bindings/wasm/bin/decancer.min.js'
+      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v1.6.1/bindings/wasm/bin/decancer.min.js'
 
       const decancer = await init()
 
@@ -232,7 +232,7 @@ console.log(cured.toString())
 <details>
 <summary><b>C/C++</b></summary>
 
-> **note:** `decancer.h` can be retrieved from the [`bindings/native` directory.](https://github.com/null8626/decancer/blob/main/bindings/native/decancer.h)
+> **note:** `decancer.h` can be [retrieved](https://github.com/null8626/decancer/blob/main/bindings/native/decancer.h) from the `bindings/native` directory.
 
 ```c
 #include <decancer.h>

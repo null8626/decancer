@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "src/lib.js",
   "typings": "typings.d.ts",
   "description": "A tiny package that removes common confusables from strings.",
