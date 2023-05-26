@@ -1,7 +1,7 @@
 use crate::{confusables::CONFUSABLES, util::read_u16_le};
 
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CONFUSABLES.offset(2) });
-pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CONFUSABLES.offset(4) }); 
+pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CONFUSABLES.offset(4) });
 
 pub(crate) fn is(self_char: u32, other_char: char) -> bool {
   let other_char = unsafe { other_char.to_lowercase().next().unwrap_unchecked() as u32 };
