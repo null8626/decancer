@@ -12,6 +12,10 @@ pub(crate) const CONFUSABLES_COUNT: u16 = ((CASE_SENSITIVE_CONFUSABLES_OFFSET - 
 pub(crate) const CASE_SENSITIVE_CONFUSABLES_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CONFUSABLES_OFFSET) / 5) - 1;
 
+const CODEPOINT_MASK: u32 = 0x1FFFFF;
+const RANGE_MASK: u32 = 0x20000000;
+const STRING_TRANSLATION_MASK: u32 = 0x40000000;
+
 pub(crate) struct Confusable(u32, u8);
 
 impl Confusable {
@@ -34,19 +38,19 @@ impl Confusable {
   }
 
   pub(crate) const fn matches(&self, other: u32) -> Ordering {
-    let conf: u32 = self.0 & 0x1fffff;
+    let conf: u32 = self.0 & CODEPOINT_MASK;
 
-    if (self.0 & 0x20000000) != 0 {
-      if other < conf {
-        Ordering::Less
-      } else if other > (conf + ((self.1 & 0x7f) as u32)) {
-        Ordering::Greater
-      } else {
-        Ordering::Equal
-      }
-    } else if other < conf {
-      Ordering::Less
-    } else if other > conf {
+    if other < conf {
+      return Ordering::Less;
+    }
+
+    let mut max = conf;
+
+    if (self.0 & RANGE_MASK) != 0 {
+      max += ((self.1 & 0x7f) as u32);
+    }
+
+    if other > max {
       Ordering::Greater
     } else {
       Ordering::Equal
@@ -54,17 +58,15 @@ impl Confusable {
   }
 
   pub(crate) const fn translation(&self, other: u32) -> Translation {
-    if (self.0 & 0x40000000) != 0 {
+    if (self.0 & STRING_TRANSLATION_MASK) != 0 {
       Translation::string(self.0, self.1)
     } else {
       let mut code = (self.0 >> 21) & 0xff;
 
       if code == 0 {
         return Translation::None;
-      }
-
-      if self.1 >= 0x80 {
-        code += other - (self.0 & 0x1fffff);
+      } else if self.1 >= 0x80 {
+        code += other - (self.0 & CODEPOINT_MASK);
       }
 
       Translation::character(code)
