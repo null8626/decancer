@@ -16,6 +16,22 @@
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
 [blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
 
+[crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
+[crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
+[crates-io-url]: https://crates.io/crates/decancer
+[npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/decancer
+[downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/decancer
+[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
+[prettier-url]: https://github.com/prettier/prettier
+[ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
+[ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
+[github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
+[github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
+[blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
+[blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
+
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
