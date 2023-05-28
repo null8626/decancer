@@ -37,7 +37,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
 - It stores it's huge collection of codepoints in an [optimized 25.72 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/codepoints.bin) instead of a huge JSON or text file to optimize it's bundle size!
-- It's capable of filtering **149,434 (13.41%) different unicode codepoints** including **9,628 different confusables**, including:
+- It's capable of filtering **149,434 (13.41%) different unicode codepoints** including **9,628 different confusables**, like:
   - Accented characters
   - [Most homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Several foreign characters, including [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Hindi](https://en.wikipedia.org/wiki/Devanagari), [Japanese](https://en.wikipedia.org/wiki/Kanji), [Korean](https://en.wikipedia.org/wiki/Hangul), etc.
