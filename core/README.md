@@ -39,7 +39,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 - It stores it's huge collection of codepoints in an [optimized 25.72 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/codepoints.bin) instead of a huge JSON or text file to optimize it's bundle size!
 - It's capable of filtering **149,434 (13.41%) different unicode codepoints** including **9,628 different confusables**, like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
-  - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), which eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
+  - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Most characters from foreign scripts, like [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Devanagari](https://en.wikipedia.org/wiki/Devanagari), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Hiragana](https://en.wikipedia.org/wiki/Hiragana), [Hangul](https://en.wikipedia.org/wiki/Hangul), [Kanji](https://en.wikipedia.org/wiki/Kanji), [Katakana](https://en.wikipedia.org/wiki/Katakana), etc.
   - Several emojis
