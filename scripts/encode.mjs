@@ -17,21 +17,43 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
   )
 
   console.log('- parsing unicode data...')
+
   const unicode = (await response.text())
     .trimRight()
     .split('\n')
     .map(x => x.split(';'))
 
-  UNICACHE.extraDisallowed = unicode
-    .filter(
-      ([, , category, , bidirectionalType]) =>
-        category === 'Mc' ||
-        bidirectionalType.startsWith('R') ||
-        bidirectionalType === 'AL'
-    )
-    .map(([codepoint]) => parseInt(codepoint, 16))
+  UNICACHE.expected = []
+
+  for (let i = 0; i < unicode.length; i++) {
+    if (unicode[i][4][0] !== 'A' && unicode[i][4][0] !== 'R') {
+      if (unicode[i][1].endsWith('Last>')) {
+        const start = parseInt(unicode[i - 1][0], 16)
+
+        UNICACHE.expected = [
+          ...UNICACHE.expected,
+          ...Array.from(
+            { length: parseInt(unicode[i][0], 16) - start + 1 },
+            (_, i) => i + start
+          )
+        ]
+      } else {
+        const codepoint = parseInt(unicode[i][0], 16)
+
+        if (
+          codepoint > 0x7f &&
+          (codepoint < 0xd800 || codepoint > 0xf8ff) &&
+          (codepoint < 0xe0100 || codepoint > 0xe01ef) &&
+          codepoint < 0xf0000
+        ) {
+          UNICACHE.expected.push(codepoint)
+        }
+      }
+    }
+  }
 
   console.log('- writing to cache...')
+
   writeFileSync(join(ROOT_DIR, '.unicache.json'), JSON.stringify(UNICACHE))
 }
 
@@ -40,11 +62,11 @@ if (typeof process.argv[2] !== 'string') {
   process.exit(1)
 }
 
-const { confusables, similar } = JSON.parse(readFileSync(process.argv[2]))
+const { codepoints, similar } = JSON.parse(readFileSync(process.argv[2]))
 
 assert(
-  Array.isArray(confusables) && confusables.length > 0,
-  'confusables must be an array'
+  Array.isArray(codepoints) && codepoints.length > 0,
+  'codepoints must be an array'
 )
 assert(
   Array.isArray(similar) &&
@@ -66,14 +88,14 @@ function isCaseSensitive(x) {
 }
 
 console.log(
-  `- checking, expanding, and sorting ${confusables.length.toLocaleString(
+  `- checking, expanding, and sorting ${codepoints.length.toLocaleString(
     'en-US'
-  )} confusables...`
+  )} codepoints...`
 )
 
 let expanded = []
 
-for (const conf of confusables) {
+for (const conf of codepoints) {
   assert(
     Number.isSafeInteger(conf.codepoint) && conf.codepoint < 0x110000,
     'codepoint must be a valid number'
@@ -112,7 +134,7 @@ for (const conf of confusables) {
     if (conf.syncedTranslation) {
       assert(
         conf.translation.length === 1,
-        `translation length for confusables with syncedTranslation must be one character in length, got '${conf.translation}'`
+        `translation length for codepoints with syncedTranslation must be one character in length, got '${conf.translation}'`
       )
     }
 
@@ -133,7 +155,7 @@ for (const conf of confusables) {
 console.log(
   `- expanded to a grand total of ${expanded.length.toLocaleString(
     'en-US'
-  )} confusables.\n- searching for collisions...`
+  )} codepoints.\n- searching for collisions...`
 )
 
 function merge(a, b, recurse = true) {
@@ -232,6 +254,7 @@ function binarySearchExists(arr, val) {
 
 {
   const set = Array.from(new Set(expanded.map(([codepoint]) => codepoint)))
+
   assert(
     expanded.length === set.length,
     `discovered ${(expanded.length - set.length).toLocaleString(
@@ -254,19 +277,7 @@ let i = 0
 while (i < expanded.length) {
   const [codepoint, translation] = expanded[i]
 
-  if (
-    codepoint <= 127 ||
-    (codepoint >= 0xa6a0 && codepoint <= 0xa6ff) ||
-    (codepoint >= 0xd800 && codepoint <= 0xf8ff) ||
-    (codepoint >= 0x10500 && codepoint <= 0x1052f) ||
-    (codepoint >= 0x11700 && codepoint <= 0x1173f) ||
-    (codepoint >= 0x118a0 && codepoint <= 0x118ff) ||
-    (codepoint >= 0x16f00 && codepoint <= 0x16f9f) ||
-    (codepoint >= 0x1e800 && codepoint <= 0x1e8df) ||
-    (codepoint >= 0xe0100 && codepoint <= 0xe01ef) ||
-    codepoint >= 0xf0000 ||
-    binarySearchExists(UNICACHE.extraDisallowed, codepoint)
-  ) {
+  if (!binarySearchExists(UNICACHE.expected, codepoint)) {
     console.warn(
       `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
     )
@@ -405,8 +416,8 @@ const strings = mergeArray([
       .map(({ translation }) => translation)
   )
 ])
-const confusablesBuffers = []
-const caseSensitiveConfusablesBuffers = []
+const codepointsBuffers = []
+const caseSensitiveCodepointsBuffers = []
 
 for (const {
   codepoint,
@@ -439,9 +450,9 @@ for (const {
   buf.writeUint8(secondByte, 4)
 
   if (isCaseSensitive(codepoint)) {
-    caseSensitiveConfusablesBuffers.push(buf)
+    caseSensitiveCodepointsBuffers.push(buf)
   } else {
-    confusablesBuffers.push(buf)
+    codepointsBuffers.push(buf)
   }
 }
 
@@ -451,9 +462,9 @@ assert(
 )
 
 const headers = Buffer.alloc(6)
-headers.writeUint16LE(headers.byteLength + confusablesBuffers.length * 5)
+headers.writeUint16LE(headers.byteLength + codepointsBuffers.length * 5)
 headers.writeUint16LE(
-  headers.readUint16LE() + caseSensitiveConfusablesBuffers.length * 5,
+  headers.readUint16LE() + caseSensitiveCodepointsBuffers.length * 5,
   2
 )
 headers.writeUint16LE(headers.readUint16LE(2) + similarBytes.length, 4)
@@ -462,8 +473,8 @@ writeFileSync(
   'output.bin',
   Buffer.concat([
     headers,
-    Buffer.concat(confusablesBuffers),
-    Buffer.concat(caseSensitiveConfusablesBuffers),
+    Buffer.concat(codepointsBuffers),
+    Buffer.concat(caseSensitiveCodepointsBuffers),
     similarBytes,
     Buffer.from(strings)
   ])

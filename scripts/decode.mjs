@@ -5,7 +5,7 @@ if (typeof process.argv[2] !== 'string') {
   process.exit(1)
 }
 
-class Confusables {
+class Codepoints {
   #inner
 
   constructor() {
@@ -75,16 +75,16 @@ function getTranslation(integer, secondByte) {
   return binary.subarray(offset, offset + ((integer >> 25) & 0x0f)).toString()
 }
 
-let confusablesEnd = binary.readUint16LE()
-let confusables = new Confusables()
+let codepointsEnd = binary.readUint16LE()
+let codepoints = new Codepoints()
 
-for (let offset = 6; offset < confusablesEnd; offset += 5) {
+for (let offset = 6; offset < codepointsEnd; offset += 5) {
   const integer = binary.readUint32LE(offset)
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & 0x1fffff
 
-  confusables.push({
+  codepoints.push({
     codepoint,
     translation:
       (integer & 0x40000000) !== 0
@@ -96,15 +96,15 @@ for (let offset = 6; offset < confusablesEnd; offset += 5) {
   })
 }
 
-confusablesEnd = binary.readUint16LE(2)
+codepointsEnd = binary.readUint16LE(2)
 
-for (let offset = binary.readUint16LE(); offset < confusablesEnd; offset += 5) {
+for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 5) {
   const integer = binary.readUint32LE(offset)
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & 0x1fffff
 
-  confusables.push({
+  codepoints.push({
     codepoint,
     translation:
       (integer & 0x40000000) !== 0
@@ -120,7 +120,7 @@ writeFileSync(
   'output.json',
   JSON.stringify(
     {
-      confusables: confusables.inner.sort((a, b) => a.codepoint - b.codepoint),
+      codepoints: codepoints.inner.sort((a, b) => a.codepoint - b.codepoint),
       similar
     },
     null,

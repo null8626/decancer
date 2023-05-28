@@ -3,18 +3,18 @@
 If you want to contribute to the source code, feel free to do so! ❤️<br>
 Don't forget to state on what should be changed and their reason.
 
-If you want to see/modify on the confusables supported and/or their respective translation(s), feel free to do so! Here are the ways on how to do them;
+If you want to see/modify on the codepoints supported and/or their respective translation(s), feel free to do so! Here are the ways on how to do them;
 
 - **To convert the binary into a readable and modifiable JSON, do the following:**
 
 ```console
-node scripts/decode.mjs core/bin/confusables.bin
+node scripts/decode.mjs core/bin/codepoints.bin
 ```
 
 - **Or if you want a simplified and unoptimized version without ranges and all of that nonsenese, run:**
 
 ```console
-node scripts/decode.mjs core/bin/confusables.bin --full
+node scripts/decode.mjs core/bin/codepoints.bin --full
 ```
 
 And a file called `output.json` should be generated in the same directory.
@@ -34,7 +34,7 @@ And a file called `output.bin` should be generated in the same directory, and an
 The optional fields here are only optional when writing and encoding them back into a binary.
 
 ```ts
-interface Confusable {
+interface Codepoint {
   codepoint: number
   translation: string
   rangeUntil?: number | null
@@ -42,18 +42,18 @@ interface Confusable {
 }
 
 interface JsonContents {
-  confusables: Confusable[]
+  codepoints: Codepoint[]
   similar: string[][]
 }
 ```
 
-- **Information regarding the `Confusable` structure:**
+- **Information regarding the `Codepoint` structure:**
 
-  - The `JsonContents#confusables` array **must NOT be empty.** _(duh)_
-  - `Confusable#codepoint` is the Unicode codepoint of the desired confusable. It must be in the unicode range, and must NOT be an [ASCII character](https://en.wikipedia.org/wiki/ASCII), [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), or [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark).
-  - `Confusable#translation` is the translation string, it's length must not exceed `15`, it must be in lowercase, and it must be in ASCII.
-  - `Confusable#rangeUntil` is an optional number that indicates where the range of this confusable should end. If it's `null`, then the confusable is not a range. For example: Say a confusable with the codepoints of `\xE0` to `\xE5` all translates to `a`, then the `codepoint` field would be `0x00EO` and the `rangeUntil` field would be `0x00E5`. **Please note that the range size MUST be around `1` to `127`.**
-  - `Confusable#syncedTranslation` is a flag whether this range's translation would change accordingly with the codepoint index. For example: `\xE0` translates to `a`, `\xE1` translates to `b`, `\xE2` translates to `c`, and so on (the translation property's length must be `1`).
+  - The `JsonContents#codepoints` array **must NOT be empty.** _(duh)_
+  - `Codepoint#codepoint` is the Unicode codepoint of the desired codepoint. It must be in the unicode range, and must NOT be an [ASCII character](https://en.wikipedia.org/wiki/ASCII), [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), or [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark).
+  - `Codepoint#translation` is the translation string, it's length must not exceed `15`, it must be in lowercase, and it must be in ASCII.
+  - `Codepoint#rangeUntil` is an optional number that indicates where the range of this codepoint should end. If it's `null`, then the codepoint is not a range. For example: Say a codepoint with the codepoints of `\xE0` to `\xE5` all translates to `a`, then the `codepoint` field would be `0x00EO` and the `rangeUntil` field would be `0x00E5`. **Please note that the range size MUST be around `1` to `127`.**
+  - `Codepoint#syncedTranslation` is a flag whether this range's translation would change accordingly with the codepoint index. For example: `\xE0` translates to `a`, `\xE1` translates to `b`, `\xE2` translates to `c`, and so on (the translation property's length must be `1`).
 
 - **Information regarding the `JsonContents#similar` field:**
 
