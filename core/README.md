@@ -41,7 +41,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), which eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-  - Most characters from foreign scripts, including [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), Russian ([*Cyrillic*](https://en.wikipedia.org/wiki/Cyrillic_script)), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), Hindi ([*Devanagari*](https://en.wikipedia.org/wiki/Devanagari)), Japanese ([*Kanji*](https://en.wikipedia.org/wiki/Kanji)), Korean ([*Hangul*](https://en.wikipedia.org/wiki/Hangul)), etc.
+  - Most characters from foreign scripts, like [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Devanagari](https://en.wikipedia.org/wiki/Devanagari), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Hiragana](https://en.wikipedia.org/wiki/Hiragana), [Hangul](https://en.wikipedia.org/wiki/Hangul), [Kanji](https://en.wikipedia.org/wiki/Kanji), [Katakana](https://en.wikipedia.org/wiki/Katakana), etc.
   - Several emojis
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
