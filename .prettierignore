@@ -1,5 +1,7 @@
 **/target/**
 **/node_modules/**
 **/package-lock.json
+.unicache.json
 bindings/wasm/bin/decancer.min.js
 bindings/wasm/pkg/**
+output.json

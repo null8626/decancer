@@ -15,7 +15,7 @@ on:
       - '**/*.mjs'
       - '**/*.json'
       - 'core/README.md'
-      - 'core/bin/confusables.bin'
+      - 'core/bin/codepoints.bin'
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
 jobs:

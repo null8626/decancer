@@ -2,7 +2,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-mod confusables;
+mod codepoints;
 mod similar;
 #[cfg(feature = "std")]
 mod string;
@@ -82,15 +82,15 @@ where
   }
 
   let mut start = 0;
-  let mut end = confusables::CASE_SENSITIVE_CONFUSABLES_COUNT;
+  let mut end = codepoints::CASE_SENSITIVE_CODEPOINTS_COUNT;
 
   if code != code_lowercased {
     while start <= end {
       let mid = (start + end) / 2;
-      let confusable = confusables::Confusable::case_sensitive_at(mid);
+      let codepoint = codepoints::Codepoint::case_sensitive_at(mid);
 
-      match confusable.matches(code) {
-        Ordering::Equal => return confusable.translation(code),
+      match codepoint.matches(code) {
+        Ordering::Equal => return codepoint.translation(code),
         Ordering::Greater => start = mid + 1,
         _ => end = mid - 1,
       };
@@ -99,14 +99,14 @@ where
     start = 0;
   }
 
-  end = confusables::CONFUSABLES_COUNT;
+  end = codepoints::CODEPOINTS_COUNT;
 
   while start <= end {
     let mid = (start + end) / 2;
-    let confusable = confusables::Confusable::at(mid);
+    let codepoint = codepoints::Codepoint::at(mid);
 
-    match confusable.matches(code_lowercased) {
-      Ordering::Equal => return confusable.translation(code_lowercased),
+    match codepoint.matches(code_lowercased) {
+      Ordering::Equal => return codepoint.translation(code_lowercased),
       Ordering::Greater => start = mid + 1,
       _ => end = mid - 1,
     };

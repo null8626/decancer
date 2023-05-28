@@ -15,7 +15,7 @@ const { files } = await response.json()
 
 const coreAffected = files.some(
   ({ filename }) =>
-    filename.startsWith('core/src/') || filename === 'core/bin/confusables.bin'
+    filename.startsWith('core/src/') || filename === 'core/bin/codepoints.bin'
 )
 
 appendFileSync(

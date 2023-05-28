@@ -5,25 +5,25 @@ use crate::{
 };
 use core::cmp::Ordering;
 
-pub(crate) const CONFUSABLES: *const u8 = include_bytes!("../bin/confusables.bin").as_ptr();
+pub(crate) const CODEPOINTS: *const u8 = include_bytes!("../bin/codepoints.bin").as_ptr();
 
-const CASE_SENSITIVE_CONFUSABLES_OFFSET: u16 = read_u16_le(CONFUSABLES);
-pub(crate) const CONFUSABLES_COUNT: u16 = ((CASE_SENSITIVE_CONFUSABLES_OFFSET - 6) / 5) - 1;
-pub(crate) const CASE_SENSITIVE_CONFUSABLES_COUNT: u16 =
-  ((SIMILAR_START - CASE_SENSITIVE_CONFUSABLES_OFFSET) / 5) - 1;
+const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
+pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 5) - 1;
+pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
+  ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 5) - 1;
 
 const CODEPOINT_MASK: u32 = 0x1FFFFF;
 const RANGE_MASK: u32 = 0x20000000;
 const STRING_TRANSLATION_MASK: u32 = 0x40000000;
 
-pub(crate) struct Confusable(u32, u8);
+pub(crate) struct Codepoint(u32, u8);
 
-impl Confusable {
+impl Codepoint {
   pub(crate) const fn at(index: u16) -> Self {
     unsafe {
       Self(
-        read_u32_le(CONFUSABLES.offset(6 + (index * 5) as isize)),
-        *CONFUSABLES.offset(10 + (index * 5) as isize),
+        read_u32_le(CODEPOINTS.offset(6 + (index * 5) as isize)),
+        *CODEPOINTS.offset(10 + (index * 5) as isize),
       )
     }
   }
@@ -31,8 +31,8 @@ impl Confusable {
   pub(crate) const fn case_sensitive_at(index: u16) -> Self {
     unsafe {
       Self(
-        read_u32_le(CONFUSABLES.offset((CASE_SENSITIVE_CONFUSABLES_OFFSET + (index * 5)) as _)),
-        *CONFUSABLES.offset((CASE_SENSITIVE_CONFUSABLES_OFFSET + 4 + (index * 5)) as _),
+        read_u32_le(CODEPOINTS.offset((CASE_SENSITIVE_CODEPOINTS_OFFSET + (index * 5)) as _)),
+        *CODEPOINTS.offset((CASE_SENSITIVE_CODEPOINTS_OFFSET + 4 + (index * 5)) as _),
       )
     }
   }
@@ -47,7 +47,7 @@ impl Confusable {
     let mut max = conf;
 
     if (self.0 & RANGE_MASK) != 0 {
-      max += ((self.1 & 0x7f) as u32);
+      max += (self.1 & 0x7f) as u32;
     }
 
     if other > max {

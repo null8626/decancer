@@ -1,5 +1,5 @@
 use crate::{
-  confusables::CONFUSABLES,
+  codepoints::CODEPOINTS,
   cure_char,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
@@ -9,7 +9,7 @@ use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-/// The translation for a single character/confusable.
+/// The translation for a single character/codepoint.
 #[must_use]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Translation {
@@ -25,7 +25,7 @@ impl Translation {
   pub(crate) const fn string(integer: u32, second_byte: u8) -> Self {
     unsafe {
       Self::String(str::from_utf8_unchecked(slice::from_raw_parts(
-        CONFUSABLES.offset(
+        CODEPOINTS.offset(
           (STRINGS_OFFSET + (((((integer >> 21) as u16) & 0x0f) << 8) | (second_byte as u16))) as _,
         ),
         ((integer >> 25) & 0x0f) as _,

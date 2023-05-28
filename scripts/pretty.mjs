@@ -9,45 +9,53 @@ const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const execute = promisify(exec)
 
 async function updateReadme() {
-  console.log('- [readme] reading confusables.bin...')
+  console.log('- [readme] reading codepoints.bin...')
 
-  const bin = await readFile(join(ROOT_DIR, 'core', 'bin', 'confusables.bin'))
+  const bin = await readFile(join(ROOT_DIR, 'core', 'bin', 'codepoints.bin'))
 
-  console.log('- [readme] parsing confusables.bin...')
+  console.log('- [readme] parsing codepoints.bin...')
 
+  let codepointsCount = 139792
   let confusablesCount = 0
-  const confusablesEnd = bin.readUint16LE()
-  const caseSensitiveConfusablesEnd = bin.readUint16LE(2)
-  const caseSensitiveConfusables = []
-  let offset = confusablesEnd
 
-  for (; offset < caseSensitiveConfusablesEnd; offset += 5) {
+  const codepointsEnd = bin.readUint16LE()
+  const caseSensitiveCodepointsEnd = bin.readUint16LE(2)
+  const caseSensitiveCodepoints = []
+  let offset = codepointsEnd
+
+  for (; offset < caseSensitiveCodepointsEnd; offset += 5) {
     const integer = bin.readUint32LE(offset)
 
     const codepoint = integer & 0x1fffff
     let toAdd = 1
 
-    caseSensitiveConfusables.push(codepoint)
+    caseSensitiveCodepoints.push(codepoint)
 
     if ((integer & 0x20000000) !== 0) {
       const rangeUntil = bin.readUint8(offset + 4) & 0x7f
 
-      caseSensitiveConfusables.push(
+      caseSensitiveCodepoints.push(
         ...Array.from({ length: rangeUntil }, (_, i) => codepoint + 1 + i)
       )
       toAdd += rangeUntil
     }
 
-    confusablesCount += toAdd
+    if ((integer & 0x40000000) !== 0 || ((integer >> 21) & 0xff) !== 0) {
+      confusablesCount += toAdd
+    }
+
+    codepointsCount += toAdd
   }
 
-  for (offset = 6; offset < confusablesEnd; offset += 5) {
+  for (offset = 6; offset < codepointsEnd; offset += 5) {
     const integer = bin.readUint32LE(offset)
 
     const codepoint = integer & 0x1fffff
     let toAdd = 1
 
-    if ((integer & 0x20000000) !== 0) toAdd += bin.readUint8(offset + 4) & 0x7f
+    if ((integer & 0x20000000) !== 0) {
+      toAdd += bin.readUint8(offset + 4) & 0x7f
+    }
 
     const uppercasedCodepoint = String.fromCodePoint(codepoint)
       .toUpperCase()
@@ -55,11 +63,16 @@ async function updateReadme() {
 
     if (
       uppercasedCodepoint !== codepoint &&
-      !caseSensitiveConfusables.includes(uppercasedCodepoint)
-    )
+      !caseSensitiveCodepoints.includes(uppercasedCodepoint)
+    ) {
       toAdd *= 2
+    }
 
-    confusablesCount += toAdd
+    if ((integer & 0x40000000) !== 0 || ((integer >> 21) & 0xff) !== 0) {
+      confusablesCount += toAdd
+    }
+
+    codepointsCount += toAdd
   }
 
   console.log('- [readme] reading README.md...')
@@ -73,8 +86,15 @@ async function updateReadme() {
       .toString()
       .trim()
       .replace(
-        /\*\*[\d,]+ different unicode codepoints\*\*/,
-        `**${confusablesCount.toLocaleString()} different unicode codepoints**`
+        /\*\*[\d,]+ \(\d+\.\d{2}%\) different unicode codepoints\*\*/,
+        `**${codepointsCount.toLocaleString()} (${(
+          (codepointsCount / 0x10ffff) *
+          100
+        ).toFixed(2)}%) different unicode codepoints**`
+      )
+      .replace(
+        /\*\*[\d,]+ different unicode confusables\*\*/,
+        `**${confusablesCount.toLocaleString()} different unicode confusables**`
       )
       .replace(
         /customized [\d\.]+ \w?B binary file/,
