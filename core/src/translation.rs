@@ -81,7 +81,7 @@ where
   }
 }
 
-/// Alias for [`cure_char`].
+/// [Cures][cure_char] a single character/unicode codepoint.
 ///
 /// # Examples
 ///

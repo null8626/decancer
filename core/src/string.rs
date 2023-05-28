@@ -323,9 +323,7 @@ impl AddAssign<NonZeroU32> for CuredString {
 /// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
 /// let mut cured = decancer::cure(text);
 ///
-/// for cured_char in text.chars().map(decancer::cure_char) {
-///   cured += cured_char;
-/// }
+/// cured += text;
 ///
 /// assert_eq!(cured, "very funny textvery funny text");
 /// ```
@@ -439,6 +437,8 @@ impl Extend<char> for CuredString {
 /// use core::num::NonZeroU32;
 ///
 /// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
+/// // SAFETY: these numbers are obviously above zero.
 /// cured.extend([
 ///   0x76, 0xFF25, 0x24E1, 0x1D502, 0x20,
 ///   0x1D53D, 0x1D54C, 0x147, 0x2115, 0xFF59,
@@ -579,7 +579,7 @@ impl Extend<u32> for CuredString {
   }
 }
 
-/// Cures a string. Alias for [`cure`].
+/// [Cures][cure] a string.
 ///
 /// # Examples
 ///
@@ -695,7 +695,7 @@ impl FromIterator<Translation> for CuredString {
   }
 }
 
-/// Alias for [`cure`]. This never errors.
+/// [Cures][cure] a string.
 ///
 /// # Examples
 ///
