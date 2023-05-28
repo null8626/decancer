@@ -219,30 +219,6 @@ impl Extend<Translation> for String {
   }
 }
 
-/// Extends a [`CuredString`][crate::CuredString] with an iterator that yields [`Translation`]s.
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// let mut text = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-/// text.extend([decancer::cure_char('Ｅ'), decancer::cure_char('Ｅ')]);
-///
-/// assert_eq!(text, "very funny textee");
-/// ```
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl Extend<Translation> for crate::CuredString {
-  #[inline(always)]
-  fn extend<I>(&mut self, iter: I)
-  where
-    I: IntoIterator<Item = Translation>,
-  {
-    self.0.extend(iter)
-  }
-}
-
 /// Coerces this [`Translation`] to an [`Option<String>`][Option].
 ///
 /// # Examples
@@ -305,32 +281,6 @@ impl FromIterator<Translation> for String {
       res += acc;
       res
     })
-  }
-}
-
-/// A helper implementation for joining several [`Translation`]s into one [`CuredString`][crate::CuredString].
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// use decancer::CuredString;
-///
-/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let cured: CuredString = text.chars().map(decancer::cure_char).collect();
-///
-/// assert_eq!(cured, "very funny text");
-/// ```
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl FromIterator<Translation> for crate::CuredString {
-  #[inline(always)]
-  fn from_iter<I>(iter: I) -> Self
-  where
-    I: IntoIterator<Item = Translation>,
-  {
-    Self(iter.into_iter().collect())
   }
 }
 

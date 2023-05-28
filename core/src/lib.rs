@@ -124,10 +124,15 @@ where
 /// ```rust
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 ///
+/// // cured here is a decancer::CuredString struct wrapping over the cured string
+/// // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
 /// assert!(cured.starts_with("very"));
-/// assert!(cured.ends_with("text"));
 /// assert!(cured.contains("funny"));
+/// assert!(cured.ends_with("text"));
+///
+/// // retrieve the String inside and consume the struct.
+/// let _output_str = cured.into_str();
 /// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
@@ -136,7 +141,7 @@ pub fn cure<S>(input: &S) -> CuredString
 where
   S: AsRef<str> + ?Sized,
 {
-  input.as_ref().chars().map(cure_char).collect()
+  input.as_ref().chars().collect()
 }
 
 #[cfg(feature = "std")]
@@ -201,10 +206,15 @@ where
 /// let reader = Cursor::new(text.as_bytes());
 /// let cured = decancer::cure_reader(reader).unwrap();
 ///
+/// // cured here is a decancer::CuredString struct wrapping over the cured string
+/// // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
 /// assert!(cured.starts_with("very"));
-/// assert!(cured.ends_with("text"));
 /// assert!(cured.contains("funny"));
+/// assert!(cured.ends_with("text"));
+///
+/// // retrieve the String inside and consume the struct.
+/// let _output_str = cured.into_str();
 /// ```
 ///
 /// From a [`File`][std::fs::File] through a [`BufReader`][io::BufReader]:
@@ -212,13 +222,19 @@ where
 /// ```rust,ignore
 /// use std::{fs::File, io::BufReader};
 ///
+/// // assume cancer.txt is a UTF-8 encoded file containing the string "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
 /// let reader = BufReader::new(File::open("cancer.txt").unwrap());
 /// let cured = decancer::cure_reader(reader).unwrap();
 ///
+/// // cured here is a decancer::CuredString struct wrapping over the cured string
+/// // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
 /// assert!(cured.starts_with("very"));
-/// assert!(cured.ends_with("text"));
 /// assert!(cured.contains("funny"));
+/// assert!(cured.ends_with("text"));
+///
+/// // retrieve the String inside and consume the struct.
+/// let _output_str = cured.into_str();
 /// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
