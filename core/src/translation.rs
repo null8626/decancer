@@ -95,7 +95,7 @@ where
 /// assert!(matches!(cured_e, Translation::Character('e')));
 /// ```
 ///
-/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) [`&'static str`][str]:
+/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) [`&'static str`][prim@str]:
 ///
 /// ```rust
 /// use decancer::Translation;
