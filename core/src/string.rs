@@ -1,13 +1,15 @@
-use crate::{cure, cure_char, similar, translation::Translation};
+use crate::{cure, cure_char, cure_reader, similar, translation::Translation};
 use core::{
   cmp::PartialEq,
-  fmt::{self, Debug, Display, Formatter},
+  fmt::{self, Debug, Display, Formatter, Write},
   mem::transmute,
-  ops::Deref,
+  num::NonZeroU32,
+  ops::{Add, AddAssign, Deref},
   str::FromStr,
 };
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::io::{self, Cursor};
 
 /// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
@@ -146,6 +148,238 @@ impl CuredString {
   }
 }
 
+/// A helper implementation for [curing][cure] and appending a [`char`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// for character in text.chars() {
+///   cured = cured + character;
+/// }
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl Add<char> for CuredString {
+  type Output = Self;
+
+  #[inline(always)]
+  fn add(self, rhs: char) -> Self::Output {
+    self.add(cure_char(rhs))
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`NonZeroU32`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use core::num::NonZeroU32;
+///
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
+/// // SAFETY: this literal is obviously NOT zero.
+/// let other = unsafe { NonZeroU32::new_unchecked(0xD800) };
+/// cured = cured + other;
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
+impl Add<NonZeroU32> for CuredString {
+  type Output = Self;
+
+  #[inline(always)]
+  fn add(self, rhs: NonZeroU32) -> Self::Output {
+    self.add(cure_char(rhs))
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`&str`][prim@str] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured = cured + "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl Add<&str> for CuredString {
+  type Output = Self;
+
+  #[inline(always)]
+  fn add(self, rhs: &str) -> Self::Output {
+    Self(self.0.add(cure(rhs).as_str()))
+  }
+}
+
+/// A helper implementation for appending a [`Translation`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// for cured_char in text.chars().map(decancer::cure_char) {
+///   cured = cured + cured_char;
+/// }
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl Add<Translation> for CuredString {
+  type Output = Self;
+
+  #[inline(always)]
+  fn add(self, rhs: Translation) -> Self::Output {
+    Self(self.0.add(rhs))
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`u32`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured = cured + 0xD800u32;
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
+impl Add<u32> for CuredString {
+  type Output = Self;
+
+  #[inline(always)]
+  fn add(self, rhs: u32) -> Self::Output {
+    self.add(cure_char(rhs))
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`char`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// for character in text.chars() {
+///   cured += character;
+/// }
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl AddAssign<char> for CuredString {
+  #[inline(always)]
+  fn add_assign(&mut self, rhs: char) {
+    self.add_assign(cure_char(rhs))
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`NonZeroU32`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use core::num::NonZeroU32;
+///
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+///
+/// // SAFETY: this literal is obviously NOT zero.
+/// let other = unsafe { NonZeroU32::new_unchecked(0xD800) };
+/// cured += other;
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
+impl AddAssign<NonZeroU32> for CuredString {
+  #[inline(always)]
+  fn add_assign(&mut self, rhs: NonZeroU32) {
+    self.add_assign(cure_char(rhs))
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`&str`][prim@str] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// for cured_char in text.chars().map(decancer::cure_char) {
+///   cured += cured_char;
+/// }
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl AddAssign<&str> for CuredString {
+  #[inline(always)]
+  fn add_assign(&mut self, rhs: &str) {
+    self.0.add_assign(cure(rhs).as_str())
+  }
+}
+
+/// A helper implementation for appending a [`Translation`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// for cured_char in text.chars().map(decancer::cure_char) {
+///   cured += cured_char;
+/// }
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl AddAssign<Translation> for CuredString {
+  #[inline(always)]
+  fn add_assign(&mut self, rhs: Translation) {
+    self.0.add_assign(rhs)
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending a [`u32`] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use core::num::NonZeroU32;
+///
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured += 0xD800;
+///
+/// assert_eq!(cured, "very funny text");
+/// ```
+impl AddAssign<u32> for CuredString {
+  #[inline(always)]
+  fn add_assign(&mut self, rhs: u32) {
+    self.add_assign(cure_char(rhs))
+  }
+}
+
 /// Extends a [`String`] with an iterator that yields [`CuredString`]s.
 ///
 /// # Examples
@@ -172,32 +406,106 @@ impl Extend<CuredString> for String {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields characters.
+/// Extends a [`CuredString`] with an iterator that yields [`char`]s.
 ///
 /// # Examples
 ///
 /// Basic usage:
 ///
 /// ```rust
-/// let mut text = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-/// text.extend("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣".chars());
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+/// cured.extend(text.chars());
 ///
-/// assert_eq!(text, "very funny textvery funny text");
+/// assert_eq!(cured, "very funny textvery funny text");
 /// ```
-impl<C> Extend<C> for CuredString
-where
-  C: Into<u32>,
-{
+impl Extend<char> for CuredString {
   #[inline(always)]
   fn extend<I>(&mut self, iter: I)
   where
-    I: IntoIterator<Item = C>,
+    I: IntoIterator<Item = char>,
   {
     self.extend(iter.into_iter().map(cure_char))
   }
 }
 
-/// Extends a [`CuredString`] with another [`CuredString`].
+/// Extends a [`CuredString`] with an iterator that yields [`NonZeroU32`]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use core::num::NonZeroU32;
+///
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured.extend([
+///   0x76, 0xFF25, 0x24E1, 0x1D502, 0x20,
+///   0x1D53D, 0x1D54C, 0x147, 0x2115, 0xFF59,
+///   0x20, 0x163, 0x4E47, 0x1D54F, 0x1D4E3
+/// ].map(|c| unsafe { NonZeroU32::new_unchecked(c) }));
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl Extend<NonZeroU32> for CuredString {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = NonZeroU32>,
+  {
+    self.extend(iter.into_iter().map(cure_char))
+  }
+}
+
+/// Extends a [`CuredString`] with an iterator that yields [`String`]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured.extend([
+///   String::from("vＥⓡ𝔂 "),
+///   String::from("𝔽𝕌Ňℕｙ "),
+///   String::from("ţ乇𝕏𝓣")
+/// ]);
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl Extend<String> for CuredString {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = String>,
+  {
+    self.extend(iter.into_iter().map(|s| cure(&s)))
+  }
+}
+
+/// Extends a [`CuredString`] with an iterator that yields [`&str`][prim@str]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured.extend(["vＥⓡ𝔂 ", "𝔽𝕌Ňℕｙ ", "ţ乇𝕏𝓣"]);
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl<'a> Extend<&'a str> for CuredString {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = &'a str>,
+  {
+    self.extend(iter.into_iter().map(cure))
+  }
+}
+
+/// Extends a [`CuredString`] with an iterator that yields another [`CuredString`].
 ///
 /// # Examples
 ///
@@ -205,7 +513,6 @@ where
 ///
 /// ```rust
 /// let mut text = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-///
 /// text.extend([
 ///   decancer::cure("vＥⓡ𝔂 "),
 ///   decancer::cure("𝔽𝕌Ňℕｙ "),
@@ -220,7 +527,7 @@ impl Extend<CuredString> for CuredString {
   where
     I: IntoIterator<Item = CuredString>,
   {
-    self.0.extend(iter.into_iter().map(|s| s.into_str()))
+    self.0.extend(iter)
   }
 }
 
@@ -243,6 +550,32 @@ impl Extend<Translation> for CuredString {
     I: IntoIterator<Item = Translation>,
   {
     self.0.extend(iter)
+  }
+}
+
+/// Extends a [`CuredString`] with an iterator that yields [`u32`]s.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+/// cured.extend([
+///   0x76, 0xFF25, 0x24E1, 0x1D502, 0x20,
+///   0x1D53D, 0x1D54C, 0x147, 0x2115, 0xFF59,
+///   0x20, 0x163, 0x4E47, 0x1D54F, 0x1D4E3
+/// ]);
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl Extend<u32> for CuredString {
+  #[inline(always)]
+  fn extend<I>(&mut self, iter: I)
+  where
+    I: IntoIterator<Item = u32>,
+  {
+    self.extend(iter.into_iter().map(cure_char))
   }
 }
 
@@ -371,7 +704,7 @@ impl FromIterator<Translation> for CuredString {
 /// ```rust
 /// use decancer::CuredString;
 ///
-/// // SAFETY: the function never returns an Err.
+/// // SAFETY: the function will never return an Err.
 /// let cured: CuredString = unsafe { "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣".parse().unwrap_unchecked() };
 ///
 /// // cured here is a decancer::CuredString struct wrapping over the cured string
@@ -393,7 +726,7 @@ impl FromStr for CuredString {
   }
 }
 
-/// Coerces this [`CuredString`] to a [`&str`][str].
+/// Coerces this [`CuredString`] to a [`&str`][prim@str].
 ///
 /// # Examples
 ///
@@ -460,7 +793,7 @@ impl Display for CuredString {
   }
 }
 
-/// A helper implementation for implicitly inheriting [`String`] and subsequently [`&str`][str]'s methods.
+/// A helper implementation for implicitly inheriting [`String`] and subsequently [`&str`][prim@str]'s methods.
 ///
 /// # Examples
 ///
@@ -478,6 +811,83 @@ impl Deref for CuredString {
   #[inline(always)]
   fn deref(&self) -> &Self::Target {
     &self.0
+  }
+}
+
+/// A helper implementation for [curing][cure] and appending either a [`char`] or a [`&str`][prim@str] to a [`CuredString`].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use core::fmt::Write;
+///
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// // SAFETY: the implementation of these functions will never return an Err.
+/// unsafe {
+///   cured.write_str(text).unwrap_unchecked();
+///
+///   for character in text.chars() {
+///     cured.write_char(character).unwrap_unchecked();
+///   }
+/// }
+///
+/// assert_eq!(cured, "very funny textvery funny textvery funny text");
+/// ```
+impl Write for CuredString {
+  #[inline(always)]
+  fn write_str(&mut self, s: &str) -> fmt::Result {
+    self.add_assign(s);
+
+    Ok(())
+  }
+
+  #[inline(always)]
+  fn write_char(&mut self, c: char) -> fmt::Result {
+    self.add_assign(c);
+
+    Ok(())
+  }
+}
+
+/// A helper implementation for [curing][cure_reader] and appending a stream of [UTF-8](https://en.wikipedia.org/wiki/UTF-8) bytes to a [`CuredString`].
+///
+/// # Safety
+///
+/// This function assumes that the stream of bytes coming are already valid [UTF-8](https://en.wikipedia.org/wiki/UTF-8). Therefore, [UTF-8](https://en.wikipedia.org/wiki/UTF-8) validity will **NOT** be checked unless the reader EOFs prematurely (see [`UnexpectedEof`][io::ErrorKind::UnexpectedEof]).
+///
+/// # Errors
+///
+/// Errors only if the reader [ends prematurely][io::ErrorKind::UnexpectedEof] or [fails][io::Error].
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// use std::io::Write;
+///
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+///
+/// write!(cured, "{text}").unwrap();
+///
+/// assert_eq!(cured, "very funny textvery funny text");
+/// ```
+impl io::Write for CuredString {
+  #[inline(always)]
+  fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+    self.0.add_assign(cure_reader(Cursor::new(buf))?.as_str());
+
+    Ok(buf.len())
+  }
+
+  #[inline(always)]
+  fn flush(&mut self) -> io::Result<()> {
+    Ok(())
   }
 }
 
