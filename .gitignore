@@ -12,8 +12,8 @@ bindings/node/artifacts/
 bindings/wasm/pkg/
 
 .unicache.json
-output*.json
-*.bin
+output.json
+output.bin
 
 # CI can create random files in the root dir
 package.json
