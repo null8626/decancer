@@ -206,8 +206,9 @@ impl Add<NonZeroU32> for CuredString {
 /// Basic usage:
 ///
 /// ```rust
-/// let mut cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-/// cured = cured + "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// let mut cured = decancer::cure(text);
+/// cured = cured + text;
 ///
 /// assert_eq!(cured, "very funny textvery funny text");
 /// ```
