@@ -277,10 +277,10 @@ impl FromIterator<Translation> for String {
     let iter = iter.into_iter();
     let (size_hint, _) = iter.size_hint();
 
-    iter.fold(String::with_capacity(size_hint), |mut res, acc| {
-      res += acc;
-      res
-    })
+    let mut s = String::with_capacity(size_hint);
+    s.extend(iter);
+    
+    s
   }
 }
 
