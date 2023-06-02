@@ -14,13 +14,8 @@ mod util;
 pub use string::CuredString;
 pub use translation::Translation;
 
+use codepoints::{Codepoint, CASE_SENSITIVE_CODEPOINTS_COUNT, CODEPOINTS_COUNT};
 use core::cmp::Ordering;
-#[cfg(feature = "std")]
-use std::{
-  io::{self, ErrorKind, Read},
-  mem::MaybeUninit,
-  slice,
-};
 
 /// Cures a single character/unicode codepoint.
 ///
@@ -77,12 +72,12 @@ where
   }
 
   let mut start = 0;
-  let mut end = codepoints::CASE_SENSITIVE_CODEPOINTS_COUNT;
+  let mut end = CASE_SENSITIVE_CODEPOINTS_COUNT;
 
   if code != code_lowercased {
     while start <= end {
       let mid = (start + end) / 2;
-      let codepoint = codepoints::Codepoint::case_sensitive_at(mid);
+      let codepoint = Codepoint::case_sensitive_at(mid);
 
       match codepoint.matches(code) {
         Ordering::Equal => return codepoint.translation(code),
@@ -94,11 +89,11 @@ where
     start = 0;
   }
 
-  end = codepoints::CODEPOINTS_COUNT;
+  end = CODEPOINTS_COUNT;
 
   while start <= end {
     let mid = (start + end) / 2;
-    let codepoint = codepoints::Codepoint::at(mid);
+    let codepoint = Codepoint::at(mid);
 
     match codepoint.matches(code_lowercased) {
       Ordering::Equal => return codepoint.translation(code_lowercased),
@@ -137,111 +132,4 @@ where
   S: AsRef<str> + ?Sized,
 {
   input.as_ref().chars().collect()
-}
-
-#[cfg(feature = "std")]
-#[allow(invalid_value, clippy::uninit_assumed_init)]
-fn cure_next_bytes<R>(reader: &mut R) -> io::Result<Option<Translation>>
-where
-  R: Read,
-{
-  let mut first = unsafe { MaybeUninit::uninit().assume_init() };
-
-  if let Err(err) = reader.read_exact(slice::from_mut(&mut first)) {
-    return match err.kind() {
-      ErrorKind::UnexpectedEof => Ok(None),
-      _ => Err(err),
-    };
-  }
-
-  let mut output = first as u32;
-
-  if 0xF0 == (0xF8 & first) {
-    let mut rest: [u8; 3] = unsafe { MaybeUninit::uninit().assume_init() };
-    reader.read_exact(&mut rest)?;
-
-    output = ((0x07 & first as u32) << 18)
-      | ((0x3F & rest[0] as u32) << 12)
-      | ((0x3F & rest[1] as u32) << 6)
-      | (0x3F & rest[2] as u32);
-  } else if 0xE0 == (0xF0 & first) {
-    let mut rest: [u8; 2] = unsafe { MaybeUninit::uninit().assume_init() };
-    reader.read_exact(&mut rest)?;
-
-    output =
-      ((0x0F & first as u32) << 12) | ((0x3F & rest[0] as u32) << 6) | (0x3F & rest[1] as u32);
-  } else if 0xC0 == (0xE0 & first) {
-    let mut next = unsafe { MaybeUninit::uninit().assume_init() };
-    reader.read_exact(slice::from_mut(&mut next))?;
-
-    output = ((0x1F & first as u32) << 6) | (0x3F & next as u32);
-  }
-
-  Ok(Some(cure_char(unsafe { char::from_u32_unchecked(output) })))
-}
-
-/// Cures UTF-8 bytes from a [reader][Read]. This can be a [`File`][std::fs::File], [`BufReader`][io::BufReader], [`Cursor`][io::Cursor], or any data type that implements [`Read`].
-///
-/// # Safety
-///
-/// This function assumes that the stream of bytes coming are already valid [UTF-8](https://en.wikipedia.org/wiki/UTF-8). Therefore, [UTF-8](https://en.wikipedia.org/wiki/UTF-8) validity will **NOT** be checked unless the reader EOFs prematurely (see [`UnexpectedEof`][ErrorKind::UnexpectedEof]).
-///
-/// # Errors
-///
-/// Errors only if the reader [ends prematurely][ErrorKind::UnexpectedEof] or [fails][io::Error].
-///
-/// # Examples
-///
-/// From an in-memory buffer with a [`Cursor`][io::Cursor]:
-///
-/// ```rust
-/// use std::io::Cursor;
-///
-/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let reader = Cursor::new(text.as_bytes());
-/// let cured = decancer::cure_reader(reader).unwrap();
-///
-/// // cured here is a decancer::CuredString struct wrapping over the cured string
-/// // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
-/// assert_eq!(cured, "very funny text");
-/// assert!(cured.starts_with("very"));
-/// assert!(cured.contains("funny"));
-/// assert!(cured.ends_with("text"));
-///
-/// // retrieve the String inside and consume the struct.
-/// let _output_str = cured.into_str();
-/// ```
-///
-/// From a [`File`][std::fs::File] through a [`BufReader`][io::BufReader]:
-///
-/// ```rust,ignore
-/// use std::{fs::File, io::BufReader};
-///
-/// // assume cancer.txt is a UTF-8 encoded file containing the string "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-/// let reader = BufReader::new(File::open("cancer.txt").unwrap());
-/// let cured = decancer::cure_reader(reader).unwrap();
-///
-/// // cured here is a decancer::CuredString struct wrapping over the cured string
-/// // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
-/// assert_eq!(cured, "very funny text");
-/// assert!(cured.starts_with("very"));
-/// assert!(cured.contains("funny"));
-/// assert!(cured.ends_with("text"));
-///
-/// // retrieve the String inside and consume the struct.
-/// let _output_str = cured.into_str();
-/// ```
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-pub fn cure_reader<R>(mut reader: R) -> io::Result<CuredString>
-where
-  R: Read,
-{
-  let mut output = String::new();
-
-  while let Some(next) = cure_next_bytes(&mut reader)? {
-    output += next;
-  }
-
-  Ok(CuredString(output))
 }
