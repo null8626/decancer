@@ -64,8 +64,7 @@ where
   if code <= 31
     || code == 127
     || (0xD800..=0xF8FF).contains(&code)
-    || (0xE0100..=0xE01EF).contains(&code)
-    || code >= 0xF0000
+    || code >= 0xE0100
   {
     return Translation::None;
   }
@@ -185,7 +184,7 @@ where
   Ok(Some(cure_char(unsafe { char::from_u32_unchecked(output) })))
 }
 
-/// Cures bytes from a reader. This can be a [`File`][std::fs::File], [`BufReader`][io::BufReader], [`Cursor`][io::Cursor], or any data type that implements [`Read`].
+/// Cures UTF-8 bytes from a [reader][Read]. This can be a [`File`][std::fs::File], [`BufReader`][io::BufReader], [`Cursor`][io::Cursor], or any data type that implements [`Read`].
 ///
 /// # Safety
 ///
