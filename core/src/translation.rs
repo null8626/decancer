@@ -38,7 +38,7 @@ impl Translation {
   }
 }
 
-/// Checks if this [`Translation`] is ***similar*** to another string.
+/// Checks if this [`Translation`] is ***similar*** into another string.
 ///
 /// # Examples
 ///
@@ -136,7 +136,7 @@ impl fmt::Display for Translation {
   }
 }
 
-/// A helper implementation for appending a [`Translation`] to a [`String`].
+/// A helper implementation for [appending][Add] a [`Translation`] into a [`String`].
 ///
 /// # Examples
 ///
@@ -164,7 +164,7 @@ impl Add<Translation> for String {
   }
 }
 
-/// A helper implementation for appending a [`Translation`] to a [`String`].
+/// A helper implementation for [appending][AddAssign] a [`Translation`] into a [`String`] in-place.
 ///
 /// # Examples
 ///
@@ -193,7 +193,7 @@ impl AddAssign<Translation> for String {
   }
 }
 
-/// Extends a [`String`] with an iterator that yields [`Translation`]s.
+/// [Extends][Extend] a [`String`] with an [iterator][Iterator] that yields [`Translation`]s.
 ///
 /// # Examples
 ///
@@ -219,7 +219,7 @@ impl Extend<Translation> for String {
   }
 }
 
-/// Coerces this [`Translation`] to an [`Option<String>`][Option].
+/// Coerces this [`Translation`] into an [`Option<String>`][Option].
 ///
 /// # Examples
 ///
@@ -255,7 +255,7 @@ impl Into<Option<String>> for Translation {
   }
 }
 
-/// A helper implementation for joining several [`Translation`]s into one [`String`].
+/// A helper implementation for [joining][Iterator::collect] several [`Translation`]s into one [`String`].
 ///
 /// # Examples
 ///

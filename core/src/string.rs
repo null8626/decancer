@@ -1,15 +1,15 @@
-use crate::{cure, cure_char, cure_reader, similar, translation::Translation};
+use crate::{cure, cure_char, similar, translation::Translation};
 use core::{
   cmp::PartialEq,
   fmt::{self, Debug, Display, Formatter, Write},
   mem::transmute,
   num::NonZeroU32,
   ops::{Add, AddAssign, Deref},
-  str::FromStr,
+  str::{self, FromStr},
 };
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::io::{self, Cursor};
+use std::io;
 
 /// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
@@ -19,7 +19,7 @@ use std::io::{self, Cursor};
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  /// Coerces this [`CuredString`] to a [`String`].
+  /// Coerces this [`CuredString`] into a [`String`].
   ///
   /// # Examples
   ///
@@ -148,7 +148,7 @@ impl CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`char`] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][Add] a [`char`] into a [`CuredString`].
 ///
 /// # Examples
 ///
@@ -173,7 +173,7 @@ impl Add<char> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`NonZeroU32`] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][Add] a [`NonZeroU32`] into a [`CuredString`].
 ///
 /// # Examples
 ///
@@ -199,7 +199,7 @@ impl Add<NonZeroU32> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`&str`][prim@str] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][Add] a [`&str`][prim@str] into a [`CuredString`].
 ///
 /// # Examples
 ///
@@ -221,7 +221,7 @@ impl Add<&str> for CuredString {
   }
 }
 
-/// A helper implementation for appending a [`Translation`] to a [`CuredString`].
+/// A helper implementation for [appending][Add] a [`Translation`] into a [`CuredString`].
 ///
 /// # Examples
 ///
@@ -246,7 +246,7 @@ impl Add<Translation> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`u32`] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][Add] a [`u32`] into a [`CuredString`].
 ///
 /// # Examples
 ///
@@ -267,7 +267,7 @@ impl Add<u32> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`char`] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][AddAssign] a [`char`] into a [`CuredString`] in-place.
 ///
 /// # Examples
 ///
@@ -290,7 +290,7 @@ impl AddAssign<char> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`NonZeroU32`] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][AddAssign] a [`NonZeroU32`] into a [`CuredString`] in-place.
 ///
 /// # Examples
 ///
@@ -314,7 +314,7 @@ impl AddAssign<NonZeroU32> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`&str`][prim@str] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][AddAssign] a [`&str`][prim@str] into a [`CuredString`] in-place.
 ///
 /// # Examples
 ///
@@ -335,7 +335,7 @@ impl AddAssign<&str> for CuredString {
   }
 }
 
-/// A helper implementation for appending a [`Translation`] to a [`CuredString`].
+/// A helper implementation for [appending][AddAssign] a [`Translation`] into a [`CuredString`] in-place.
 ///
 /// # Examples
 ///
@@ -358,7 +358,7 @@ impl AddAssign<Translation> for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending a [`u32`] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][AddAssign] a [`u32`] into a [`CuredString`] in-place.
 ///
 /// # Examples
 ///
@@ -379,7 +379,7 @@ impl AddAssign<u32> for CuredString {
   }
 }
 
-/// Extends a [`String`] with an iterator that yields [`CuredString`]s.
+/// [Extends][Extend] a [`String`] with an [iterator][Iterator] that yields [`CuredString`]s.
 ///
 /// # Examples
 ///
@@ -405,7 +405,7 @@ impl Extend<CuredString> for String {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields [`char`]s.
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields [`char`]s.
 ///
 /// # Examples
 ///
@@ -428,7 +428,7 @@ impl Extend<char> for CuredString {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields [`NonZeroU32`]s.
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields [`NonZeroU32`]s.
 ///
 /// # Examples
 ///
@@ -458,7 +458,7 @@ impl Extend<NonZeroU32> for CuredString {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields [`String`]s.
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields [`String`]s.
 ///
 /// # Examples
 ///
@@ -484,7 +484,7 @@ impl Extend<String> for CuredString {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields [`&str`][prim@str]s.
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields [`&str`][prim@str]s.
 ///
 /// # Examples
 ///
@@ -506,7 +506,7 @@ impl<'a> Extend<&'a str> for CuredString {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields another [`CuredString`].
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields another [`CuredString`].
 ///
 /// # Examples
 ///
@@ -532,7 +532,7 @@ impl Extend<CuredString> for CuredString {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields [`Translation`]s.
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields [`Translation`]s.
 ///
 /// # Examples
 ///
@@ -554,7 +554,7 @@ impl Extend<Translation> for CuredString {
   }
 }
 
-/// Extends a [`CuredString`] with an iterator that yields [`u32`]s.
+/// [Extends][Extend] a [`CuredString`] with an [iterator][Iterator] that yields [`u32`]s.
 ///
 /// # Examples
 ///
@@ -664,7 +664,7 @@ where
   }
 }
 
-/// A helper implementation for joining several [`Translation`]s into one [`CuredString`].
+/// A helper implementation for [joining][Iterator::collect] several [`Translation`]s into one [`CuredString`].
 ///
 /// # Examples
 ///
@@ -727,7 +727,7 @@ impl FromStr for CuredString {
   }
 }
 
-/// Coerces this [`CuredString`] to a [`&str`][prim@str].
+/// Coerces this [`CuredString`] into a [`&str`][prim@str].
 ///
 /// # Examples
 ///
@@ -745,7 +745,7 @@ impl AsRef<str> for CuredString {
   }
 }
 
-/// Checks if this [`CuredString`] is ***similar*** to another string.
+/// Checks if this [`CuredString`] is ***similar*** into another string.
 ///
 /// # Examples
 ///
@@ -778,7 +778,7 @@ where
   }
 }
 
-/// Formats this `CuredString`. Behaves exactly just like formatting your typical `String`.
+/// [Formats][Debug] this `CuredString`. Behaves exactly just like formatting your typical `String`.
 impl Debug for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
@@ -786,7 +786,7 @@ impl Debug for CuredString {
   }
 }
 
-/// Formats this `CuredString`. Behaves exactly just like formatting your typical `String`.
+/// [Formats][Display] this `CuredString`. Behaves exactly just like formatting your typical `String`.
 impl Display for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
@@ -794,7 +794,7 @@ impl Display for CuredString {
   }
 }
 
-/// A helper implementation for implicitly inheriting [`String`] and subsequently [`&str`][prim@str]'s methods.
+/// A helper implementation for implicitly [inheriting][Deref] [`String`] and subsequently [`&str`][prim@str]'s methods.
 ///
 /// # Examples
 ///
@@ -815,7 +815,7 @@ impl Deref for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure] and appending either a [`char`] or a [`&str`][prim@str] to a [`CuredString`].
+/// A helper implementation for [curing][cure] and [appending][Write] either a [`char`] or a [`&str`][prim@str] into a [`CuredString`].
 ///
 /// # Examples
 ///
@@ -854,15 +854,11 @@ impl Write for CuredString {
   }
 }
 
-/// A helper implementation for [curing][cure_reader] and appending a stream of [UTF-8](https://en.wikipedia.org/wiki/UTF-8) bytes to a [`CuredString`].
-///
-/// # Safety
-///
-/// This function assumes that the stream of bytes coming are already valid [UTF-8](https://en.wikipedia.org/wiki/UTF-8). Therefore, [UTF-8](https://en.wikipedia.org/wiki/UTF-8) validity will **NOT** be checked unless the reader EOFs prematurely (see [`UnexpectedEof`][io::ErrorKind::UnexpectedEof]).
+/// A helper implementation for [curing][cure] and [appending][io::Write] a [UTF-8](https://en.wikipedia.org/wiki/UTF-8) [slice] into a [`CuredString`].
 ///
 /// # Errors
 ///
-/// Errors only if the reader [ends prematurely][io::ErrorKind::UnexpectedEof] or [fails][io::Error].
+/// [Errors][io::Error] if the [slice] contains [invalid][io::ErrorKind::InvalidData] [UTF-8](https://en.wikipedia.org/wiki/UTF-8) bytes. (See [`Utf8Error`][str::Utf8Error])
 ///
 /// # Examples
 ///
@@ -881,9 +877,14 @@ impl Write for CuredString {
 impl io::Write for CuredString {
   #[inline(always)]
   fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-    self.0.add_assign(cure_reader(Cursor::new(buf))?.as_str());
+    match str::from_utf8(buf) {
+      Ok(s) => {
+        self.0.add_assign(cure(s).as_str());
 
-    Ok(buf.len())
+        Ok(buf.len())
+      },
+      Err(e) => Err(io::Error::new(io::ErrorKind::InvalidData, e)),
+    }
   }
 
   #[inline(always)]
