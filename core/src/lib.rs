@@ -61,11 +61,7 @@ where
 {
   let code = code.into();
 
-  if code <= 31
-    || code == 127
-    || (0xD800..=0xF8FF).contains(&code)
-    || code >= 0xE0100
-  {
+  if code <= 31 || code == 127 || (0xD800..=0xF8FF).contains(&code) || code >= 0xE0100 {
     return Translation::None;
   }
 
