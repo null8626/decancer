@@ -279,7 +279,7 @@ impl FromIterator<Translation> for String {
 
     let mut s = String::with_capacity(size_hint);
     s.extend(iter);
-    
+
     s
   }
 }
