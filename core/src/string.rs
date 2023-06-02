@@ -882,7 +882,7 @@ impl io::Write for CuredString {
         self.0.add_assign(cure(s).as_str());
 
         Ok(buf.len())
-      },
+      }
       Err(e) => Err(io::Error::new(io::ErrorKind::InvalidData, e)),
     }
   }

@@ -14,7 +14,7 @@ mod util;
 pub use string::CuredString;
 pub use translation::Translation;
 
-use codepoints::{Codepoint, CODEPOINTS_COUNT, CASE_SENSITIVE_CODEPOINTS_COUNT};
+use codepoints::{Codepoint, CASE_SENSITIVE_CODEPOINTS_COUNT, CODEPOINTS_COUNT};
 use core::cmp::Ordering;
 
 /// Cures a single character/unicode codepoint.
