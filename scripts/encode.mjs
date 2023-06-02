@@ -43,8 +43,7 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
         if (
           codepoint > 0x7f &&
           (codepoint < 0xd800 || codepoint > 0xf8ff) &&
-          (codepoint < 0xe0100 || codepoint > 0xe01ef) &&
-          codepoint < 0xf0000
+          codepoint < 0xe0100
         ) {
           UNICACHE.expected.push(codepoint)
         }
