@@ -7,10 +7,10 @@ use core::cmp::Ordering;
 
 pub(crate) const CODEPOINTS: *const u8 = include_bytes!("../bin/codepoints.bin").as_ptr();
 
-const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
-pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 5) - 1;
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 5) - 1;
+pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
+pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 5) - 1;
 
 const CODEPOINT_MASK: u32 = 0x1fffff;
 const RANGE_MASK: u32 = 0x20000000;
@@ -19,20 +19,11 @@ const STRING_TRANSLATION_MASK: u32 = 0x40000000;
 pub(crate) struct Codepoint(u32, u8);
 
 impl Codepoint {
-  pub(crate) const fn at(index: u16) -> Self {
+  pub(crate) const fn at(offset: u16) -> Self {
     unsafe {
       Self(
-        read_u32_le(CODEPOINTS.offset(6 + (index * 5) as isize)),
-        *CODEPOINTS.offset(10 + (index * 5) as isize),
-      )
-    }
-  }
-
-  pub(crate) const fn case_sensitive_at(index: u16) -> Self {
-    unsafe {
-      Self(
-        read_u32_le(CODEPOINTS.offset((CASE_SENSITIVE_CODEPOINTS_OFFSET + (index * 5)) as _)),
-        *CODEPOINTS.offset((CASE_SENSITIVE_CODEPOINTS_OFFSET + 4 + (index * 5)) as _),
+        read_u32_le(CODEPOINTS.offset(offset as _)),
+        *CODEPOINTS.offset((4 + offset) as _),
       )
     }
   }
