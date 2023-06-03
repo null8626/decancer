@@ -14,8 +14,27 @@ mod util;
 pub use string::CuredString;
 pub use translation::Translation;
 
-use codepoints::{Codepoint, CASE_SENSITIVE_CODEPOINTS_COUNT, CODEPOINTS_COUNT};
+use codepoints::{
+  Codepoint, CASE_SENSITIVE_CODEPOINTS_COUNT, CASE_SENSITIVE_CODEPOINTS_OFFSET, CODEPOINTS_COUNT,
+};
 use core::cmp::Ordering;
+
+fn translate(code: u32, offset: u16, mut end: u16) -> Option<Translation> {
+  let mut start = 0;
+
+  while start <= end {
+    let mid = (start + end) / 2;
+    let codepoint = Codepoint::at(offset + (mid * 5));
+
+    match codepoint.matches(code) {
+      Ordering::Equal => return Some(codepoint.translation(code)),
+      Ordering::Greater => start = mid + 1,
+      _ => end = mid - 1,
+    };
+  }
+
+  None
+}
 
 /// Cures a single character/unicode codepoint.
 ///
@@ -56,7 +75,7 @@ where
 {
   let code = code.into();
 
-  if code <= 31 || code == 127 || (0xD800..=0xF8FF).contains(&code) || code >= 0xE0100 {
+  if code <= 31 || code == 127 || (0xd800..=0xf8ff).contains(&code) || code >= 0xe0100 {
     return Translation::None;
   }
 
@@ -69,40 +88,17 @@ where
 
   if code_lowercased < 0x80 {
     return Translation::character(code_lowercased);
-  }
-
-  let mut start = 0;
-  let mut end = CASE_SENSITIVE_CODEPOINTS_COUNT;
-
-  if code != code_lowercased {
-    while start <= end {
-      let mid = (start + end) / 2;
-      let codepoint = Codepoint::case_sensitive_at(mid);
-
-      match codepoint.matches(code) {
-        Ordering::Equal => return codepoint.translation(code),
-        Ordering::Greater => start = mid + 1,
-        _ => end = mid - 1,
-      };
+  } else if code != code_lowercased {
+    if let Some(translation) = translate(
+      code,
+      CASE_SENSITIVE_CODEPOINTS_OFFSET,
+      CASE_SENSITIVE_CODEPOINTS_COUNT,
+    ) {
+      return translation;
     }
-
-    start = 0;
   }
 
-  end = CODEPOINTS_COUNT;
-
-  while start <= end {
-    let mid = (start + end) / 2;
-    let codepoint = Codepoint::at(mid);
-
-    match codepoint.matches(code_lowercased) {
-      Ordering::Equal => return codepoint.translation(code_lowercased),
-      Ordering::Greater => start = mid + 1,
-      _ => end = mid - 1,
-    };
-  }
-
-  Translation::character(code_lowercased)
+  translate(code_lowercased, 6, CODEPOINTS_COUNT).unwrap_or(Translation::character(code_lowercased))
 }
 
 /// Cures a string.
