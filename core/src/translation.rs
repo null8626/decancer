@@ -5,7 +5,7 @@ use crate::{
 };
 #[cfg(feature = "std")]
 use core::ops::{Add, AddAssign};
-use core::{cmp::PartialEq, fmt, mem::transmute, slice, str};
+use core::{cmp::PartialEq, fmt::{self, Debug, Display}, mem::transmute, slice, str};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -62,9 +62,10 @@ impl<S> PartialEq<S> for Translation
 where
   S: AsRef<str> + ?Sized,
 {
-  fn eq(&self, other: &S) -> bool {
-    let o = other.as_ref();
-
+  #[must_use]
+  fn eq(&self, o: &S) -> bool {
+    let o = o.as_ref();
+    
     match self {
       Self::Character(ch) => {
         let mut chars = o.chars();
@@ -81,39 +82,6 @@ where
   }
 }
 
-/// [Cures][cure_char] a single character/unicode codepoint.
-///
-/// # Examples
-///
-/// Most of the time, this would yield only a single unicode character:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// let cured_e = Translation::from('Ｅ');
-///
-/// assert!(matches!(cured_e, Translation::Character('e')));
-/// ```
-///
-/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) [`&'static str`][prim@str]:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// let cured_ae = Translation::from('ӕ');
-///
-/// assert!(matches!(cured_ae, Translation::String("ae")));
-/// ```
-///
-/// If your unicode character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]), you would get [`None`][Translation::None]:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// let cured_surrogate = Translation::from(0xD800u32);
-///
-/// assert!(matches!(cured_surrogate, Translation::None));
-/// ```
 impl<C> From<C> for Translation
 where
   C: Into<u32>,
@@ -124,34 +92,17 @@ where
   }
 }
 
-/// Formats this `Translation`. Behaves like formatting your typical `String`.
-impl fmt::Display for Translation {
+impl Display for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
-      Self::Character(ch) => fmt::Display::fmt(ch, f),
-      Self::String(s) => fmt::Display::fmt(s, f),
+      Self::Character(ch) => Display::fmt(ch, f),
+      Self::String(s) => Display::fmt(s, f),
       _ => Ok(()),
     }
   }
 }
 
-/// A helper implementation for [appending][Add] a [`Translation`] into a [`String`].
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let mut cured = String::with_capacity(text.len());
-///
-/// for cured_char in text.chars().map(decancer::cure_char) {
-///   cured = cured + cured_char;
-/// }
-///
-/// assert_eq!(cured, "very funny text");
-/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl Add<Translation> for String {
@@ -164,22 +115,6 @@ impl Add<Translation> for String {
   }
 }
 
-/// A helper implementation for [appending][AddAssign] a [`Translation`] into a [`String`] in-place.
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let mut cured = String::with_capacity(text.len());
-///
-/// for cured_char in text.chars().map(decancer::cure_char) {
-///   cured += cured_char;
-/// }
-///
-/// assert_eq!(cured, "very funny text");
-/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl AddAssign<Translation> for String {
@@ -193,18 +128,6 @@ impl AddAssign<Translation> for String {
   }
 }
 
-/// [Extends][Extend] a [`String`] with an [iterator][Iterator] that yields [`Translation`]s.
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// let mut text = String::new();
-/// text.extend([decancer::cure_char('Ｅ'), decancer::cure_char('Ｅ')]);
-///
-/// assert_eq!(text, "ee");
-/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl Extend<Translation> for String {
@@ -219,29 +142,6 @@ impl Extend<Translation> for String {
   }
 }
 
-/// Coerces this [`Translation`] into an [`Option<String>`][Option].
-///
-/// # Examples
-///
-/// A non-[`Translation::None`] value would yield a [`Some(String)`][Option::Some]:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// let cured_e: Option<String> = decancer::cure_char('Ｅ').into();
-///
-/// assert_eq!(cured_e, Some(String::from("e")));
-/// ```
-///
-/// Otherwise, a [`Translation::None`] value would yield a [`None`][Option::None]:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// let cured_surrogate: Option<String> = decancer::cure_char(0xD800u32).into();
-///
-/// assert!(cured_surrogate.is_none());
-/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[allow(clippy::from_over_into)]
@@ -255,18 +155,6 @@ impl Into<Option<String>> for Translation {
   }
 }
 
-/// A helper implementation for [joining][Iterator::collect] several [`Translation`]s into one [`String`].
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// let text = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
-/// let cured: String = text.chars().map(decancer::cure_char).collect();
-///
-/// assert_eq!(cured, "very funny text");
-/// ```
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl FromIterator<Translation> for String {
@@ -284,31 +172,6 @@ impl FromIterator<Translation> for String {
   }
 }
 
-/// [Serializes][Serialize] this [`Translation`].
-///
-/// - A [`Translation::Character`] would serialize into a [`character`][Serializer::serialize_char].
-/// - A [`Translation::String`] would serialize into a [`string`][Serializer::serialize_str].
-/// - A [`Translation::None`] would serialize into a [`unit`][Serializer::serialize_unit].
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// use decancer::Translation;
-/// use serde::Serialize;
-///
-/// #[derive(Serialize)]
-/// struct Decancered {
-///   translation: Translation,
-/// }
-///
-/// let decancered = Decancered {
-///   translation: decancer::cure_char('ӕ')
-/// };
-///
-/// assert_eq!(serde_json::to_string(&decancered).unwrap(), r#"{"translation":"ae"}"#);
-/// ```
 #[cfg(feature = "serde")]
 #[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl Serialize for Translation {
@@ -324,26 +187,6 @@ impl Serialize for Translation {
   }
 }
 
-/// [Deserializes][Deserialize] and [cures][cure_char] a [`character`][Deserializer::deserialize_char].
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// use decancer::Translation;
-/// use serde::Deserialize;
-///
-/// #[derive(Deserialize)]
-/// struct Decancered {
-///   translation: Translation,
-/// }
-///
-/// let json = r#"{"translation": "ӕ"}"#;
-/// let decancered: Decancered = serde_json::from_str(json).unwrap();
-///
-/// assert!(matches!(decancered.translation, Translation::String("ae")));
-/// ```
 #[cfg(feature = "serde")]
 #[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<'de> Deserialize<'de> for Translation {
