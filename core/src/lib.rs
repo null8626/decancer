@@ -123,9 +123,6 @@ where
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[inline(always)]
-pub fn cure<S>(input: &S) -> CuredString
-where
-  S: AsRef<str> + ?Sized,
-{
-  input.as_ref().chars().collect()
+pub fn cure(input: &str) -> CuredString {
+  input.chars().collect()
 }
