@@ -139,7 +139,7 @@ macro_rules! impl_add_char(
   ($($t:ty),+) => {$(
     impl Add<$t> for CuredString {
       type Output = Self;
-      
+
       #[inline(always)]
       fn add(self, rhs: $t) -> Self::Output {
         self.add(cure_char(rhs))
@@ -343,7 +343,7 @@ where
   #[inline(always)]
   fn eq(&self, o: &S) -> bool {
     let o = o.as_ref();
-    
+
     self.len() == o.len() && similar::is_str(self, o)
   }
 }

@@ -5,7 +5,12 @@ use crate::{
 };
 #[cfg(feature = "std")]
 use core::ops::{Add, AddAssign};
-use core::{cmp::PartialEq, fmt::{self, Debug, Display}, mem::transmute, slice, str};
+use core::{
+  cmp::PartialEq,
+  fmt::{self, Debug, Display},
+  mem::transmute,
+  slice, str,
+};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -65,7 +70,7 @@ where
   #[must_use]
   fn eq(&self, o: &S) -> bool {
     let o = o.as_ref();
-    
+
     match self {
       Self::Character(ch) => {
         let mut chars = o.chars();
