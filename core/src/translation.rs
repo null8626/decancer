@@ -1,10 +1,7 @@
 use crate::{
   codepoints::CODEPOINTS,
-  cure_char,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
-#[cfg(feature = "std")]
-use core::ops::{Add, AddAssign};
 use core::{
   cmp::PartialEq,
   fmt::{self, Debug, Display},
@@ -87,16 +84,6 @@ where
   }
 }
 
-impl<C> From<C> for Translation
-where
-  C: Into<u32>,
-{
-  #[inline(always)]
-  fn from(ch: C) -> Self {
-    cure_char(ch)
-  }
-}
-
 impl Display for Translation {
   #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -110,31 +97,6 @@ impl Display for Translation {
 
 #[cfg(feature = "std")]
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl Add<Translation> for String {
-  type Output = Self;
-
-  #[inline(always)]
-  fn add(mut self, rhs: Translation) -> Self::Output {
-    self += rhs;
-    self
-  }
-}
-
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl AddAssign<Translation> for String {
-  #[inline(always)]
-  fn add_assign(&mut self, rhs: Translation) {
-    match rhs {
-      Translation::Character(c) => self.push(c),
-      Translation::String(s) => self.push_str(s),
-      _ => {}
-    }
-  }
-}
-
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 impl Extend<Translation> for String {
   #[inline(always)]
   fn extend<I>(&mut self, iter: I)
@@ -142,20 +104,11 @@ impl Extend<Translation> for String {
     I: IntoIterator<Item = Translation>,
   {
     for part in iter {
-      *self += part;
-    }
-  }
-}
-
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-#[allow(clippy::from_over_into)]
-impl Into<Option<String>> for Translation {
-  #[inline(always)]
-  fn into(self) -> Option<String> {
-    match self {
-      Self::None => None,
-      _ => Some(self.to_string()),
+      match part {
+        Translation::Character(c) => self.push(c),
+        Translation::String(s) => self.push_str(s),
+        _ => {}
+      }
     }
   }
 }

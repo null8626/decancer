@@ -124,5 +124,5 @@ where
 #[cfg_attr(docsrs, doc(cfg(feature = "std")))]
 #[inline(always)]
 pub fn cure(input: &str) -> CuredString {
-  input.chars().collect()
+  input.chars().map(cure_char).collect()
 }
