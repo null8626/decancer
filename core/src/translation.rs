@@ -153,6 +153,6 @@ impl<'de> Deserialize<'de> for Translation {
   where
     D: Deserializer<'de>,
   {
-    char::deserialize(deserializer).map(cure_char)
+    char::deserialize(deserializer).map(crate::cure_char)
   }
 }

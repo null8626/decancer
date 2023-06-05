@@ -418,10 +418,11 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
+      - name: Setup wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm
         working-directory: bindings/wasm
         run: |
-          cargo install wasm-pack
           wasm-pack build --no-typescript --release -t web
           mv ./pkg/decancer_wasm_bg.wasm ../../decancer.wasm
       - name: Upload artifact

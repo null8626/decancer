@@ -257,6 +257,6 @@ impl<'de> Deserialize<'de> for CuredString {
   where
     D: Deserializer<'de>,
   {
-    Deserialize::deserialize(deserializer).map(|s: &str| cure(s))
+    Deserialize::deserialize(deserializer).map(|s: &str| crate::cure(s))
   }
 }
