@@ -1,15 +1,12 @@
-use crate::{cure, cure_char, similar, translation::Translation};
+use crate::{cure_char, similar, translation::Translation};
 use core::{
   cmp::PartialEq,
-  fmt::{self, Debug, Display, Formatter, Write},
+  fmt::{self, Debug, Display, Formatter},
   mem::transmute,
-  num::NonZeroU32,
-  ops::{Add, AddAssign, Deref},
-  str::{self, FromStr},
+  ops::Deref,
 };
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::io;
 
 /// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
@@ -135,82 +132,6 @@ impl CuredString {
   }
 }
 
-macro_rules! impl_add_char(
-  ($($t:ty),+) => {$(
-    impl Add<$t> for CuredString {
-      type Output = Self;
-
-      #[inline(always)]
-      fn add(self, rhs: $t) -> Self::Output {
-        self.add(cure_char(rhs))
-      }
-    }
-  )+}
-);
-
-impl_add_char!(char, u8, u16, u32, NonZeroU32);
-
-impl Add<&str> for CuredString {
-  type Output = Self;
-
-  #[inline(always)]
-  fn add(self, rhs: &str) -> Self::Output {
-    Self(self.0.add(cure(rhs).as_str()))
-  }
-}
-
-impl Add<Translation> for CuredString {
-  type Output = Self;
-
-  #[inline(always)]
-  fn add(self, rhs: Translation) -> Self::Output {
-    Self(self.0.add(rhs))
-  }
-}
-
-macro_rules! impl_add_assign_char(
-  ($($t:ty),+) => {$(
-    impl AddAssign<$t> for CuredString {
-      #[inline(always)]
-      fn add_assign(&mut self, rhs: $t) {
-        self.add_assign(cure_char(rhs))
-      }
-    }
-  )+}
-);
-
-impl_add_assign_char!(char, u8, u16, u32, NonZeroU32);
-
-impl AddAssign<&str> for CuredString {
-  #[inline(always)]
-  fn add_assign(&mut self, rhs: &str) {
-    self.0.add_assign(cure(rhs).as_str())
-  }
-}
-
-impl AddAssign<Translation> for CuredString {
-  #[inline(always)]
-  fn add_assign(&mut self, rhs: Translation) {
-    self.0.add_assign(rhs)
-  }
-}
-
-macro_rules! impl_extend_char(
-  ($($t:ty),+) => {$(
-    impl Extend<$t> for CuredString {
-      #[inline(always)]
-      fn extend<I>(&mut self, iter: I)
-      where
-        I: IntoIterator<Item = $t>,
-      {
-        self.extend(iter.into_iter().map(cure_char))
-      }
-    }
-  )+}
-);
-
-impl_extend_char!(char, u8, u16, u32, NonZeroU32);
-
 impl Extend<CuredString> for String {
   #[inline(always)]
   fn extend<I>(&mut self, iter: I)
@@ -218,53 +139,6 @@ impl Extend<CuredString> for String {
     I: IntoIterator<Item = CuredString>,
   {
     self.extend(iter.into_iter().map(|s| s.into_str()))
-  }
-}
-
-impl Extend<String> for CuredString {
-  #[inline(always)]
-  fn extend<I>(&mut self, iter: I)
-  where
-    I: IntoIterator<Item = String>,
-  {
-    self.extend(iter.into_iter().map(|s| cure(&s)))
-  }
-}
-
-impl<'a> Extend<&'a str> for CuredString {
-  #[inline(always)]
-  fn extend<I>(&mut self, iter: I)
-  where
-    I: IntoIterator<Item = &'a str>,
-  {
-    self.extend(iter.into_iter().map(cure))
-  }
-}
-
-impl Extend<CuredString> for CuredString {
-  #[inline(always)]
-  fn extend<I>(&mut self, iter: I)
-  where
-    I: IntoIterator<Item = CuredString>,
-  {
-    self.0.extend(iter)
-  }
-}
-
-impl Extend<Translation> for CuredString {
-  #[inline(always)]
-  fn extend<I>(&mut self, iter: I)
-  where
-    I: IntoIterator<Item = Translation>,
-  {
-    self.0.extend(iter)
-  }
-}
-
-impl From<&str> for CuredString {
-  #[inline(always)]
-  fn from(s: &str) -> Self {
-    cure(s)
   }
 }
 
@@ -295,15 +169,6 @@ impl FromIterator<Translation> for CuredString {
     I: IntoIterator<Item = Translation>,
   {
     Self(iter.into_iter().collect())
-  }
-}
-
-impl FromStr for CuredString {
-  type Err = ();
-
-  #[inline(always)]
-  fn from_str(s: &str) -> Result<Self, Self::Err> {
-    Ok(cure(s))
   }
 }
 
@@ -368,41 +233,6 @@ impl Deref for CuredString {
   #[inline(always)]
   fn deref(&self) -> &Self::Target {
     &self.0
-  }
-}
-
-impl Write for CuredString {
-  #[inline(always)]
-  fn write_str(&mut self, s: &str) -> fmt::Result {
-    self.add_assign(s);
-
-    Ok(())
-  }
-
-  #[inline(always)]
-  fn write_char(&mut self, c: char) -> fmt::Result {
-    self.add_assign(c);
-
-    Ok(())
-  }
-}
-
-impl io::Write for CuredString {
-  #[inline(always)]
-  fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-    match str::from_utf8(buf) {
-      Ok(s) => {
-        self.0.add_assign(cure(s).as_str());
-
-        Ok(buf.len())
-      }
-      Err(e) => Err(io::Error::new(io::ErrorKind::InvalidData, e)),
-    }
-  }
-
-  #[inline(always)]
-  fn flush(&mut self) -> io::Result<()> {
-    Ok(())
   }
 }
 
