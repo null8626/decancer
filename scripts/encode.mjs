@@ -30,10 +30,12 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
       if (unicode[i][1].endsWith('Last>')) {
         const start = parseInt(unicode[i - 1][0], 16)
 
-        UNICACHE.expected.push(...Array.from(
-          { length: parseInt(unicode[i][0], 16) - start + 1 },
-          (_, i) => i + start
-        ))
+        UNICACHE.expected.push(
+          ...Array.from(
+            { length: parseInt(unicode[i][0], 16) - start + 1 },
+            (_, i) => i + start
+          )
+        )
       } else {
         const codepoint = parseInt(unicode[i][0], 16)
 
@@ -382,9 +384,10 @@ console.log(
   )}%) unsynced sequences.`
 )
 
-const grandTotal = syncedSequences.concat(...notSyncedSequences).concat(...rest).sort(
-  (a, b) => a.codepoint - b.codepoint
-)
+const grandTotal = syncedSequences
+  .concat(...notSyncedSequences)
+  .concat(...rest)
+  .sort((a, b) => a.codepoint - b.codepoint)
 
 console.log(
   `- condensed down from ${expanded.length.toLocaleString(
