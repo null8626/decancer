@@ -120,7 +120,13 @@ impl FromIterator<Translation> for String {
   where
     I: IntoIterator<Item = Translation>,
   {
-    iter.into_iter().collect()
+    let iter = iter.into_iter();
+    let (size_hint, _) = iter.size_hint();
+
+    let mut s = String::with_capacity(size_hint);
+    s.extend(iter);
+
+    s
   }
 }
 
