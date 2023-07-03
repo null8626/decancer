@@ -98,7 +98,8 @@ where
     }
   }
 
-  translate(code_lowercased, 6, CODEPOINTS_COUNT as _).unwrap_or(Translation::character(code_lowercased))
+  translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
+    .unwrap_or(Translation::character(code_lowercased))
 }
 
 /// Cures a string.
