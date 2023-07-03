@@ -20,9 +20,9 @@ proptest! {
 
 #[test]
 fn regression_crash() {
-    let _ = crate::cure_char('Æ');
-    let _ = crate::cure("Æ");
+  let _ = crate::cure_char('Æ');
+  let _ = crate::cure("Æ");
 
-    let _ = crate::cure_char('ˑ');
-    let _ = crate::cure("ˑ");
+  let _ = crate::cure_char('ˑ');
+  let _ = crate::cure("ˑ");
 }
