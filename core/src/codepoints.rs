@@ -19,7 +19,7 @@ const STRING_TRANSLATION_MASK: u32 = 0x40000000;
 pub(crate) struct Codepoint(u32, u8);
 
 impl Codepoint {
-  pub(crate) const fn at(offset: u16) -> Self {
+  pub(crate) const fn at(offset: i32) -> Self {
     unsafe {
       Self(
         read_u32_le(CODEPOINTS.offset(offset as _)),
