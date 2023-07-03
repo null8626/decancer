@@ -1,6 +1,10 @@
 use proptest::prelude::*;
 
 proptest! {
+    // Locally, try running a more exhaustive battery with an environment
+    // variable setting like PROPTEST_CASES=1000000.
+    #![proptest_config(ProptestConfig::with_cases(2000))]
+
     #[test]
     fn character_crash(c in any::<char>(), i in any::<u32>()) {
         let _ = crate::cure_char(c);
