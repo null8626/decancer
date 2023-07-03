@@ -434,7 +434,7 @@ for (const {
   if (translation.length > 1) {
     const offset = strings.indexOf(translation)
 
-    integer |= STRING_TRANSLATION_MASK 
+    integer |= STRING_TRANSLATION_MASK
     integer |= (BigInt(translation.length << 4) | BigInt(offset >> 8)) << 21n
     secondByte = offset & 0xff
   } else {
