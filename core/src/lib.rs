@@ -19,7 +19,7 @@ use codepoints::{
 };
 use core::cmp::Ordering;
 
-fn translate(code: u32, offset: u16, mut end: u16) -> Option<Translation> {
+fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> {
   let mut start = 0;
 
   while start <= end {
@@ -91,14 +91,14 @@ where
   } else if code != code_lowercased {
     if let Some(translation) = translate(
       code,
-      CASE_SENSITIVE_CODEPOINTS_OFFSET,
-      CASE_SENSITIVE_CODEPOINTS_COUNT,
+      CASE_SENSITIVE_CODEPOINTS_OFFSET as _,
+      CASE_SENSITIVE_CODEPOINTS_COUNT as _,
     ) {
       return translation;
     }
   }
 
-  translate(code_lowercased, 6, CODEPOINTS_COUNT).unwrap_or(Translation::character(code_lowercased))
+  translate(code_lowercased, 6, CODEPOINTS_COUNT as _).unwrap_or(Translation::character(code_lowercased))
 }
 
 /// Cures a string.
