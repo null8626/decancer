@@ -11,7 +11,7 @@ bindings/native/*.obj
 bindings/node/artifacts/
 bindings/wasm/pkg/
 
-.unicache.json
+.expected.json
 output.json
 output.bin
 
