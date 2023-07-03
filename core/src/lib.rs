@@ -19,7 +19,7 @@ use codepoints::{
 };
 use core::cmp::Ordering;
 
-fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> {
+const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> {
   let mut start = 0;
 
   while start <= end {

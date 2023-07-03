@@ -4,13 +4,16 @@ import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
 
+const RANGE_MASK = 0x20000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-let UNICACHE = {}
+const STRING_TRANSLATION_MASK = 0x40000000n
+
+let EXPECTED
 
 console.log('- fetching unicode data...')
 
-if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
-  UNICACHE = JSON.parse(readFileSync(join(ROOT_DIR, '.unicache.json')))
+if (existsSync(join(ROOT_DIR, '.expected.json'))) {
+  EXPECTED = JSON.parse(readFileSync(join(ROOT_DIR, '.expected.json')))
 } else {
   const response = await fetch(
     'https://unicode.org/Public/UNIDATA/UnicodeData.txt'
@@ -23,14 +26,14 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
     .split('\n')
     .map(x => x.split(';'))
 
-  UNICACHE.expected = []
+  EXPECTED = []
 
   for (let i = 0; i < unicode.length; i++) {
     if (unicode[i][4][0] !== 'A' && unicode[i][4][0] !== 'R') {
       if (unicode[i][1].endsWith('Last>')) {
         const start = parseInt(unicode[i - 1][0], 16)
 
-        UNICACHE.expected.push(
+        EXPECTED.push(
           ...Array.from(
             { length: parseInt(unicode[i][0], 16) - start + 1 },
             (_, i) => i + start
@@ -44,7 +47,7 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
           (codepoint < 0xd800 || codepoint > 0xf8ff) &&
           codepoint < 0xe0100
         ) {
-          UNICACHE.expected.push(codepoint)
+          EXPECTED.push(codepoint)
         }
       }
     }
@@ -52,7 +55,7 @@ if (existsSync(join(ROOT_DIR, '.unicache.json'))) {
 
   console.log('- writing to cache...')
 
-  writeFileSync(join(ROOT_DIR, '.unicache.json'), JSON.stringify(UNICACHE))
+  writeFileSync(join(ROOT_DIR, '.expected.json'), JSON.stringify(EXPECTED))
 }
 
 if (typeof process.argv[2] !== 'string') {
@@ -275,7 +278,7 @@ let i = 0
 while (i < expanded.length) {
   const [codepoint, translation] = expanded[i]
 
-  if (!binarySearchExists(UNICACHE.expected, codepoint)) {
+  if (!binarySearchExists(EXPECTED, codepoint)) {
     console.warn(
       `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
     )
@@ -431,14 +434,14 @@ for (const {
   if (translation.length > 1) {
     const offset = strings.indexOf(translation)
 
-    integer |= 0x40000000n
+    integer |= STRING_TRANSLATION_MASK 
     integer |= (BigInt(translation.length << 4) | BigInt(offset >> 8)) << 21n
     secondByte = offset & 0xff
   } else {
     if (rangeUntil !== null) {
       if (syncedTranslation) secondByte = 0x80
 
-      integer |= 0x20000000n
+      integer |= RANGE_MASK
       secondByte |= rangeUntil - codepoint
     }
 
