@@ -6,6 +6,8 @@ mod codepoints;
 mod similar;
 #[cfg(feature = "std")]
 mod string;
+#[cfg(test)]
+mod test;
 mod translation;
 mod util;
 
