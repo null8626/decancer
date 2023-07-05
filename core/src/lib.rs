@@ -31,7 +31,7 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
     match codepoint.matches(code) {
       Ordering::Equal => return Some(codepoint.translation(code)),
       Ordering::Greater => start = mid + 1,
-      _ => end = mid - 1,
+      Ordering::Less => end = mid - 1,
     };
   }
 

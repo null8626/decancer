@@ -79,7 +79,7 @@ where
       }
 
       Self::String(s) => s.len() == o.len() && similar::is_str(s, o),
-      _ => o.is_empty(),
+      Self::None => o.is_empty(),
     }
   }
 }
@@ -90,7 +90,7 @@ impl Display for Translation {
     match self {
       Self::Character(ch) => Display::fmt(ch, f),
       Self::String(s) => Display::fmt(s, f),
-      _ => Ok(()),
+      Self::None => Ok(()),
     }
   }
 }
@@ -107,7 +107,7 @@ impl Extend<Translation> for String {
       match part {
         Translation::Character(c) => self.push(c),
         Translation::String(s) => self.push_str(s),
-        _ => {}
+        Translation::None => {}
       }
     }
   }
