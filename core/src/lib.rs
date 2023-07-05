@@ -71,10 +71,7 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
 ///
 /// assert!(matches!(cured_surrogate, Translation::None));
 /// ```
-pub fn cure_char<C>(code: C) -> Translation
-where
-  C: Into<u32>,
-{
+pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
 
   if code <= 31 || code == 127 || (0xd800..=0xf8ff).contains(&code) || code >= 0xe0100 {
