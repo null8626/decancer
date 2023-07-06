@@ -29,29 +29,25 @@ impl Codepoint {
   }
 
   pub(crate) const fn matches(&self, other: u32) -> Ordering {
-    let conf: u32 = self.0 & CODEPOINT_MASK;
+    let mut conf: u32 = self.0 & CODEPOINT_MASK;
 
     if other < conf {
       return Ordering::Less;
     }
 
-    let mut max = conf;
-
     if (self.0 & RANGE_MASK) != 0 {
-      max += (self.1 & 0x7f) as u32;
+      conf += (self.1 & 0x7f) as u32;
     }
 
-    if other > max {
-      Ordering::Greater
-    } else {
-      Ordering::Equal
+    if other > conf {
+      return Ordering::Greater;
     }
+
+    Ordering::Equal
   }
 
   pub(crate) const fn translation(&self, other: u32) -> Translation {
-    if (self.0 & STRING_TRANSLATION_MASK) != 0 {
-      Translation::string(self.0, self.1)
-    } else {
+    if (self.0 & STRING_TRANSLATION_MASK) == 0 {
       let mut code = (self.0 >> 21) & 0xff;
 
       if code == 0 {
@@ -60,7 +56,9 @@ impl Codepoint {
         code += other - (self.0 & CODEPOINT_MASK);
       }
 
-      Translation::character(code)
+      return Translation::character(code);
     }
+
+    Translation::string(self.0, self.1)
   }
 }
