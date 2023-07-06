@@ -6,45 +6,45 @@ pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CODEPOINTS.offset(4) })
 pub(crate) fn is(self_char: u32, other_char: char) -> bool {
   let other_char = unsafe { other_char.to_lowercase().next().unwrap_unchecked() as u32 };
 
-  if self_char != other_char {
-    if self_char <= 0x7f && other_char <= 0x7f {
-      let mut offset = SIMILAR_START;
-      let mut contains_a = false;
-      let mut contains_b = false;
+  if self_char == other_char {
+    return true;
+  }
 
-      loop {
-        let cur = unsafe { *(CODEPOINTS.offset(offset as _)) };
-        let sim = cur & 0x7f;
+  if self_char <= 0x7f && other_char <= 0x7f {
+    let mut offset = SIMILAR_START;
+    let mut contains_a = false;
+    let mut contains_b = false;
 
-        if sim == (self_char as u8) {
-          contains_a = true;
-        }
+    loop {
+      let cur = unsafe { *(CODEPOINTS.offset(offset as _)) };
+      let sim = cur & 0x7f;
 
-        if sim == (other_char as u8) {
-          contains_b = true;
-        }
+      if sim == (self_char as u8) {
+        contains_a = true;
+      }
 
-        if contains_a && contains_b {
-          return true;
-        }
+      if sim == (other_char as u8) {
+        contains_b = true;
+      }
 
-        if cur >= 0x80 {
-          contains_a = false;
-          contains_b = false;
-        }
+      if contains_a && contains_b {
+        return true;
+      }
 
-        offset += 1;
+      if cur >= 0x80 {
+        contains_a = false;
+        contains_b = false;
+      }
 
-        if offset == SIMILAR_END {
-          return false;
-        }
+      offset += 1;
+
+      if offset == SIMILAR_END {
+        return false;
       }
     }
-
-    false
-  } else {
-    true
   }
+
+  false
 }
 
 #[inline(always)]

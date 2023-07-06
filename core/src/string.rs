@@ -138,7 +138,7 @@ impl Extend<CuredString> for String {
   where
     I: IntoIterator<Item = CuredString>,
   {
-    self.extend(iter.into_iter().map(|s| s.into_str()))
+    self.extend(iter.into_iter().map(CuredString::into_str));
   }
 }
 

@@ -31,7 +31,7 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
     match codepoint.matches(code) {
       Ordering::Equal => return Some(codepoint.translation(code)),
       Ordering::Greater => start = mid + 1,
-      _ => end = mid - 1,
+      Ordering::Less => end = mid - 1,
     };
   }
 
@@ -71,13 +71,10 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
 ///
 /// assert!(matches!(cured_surrogate, Translation::None));
 /// ```
-pub fn cure_char<C>(code: C) -> Translation
-where
-  C: Into<u32>,
-{
+pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
 
-  if code <= 31 || code == 127 || (0xd800..=0xf8ff).contains(&code) || code >= 0xe0100 {
+  if matches!(code, 0..=31 | 127 | 0xd800..=0xf8ff | 0xe0100..) {
     return Translation::None;
   }
 
@@ -101,7 +98,7 @@ where
   }
 
   translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
-    .unwrap_or(Translation::character(code_lowercased))
+    .unwrap_or_else(|| Translation::character(code_lowercased))
 }
 
 /// Cures a string.
