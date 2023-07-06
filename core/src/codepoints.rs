@@ -12,9 +12,9 @@ pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
 pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 5) - 1;
 
-const CODEPOINT_MASK: u32 = 0x1fffff;
-const RANGE_MASK: u32 = 0x20000000;
-const STRING_TRANSLATION_MASK: u32 = 0x40000000;
+const CODEPOINT_MASK: u32 = 0x001f_ffff;
+const RANGE_MASK: u32 = 0x2000_0000;
+const STRING_TRANSLATION_MASK: u32 = 0x4000_0000;
 
 pub(crate) struct Codepoint(u32, u8);
 
