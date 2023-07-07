@@ -78,6 +78,8 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
     return Translation::None;
   }
 
+  // SAFETY: even if there are no lowercase mapping for some codepoints, it would just return itself.
+  // therefore, the first iteration and/or codepoint always exists.
   let code_lowercased = unsafe {
     char::from_u32_unchecked(code)
       .to_lowercase()
