@@ -171,9 +171,9 @@ impl FromIterator<Translation> for CuredString {
   {
     let iter = iter.into_iter();
     let (size_hint, _) = iter.size_hint();
-    
+
     let mut out = String::with_capacity(size_hint);
-    
+
     for part in iter {
       match part {
         Translation::Character(c) => out.push(c),
@@ -181,7 +181,7 @@ impl FromIterator<Translation> for CuredString {
         Translation::None => {}
       }
     }
-    
+
     Self(out)
   }
 }
