@@ -1,8 +1,8 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 
-const CODEPOINT_MASK = 0x1fffff
-const RANGE_MASK = 0x20000000
-const STRING_TRANSLATION_MASK = 0x40000000
+const CODEPOINT_MASK = 0xfffff
+const RANGE_MASK = 0x8000000
+const STRING_TRANSLATION_MASK = 0x10000000
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing binary file path.')
@@ -74,9 +74,9 @@ do {
 
 function getTranslation(integer, secondByte) {
   const offset =
-    binary.readUint16LE(4) + ((((integer >> 21) & 0x0f) << 8) | secondByte)
+    binary.readUint16LE(4) + ((((integer >> 20) & 0x07) << 8) | secondByte)
 
-  return binary.subarray(offset, offset + ((integer >> 25) & 0x0f)).toString()
+  return binary.subarray(offset, offset + ((integer >> 23) & 0x1f)).toString()
 }
 
 let codepointsEnd = binary.readUint16LE()
@@ -93,7 +93,7 @@ for (let offset = 6; offset < codepointsEnd; offset += 5) {
     translation:
       (integer & STRING_TRANSLATION_MASK) !== 0
         ? getTranslation(integer, secondByte)
-        : String.fromCharCode((integer >> 21) & 0xff),
+        : String.fromCharCode((integer >> 20) & 0x7f),
     rangeUntil:
       (integer & RANGE_MASK) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80
@@ -113,7 +113,7 @@ for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 5) {
     translation:
       (integer & STRING_TRANSLATION_MASK) !== 0
         ? getTranslation(integer, secondByte)
-        : String.fromCharCode((integer >> 21) & 0xff),
+        : String.fromCharCode((integer >> 20) & 0x7f),
     rangeUntil:
       (integer & RANGE_MASK) !== 0 ? codepoint + (secondByte & 0x7f) : null,
     syncedTranslation: secondByte >= 0x80

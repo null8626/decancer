@@ -4,7 +4,11 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 
+const CODEPOINT_MASK = 0xfffff
+const NOT_INCLUDED_COUNT = 0x22210
+const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+const STRING_TRANSLATION_MASK = 0x10000000
 
 const execute = promisify(exec)
 
@@ -15,7 +19,7 @@ async function updateReadme() {
 
   console.log('- [readme] parsing codepoints.bin...')
 
-  let codepointsCount = 139792
+  let codepointsCount = NOT_INCLUDED_COUNT
   let confusablesCount = 0
 
   const codepointsEnd = bin.readUint16LE()
@@ -26,12 +30,12 @@ async function updateReadme() {
   for (; offset < caseSensitiveCodepointsEnd; offset += 5) {
     const integer = bin.readUint32LE(offset)
 
-    const codepoint = integer & 0x1fffff
+    const codepoint = integer & CODEPOINT_MASK
     let toAdd = 1
 
     caseSensitiveCodepoints.push(codepoint)
 
-    if ((integer & 0x20000000) !== 0) {
+    if ((integer & RANGE_MASK) !== 0) {
       const rangeUntil = bin.readUint8(offset + 4) & 0x7f
 
       caseSensitiveCodepoints.push(
@@ -40,7 +44,10 @@ async function updateReadme() {
       toAdd += rangeUntil
     }
 
-    if ((integer & 0x40000000) !== 0 || ((integer >> 21) & 0xff) !== 0) {
+    if (
+      (integer & STRING_TRANSLATION_MASK) !== 0 ||
+      ((integer >> 20) & 0x7f) !== 0
+    ) {
       confusablesCount += toAdd
     }
 
@@ -50,10 +57,10 @@ async function updateReadme() {
   for (offset = 6; offset < codepointsEnd; offset += 5) {
     const integer = bin.readUint32LE(offset)
 
-    const codepoint = integer & 0x1fffff
+    const codepoint = integer & CODEPOINT_MASK
     let toAdd = 1
 
-    if ((integer & 0x20000000) !== 0) {
+    if ((integer & RANGE_MASK) !== 0) {
       toAdd += bin.readUint8(offset + 4) & 0x7f
     }
 
@@ -68,7 +75,10 @@ async function updateReadme() {
       toAdd *= 2
     }
 
-    if ((integer & 0x40000000) !== 0 || ((integer >> 21) & 0xff) !== 0) {
+    if (
+      (integer & STRING_TRANSLATION_MASK) !== 0 ||
+      ((integer >> 20) & 0x7f) !== 0
+    ) {
       confusablesCount += toAdd
     }
 

@@ -11,9 +11,8 @@ bindings/native/*.obj
 bindings/node/artifacts/
 bindings/wasm/pkg/
 
-.expected.json
-output.json
-output.bin
+*.json
+*.bin
 
 # CI can create random files in the root dir
 package.json

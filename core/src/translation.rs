@@ -17,7 +17,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 pub enum Translation {
   /// A single unicode character.
   Character(char),
-  /// A multi-character [ASCII](https://en.wikipedia.org/wiki/ASCII) string.
+  /// An [ASCII](https://en.wikipedia.org/wiki/ASCII) string.
   String(&'static str),
   /// This suggests that the translation is an empty string. You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]).
   None,
@@ -28,9 +28,9 @@ impl Translation {
     unsafe {
       Self::String(str::from_utf8_unchecked(slice::from_raw_parts(
         CODEPOINTS.offset(
-          (STRINGS_OFFSET + (((((integer >> 21) as u16) & 0x0f) << 8) | (second_byte as u16))) as _,
+          (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
         ),
-        ((integer >> 25) & 0x0f) as _,
+        ((integer >> 23) & 0x1f) as _,
       )))
     }
   }
