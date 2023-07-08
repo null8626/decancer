@@ -29,6 +29,7 @@ impl CuredString {
   /// ```
   #[must_use]
   pub const fn into_str(self) -> String {
+    // SAFETY: see definition of CuredString
     unsafe { transmute(self) }
   }
 
@@ -168,7 +169,20 @@ impl FromIterator<Translation> for CuredString {
   where
     I: IntoIterator<Item = Translation>,
   {
-    Self(iter.into_iter().collect())
+    let iter = iter.into_iter();
+    let (size_hint, _) = iter.size_hint();
+
+    let mut out = String::with_capacity(size_hint);
+
+    for part in iter {
+      match part {
+        Translation::Character(c) => out.push(c),
+        Translation::String(s) => out.push_str(s),
+        Translation::None => {}
+      }
+    }
+
+    Self(out)
   }
 }
 
