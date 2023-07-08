@@ -12,9 +12,9 @@ pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
 pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 5) - 1;
 
-const CODEPOINT_MASK: u32 = 0x001f_ffff;
-const RANGE_MASK: u32 = 0x2000_0000;
-const STRING_TRANSLATION_MASK: u32 = 0x4000_0000;
+const CODEPOINT_MASK: u32 = 0x000f_ffff;
+const RANGE_MASK: u32 = 0x0800_0000;
+const STRING_TRANSLATION_MASK: u32 = 0x1000_0000;
 
 pub(crate) struct Codepoint(u32, u8);
 
@@ -33,22 +33,20 @@ impl Codepoint {
 
     if other < conf {
       return Ordering::Less;
-    }
-
-    if (self.0 & RANGE_MASK) != 0 {
+    } else if (self.0 & RANGE_MASK) != 0 {
       conf += (self.1 & 0x7f) as u32;
     }
 
     if other > conf {
-      return Ordering::Greater;
+      Ordering::Greater
+    } else {
+      Ordering::Equal
     }
-
-    Ordering::Equal
   }
 
   pub(crate) const fn translation(&self, other: u32) -> Translation {
     if (self.0 & STRING_TRANSLATION_MASK) == 0 {
-      let mut code = (self.0 >> 21) & 0xff;
+      let mut code = (self.0 >> 20) & 0x7f;
 
       if code == 0 {
         return Translation::None;
@@ -56,9 +54,9 @@ impl Codepoint {
         code += other - (self.0 & CODEPOINT_MASK);
       }
 
-      return Translation::character(code);
+      Translation::character(code)
+    } else {
+      Translation::string(self.0, self.1)
     }
-
-    Translation::string(self.0, self.1)
   }
 }

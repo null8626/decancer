@@ -4,160 +4,15 @@ import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
 
-const RANGE_MASK = 0x20000000n
+const RANGE_MASK = 0x8000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const STRING_TRANSLATION_MASK = 0x40000000n
+const STRING_TRANSLATION_MASK = 0x10000000n
 
 let EXPECTED
-
-console.log('- fetching unicode data...')
-
-if (existsSync(join(ROOT_DIR, '.expected.json'))) {
-  EXPECTED = JSON.parse(readFileSync(join(ROOT_DIR, '.expected.json')))
-} else {
-  const response = await fetch(
-    'https://unicode.org/Public/UNIDATA/UnicodeData.txt'
-  )
-
-  console.log('- parsing unicode data...')
-
-  const unicode = (await response.text())
-    .trimRight()
-    .split('\n')
-    .map(x => x.split(';'))
-
-  EXPECTED = []
-
-  for (let i = 0; i < unicode.length; i++) {
-    if (unicode[i][4][0] !== 'A' && unicode[i][4][0] !== 'R') {
-      if (unicode[i][1].endsWith('Last>')) {
-        const start = parseInt(unicode[i - 1][0], 16)
-
-        EXPECTED.push(
-          ...Array.from(
-            { length: parseInt(unicode[i][0], 16) - start + 1 },
-            (_, i) => i + start
-          )
-        )
-      } else {
-        const codepoint = parseInt(unicode[i][0], 16)
-
-        if (
-          codepoint > 0x7f &&
-          (codepoint < 0xd800 || codepoint > 0xf8ff) &&
-          codepoint < 0xe0100
-        ) {
-          EXPECTED.push(codepoint)
-        }
-      }
-    }
-  }
-
-  console.log('- writing to cache...')
-
-  writeFileSync(join(ROOT_DIR, '.expected.json'), JSON.stringify(EXPECTED))
-}
-
-if (typeof process.argv[2] !== 'string') {
-  console.error('error: missing json file path.')
-  process.exit(1)
-}
-
-const { codepoints, similar } = JSON.parse(readFileSync(process.argv[2]))
-
-assert(
-  Array.isArray(codepoints) && codepoints.length > 0,
-  'codepoints must be an array'
-)
-assert(
-  Array.isArray(similar) &&
-    similar.length > 0 &&
-    similar.every(
-      x =>
-        Array.isArray(x) &&
-        x.length >= 2 &&
-        x.every(
-          y =>
-            typeof y === 'string' && y.length === 1 && y.codePointAt() <= 0x7f
-        )
-    ),
-  'similar must be an array of an array of ASCII strings'
-)
 
 function isCaseSensitive(x) {
   return String.fromCodePoint(x).toLowerCase().codePointAt() !== x
 }
-
-console.log(
-  `- checking, expanding, and sorting ${codepoints.length.toLocaleString(
-    'en-US'
-  )} codepoints...`
-)
-
-let expanded = []
-
-for (const conf of codepoints) {
-  assert(
-    Number.isSafeInteger(conf.codepoint) && conf.codepoint < 0x110000,
-    'codepoint must be a valid number'
-  )
-  assert(
-    typeof conf.translation === 'string' &&
-      [...conf.translation].every(
-        c => c.codePointAt() <= 0x7f && !isCaseSensitive(c.codePointAt())
-      ) &&
-      conf.translation.length <= 15,
-    `translation must be a valid string: '${conf.translation}'`
-  )
-
-  if (conf.translation.length === 0) {
-    assert(
-      !conf.syncedTranslation,
-      'syncedTranslation is not allowed in empty translations'
-    )
-
-    conf.translation = '\0'
-  }
-
-  if (typeof conf.rangeUntil === 'number') {
-    assert(
-      Number.isSafeInteger(conf.rangeUntil) &&
-        conf.rangeUntil > conf.codepoint &&
-        conf.rangeUntil < 0x110000 &&
-        conf.rangeUntil - conf.codepoint <= 0x7f,
-      'rangeUntil must be a valid number'
-    )
-    assert(
-      conf.rangeUntil > conf.codepoint,
-      `rangeUntil must be greater than codepoint. (rangeUntil: ${conf.rangeUntil}, codepoint: ${conf.codepoint})`
-    )
-
-    if (conf.syncedTranslation) {
-      assert(
-        conf.translation.length === 1,
-        `translation length for codepoints with syncedTranslation must be one character in length, got '${conf.translation}'`
-      )
-    }
-
-    const ogTranslationCode = conf.syncedTranslation
-      ? conf.translation.charCodeAt()
-      : conf.translation
-
-    for (let c = conf.codepoint; c <= conf.rangeUntil; c++)
-      expanded.push([
-        c,
-        typeof ogTranslationCode === 'number'
-          ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint))
-          : ogTranslationCode
-      ])
-  } else expanded.push([conf.codepoint, conf.translation])
-}
-
-console.log(
-  `- expanded to a grand total of ${expanded.length.toLocaleString(
-    'en-US'
-  )} codepoints.\n- searching for collisions...`
-)
 
 function merge(a, b, recurse = true) {
   if (a.includes(b)) {
@@ -253,6 +108,151 @@ function binarySearchExists(arr, val) {
   return false
 }
 
+console.log('- fetching unicode data...')
+
+if (existsSync(join(ROOT_DIR, '.expected.json'))) {
+  EXPECTED = JSON.parse(readFileSync(join(ROOT_DIR, '.expected.json')))
+} else {
+  const response = await fetch(
+    'https://unicode.org/Public/UNIDATA/UnicodeData.txt'
+  )
+
+  console.log('- parsing unicode data...')
+
+  const unicode = (await response.text())
+    .trimRight()
+    .split('\n')
+    .map(x => x.split(';'))
+
+  EXPECTED = []
+
+  for (let i = 0; i < unicode.length; i++) {
+    if (unicode[i][4][0] !== 'A' && unicode[i][4][0] !== 'R') {
+      if (unicode[i][1].endsWith('Last>')) {
+        const start = parseInt(unicode[i - 1][0], 16)
+
+        EXPECTED.push(
+          ...Array.from(
+            { length: parseInt(unicode[i][0], 16) - start + 1 },
+            (_, i) => i + start
+          )
+        )
+      } else {
+        const codepoint = parseInt(unicode[i][0], 16)
+
+        if (
+          codepoint > 0x7f &&
+          (codepoint < 0xd800 || codepoint > 0xf8ff) &&
+          codepoint < 0xe0100
+        ) {
+          EXPECTED.push(codepoint)
+        }
+      }
+    }
+  }
+
+  console.log('- writing to cache...')
+
+  writeFileSync(join(ROOT_DIR, '.expected.json'), JSON.stringify(EXPECTED))
+}
+
+if (typeof process.argv[2] !== 'string') {
+  console.error('error: missing json file path.')
+  process.exit(1)
+}
+
+const { codepoints, similar } = JSON.parse(readFileSync(process.argv[2]))
+
+assert(
+  Array.isArray(codepoints) && codepoints.length > 0,
+  'codepoints must be an array'
+)
+assert(
+  Array.isArray(similar) &&
+    similar.length > 0 &&
+    similar.every(
+      x =>
+        Array.isArray(x) &&
+        x.length >= 2 &&
+        x.every(
+          y =>
+            typeof y === 'string' && y.length === 1 && y.codePointAt() <= 0x7f
+        )
+    ),
+  'similar must be an array of an array of ASCII strings'
+)
+
+console.log(
+  `- checking, expanding, and sorting ${codepoints.length.toLocaleString(
+    'en-US'
+  )} codepoints...`
+)
+
+let expanded = []
+
+for (const conf of codepoints) {
+  assert(
+    Number.isSafeInteger(conf.codepoint),
+    'codepoint must be a valid number'
+  )
+  assert(
+    typeof conf.translation === 'string' &&
+      [...conf.translation].every(
+        c => c.codePointAt() <= 0x7f && !isCaseSensitive(c.codePointAt())
+      ) &&
+      conf.translation.length <= 0x1f,
+    `translation must be a valid string: '${conf.translation}'`
+  )
+
+  if (conf.translation.length === 0) {
+    assert(
+      !conf.syncedTranslation,
+      'syncedTranslation is not allowed in empty translations'
+    )
+
+    conf.translation = '\0'
+  }
+
+  if (typeof conf.rangeUntil === 'number') {
+    assert(
+      Number.isSafeInteger(conf.rangeUntil) &&
+        conf.rangeUntil > conf.codepoint &&
+        conf.rangeUntil < 0x110000 &&
+        conf.rangeUntil - conf.codepoint <= 0x7f,
+      'rangeUntil must be a valid number'
+    )
+    assert(
+      conf.rangeUntil > conf.codepoint,
+      `rangeUntil must be greater than codepoint. (rangeUntil: ${conf.rangeUntil}, codepoint: ${conf.codepoint})`
+    )
+
+    if (conf.syncedTranslation) {
+      assert(
+        conf.translation.length === 1,
+        `translation length for codepoints with syncedTranslation must be one character in length, got '${conf.translation}'`
+      )
+    }
+
+    const ogTranslationCode = conf.syncedTranslation
+      ? conf.translation.charCodeAt()
+      : conf.translation
+
+    for (let c = conf.codepoint; c <= conf.rangeUntil; c++)
+      expanded.push([
+        c,
+        typeof ogTranslationCode === 'number'
+          ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint))
+          : ogTranslationCode
+      ])
+  } else expanded.push([conf.codepoint, conf.translation])
+}
+
+console.log(
+  `- expanded to a grand total of ${expanded.length.toLocaleString(
+    'en-US'
+  )} codepoints.\n- searching for collisions...`
+)
+
 {
   const set = Array.from(new Set(expanded.map(([codepoint]) => codepoint)))
 
@@ -324,12 +324,13 @@ const notSyncedSequences = [],
 let curr
 for (i = 0, curr = null; i < expanded.length; i++) {
   const [codepoint, translation] = expanded[i]
+  const caseSensitive = isCaseSensitive(codepoint)
 
   if (translation.length === 1) {
     const [nextCodepoint, nextTranslation] = expanded[i + 1] ?? []
     const ordered =
       codepoint + 1 === nextCodepoint &&
-      isCaseSensitive(codepoint) === isCaseSensitive(nextCodepoint)
+      caseSensitive === isCaseSensitive(nextCodepoint)
 
     if (curr !== null) {
       if (
@@ -357,6 +358,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
 
     if (ordered && (synced || nextTranslation === translation)) {
       curr = {
+        caseSensitive,
         codepoint,
         translation,
         rangeUntil: codepoint + 1,
@@ -368,6 +370,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
   }
 
   rest.push({
+    caseSensitive,
     codepoint,
     translation,
     rangeUntil: null,
@@ -422,6 +425,7 @@ const codepointsBuffers = []
 const caseSensitiveCodepointsBuffers = []
 
 for (const {
+  caseSensitive,
   codepoint,
   translation,
   rangeUntil,
@@ -434,8 +438,9 @@ for (const {
   if (translation.length > 1) {
     const offset = strings.indexOf(translation)
 
-    integer |= STRING_TRANSLATION_MASK
-    integer |= (BigInt(translation.length << 4) | BigInt(offset >> 8)) << 21n
+    integer |=
+      STRING_TRANSLATION_MASK |
+      BigInt(((translation.length << 3) | (offset >> 8)) << 20)
     secondByte = offset & 0xff
   } else {
     if (rangeUntil !== null) {
@@ -445,13 +450,13 @@ for (const {
       secondByte |= rangeUntil - codepoint
     }
 
-    integer |= BigInt(translation.charCodeAt()) << 21n
+    integer |= BigInt(translation.charCodeAt() << 20)
   }
 
   buf.writeUint32LE(Number(integer))
   buf.writeUint8(secondByte, 4)
 
-  if (isCaseSensitive(codepoint)) {
+  if (caseSensitive) {
     caseSensitiveCodepointsBuffers.push(buf)
   } else {
     codepointsBuffers.push(buf)
@@ -459,8 +464,8 @@ for (const {
 }
 
 assert(
-  strings.length <= 0xfff,
-  `strings size must be equal or less than ${0xfff}. (got ${strings.length})`
+  strings.length <= 0x7ff,
+  `strings size must not exceed ${0x7ff}. (got ${strings.length})`
 )
 
 const headers = Buffer.alloc(6)
