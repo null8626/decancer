@@ -13,6 +13,3 @@ bindings/wasm/pkg/
 
 *.json
 *.bin
-
-# CI can create random files in the root dir
-package.json
