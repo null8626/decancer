@@ -19,7 +19,7 @@ pub enum Translation {
   Character(char),
   /// An [ASCII](https://en.wikipedia.org/wiki/ASCII) string.
   String(&'static str),
-  /// This suggests that the translation is an empty string. You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]).
+  /// This suggests that the translation is an empty string. You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values) (e.g diacritics), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]).
   None,
 }
 
@@ -47,18 +47,14 @@ impl Translation {
 /// Basic usage:
 ///
 /// ```rust
-/// let cured = decancer::cure_char('Ｅ');
-///
-/// assert_eq!(cured, "e");
+/// assert_eq!(decancer::cure_char('Ｅ'), "e");
 /// ```
 ///
 /// And since it checks if the strings are similar, please note that this is valid too:
 ///
 /// ```rust
-/// let cured = decancer::cure_char('Ｅ');
-///
 /// // it assumes that e is similar to 3
-/// assert_eq!(cured, "3");
+/// assert_eq!(decancer::cure_char('Ｅ'), "3");
 /// ```
 impl<S> PartialEq<S> for Translation
 where
@@ -92,41 +88,6 @@ impl Display for Translation {
       Self::String(s) => Display::fmt(s, f),
       Self::None => Ok(()),
     }
-  }
-}
-
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl Extend<Translation> for String {
-  #[inline(always)]
-  fn extend<I>(&mut self, iter: I)
-  where
-    I: IntoIterator<Item = Translation>,
-  {
-    for part in iter {
-      match part {
-        Translation::Character(c) => self.push(c),
-        Translation::String(s) => self.push_str(s),
-        Translation::None => {}
-      }
-    }
-  }
-}
-
-#[cfg(feature = "std")]
-#[cfg_attr(docsrs, doc(cfg(feature = "std")))]
-impl FromIterator<Translation> for String {
-  fn from_iter<I>(iter: I) -> Self
-  where
-    I: IntoIterator<Item = Translation>,
-  {
-    let iter = iter.into_iter();
-    let (size_hint, _) = iter.size_hint();
-
-    let mut s = String::with_capacity(size_hint);
-    s.extend(iter);
-
-    s
   }
 }
 
