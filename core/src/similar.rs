@@ -10,14 +10,11 @@ pub(crate) fn is(self_char: u32, other_char: char) -> bool {
 
   if self_char == other_char {
     return true;
-  }
-
-  if self_char <= 0x7f && other_char <= 0x7f {
-    let mut offset = SIMILAR_START;
+  } else if self_char <= 0x7f && other_char <= 0x7f {
     let mut contains_a = false;
     let mut contains_b = false;
 
-    loop {
+    for offset in SIMILAR_START..SIMILAR_END {
       let cur = unsafe { *(CODEPOINTS.offset(offset as _)) };
       let sim = cur & 0x7f;
 
@@ -36,12 +33,6 @@ pub(crate) fn is(self_char: u32, other_char: char) -> bool {
       if cur >= 0x80 {
         contains_a = false;
         contains_b = false;
-      }
-
-      offset += 1;
-
-      if offset == SIMILAR_END {
-        return false;
       }
     }
   }

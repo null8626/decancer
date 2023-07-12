@@ -45,7 +45,9 @@ impl Codepoint {
   }
 
   pub(crate) const fn translation(&self, other: u32) -> Translation {
-    if (self.0 & STRING_TRANSLATION_MASK) == 0 {
+    if (self.0 & STRING_TRANSLATION_MASK) != 0 {
+      Translation::string(self.0, self.1)
+    } else {
       let mut code = (self.0 >> 20) & 0x7f;
 
       if code == 0 {
@@ -55,8 +57,6 @@ impl Codepoint {
       }
 
       Translation::character(code)
-    } else {
-      Translation::string(self.0, self.1)
     }
   }
 }
