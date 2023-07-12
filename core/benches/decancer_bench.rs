@@ -9,9 +9,9 @@ fn cure(c: &mut Criterion) {
 
 fn cure_char(c: &mut Criterion) {
   c.bench_function("cure_char", |b| {
-    b.iter_batched(|| random::<char>(), decancer::cure_char, BatchSize::SmallInput)
+    b.iter_batched(random::<char>, decancer::cure_char, BatchSize::SmallInput)
   });
 }
 
-criterion_group!(benches, cure, cure_char,);
+criterion_group!(benches, cure, cure_char);
 criterion_main!(benches);
