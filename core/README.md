@@ -15,7 +15,6 @@
 [github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
 [blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
 [blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
-
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
 [crates-io-url]: https://crates.io/crates/decancer
@@ -37,7 +36,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 - It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
 - It stores it's huge collection of codepoints in an [optimized 25.72 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/codepoints.bin) instead of a huge JSON or text file to optimize it's bundle size!
-- It's capable of filtering **149,447 (13.41%) different unicode codepoints** including **9,628 different confusables**, like:
+- It's capable of filtering **149,451 (13.41%) different unicode codepoints** including **9,628 different confusables**, like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
@@ -45,7 +44,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - Several emojis
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
-  - JavaScript ([Node.js/Deno/Bun](https://www.npmjs.com/package/decancer)/Browser)
+  - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
   - C/C++
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
@@ -62,38 +61,12 @@ decancer = "1.6.3"
 
 </details>
 <details>
-<summary><b>JavaScript (Node.js v16 or later)</b></summary>
+<summary><b>JavaScript (Node.js)</b></summary>
 
 In your shell:
 
 ```console
 $ npm install decancer
-```
-
-In your code:
-
-```js
-const decancer = require('decancer')
-```
-
-</details>
-<details>
-<summary><b>JavaScript (Deno v1.28 or later)</b></summary>
-
-In your code:
-
-```ts
-import decancer from 'npm:decancer'
-```
-
-</details>
-<details>
-<summary><b>JavaScript (Bun)</b></summary>
-
-In your shell:
-
-```console
-$ bun install decancer
 ```
 
 In your code:
@@ -169,12 +142,14 @@ assert!(cured.starts_with("very"));
 assert!(cured.contains("funny"));
 assert!(cured.ends_with("text"));
 
-let _output_str = cured.into_str(); // retrieve the String inside and consume the struct.
+// retrieve the String inside and consume the struct.
+
+let cured = cured.into_str();
 ```
 
 </details>
 <details>
-<summary><b>JavaScript (Node.js/Deno/Bun)</b></summary>
+<summary><b>JavaScript (Node.js)</b></summary>
 
 ```js
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
