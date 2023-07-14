@@ -9,7 +9,7 @@ repository = "https://github.com/null8626/decancer"
 license = "MIT"
 keywords = ["unicode", "string", "moderation", "confusables", "homoglyph"]
 categories = ["parsing", "text-processing", "value-formatting"]
-exclude = ["benches/", "rustfmt.toml"]
+exclude = ["rustfmt.toml"]
 rust-version = "1.64.0"
 
 [dependencies]
