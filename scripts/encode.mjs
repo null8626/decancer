@@ -4,11 +4,22 @@ import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
 
+const BLACKLISTED_RANGES = [
+  [0x11700, 0x1173f],
+  [0x16f00, 0x16f9f],
+  [0x118a0, 0x118ff],
+  [0x10500, 0x1052f],
+  [0x11480, 0x114df]
+]
 const RANGE_MASK = 0x8000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const STRING_TRANSLATION_MASK = 0x10000000n
 
 let EXPECTED
+
+function containsInclusive(value, rangeStart, rangeEnd) {
+  return value >= rangeStart && value <= rangeEnd
+}
 
 function isCaseSensitive(x) {
   return String.fromCodePoint(x).toLowerCase().codePointAt() !== x
@@ -127,7 +138,15 @@ if (existsSync(join(ROOT_DIR, '.expected.json'))) {
   EXPECTED = []
 
   for (let i = 0; i < unicode.length; i++) {
-    if (unicode[i][4][0] !== 'A' && unicode[i][4][0] !== 'R') {
+    const codepoint = parseInt(unicode[i][0], 16)
+
+    if (
+      !BLACKLISTED_RANGES.some(([start, end]) =>
+        containsInclusive(codepoint, start, end)
+      ) &&
+      unicode[i][4][0] !== 'A' &&
+      unicode[i][4][0] !== 'R'
+    ) {
       if (unicode[i][1].endsWith('Last>')) {
         const start = parseInt(unicode[i - 1][0], 16)
 
@@ -138,8 +157,6 @@ if (existsSync(join(ROOT_DIR, '.expected.json'))) {
           )
         )
       } else {
-        const codepoint = parseInt(unicode[i][0], 16)
-
         if (
           codepoint > 0x7f &&
           (codepoint < 0xd800 || codepoint > 0xf8ff) &&
