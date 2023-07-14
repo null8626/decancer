@@ -1,6 +1,6 @@
 [package]
 name = "decancer_wasm"
-version = "1.6.3"
+version = "1.6.4"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
 description = "A tiny package that removes common unicode confusables/homoglyphs from strings."
