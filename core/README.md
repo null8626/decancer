@@ -72,7 +72,7 @@ $ npm install decancer
 In your code:
 
 ```js
-const decancer = require('decancer')
+import decancer from 'decancer'
 ```
 
 </details>
