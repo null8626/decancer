@@ -7,6 +7,7 @@
 **/*.cjs linguist-vendored=true eol=lf
 **/*.rs eol=lf
 **/*.js eol=lf
+**/*.html eol=lf
 **/*.md eol=lf
 **/*.toml eol=lf
 **/*.json eol=lf
