@@ -44,7 +44,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - Several emojis
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
-  - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
+  - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Browser](https://null8626.github.io/decancer))
   - C/C++
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
