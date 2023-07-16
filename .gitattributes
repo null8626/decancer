@@ -5,9 +5,9 @@
 **/*.ts linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf
+**/*.html linguist-vendored=true eol=lf
 **/*.rs eol=lf
 **/*.js eol=lf
-**/*.html eol=lf
 **/*.md eol=lf
 **/*.toml eol=lf
 **/*.json eol=lf
