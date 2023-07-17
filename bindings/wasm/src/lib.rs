@@ -3,7 +3,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub struct CuredString(decancer::CuredString);
+pub struct  CuredString(decancer::CuredString);
 
 #[wasm_bindgen]
 impl CuredString {
