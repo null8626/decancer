@@ -44,10 +44,7 @@ async function updateReadme() {
       toAdd += rangeUntil
     }
 
-    if (
-      (integer & STRING_TRANSLATION_MASK) !== 0 ||
-      ((integer >> 20) & 0x7f) !== 0
-    ) {
+    if (((integer >> 20) & 0x7f) !== 0) {
       confusablesCount += toAdd
     }
 
