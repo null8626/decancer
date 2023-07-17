@@ -30,7 +30,5 @@ impl CuredString {
 
 #[wasm_bindgen]
 pub fn decancer(input: &str) -> CuredString {
-  console_error_panic_hook::set_once();
-
   CuredString(decancer::cure(input))
 }
