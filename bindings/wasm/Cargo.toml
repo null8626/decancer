@@ -13,5 +13,6 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { version = "0.2.8", default-features = false, features = ["std"] }
+console_error_panic_hook = "0.1"
 decancer = { path = "../../core" }
+wasm-bindgen = { version = "0.2.8", default-features = false, features = ["std"] }
