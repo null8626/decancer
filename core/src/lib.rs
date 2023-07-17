@@ -37,7 +37,7 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
   None
 }
 
-/// Cures a single character/unicode codepoint.
+/// Cures a single character/unicode codepoint. Output will always be in lowercase and equality methods provided by [`Translation`] is case-insensitive.
 ///
 /// # Examples
 ///
@@ -126,7 +126,7 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
     .unwrap_or_else(|| Translation::character(code_lowercased))
 }
 
-/// Cures a string.
+/// Cures a string. Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] is case-insensitive.
 ///
 /// # Examples
 ///
@@ -135,15 +135,13 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
 /// ```rust
 /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 ///
-/// // cured here is a decancer::CuredString struct wrapping over the cured string
-/// // for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
 /// assert_eq!(cured, "very funny text");
-/// assert!(cured.starts_with("very"));
-/// assert!(cured.contains("funny"));
-/// assert!(cured.ends_with("text"));
+/// assert!(cured.contains("FuNny"));
+/// assert_eq!(cured.into_str(), String::from("very funny text"));
 ///
-/// // retrieve the String inside and consume the struct.
-/// let _output_str = cured.into_str();
+/// assert_eq!(decancer::cure("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text");
+/// assert_eq!(decancer::cure("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log");
+/// assert_eq!(decancer::cure("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars");
 /// ```
 #[cfg(feature = "std")]
 #[inline(always)]

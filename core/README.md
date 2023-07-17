@@ -40,11 +40,10 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
-  - Most characters from foreign scripts, like [Chinese](https://en.wikipedia.org/wiki/Chinese_characters), [Cyrillic](https://en.wikipedia.org/wiki/Cyrillic_script), [Devanagari](https://en.wikipedia.org/wiki/Devanagari), [Greek](https://en.wikipedia.org/wiki/Greek_alphabet), [Hiragana](https://en.wikipedia.org/wiki/Hiragana), [Hangul](https://en.wikipedia.org/wiki/Hangul), [Kanji](https://en.wikipedia.org/wiki/Kanji), [Katakana](https://en.wikipedia.org/wiki/Katakana), etc.
   - Several emojis
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
-  - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/[Browser](https://null8626.github.io/decancer))
+  - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
   - C/C++
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
@@ -69,7 +68,13 @@ In your shell:
 $ npm install decancer
 ```
 
-In your code:
+In your code (CommonJS):
+
+```js
+const decancer = require('decancer')
+```
+
+In your code (ESM):
 
 ```js
 import decancer from 'decancer'
@@ -93,8 +98,9 @@ In your code:
 <details>
 <summary><b>C/C++</b></summary>
 
-### Download precompiled binaries
+### Download
 
+- [Library header file](https://raw.githubusercontent.com/null8626/decancer/v1.6.4/bindings/native/decancer.h)
 - [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.6.4/decancer-x86_64-pc-windows-msvc.zip)
 - [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v1.6.4/decancer-i686-pc-windows-msvc.zip)
 - [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v1.6.4/decancer-aarch64-pc-windows-msvc.zip)
@@ -131,20 +137,18 @@ And the binary files should be generated in the `target/release` directory.
 <details>
 <summary><b>Rust</b></summary>
 
+For more information, please read the [documentation](https://docs.rs/decancer).
+
 ```rust
 let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 
-// cured here is a decancer::CuredString struct wrapping over the cured string
-// for comparison purposes, it's more recommended to use the methods provided by the decancer::CuredString struct.
-
 assert_eq!(cured, "very funny text");
-assert!(cured.starts_with("very"));
-assert!(cured.contains("funny"));
-assert!(cured.ends_with("text"));
+assert!(cured.contains("FuNny"));
+assert_eq!(cured.into_str(), String::from("very funny text"));
 
-// retrieve the String inside and consume the struct.
-
-let cured = cured.into_str();
+assert_eq!(decancer::cure("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text");
+assert_eq!(decancer::cure("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log");
+assert_eq!(decancer::cure("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars");
 ```
 
 </details>
@@ -152,25 +156,18 @@ let cured = cured.into_str();
 <summary><b>JavaScript (Node.js)</b></summary>
 
 ```js
+const assert = require('node:assert')
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
-// cured here is a CuredString object wrapping over the cured string
-// for comparison purposes, it's more recommended to use the methods provided by the CuredString class.
-
-if (cured.contains('funny')) {
-  console.log('found the funny')
-}
-
-if (
-  cured.equals('very funny text') &&
-  cured.startsWith('very') &&
-  cured.endsWith('text')
-) {
-  console.log('it works!')
-}
+assert(cured.equals('very funny text'))
+assert(cured.contains('funny'))
 
 console.log(cured.toString())
 // => 'very funny text'
+
+assert(decancer("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text")
+assert(decancer("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log")
+assert(decancer("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars")
 ```
 
 </details>
@@ -224,8 +221,6 @@ console.log(cured.toString())
 <details>
 <summary><b>C/C++</b></summary>
 
-> **note:** `decancer.h` can be [retrieved](https://github.com/null8626/decancer/blob/main/bindings/native/decancer.h) from the `bindings/native` directory.
-
 ```c
 #include <decancer.h>
 
@@ -236,7 +231,6 @@ console.log(cured.toString())
 // global variable for assertion purposes only
 decancer_cured_t cured;
 
-// our quick assert function
 static void assert(const bool expr, const char *message)
 {
     if (!expr)
@@ -256,17 +250,13 @@ int main(void) {
 
     cured = decancer_cure(string, sizeof(string));
 
-    // comparisons
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
-    assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with");
-    assert(decancer_ends_with(cured, (uint8_t *)("text"), 4), "ends_with");
     assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
 
     // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
     size_t output_size;
     const uint8_t *output_raw = decancer_raw(cured, &output_size);
 
-    // assert raw cured utf-8 size to be 15 bytes (size of "very funny text")
     assert(output_size == 15, "raw output size");
 
     // utf-8 bytes for "very funny text"
@@ -280,9 +270,7 @@ int main(void) {
         assert(output_raw[i] == expected_raw[i], assert_message);
     }
 
-    // free cured string (required)
-    decancer_free(cured);
-    
+    decancer_free(cured);    
     return 0;
 }
 ```
