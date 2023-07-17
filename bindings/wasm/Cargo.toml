@@ -13,5 +13,5 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-wasm-bindgen = { version = "0.2", default-features = false, features = ["std"] }
+wasm-bindgen = { version = "0.2.8", default-features = false, features = ["std"] }
 decancer = { path = "../../core" }
