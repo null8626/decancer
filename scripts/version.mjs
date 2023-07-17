@@ -30,7 +30,7 @@ void (await Promise.all([
     join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js'),
     directUpdateFunc
   ),
-  update(join(ROOT_DIR, 'index.html')),
+  update(join(ROOT_DIR, 'index.html'), directUpdateFunc),
   update(join(ROOT_DIR, 'core', 'README.md'), directUpdateFunc),
   update(join(ROOT_DIR, 'core', 'src', 'lib.rs'), directUpdateFunc),
   new Promise(resolve => {
