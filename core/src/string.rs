@@ -23,9 +23,7 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").into_str();
-  ///
-  /// assert_eq!(cured, "very funny text");
+  /// assert_eq!(decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").into_str(), String::from("very funny text"));
   /// ```
   #[must_use]
   pub const fn into_str(self) -> String {
@@ -40,9 +38,7 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-  ///
-  /// assert!(cured.starts_with("very"));
+  /// assert!(decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").starts_with("very"));
   /// ```
   ///
   /// And since it checks if the strings are similar, please note that this is valid too:
@@ -51,7 +47,7 @@ impl CuredString {
   /// // assume this has no effect
   /// let cured = decancer::cure("vwv (vnt 1l1");
   ///
-  /// // it assumes that v is similar to u as well
+  /// // note that it also assumes that v is similar to u as well
   /// assert!(cured.starts_with("uwu"));
   /// ```
   #[must_use]
@@ -67,9 +63,7 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-  ///
-  /// assert!(cured.ends_with("text"));
+  /// assert!(decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").ends_with("text"));
   /// ```
   ///
   /// And since it checks if the strings are similar, please note that this is valid too:
@@ -78,7 +72,7 @@ impl CuredString {
   /// // assume this has no effect
   /// let cured = decancer::cure("vwv (vnt 1l1");
   ///
-  /// // it assumes that 1 is similar to l and i as well
+  /// // note that it also assumes that 1 is similar to l and i as well
   /// assert!(cured.ends_with("lil"));
   /// ```
   #[must_use]
@@ -94,9 +88,7 @@ impl CuredString {
   /// Basic usage:
   ///
   /// ```rust
-  /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-  ///
-  /// assert!(cured.contains("funny"));
+  /// assert!(decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").contains("funny"));
   /// ```
   ///
   /// And since it checks if the strings are similar, please note that this is valid too;
@@ -105,7 +97,7 @@ impl CuredString {
   /// // assume this has no effect
   /// let cured = decancer::cure("vwv cvnt 1l1");
   ///
-  /// // it assumes that v is similar to u
+  /// // note that it also assumes that v is similar to u
   /// assert!(cured.contains("cunt"));
   /// ```
   #[must_use]
@@ -200,9 +192,7 @@ impl AsRef<str> for CuredString {
 /// Basic usage:
 ///
 /// ```rust
-/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-///
-/// assert_eq!(cured, "very funny text");
+/// assert_eq!(decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"), "very funny text");
 /// ```
 ///
 /// And since it checks if the strings are similar, please note that this is valid too:
@@ -211,7 +201,7 @@ impl AsRef<str> for CuredString {
 /// // assume this has no effect
 /// let cured = decancer::cure("vwv cvnt 1l1");
 ///
-/// // it assumes that v is similar to u
+/// // note that it also assumes that v is similar to u
 /// assert_eq!(cured, "uwu cunt lil");
 /// ```
 impl<S> PartialEq<S> for CuredString
