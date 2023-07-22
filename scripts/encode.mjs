@@ -5,6 +5,8 @@ import { inspect } from 'node:util'
 import assert from 'node:assert'
 
 const BLACKLISTED_RANGES = [
+  [0, 0x7f],
+  [0xd800, 0xf8ff],
   [0x11700, 0x1173f],
   [0x16f00, 0x16f9f],
   [0x118a0, 0x118ff],
@@ -141,11 +143,11 @@ if (existsSync(join(ROOT_DIR, '.expected.json'))) {
     const codepoint = parseInt(unicode[i][0], 16)
 
     if (
+      codepoint < 0xe0100 &&
       !BLACKLISTED_RANGES.some(([start, end]) =>
         containsInclusive(codepoint, start, end)
       ) &&
-      unicode[i][4][0] !== 'A' &&
-      unicode[i][4][0] !== 'R'
+      unicode[i][4][0] !== 'NSM'
     ) {
       if (unicode[i][1].endsWith('Last>')) {
         const start = parseInt(unicode[i - 1][0], 16)
@@ -157,13 +159,7 @@ if (existsSync(join(ROOT_DIR, '.expected.json'))) {
           )
         )
       } else {
-        if (
-          codepoint > 0x7f &&
-          (codepoint < 0xd800 || codepoint > 0xf8ff) &&
-          codepoint < 0xe0100
-        ) {
-          EXPECTED.push(codepoint)
-        }
+        EXPECTED.push(codepoint)
       }
     }
   }
