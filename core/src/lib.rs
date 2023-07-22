@@ -97,7 +97,7 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
 pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
 
-  if matches!(code, 0..=31 | 127 | 0xd800..=0xf8ff | 0xe0100..) {
+  if matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe0100..) {
     return Translation::None;
   }
 
