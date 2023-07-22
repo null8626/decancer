@@ -143,7 +143,8 @@ if (existsSync(join(ROOT_DIR, '.expected.json'))) {
     const codepoint = parseInt(unicode[i][0], 16)
 
     if (
-      codepoint < 0xe0100 && !BLACKLISTED_RANGES.some(([start, end]) =>
+      codepoint < 0xe0100 &&
+      !BLACKLISTED_RANGES.some(([start, end]) =>
         containsInclusive(codepoint, start, end)
       ) &&
       unicode[i][4][0] !== 'NSM'
