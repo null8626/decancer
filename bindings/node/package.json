@@ -1,9 +1,8 @@
 {
   "name": "decancer",
   "version": "1.6.5",
-  "main": "src/lib.js",
-  "typings": "typings.d.ts",
   "description": "A tiny package that removes common unicode confusables/homoglyphs from strings.",
+  "author": "null8626",
   "keywords": [
     "string",
     "unicode",
@@ -13,14 +12,28 @@
     "moderation",
     "homoglyph"
   ],
-  "author": "null8626",
-  "bugs": {
-    "url": "https://github.com/null8626/decancer/issues"
-  },
-  "homepage": "https://github.com/null8626/decancer",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/null8626/decancer"
+  },
+  "homepage": "https://github.com/null8626/decancer#readme",
+  "bugs": {
+    "url": "https://github.com/null8626/decancer/issues"
+  },
+  "license": "MIT",
+  "main": "src/lib.js",
+  "typings": "typings.d.ts",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.15.2"
+  },
+  "engines": {
+    "node": ">= 10"
+  },
+  "scripts": {
+    "artifacts": "napi artifacts",
+    "build": "napi build --no-dts-header --platform --release",
+    "prepublishOnly": "napi prepublish -t npm --skip-gh-release",
+    "test": "node test.cjs"
   },
   "napi": {
     "name": "decancer",
@@ -40,18 +53,5 @@
         "armv7-linux-androideabi"
       ]
     }
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "@napi-rs/cli": "^2.15.2"
-  },
-  "engines": {
-    "node": ">= 16"
-  },
-  "scripts": {
-    "artifacts": "napi artifacts",
-    "build": "napi build --no-dts-header --platform --release",
-    "prepublishOnly": "napi prepublish -t npm --skip-gh-release",
-    "test": "node test.cjs"
   }
 }

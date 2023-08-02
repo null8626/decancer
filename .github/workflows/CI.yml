@@ -24,10 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
       - name: Setup
         id: setup
@@ -52,11 +51,10 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
       - name: Ensure no_std is working
         working-directory: core
@@ -324,11 +322,10 @@ jobs:
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
           cache: yarn
       - name: Install Rust
@@ -343,21 +340,20 @@ jobs:
         if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
         with:
           version: 0.10.0
-      - name: Setup node x86
+      - name: Configure architecture to use with node
         if: matrix.settings.target == 'i686-pc-windows-msvc'
         run: yarn config set supportedArchitectures.cpu "ia32"
         shell: bash
-      - name: Install dependencies
-        working-directory: bindings/node
-        run: yarn install
-      - name: Setup node x86
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         if: matrix.settings.target == 'i686-pc-windows-msvc'
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
           cache: yarn
           architecture: x86
+      - name: Install dependencies
+        working-directory: bindings/node
+        run: yarn install
       - name: Build in docker
         uses: addnab/docker-run-action@v3
         if: ${{ matrix.settings.docker }}
@@ -388,10 +384,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
           cache: yarn
       - name: Install dependencies
@@ -407,7 +402,7 @@ jobs:
         working-directory: bindings/node
         run: yarn test
   wasm:
-    name: Build wasm
+    name: Build and test wasm
     runs-on: ubuntu-latest
     needs:
       - setup
@@ -418,6 +413,10 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          check-latest: true
       - name: Setup wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm
@@ -425,6 +424,11 @@ jobs:
         run: |
           wasm-pack build --no-typescript --release -t web
           mv ./pkg/decancer_wasm_bg.wasm ../../decancer.wasm
+      - name: Test wasm
+        working-directory: bindings/wasm/tests
+        run: |
+          npm i
+          node .
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -443,10 +447,9 @@ jobs:
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
       - name: Prettier everything
         run: node scripts/pretty.mjs
@@ -479,10 +482,9 @@ jobs:
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
     steps:
       - uses: actions/checkout@v3
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
           cache: yarn
       - name: Download all artifacts

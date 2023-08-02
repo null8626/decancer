@@ -19,7 +19,7 @@
     "glibc"
   ],
   "author": "null8626",
-  "homepage": "https://github.com/null8626/decancer",
+  "homepage": "https://github.com/null8626/decancer#readme",
   "description": "A tiny package that removes common unicode confusables/homoglyphs from strings. (Binary port for linux-arm64-gnu)",
   "bugs": {
     "url": "https://github.com/null8626/decancer/issues"
