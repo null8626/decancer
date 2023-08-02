@@ -19,7 +19,6 @@ on:
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
 permissions:
-  contents: read
   pages: write
   id-token: write
 jobs:
@@ -473,7 +472,7 @@ jobs:
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build
+          folder: '.'
       - name: Remove wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: geekyeggo/delete-artifact@v2
