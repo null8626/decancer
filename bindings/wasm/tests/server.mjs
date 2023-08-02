@@ -1,8 +1,8 @@
 import { parentPort } from 'node:worker_threads'
 import fastifyStatic from '@fastify/static'
+import { createReadStream } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createReadStream } from 'node:fs'
 import fastify from 'fastify'
 
 const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
