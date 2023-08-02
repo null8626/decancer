@@ -15,7 +15,7 @@ function error(message) {
   console.error(message)
 }
 
-console.log(`- [client] checking ${TEMP_JS_FILE}...`)
+console.log(`- [client] checking for the availability of ${TEMP_JS_FILE}...`)
 
 if (!(await fileExists(TEMP_JS_FILE))) {
   console.log(`- [client] creating ${TEMP_JS_FILE}...`)
