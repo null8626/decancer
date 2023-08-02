@@ -10,6 +10,7 @@ bindings/native/*.lib
 bindings/native/*.obj
 bindings/node/artifacts/
 bindings/wasm/pkg/
+bindings/wasm/bin/temp_decancer.min.js
 
 *.json
 *.bin

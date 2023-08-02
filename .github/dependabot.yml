@@ -32,3 +32,11 @@ updates:
       day: "saturday"
       interval: "weekly"
       time: "06:15"
+  - package-ecosystem: "npm"
+    directory: "/bindings/wasm/tests"
+    commit-message:
+      prefix: "deps[wasm-tests]: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "06:20"
