@@ -15,29 +15,36 @@ app.register(fastifyStatic, {
   root: join(CURRENT_DIR, '..', 'bin')
 })
 
-app.get('/', (req, res) => res.type('text/html').send(createReadStream(join(CURRENT_DIR, 'index.html'))))
+app.get('/', (req, res) =>
+  res.type('text/html').send(createReadStream(join(CURRENT_DIR, 'index.html')))
+)
 
-app.listen({
-  port: 8080
-}, err => {
-  if (err) {
-    parentPort.postMessage({
-      code: 'error',
-      stack: err.stack
-    })
-  } else {
-    console.log('- [server] ready.')
-    
-    parentPort.postMessage({
-      code: 'ready'
-    })
-  
-    parentPort.on('message', () => {
-      console.log('- [server] closing...')
-      
-      app.close().finally(() => parentPort.postMessage({
-        code: 'close'
-      }))
-    })
+app.listen(
+  {
+    port: 8080
+  },
+  err => {
+    if (err) {
+      parentPort.postMessage({
+        code: 'error',
+        stack: err.stack
+      })
+    } else {
+      console.log('- [server] ready.')
+
+      parentPort.postMessage({
+        code: 'ready'
+      })
+
+      parentPort.on('message', () => {
+        console.log('- [server] closing...')
+
+        app.close().finally(() =>
+          parentPort.postMessage({
+            code: 'close'
+          })
+        )
+      })
+    }
   }
-})
+)

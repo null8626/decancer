@@ -1,7 +1,8 @@
 const { strictEqual } = require('node:assert')
 const { describe, it } = require('node:test')
 
-const assert = (expected, func, ...arguments) => it(func.name, () => strictEqual(func(...arguments), expected))
+const assert = (expected, func, ...arguments) =>
+  it(func.name, () => strictEqual(func(...arguments), expected))
 
 describe('decancer', () => {
   const decancer = require('./src/lib.js')
