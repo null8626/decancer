@@ -1,0 +1,16 @@
+**/node_modules/
+**/package-lock.json
+**/Cargo.lock
+**/*.node
+**/target/
+
+bindings/native/*.exe
+bindings/native/*.dll
+bindings/native/*.lib
+bindings/native/*.obj
+bindings/node/artifacts/
+bindings/wasm/pkg/
+bindings/wasm/bin/temp_decancer.min.js
+
+/*.json
+/*.bin

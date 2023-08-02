@@ -1,0 +1,36 @@
+{
+  "name": "@vierofernando/decancer-linux-x64-musl",
+  "version": "1.6.5",
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "decancer.linux-x64-musl.node",
+  "files": [
+    "decancer.linux-x64-musl.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "libc": [
+    "musl"
+  ],
+  "author": "null8626",
+  "homepage": "https://github.com/null8626/decancer#readme",
+  "description": "A tiny package that removes common unicode confusables/homoglyphs from strings. (Binary port for linux-x64-musl)",
+  "bugs": {
+    "url": "https://github.com/null8626/decancer/issues"
+  },
+  "keywords": [
+    "string",
+    "unicode",
+    "zalgo",
+    "regexp",
+    "confusables",
+    "moderation",
+    "homoglyph"
+  ]
+}

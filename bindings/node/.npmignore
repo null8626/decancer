@@ -1,0 +1,9 @@
+target
+Cargo.lock
+.cargo
+npm
+rustfmt.toml
+test.cjs
+**/*.node
+**/*.rs
+Cargo.toml

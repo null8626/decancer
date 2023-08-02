@@ -1,0 +1,17 @@
+[package]
+name = "decancer_wasm"
+version = "1.6.5"
+edition = "2021"
+authors = ["null (https://github.com/null8626)"]
+description = "A tiny package that removes common unicode confusables/homoglyphs from strings."
+repository = "https://github.com/null8626/decancer"
+license = "MIT"
+keywords = ["unicode", "string", "moderation", "confusables", "homoglyph"]
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+decancer = { path = "../../core" }
+wasm-bindgen = { version = "0.2.8", default-features = false, features = ["std"] }

@@ -1,0 +1,33 @@
+{
+  "name": "@vierofernando/decancer-win32-x64-msvc",
+  "version": "1.6.5",
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "decancer.win32-x64-msvc.node",
+  "files": [
+    "decancer.win32-x64-msvc.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "author": "null8626",
+  "homepage": "https://github.com/null8626/decancer#readme",
+  "description": "A tiny package that removes common unicode confusables/homoglyphs from strings. (Binary port for win32-x64-msvc)",
+  "bugs": {
+    "url": "https://github.com/null8626/decancer/issues"
+  },
+  "keywords": [
+    "string",
+    "unicode",
+    "zalgo",
+    "regexp",
+    "confusables",
+    "moderation",
+    "homoglyph"
+  ]
+}
