@@ -19,6 +19,7 @@ on:
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
 permissions:
+  contents: write
   pages: write
   id-token: write
 jobs:
