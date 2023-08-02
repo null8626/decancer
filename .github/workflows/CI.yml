@@ -414,7 +414,6 @@ jobs:
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/configure-pages@v3
       - uses: ATiltedTree/setup-rust@v1
         with:
           rust-version: stable
@@ -434,13 +433,6 @@ jobs:
         run: |
           npm i
           node .
-      - name: Upload GitHub pages artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -477,6 +469,11 @@ jobs:
           message: 'chore: prettier and update wasm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to GitHub Pages
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build
       - name: Remove wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: geekyeggo/delete-artifact@v2
