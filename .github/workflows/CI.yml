@@ -18,6 +18,9 @@ on:
       - 'core/bin/codepoints.bin'
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
+permissions:
+  pages: write
+  id-token: write
 jobs:
   setup:
     name: Setup
@@ -465,6 +468,11 @@ jobs:
           message: 'chore: prettier and update wasm'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy to GitHub Pages
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: '.'
       - name: Remove wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: geekyeggo/delete-artifact@v2

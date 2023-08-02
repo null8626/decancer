@@ -15,9 +15,10 @@ app.register(fastifyStatic, {
   root: join(CURRENT_DIR, '..', 'bin')
 })
 
-app.get('/', (req, res) =>
+app.get('/', (req, res) => {
+  console.log('- [server] received a request.')
   res.type('text/html').send(createReadStream(join(CURRENT_DIR, 'index.html')))
-)
+})
 
 app.listen(
   {
@@ -31,7 +32,6 @@ app.listen(
       })
     } else {
       console.log('- [server] ready.')
-
       parentPort.postMessage({
         code: 'ready'
       })
