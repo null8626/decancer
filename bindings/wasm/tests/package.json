@@ -1,0 +1,32 @@
+{
+  "name": "decancer-wasm-tests",
+  "private": true,
+  "description": "Test suite for decancer's WebAssembly binding.",
+  "author": "null8626",
+  "keywords": [
+    "test",
+    "wasm",
+    "webassembly"
+  ],
+  "homepage": "https://github.com/null8626/decancer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/null8626/decancer"
+  },
+  "bugs": {
+    "url": "https://github.com/null8626/decancer/issues"
+  },
+  "license": "MIT",
+  "main": "index.mjs",
+  "dependencies": {
+    "@fastify/static": "^6.10.2",
+    "fastify": "^4.21.0",
+    "puppeteer": "^20.9.0"
+  },
+  "engines": {
+    "node": ">= 16.3"
+  },
+  "scripts": {
+    "test": "node index.mjs"
+  }
+}
