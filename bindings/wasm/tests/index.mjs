@@ -26,7 +26,7 @@ if (!(await fileExists(TEMP_JS_FILE))) {
     .toString()
     .replace(/https\:\/\/(.*?)\.wasm/, 'http://localhost:8080/decancer.wasm')
 
-  writeFile(TEMP_JS_FILE, modifiedJs)
+  await writeFile(TEMP_JS_FILE, modifiedJs)
 }
 
 console.log('- [client] running worker...')
