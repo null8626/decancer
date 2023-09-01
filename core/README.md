@@ -33,9 +33,9 @@
 
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
-- It's core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
+- Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - It virtually has **no third-party dependencies** - it only depends on itself.
-- It stores it's huge collection of codepoints in an [optimized 25.72 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/codepoints.bin) instead of a huge JSON or text file to optimize it's bundle size!
+- It stores its huge collection of codepoints in an [optimized 25.72 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/codepoints.bin) instead of a huge JSON or text file to optimize its bundle size!
 - It's capable of filtering **149,513 (13.42%) different unicode codepoints** including **9,628 different confusables**, like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
@@ -253,7 +253,7 @@ int main(void) {
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
     assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
 
-    // coerce output as a raw UTF-8 pointer and retrieve it's size (in bytes)
+    // coerce output as a raw UTF-8 pointer and retrieve its size (in bytes)
     size_t output_size;
     const uint8_t *output_raw = decancer_raw(cured, &output_size);
 
