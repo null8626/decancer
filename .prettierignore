@@ -1,6 +1,6 @@
 **/target/**
 **/node_modules/**
 **/package-lock.json
-*.json
+/*.json
 bindings/wasm/bin/**
 bindings/wasm/pkg/**
