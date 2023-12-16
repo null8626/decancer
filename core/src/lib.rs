@@ -90,9 +90,9 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
 /// ```rust
 /// use decancer::Translation;
 ///
-/// assert_eq!(decancer::cure_char(0xD800u32), Translation::None));
-/// assert_eq!(decancer::cure_char(char::REPLACEMENT_CHARACTER), Translation::None));
-/// assert_eq!(decancer::cure_char((char::MAX as u32) + 1), Translation::None));
+/// assert_eq!(decancer::cure_char(0xD800u32), Translation::None);
+/// assert_eq!(decancer::cure_char(char::REPLACEMENT_CHARACTER), Translation::None);
+/// assert_eq!(decancer::cure_char((char::MAX as u32) + 1), Translation::None);
 /// ```
 pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   let code = code.into();
