@@ -1,173 +1,24 @@
+import { binarySearchExists, isCaseSensitive, mergeArray, removeFromSet, SortedSet } from './util.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { execSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
 
-const BLACKLISTED_RANGES = [
-  [0, 0x7f],
-  [0xd800, 0xf8ff],
-  [0x11700, 0x1173f],
-  [0x16f00, 0x16f9f],
-  [0x118a0, 0x118ff],
-  [0x10500, 0x1052f],
-  [0x11480, 0x114df]
-]
 const RANGE_MASK = 0x8000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const STRING_TRANSLATION_MASK = 0x10000000n
 
-let EXPECTED
-
-function containsInclusive(value, rangeStart, rangeEnd) {
-  return value >= rangeStart && value <= rangeEnd
-}
-
-function isCaseSensitive(x) {
-  return String.fromCodePoint(x).toLowerCase().codePointAt() !== x
-}
-
-function merge(a, b, recurse = true) {
-  if (a.includes(b)) {
-    return a
-  } else if (b.includes(a)) {
-    return b
-  }
-
-  const minimumLength = Math.min(a.length, b.length)
-  let maxLimit
-
-  for (let limit = 1; limit <= minimumLength; limit++) {
-    if (a.slice(0, limit) === b.slice(-limit)) {
-      maxLimit = limit
-    }
-  }
-
-  if (maxLimit === undefined) {
-    if (recurse) {
-      return merge(b, a, false)
-    }
-  } else {
-    return b.slice(0, -maxLimit) + a
-  }
-}
-
-function mergeArray(arr, recurse = true) {
-  const mergedSections = []
-
-  while (true) {
-    let index = 0
-
-    for (; index < arr.length; index++) {
-      if (arr[index] !== undefined) {
-        break
-      }
-    }
-
-    if (index === arr.length) {
-      break
-    }
-
-    let section = arr[index]
-    arr[index] = undefined
-
-    for (index++; index < arr.length; index++) {
-      if (arr[index] === undefined) {
-        continue
-      }
-
-      const newSection = merge(section, arr[index])
-
-      if (newSection) {
-        section = newSection
-        arr[index] = undefined
-      }
-    }
-
-    mergedSections.push(section)
-  }
-
-  if (recurse) {
-    return mergeArray(mergedSections, false)
-  } else {
-    return mergedSections.reduce((a, b) => a + b, '')
-  }
-}
-
-function retrieveCollisions(array, set) {
-  for (const part of set) array.splice(array.indexOf(part), 1)
-
-  return array
-}
-
-function binarySearchExists(arr, val) {
-  let start = 0
-  let end = arr.length - 1
-
-  while (start <= end) {
-    const mid = Math.floor((start + end) / 2)
-
-    if (arr[mid] === val) {
-      return true
-    }
-
-    if (val < arr[mid]) {
-      end = mid - 1
-    } else {
-      start = mid + 1
-    }
-  }
-
-  return false
-}
-
 console.log('- fetching unicode data...')
 
-if (existsSync(join(ROOT_DIR, '.expected.json'))) {
-  EXPECTED = JSON.parse(readFileSync(join(ROOT_DIR, '.expected.json')))
-} else {
-  const response = await fetch(
-    'https://unicode.org/Public/UNIDATA/UnicodeData.txt'
-  )
-
-  console.log('- parsing unicode data...')
-
-  const unicode = (await response.text())
-    .trimRight()
-    .split('\n')
-    .map(x => x.split(';'))
-
-  EXPECTED = []
-
-  for (let i = 0; i < unicode.length; i++) {
-    const codepoint = parseInt(unicode[i][0], 16)
-
-    if (
-      codepoint < 0xe0100 &&
-      !BLACKLISTED_RANGES.some(([start, end]) =>
-        containsInclusive(codepoint, start, end)
-      ) &&
-      unicode[i][4][0] !== 'NSM'
-    ) {
-      if (unicode[i][1].endsWith('Last>')) {
-        const start = parseInt(unicode[i - 1][0], 16)
-
-        EXPECTED.push(
-          ...Array.from(
-            { length: parseInt(unicode[i][0], 16) - start + 1 },
-            (_, i) => i + start
-          )
-        )
-      } else {
-        EXPECTED.push(codepoint)
-      }
-    }
-  }
-
-  console.log('- writing to cache...')
-
-  writeFileSync(join(ROOT_DIR, '.expected.json'), JSON.stringify(EXPECTED))
+if (!existsSync(join(ROOT_DIR, '.expected.json'))) {
+  execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
+    stdio: 'inherit'
+  })
 }
+
+const EXPECTED = JSON.parse(readFileSync(join(ROOT_DIR, '.expected.json')))
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing json file path.')
@@ -274,7 +125,7 @@ console.log(
     `discovered ${(expanded.length - set.length).toLocaleString(
       'en-US'
     )} collisions. at codepoints: ${inspect(
-      retrieveCollisions(
+      removeFromSet(
         expanded.map(([codepoint]) => codepoint),
         set
       ),
@@ -330,9 +181,7 @@ assert(
   )}`
 )
 
-const notSyncedSequences = [],
-  syncedSequences = [],
-  rest = []
+const grandTotal = new SortedSet(x => x.codepoint)
 
 let curr
 for (i = 0, curr = null; i < expanded.length; i++) {
@@ -357,9 +206,8 @@ for (i = 0, curr = null; i < expanded.length; i++) {
         continue
       }
 
-      if (curr.syncedTranslation) syncedSequences.push(curr)
-      else notSyncedSequences.push(curr)
-
+      grandTotal.push(curr)
+      
       curr = null
       continue
     }
@@ -382,7 +230,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
     }
   }
 
-  rest.push({
+  grandTotal.push({
     caseSensitive,
     codepoint,
     translation,
@@ -391,29 +239,10 @@ for (i = 0, curr = null; i < expanded.length; i++) {
   })
 }
 
-const sequenceReduceFunc = (a, b) => a + (b.rangeUntil - b.codepoint) + 1
-
 console.log(
-  `- discovered ${syncedSequences.length.toLocaleString('en-US')} (${Math.round(
-    (syncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100
-  )}%) synced sequences and ${notSyncedSequences.length.toLocaleString(
-    'en-US'
-  )} (${Math.round(
-    (notSyncedSequences.reduce(sequenceReduceFunc, 0) / expanded.length) * 100
-  )}%) unsynced sequences.`
-)
-
-const grandTotal = syncedSequences
-  .concat(...notSyncedSequences)
-  .concat(...rest)
-  .sort((a, b) => a.codepoint - b.codepoint)
-
-console.log(
-  `- condensed down from ${expanded.length.toLocaleString(
-    'en-US'
-  )} to ${grandTotal.length.toLocaleString('en-US')} (${Math.round(
-    (grandTotal.length / expanded.length) * 100
-  )}%).`
+  `- condensed down from ${expanded.length.toLocaleString()} to ${grandTotal.array.length.toLocaleString()} (${(
+    (grandTotal.array.length / expanded.length) * 100
+  ).toFixed(2)}%).`
 )
 
 const similarBytes = Buffer.from(
@@ -430,10 +259,12 @@ const similarBytes = Buffer.from(
 const strings = mergeArray([
   ...new Set(
     grandTotal
+      .array
       .filter(({ translation }) => translation.length !== 1)
       .map(({ translation }) => translation)
   )
 ])
+
 const codepointsBuffers = []
 const caseSensitiveCodepointsBuffers = []
 
@@ -443,7 +274,7 @@ for (const {
   translation,
   rangeUntil,
   syncedTranslation
-} of grandTotal) {
+} of grandTotal.array) {
   const buf = Buffer.alloc(5)
   let integer = BigInt(codepoint)
   let secondByte = 0
