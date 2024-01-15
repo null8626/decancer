@@ -19,6 +19,30 @@ const STRING_TRANSLATION_MASK: u32 = 0x1000_0000;
 pub(crate) struct Codepoint(u32, u8);
 
 impl Codepoint {
+  const fn get_codepoint(&self) -> u32 {
+    self.0 & CODEPOINT_MASK
+  }
+
+  const fn range_end(&self) -> Option<u32> {
+    if (self.0 & RANGE_MASK) != 0 {
+      Some((self.1 & 0x7f) as _)
+    } else {
+      None
+    }
+  }
+
+  const fn is_string_translation(&self) -> bool {
+    (self.0 & STRING_TRANSLATION_MASK) != 0
+  }
+
+  const fn ascii_translation(&self) -> u32 {
+    (self.0 >> 20) & 0x7f
+  }
+
+  const fn is_translation_synced(&self) -> bool {
+    self.1 >= 0x80
+  }
+
   pub(crate) const fn at(offset: i32) -> Self {
     unsafe {
       Self(
@@ -29,12 +53,12 @@ impl Codepoint {
   }
 
   pub(crate) const fn matches(&self, other: u32) -> Ordering {
-    let mut conf: u32 = self.0 & CODEPOINT_MASK;
+    let mut conf = self.get_codepoint();
 
     if other < conf {
       return Ordering::Less;
-    } else if (self.0 & RANGE_MASK) != 0 {
-      conf += (self.1 & 0x7f) as u32;
+    } else if let Some(range_end) = self.range_end() {
+      conf += range_end;
     }
 
     if other > conf {
@@ -45,15 +69,15 @@ impl Codepoint {
   }
 
   pub(crate) const fn translation(&self, other: u32) -> Translation {
-    if (self.0 & STRING_TRANSLATION_MASK) != 0 {
+    if self.is_string_translation() {
       Translation::string(self.0, self.1)
     } else {
-      let mut code = (self.0 >> 20) & 0x7f;
+      let mut code = self.ascii_translation();
 
       if code == 0 {
         return Translation::None;
-      } else if self.1 >= 0x80 {
-        code += other - (self.0 & CODEPOINT_MASK);
+      } else if self.is_translation_synced() {
+        code += other - self.get_codepoint();
       }
 
       Translation::character(code)
