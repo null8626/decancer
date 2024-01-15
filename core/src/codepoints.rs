@@ -22,7 +22,7 @@ impl Codepoint {
   const fn get_codepoint(&self) -> u32 {
     self.0 & CODEPOINT_MASK
   }
-  
+
   const fn range_end(&self) -> Option<u32> {
     if (self.0 & RANGE_MASK) != 0 {
       Some((self.1 & 0x7f) as _)
@@ -30,19 +30,19 @@ impl Codepoint {
       None
     }
   }
-  
+
   const fn is_string_translation(&self) -> bool {
     (self.0 & STRING_TRANSLATION_MASK) != 0
   }
-  
+
   const fn ascii_translation(&self) -> u32 {
     (self.0 >> 20) & 0x7f
   }
-  
+
   const fn is_translation_synced(&self) -> bool {
     self.1 >= 0x80
   }
-  
+
   pub(crate) const fn at(offset: i32) -> Self {
     unsafe {
       Self(

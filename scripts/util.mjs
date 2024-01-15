@@ -1,9 +1,9 @@
 export async function request(url) {
   console.log(`- requesting to ${url}...`)
-  
+
   const req = await fetch(url)
   const text = await req.text()
-  
+
   console.log(`- parsing data returned from ${url}...`)
   return text
 }
@@ -53,7 +53,7 @@ export function mergeArray(arr, recurse = true) {
 
   while (true) {
     let index = 0
- 
+
     for (; index < arr.length; index++) {
       if (arr[index] !== undefined) {
         break
@@ -120,22 +120,22 @@ const RETURNS_ITSELF = x => x
 export class SortedSet {
   #mapFn
   #array
-  
+
   constructor(mapFn = RETURNS_ITSELF) {
     this.#mapFn = mapFn
     this.#array = []
   }
-  
+
   push(val) {
     const cmpVal = this.#mapFn(val)
-    
+
     let start = 0
     let end = this.#array.length - 1
-    
+
     while (start <= end) {
       const mid = Math.floor((start + end) / 2)
       const other = this.#mapFn(this.#array[mid])
-    
+
       if (other === cmpVal) {
         return
       } else if (cmpVal < other) {
@@ -144,10 +144,10 @@ export class SortedSet {
         start = mid + 1
       }
     }
-    
+
     this.#array.splice(start, 0, val)
   }
-  
+
   get array() {
     return this.#array
   }

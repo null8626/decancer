@@ -1,4 +1,10 @@
-import { binarySearchExists, isCaseSensitive, mergeArray, removeFromSet, SortedSet } from './util.mjs'
+import {
+  binarySearchExists,
+  isCaseSensitive,
+  mergeArray,
+  removeFromSet,
+  SortedSet
+} from './util.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
@@ -207,7 +213,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
       }
 
       grandTotal.push(curr)
-      
+
       curr = null
       continue
     }
@@ -241,7 +247,8 @@ for (i = 0, curr = null; i < expanded.length; i++) {
 
 console.log(
   `- condensed down from ${expanded.length.toLocaleString()} to ${grandTotal.array.length.toLocaleString()} (${(
-    (grandTotal.array.length / expanded.length) * 100
+    (grandTotal.array.length / expanded.length) *
+    100
   ).toFixed(2)}%).`
 )
 
@@ -258,8 +265,7 @@ const similarBytes = Buffer.from(
 
 const strings = mergeArray([
   ...new Set(
-    grandTotal
-      .array
+    grandTotal.array
       .filter(({ translation }) => translation.length !== 1)
       .map(({ translation }) => translation)
   )
