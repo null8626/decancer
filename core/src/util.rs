@@ -1,3 +1,5 @@
+pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
+
 pub(crate) const fn read_u32_le(ptr: *const u8) -> u32 {
   unsafe { u32::from_le_bytes([*ptr, *ptr.offset(1), *ptr.offset(2), *ptr.offset(3)]) }
 }

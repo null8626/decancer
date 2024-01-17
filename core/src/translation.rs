@@ -38,6 +38,14 @@ impl Translation {
   pub(crate) const fn character(code: u32) -> Self {
     Self::Character(unsafe { transmute(code) })
   }
+
+  pub(crate) fn add_to(self, other: &mut String) {
+    match self {
+      Self::Character(ch) => other.push(ch),
+      Self::String(s) => other.push_str(s),
+      Self::None => {}
+    }
+  }
 }
 
 /// Checks if this [`Translation`] is ***similar*** into another string.
