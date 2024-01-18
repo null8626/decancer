@@ -14,7 +14,7 @@ mod translation;
 mod util;
 
 #[cfg(feature = "std")]
-use bidi::{Class, IsolatingRunSequence, Level, Paragraph};
+use bidi::{Class, Level, Paragraph};
 #[cfg(feature = "std")]
 pub use string::CuredString;
 pub use translation::Translation;
@@ -180,7 +180,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
             paragraph_level = None;
           }
 
-          Class::L | Class::B | Class::AL => {
+          Class::L | Class::R | Class::AL => {
             if class != Class::L {
               pure_ltr = false;
             }
@@ -294,12 +294,7 @@ pub fn cure(input: &str) -> Option<CuredString> {
 
       for sequence in paragraph.isolating_run_sequences(&levels, &original_classes) {
         sequence.resolve_implicit_weak(&refined_input, &mut processing_classes);
-        sequence.resolve_implicit_neutral(
-          &refined_input,
-          &original_classes,
-          &mut processing_classes,
-          &levels,
-        );
+        sequence.resolve_implicit_neutral(&refined_input, &mut processing_classes, &levels);
       }
 
       for j in 0..levels.len() {

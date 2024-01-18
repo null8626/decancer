@@ -1,5 +1,6 @@
 use super::{BIDI, BIDI_BRACKETS_COUNT};
 use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
+use core::cmp::{max, min};
 
 pub(crate) struct BracketPair {
   pub(crate) start: usize,
@@ -23,32 +24,38 @@ impl OpeningBracket {
       let offset = (4 + (mid * 5)) as isize;
 
       let first = read_u32_le(unsafe { BIDI.offset(offset) });
-      let other =
+      let opening =
         ((read_u16_le(unsafe { BIDI.offset(offset + 4) }) as u32) << 8) | ((first >> 20) & 0xff);
 
-      if code < other {
+      let diff = (first >> 28) & 7;
+
+      let closing = if (first >> 31) == 1 {
+        opening - diff
+      } else {
+        opening + diff
+      };
+
+      if code < min(opening, closing) {
         end = mid - 1;
-      } else if code > other {
+      } else if code > max(opening, closing) {
         start = mid + 1;
       } else {
-        let mut diff = (first >> 28) & 7;
+        let is_open = code == opening;
 
-        let closing = if (first >> 31) == 1 {
-          other + diff
-        } else {
-          other - diff
-        };
+        if is_open || code == closing {
+          let mut decomps = first & CODEPOINT_MASK;
 
-        let mut opening = first & CODEPOINT_MASK;
+          if decomps == 0 {
+            decomps = opening;
+          }
 
-        if opening == 0 {
-          opening = other;
+          return Some(Self {
+            opening: decomps,
+            is_open,
+          });
         }
 
-        return Some(Self {
-          opening,
-          is_open: code == other,
-        });
+        break;
       }
     }
 

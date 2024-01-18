@@ -7,7 +7,7 @@ use crate::util::read_u16_le;
 pub(crate) use brackets::{BracketPair, OpeningBracket};
 pub(crate) use class::Class;
 pub(crate) use level::Level;
-pub(crate) use paragraph::{IsolatingRunSequence, OverrideStatus, Paragraph};
+pub(crate) use paragraph::{OverrideStatus, Paragraph};
 
 const BIDI: *const u8 = include_bytes!("../../bin/bidi.bin").as_ptr();
 

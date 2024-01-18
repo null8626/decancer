@@ -1,8 +1,9 @@
 use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
 use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
-use core::{cmp::Ordering, mem::transmute};
+use core::mem::transmute;
 
 #[repr(u8)]
+#[allow(dead_code)]
 #[derive(Copy, Clone, PartialEq)]
 pub(crate) enum Class {
   B,
@@ -36,14 +37,15 @@ impl Class {
 
     while start <= end {
       let mid = (start + end) / 2;
-      let offset = (BIDI_DICTIONARY_OFFSET + (mid * 5)) as isize;
+      let offset = (BIDI_DICTIONARY_OFFSET + (mid * 6)) as isize;
 
       let kv = read_u32_le(unsafe { BIDI.offset(offset) });
+
       let other = kv & CODEPOINT_MASK;
 
       if code < other {
         end = mid - 1;
-      } else if code > (other + read_u16_le((offset + 4) as _) as u32) {
+      } else if code > (other + read_u16_le(unsafe { BIDI.offset(offset + 4) }) as u32) {
         start = mid + 1;
       } else {
         return Some(unsafe { transmute((kv >> 20) as u8) });
