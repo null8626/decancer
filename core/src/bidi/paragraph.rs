@@ -43,7 +43,6 @@ impl IsolatingRunSequence {
   pub(crate) fn resolve_implicit_weak(&self, text: &str, processing_classes: &mut [Class]) {
     let mut prev_class_before_w4 = self.start_class;
     let mut prev_class_before_w5 = self.start_class;
-    let mut prev_class_before_w1 = self.start_class;
 
     let mut last_strong_is_al = false;
 
@@ -57,8 +56,7 @@ impl IsolatingRunSequence {
           continue;
         }
 
-        let mut w2_processing_class = processing_classes[i];
-        prev_class_before_w1 = processing_classes[i];
+        let w2_processing_class = processing_classes[i];
 
         match processing_classes[i] {
           Class::EN => {
@@ -228,7 +226,6 @@ impl IsolatingRunSequence {
   pub(crate) fn resolve_implicit_neutral(
     &self,
     text: &str,
-    original_classes: &[Class],
     processing_classes: &mut [Class],
     levels: &[Level],
   ) {
@@ -317,8 +314,6 @@ impl IsolatingRunSequence {
         let nsm_start = pair.start + start_char_len;
 
         for idx in self.iter_forwards_from(nsm_start, pair.start_run) {
-          let class = original_classes[idx];
-
           if processing_classes[idx] == Class::BN {
             processing_classes[idx] = class_to_set;
           } else {
@@ -329,8 +324,6 @@ impl IsolatingRunSequence {
         let nsm_end = pair.end + end_char_len;
 
         for idx in self.iter_forwards_from(nsm_end, pair.end_run) {
-          let class = original_classes[idx];
-
           if processing_classes[idx] == Class::BN {
             processing_classes[idx] = class_to_set;
           } else {
