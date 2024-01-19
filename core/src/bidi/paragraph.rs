@@ -1,4 +1,5 @@
 use super::{BracketPair, Class, Level, OpeningBracket};
+use crate::util;
 use core::{
   cmp::{max, min},
   ops::{Index, IndexMut, Range},
@@ -15,22 +16,6 @@ pub(crate) enum OverrideStatus {
 struct Status {
   level: Level,
   status: OverrideStatus,
-}
-
-#[inline(always)]
-fn sliced<T: Index<Range<usize>> + ?Sized>(
-  slicable: &T,
-  range: Range<usize>,
-) -> &<T as Index<Range<usize>>>::Output {
-  slicable.index(range)
-}
-
-#[inline(always)]
-fn sliced_mut<T: IndexMut<Range<usize>> + ?Sized>(
-  slicable: &mut T,
-  range: Range<usize>,
-) -> &mut <T as Index<Range<usize>>>::Output {
-  slicable.index_mut(range)
 }
 
 pub(crate) struct IsolatingRunSequence {
@@ -186,7 +171,7 @@ impl IsolatingRunSequence {
     let mut stack = Vec::new();
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
-      for (i, ch) in sliced(text, level_run.clone()).char_indices() {
+      for (i, ch) in util::sliced(text, level_run.clone()).char_indices() {
         let actual_index = level_run.start + i;
 
         if original_classes[actual_index] != Class::ON {
@@ -238,7 +223,7 @@ impl IsolatingRunSequence {
       let mut found_not_e = false;
       let mut class_to_set = None;
 
-      let start_char_len = sliced(text, pair.start..pair.end)
+      let start_char_len = util::sliced(text, pair.start..pair.end)
         .chars()
         .next()
         .unwrap()
@@ -287,7 +272,7 @@ impl IsolatingRunSequence {
       }
 
       if let Some(class_to_set) = class_to_set {
-        let end_char_len = sliced(text, pair.end..text.len())
+        let end_char_len = util::sliced(text, pair.end..text.len())
           .chars()
           .next()
           .unwrap()
@@ -420,19 +405,19 @@ pub(crate) struct Paragraph {
 
 impl Paragraph {
   #[inline(always)]
-  fn sliced<'a, T: Index<Range<usize>> + ?Sized>(
+  pub(crate) fn sliced<'a, T: Index<Range<usize>> + ?Sized>(
     &'a self,
     slicable: &'a T,
   ) -> &'a <T as Index<Range<usize>>>::Output {
-    sliced(slicable, self.range.clone())
+    util::sliced(slicable, self.range.clone())
   }
 
   #[inline(always)]
-  fn sliced_mut<'a, T: IndexMut<Range<usize>> + ?Sized>(
+  pub(crate) fn sliced_mut<'a, T: IndexMut<Range<usize>> + ?Sized>(
     &'a self,
     slicable: &'a mut T,
   ) -> &'a mut <T as Index<Range<usize>>>::Output {
-    sliced_mut(slicable, self.range.clone())
+    util::sliced_mut(slicable, self.range.clone())
   }
 
   pub(crate) fn visual_runs(
@@ -441,8 +426,6 @@ impl Paragraph {
     original_classes: &[Class],
     levels: &[Level],
   ) -> Option<(Vec<Level>, Vec<Range<usize>>)> {
-    let original_classes_slice = self.sliced(original_classes);
-    let text = self.sliced(text);
     let mut levels = Vec::from(levels);
 
     let mut reset_from: Option<usize> = Some(0);
@@ -450,7 +433,7 @@ impl Paragraph {
     let mut prev_level = self.level;
 
     for (i, c) in text.char_indices() {
-      match original_classes_slice[i] {
+      match original_classes[i] {
         Class::B | Class::S => {
           reset_to = Some(i + c.len_utf8());
 
@@ -560,11 +543,6 @@ impl Paragraph {
     processing_classes: &mut [Class],
     levels: &mut [Level],
   ) {
-    let input_slice = self.sliced(input);
-    let original_classes_slice = self.sliced(original_classes);
-    let processing_classes_slice = self.sliced_mut(processing_classes);
-    let levels_slice = self.sliced_mut(levels);
-
     let mut stack = Vec::with_capacity(1);
 
     stack.push(Status {
@@ -576,8 +554,8 @@ impl Paragraph {
     let mut overflow_embedding_count = 0;
     let mut valid_isolate_count = 0;
 
-    for (idx, character) in input_slice.char_indices() {
-      let current_class = original_classes_slice[idx];
+    for (idx, character) in input.char_indices() {
+      let current_class = original_classes[idx];
 
       match current_class {
         Class::RLE
@@ -588,14 +566,14 @@ impl Paragraph {
         | Class::LRI
         | Class::FSI => {
           let last = stack.last().unwrap();
-          levels_slice[idx] = last.level;
+          levels[idx] = last.level;
 
           let is_isolate = current_class.is_isolate();
 
           if is_isolate {
             match last.status {
-              OverrideStatus::RTL => processing_classes_slice[idx] = Class::R,
-              OverrideStatus::LTR => processing_classes_slice[idx] = Class::L,
+              OverrideStatus::RTL => processing_classes[idx] = Class::R,
+              OverrideStatus::LTR => processing_classes[idx] = Class::L,
               _ => {}
             }
           }
@@ -612,13 +590,13 @@ impl Paragraph {
 
             stack.push(Status {
               level: new_level,
-              status: original_classes_slice[idx].override_status(),
+              status: original_classes[idx].override_status(),
             });
 
             if is_isolate {
               valid_isolate_count += 1;
             } else {
-              levels_slice[idx] = new_level;
+              levels[idx] = new_level;
             }
           } else if is_isolate {
             overflow_isolate_count += 1;
@@ -627,7 +605,7 @@ impl Paragraph {
           }
 
           if !is_isolate {
-            processing_classes_slice[idx] = Class::BN;
+            processing_classes[idx] = Class::BN;
           }
         }
 
@@ -652,11 +630,11 @@ impl Paragraph {
           }
 
           let last = stack.last().unwrap();
-          levels_slice[idx] = last.level;
+          levels[idx] = last.level;
 
           match last.status {
-            OverrideStatus::RTL => processing_classes_slice[idx] = Class::R,
-            OverrideStatus::LTR => processing_classes_slice[idx] = Class::L,
+            OverrideStatus::RTL => processing_classes[idx] = Class::R,
+            OverrideStatus::LTR => processing_classes[idx] = Class::L,
             _ => {}
           }
         }
@@ -670,20 +648,20 @@ impl Paragraph {
             }
           }
 
-          levels_slice[idx] = stack.last().unwrap().level;
-          processing_classes_slice[idx] = Class::BN;
+          levels[idx] = stack.last().unwrap().level;
+          processing_classes[idx] = Class::BN;
         }
 
         Class::B => {}
 
         _ => {
           let last = stack.last().unwrap();
-          levels_slice[idx] = last.level;
+          levels[idx] = last.level;
 
           if current_class != Class::BN {
             match last.status {
-              OverrideStatus::RTL => processing_classes_slice[idx] = Class::R,
-              OverrideStatus::LTR => processing_classes_slice[idx] = Class::L,
+              OverrideStatus::RTL => processing_classes[idx] = Class::R,
+              OverrideStatus::LTR => processing_classes[idx] = Class::L,
               _ => {}
             }
           }
@@ -691,8 +669,8 @@ impl Paragraph {
       }
 
       for j in 1..character.len_utf8() {
-        levels_slice[idx + j] = levels_slice[idx];
-        processing_classes_slice[idx + j] = processing_classes_slice[idx];
+        levels[idx + j] = levels[idx];
+        processing_classes[idx + j] = processing_classes[idx];
       }
     }
   }
@@ -752,7 +730,7 @@ impl Paragraph {
 
     sequences.extend(stack.into_iter().rev().filter(|seq| !seq.is_empty()));
 
-    sequences.into_iter().map(|sequence| {
+    sequences.into_iter().map(move |sequence| {
       let mut result = IsolatingRunSequence {
         runs: sequence,
         start_class: Class::L,

@@ -157,7 +157,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
 
     if !is_none(codepoint) {
       if let Some(class) = Class::new(codepoint) {
-        if class == Class::WS {
+        if class == Class::WS && codepoint > 0x7f {
           character_len = 1;
           codepoint = 0x20;
         }
@@ -279,22 +279,21 @@ pub fn cure(input: &str) -> Option<CuredString> {
   let mut levels = Vec::with_capacity(refined_input.len());
   let mut processing_classes = original_classes.clone();
   let mut output = String::with_capacity(refined_input.len() + bounded_sub(paragraphs.len(), 1));
-  let end = bounded_sub(paragraphs.len(), 1);
 
-  for (idx, paragraph) in paragraphs.iter().enumerate() {
+  for paragraph in paragraphs.iter() {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
 
     if paragraph.level.level() != 0 || !paragraph.pure_ltr {
-      paragraph.compute_explicit(
-        &refined_input,
-        &original_classes,
-        &mut processing_classes,
-        &mut levels,
-      );
+      let input = paragraph.sliced(&refined_input);
+      let original_classes = paragraph.sliced(&original_classes);
+      let processing_classes = paragraph.sliced_mut(&mut processing_classes);
+      let levels = paragraph.sliced_mut(&mut levels);
 
-      for sequence in paragraph.isolating_run_sequences(&levels, &original_classes) {
-        sequence.resolve_implicit_weak(&refined_input, &mut processing_classes);
-        sequence.resolve_implicit_neutral(&refined_input, &mut processing_classes, &levels);
+      paragraph.compute_explicit(input, original_classes, processing_classes, levels);
+
+      for sequence in paragraph.isolating_run_sequences(levels, original_classes) {
+        sequence.resolve_implicit_weak(input, processing_classes);
+        sequence.resolve_implicit_neutral(input, processing_classes, levels);
       }
 
       for j in 0..levels.len() {
@@ -315,7 +314,9 @@ pub fn cure(input: &str) -> Option<CuredString> {
         }
       }
     }
+  }
 
+  for paragraph in paragraphs.iter() {
     let (revised_levels, runs) =
       paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
 
@@ -330,10 +331,6 @@ pub fn cure(input: &str) -> Option<CuredString> {
         for c in text.chars() {
           cure_char_inner(c as _).add_to(&mut output);
         }
-      }
-
-      if idx != end {
-        output.push('\n');
       }
     }
   }
