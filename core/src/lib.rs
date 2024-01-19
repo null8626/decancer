@@ -2,21 +2,15 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
-#[cfg(feature = "std")]
 mod bidi;
 mod codepoints;
 mod similar;
-#[cfg(feature = "std")]
-mod string;
 #[cfg(test)]
 mod test;
 mod translation;
 mod util;
 
-#[cfg(feature = "std")]
-use bidi::{Class, Level, Paragraph};
-#[cfg(feature = "std")]
-pub use string::CuredString;
+use bidi::Class;
 pub use translation::Translation;
 
 use codepoints::{
@@ -134,198 +128,210 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
   if is_none(code) {
     Translation::None
   } else {
-    cure_char_inner(code)
+    match Class::new(code) {
+      Some(Class::WS) => Translation::character(if code > 0x7f { 0x20 } else { code }),
+      None => Translation::None,
+      _ => cure_char_inner(code),
+    }
   }
 }
 
-fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
-  let mut refined_input = String::with_capacity(input.len());
+cfg_if::cfg_if! {
+  if #[cfg(feature = "std")] {
+    mod string;
 
-  let mut original_classes = Vec::with_capacity(input.len());
-  let mut isolate_stack = Vec::new();
+    use bidi::{Level, Paragraph};
+    pub use string::CuredString;
 
-  let mut paragraphs = Vec::new();
-  let mut paragraph_start = 0;
-  let mut paragraph_level: Option<Level> = None;
-  let mut pure_ltr = true;
+    fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
+      let mut refined_input = String::with_capacity(input.len());
 
-  let mut idx = 0;
+      let mut original_classes = Vec::with_capacity(input.len());
+      let mut isolate_stack = Vec::new();
 
-  for codepoint in input.chars() {
-    let mut character_len = codepoint.len_utf8();
-    let mut codepoint = codepoint as u32;
+      let mut paragraphs = Vec::new();
+      let mut paragraph_start = 0;
+      let mut paragraph_level: Option<Level> = None;
+      let mut pure_ltr = true;
 
-    if !is_none(codepoint) {
-      if let Some(class) = Class::new(codepoint) {
-        if class == Class::WS && codepoint > 0x7f {
-          character_len = 1;
-          codepoint = 0x20;
-        }
+      let mut idx = 0;
 
-        original_classes.resize(original_classes.len() + character_len, class);
+      for codepoint in input.chars() {
+        let mut character_len = codepoint.len_utf8();
+        let mut codepoint = codepoint as u32;
 
-        match class {
-          Class::B => {
-            let paragraph_end = idx + character_len;
-
-            paragraphs.push(Paragraph {
-              range: paragraph_start..paragraph_end,
-              level: paragraph_level.unwrap_or(Level::ltr()),
-              pure_ltr,
-            });
-
-            paragraph_start = paragraph_end;
-            pure_ltr = true;
-            isolate_stack.clear();
-            paragraph_level = None;
-          }
-
-          Class::L | Class::R | Class::AL => {
-            if class != Class::L {
-              pure_ltr = false;
+        if !is_none(codepoint) {
+          if let Some(class) = Class::new(codepoint) {
+            if class == Class::WS && codepoint > 0x7f {
+              character_len = 1;
+              codepoint = 0x20;
             }
 
-            match isolate_stack.last() {
-              Some(&start_idx) => {
-                if original_classes[start_idx] == Class::FSI {
-                  let new_class = if class == Class::L {
-                    Class::LRI
-                  } else {
-                    Class::RLI
-                  };
+            original_classes.resize(original_classes.len() + character_len, class);
 
-                  for j in 0..3 {
-                    original_classes[start_idx + j] = new_class;
+            match class {
+              Class::B => {
+                let paragraph_end = idx + character_len;
+
+                paragraphs.push(Paragraph {
+                  range: paragraph_start..paragraph_end,
+                  level: paragraph_level.unwrap_or(Level::ltr()),
+                  pure_ltr,
+                });
+
+                paragraph_start = paragraph_end;
+                pure_ltr = true;
+                isolate_stack.clear();
+                paragraph_level = None;
+              }
+
+              Class::L | Class::R | Class::AL => {
+                if class != Class::L {
+                  pure_ltr = false;
+                }
+
+                match isolate_stack.last() {
+                  Some(&start_idx) => {
+                    if original_classes[start_idx] == Class::FSI {
+                      let new_class = if class == Class::L {
+                        Class::LRI
+                      } else {
+                        Class::RLI
+                      };
+
+                      for j in 0..3 {
+                        original_classes[start_idx + j] = new_class;
+                      }
+                    }
+                  }
+
+                  None => {
+                    if paragraph_level.is_none() {
+                      paragraph_level.replace(if class == Class::L {
+                        Level::ltr()
+                      } else {
+                        Level::rtl()
+                      });
+                    }
                   }
                 }
               }
 
-              None => {
-                if paragraph_level.is_none() {
-                  paragraph_level.replace(if class == Class::L {
-                    Level::ltr()
-                  } else {
-                    Level::rtl()
-                  });
-                }
+              Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
+                pure_ltr = false;
               }
+
+              Class::RLI | Class::LRI | Class::FSI => {
+                pure_ltr = false;
+                isolate_stack.push(idx);
+              }
+
+              Class::PDI => {
+                isolate_stack.pop();
+              }
+
+              _ => {}
+            }
+
+            // SAFETY: the only modification to this codepoint is in the if-statement above.
+            refined_input.push(unsafe { char::from_u32_unchecked(codepoint) });
+
+            idx += character_len;
+          }
+        }
+      }
+
+      if paragraph_start < idx {
+        paragraphs.push(Paragraph {
+          range: paragraph_start..idx,
+          level: paragraph_level.unwrap_or(Level::ltr()),
+          pure_ltr,
+        });
+      }
+
+      (refined_input, original_classes, paragraphs)
+    }
+
+    /// Cures a string. Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] is case-insensitive.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```rust
+    /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+    ///
+    /// assert_eq!(cured, "very funny text");
+    /// assert!(cured.contains("FuNny"));
+    /// assert_eq!(cured.into_str(), String::from("very funny text"));
+    ///
+    /// assert_eq!(decancer::cure("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text");
+    /// assert_eq!(decancer::cure("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log");
+    /// assert_eq!(decancer::cure("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars");
+    /// ```
+    pub fn cure(input: &str) -> Option<CuredString> {
+      let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
+
+      let mut levels = Vec::with_capacity(refined_input.len());
+      let mut processing_classes = original_classes.clone();
+      let mut output = String::with_capacity(refined_input.len());
+
+      for paragraph in paragraphs.iter() {
+        levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
+
+        if paragraph.level.level() != 0 || !paragraph.pure_ltr {
+          let input = paragraph.sliced(&refined_input);
+          let original_classes = paragraph.sliced(&original_classes);
+          let processing_classes = paragraph.sliced_mut(&mut processing_classes);
+          let levels = paragraph.sliced_mut(&mut levels);
+
+          paragraph.compute_explicit(input, original_classes, processing_classes, levels);
+
+          for sequence in paragraph.isolating_run_sequences(levels, original_classes) {
+            sequence.resolve_implicit_weak(input, processing_classes);
+            sequence.resolve_implicit_neutral(input, processing_classes, levels);
+          }
+
+          for j in 0..levels.len() {
+            match (levels[j].is_rtl(), original_classes[j]) {
+              (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
+              (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
+                levels[j].raise(1)?
+              }
+              (_, _) => {}
+            }
+
+            if original_classes[j].removed_by_x9() {
+              levels[j] = if j > 0 {
+                levels[j - 1]
+              } else {
+                paragraph.level
+              };
             }
           }
-
-          Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
-            pure_ltr = false;
-          }
-
-          Class::RLI | Class::LRI | Class::FSI => {
-            pure_ltr = false;
-            isolate_stack.push(idx);
-          }
-
-          Class::PDI => {
-            isolate_stack.pop();
-          }
-
-          _ => {}
         }
-
-        // SAFETY: the only modification to this codepoint is in the if-statement above.
-        refined_input.push(unsafe { char::from_u32_unchecked(codepoint) });
-
-        idx += character_len;
-      }
-    }
-  }
-
-  if paragraph_start < idx {
-    paragraphs.push(Paragraph {
-      range: paragraph_start..idx,
-      level: paragraph_level.unwrap_or(Level::ltr()),
-      pure_ltr,
-    });
-  }
-
-  (refined_input, original_classes, paragraphs)
-}
-
-/// Cures a string. Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] is case-insensitive.
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-///
-/// assert_eq!(cured, "very funny text");
-/// assert!(cured.contains("FuNny"));
-/// assert_eq!(cured.into_str(), String::from("very funny text"));
-///
-/// assert_eq!(decancer::cure("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text");
-/// assert_eq!(decancer::cure("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log");
-/// assert_eq!(decancer::cure("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars");
-/// ```
-#[cfg(feature = "std")]
-pub fn cure(input: &str) -> Option<CuredString> {
-  let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
-
-  let mut levels = Vec::with_capacity(refined_input.len());
-  let mut processing_classes = original_classes.clone();
-  let mut output = String::with_capacity(refined_input.len());
-
-  for paragraph in paragraphs.iter() {
-    levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
-
-    if paragraph.level.level() != 0 || !paragraph.pure_ltr {
-      let input = paragraph.sliced(&refined_input);
-      let original_classes = paragraph.sliced(&original_classes);
-      let processing_classes = paragraph.sliced_mut(&mut processing_classes);
-      let levels = paragraph.sliced_mut(&mut levels);
-
-      paragraph.compute_explicit(input, original_classes, processing_classes, levels);
-
-      for sequence in paragraph.isolating_run_sequences(levels, original_classes) {
-        sequence.resolve_implicit_weak(input, processing_classes);
-        sequence.resolve_implicit_neutral(input, processing_classes, levels);
       }
 
-      for j in 0..levels.len() {
-        match (levels[j].is_rtl(), original_classes[j]) {
-          (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
-          (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
-            levels[j].raise(1)?
-          }
-          (_, _) => {}
-        }
+      for paragraph in paragraphs.iter() {
+        let (revised_levels, runs) =
+          paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
 
-        if original_classes[j].removed_by_x9() {
-          levels[j] = if j > 0 {
-            levels[j - 1]
+        for run in runs {
+          let text = &refined_input[run.clone()];
+
+          if revised_levels[run.start].is_rtl() {
+            for c in text.chars().rev() {
+              cure_char_inner(c as _).add_to(&mut output);
+            }
           } else {
-            paragraph.level
-          };
+            for c in text.chars() {
+              cure_char_inner(c as _).add_to(&mut output);
+            }
+          }
         }
       }
+
+      Some(CuredString(output))
     }
   }
-
-  for paragraph in paragraphs.iter() {
-    let (revised_levels, runs) =
-      paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
-
-    for run in runs {
-      let text = &refined_input[run.clone()];
-
-      if revised_levels[run.start].is_rtl() {
-        for c in text.chars().rev() {
-          cure_char_inner(c as _).add_to(&mut output);
-        }
-      } else {
-        for c in text.chars() {
-          cure_char_inner(c as _).add_to(&mut output);
-        }
-      }
-    }
-  }
-
-  Some(CuredString(output))
 }

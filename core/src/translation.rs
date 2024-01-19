@@ -39,6 +39,7 @@ impl Translation {
     Self::Character(unsafe { transmute(code) })
   }
 
+  #[cfg(feature = "std")]
   pub(crate) fn add_to(self, other: &mut String) {
     match self {
       Self::Character(ch) => other.push(ch),
