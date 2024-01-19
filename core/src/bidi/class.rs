@@ -1,6 +1,9 @@
-use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
+use super::{BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
 use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
 use core::mem::transmute;
+
+#[cfg(feature = "std")]
+use super::OverrideStatus;
 
 #[repr(u8)]
 #[allow(dead_code)]
@@ -55,31 +58,35 @@ impl Class {
     None
   }
 
-  pub(crate) const fn is_neutral_or_isolate(&self) -> bool {
-    matches!(*self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
-  }
+  cfg_if::cfg_if! {
+    if #[cfg(feature = "std")] {
+      pub(crate) const fn is_neutral_or_isolate(&self) -> bool {
+        matches!(*self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
+      }
 
-  pub(crate) const fn is_rtl(&self) -> bool {
-    matches!(*self, Self::RLE | Self::RLO | Self::RLI)
-  }
+      pub(crate) const fn is_rtl(&self) -> bool {
+        matches!(*self, Self::RLE | Self::RLO | Self::RLI)
+      }
 
-  pub(crate) const fn is_isolate(&self) -> bool {
-    matches!(*self, Self::RLI | Self::LRI | Self::FSI)
-  }
+      pub(crate) const fn is_isolate(&self) -> bool {
+        matches!(*self, Self::RLI | Self::LRI | Self::FSI)
+      }
 
-  pub(crate) const fn override_status(&self) -> OverrideStatus {
-    match *self {
-      Self::RLO => OverrideStatus::RTL,
-      Self::LRO => OverrideStatus::LTR,
-      Self::RLI | Self::LRI | Self::FSI => OverrideStatus::Isolate,
-      _ => OverrideStatus::Neutral,
+      pub(crate) const fn override_status(&self) -> OverrideStatus {
+        match *self {
+          Self::RLO => OverrideStatus::RTL,
+          Self::LRO => OverrideStatus::LTR,
+          Self::RLI | Self::LRI | Self::FSI => OverrideStatus::Isolate,
+          _ => OverrideStatus::Neutral,
+        }
+      }
+
+      pub(crate) const fn removed_by_x9(&self) -> bool {
+        matches!(
+          *self,
+          Self::RLE | Self::LRE | Self::RLO | Self::LRO | Self::PDF | Self::BN
+        )
+      }
     }
-  }
-
-  pub(crate) const fn removed_by_x9(&self) -> bool {
-    matches!(
-      *self,
-      Self::RLE | Self::LRE | Self::RLO | Self::LRO | Self::PDF | Self::BN
-    )
   }
 }
