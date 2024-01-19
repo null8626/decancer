@@ -247,14 +247,6 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   (refined_input, original_classes, paragraphs)
 }
 
-const fn bounded_sub(a: usize, b: usize) -> usize {
-  if b >= a {
-    0
-  } else {
-    a - b
-  }
-}
-
 /// Cures a string. Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] is case-insensitive.
 ///
 /// # Examples
@@ -278,7 +270,7 @@ pub fn cure(input: &str) -> Option<CuredString> {
 
   let mut levels = Vec::with_capacity(refined_input.len());
   let mut processing_classes = original_classes.clone();
-  let mut output = String::with_capacity(refined_input.len() + bounded_sub(paragraphs.len(), 1));
+  let mut output = String::with_capacity(refined_input.len());
 
   for paragraph in paragraphs.iter() {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
