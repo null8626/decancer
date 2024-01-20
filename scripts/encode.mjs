@@ -18,13 +18,13 @@ const STRING_TRANSLATION_MASK = 0x10000000n
 
 console.log('- fetching unicode data...')
 
-if (!existsSync(join(ROOT_DIR, '.expected.json'))) {
+if (!existsSync(join(ROOT_DIR, '.cache.json'))) {
   execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
     stdio: 'inherit'
   })
 }
 
-const EXPECTED = JSON.parse(readFileSync(join(ROOT_DIR, '.expected.json')))
+const { expected } = JSON.parse(readFileSync(join(ROOT_DIR, '.cache.json')))
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing json file path.')
@@ -148,7 +148,7 @@ let i = 0
 while (i < expanded.length) {
   const [codepoint, translation] = expanded[i]
 
-  if (!binarySearchExists(EXPECTED, codepoint)) {
+  if (!binarySearchExists(expected, codepoint)) {
     console.warn(
       `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
     )

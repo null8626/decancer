@@ -1,7 +1,7 @@
 use crate::{
   similar::SIMILAR_START,
   translation::Translation,
-  util::{read_u16_le, read_u32_le},
+  util::{read_u16_le, read_u32_le, CODEPOINT_MASK},
 };
 use core::cmp::Ordering;
 
@@ -12,7 +12,6 @@ pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
 pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 5) - 1;
 
-const CODEPOINT_MASK: u32 = 0x000f_ffff;
 const RANGE_MASK: u32 = 0x0800_0000;
 const STRING_TRANSLATION_MASK: u32 = 0x1000_0000;
 

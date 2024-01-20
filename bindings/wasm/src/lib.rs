@@ -1,5 +1,6 @@
 #![allow(non_snake_case)]
 
+use core::convert::AsRef;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -29,6 +30,9 @@ impl CuredString {
 }
 
 #[wasm_bindgen]
-pub fn decancer(input: &str) -> CuredString {
-  CuredString(decancer::cure(input))
+pub fn decancer(input: &str) -> Result<CuredString, JsError> {
+  match decancer::cure(input) {
+    Ok(output) => Ok(CuredString(output)),
+    Err(err) => Err(JsError::new(<decancer::Error as AsRef<str>>::as_ref(&err))),
+  }
 }
