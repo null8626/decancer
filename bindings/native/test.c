@@ -29,13 +29,13 @@ static void print_error(decancer_error_t error_code)
 {
     char message[90];
     uint8_t message_size;
-    
+
     const uint8_t *ptr = decancer_error(error_code, &message_size);
     memcpy(message, ptr, message_size);
-   
+
     // rust strings are NOT null-terminated
     message[message_size] = '\0';
-    
+
     fprintf(stderr, "%s", message);
 }
 
