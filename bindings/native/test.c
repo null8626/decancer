@@ -25,8 +25,23 @@ static void assert(const bool expr, const char *message)
     }
 }
 
+static void print_error(decancer_error_t error_code)
+{
+    char message[90];
+    uint8_t message_size;
+    
+    const uint8_t *ptr = decancer_error(error_code, &message_size);
+    memcpy(message, ptr, message_size);
+   
+    // rust strings are NOT null-terminated
+    message[message_size] = '\0';
+    
+    fprintf(stderr, "%s", message);
+}
+
 int main(void)
 {
+    decancer_error_t error_code;
     decancer_translation_t char_translation;
 
     decancer_cure_char(0xFF25, &char_translation);
@@ -50,7 +65,13 @@ int main(void)
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string));
+    cured = decancer_cure(string, sizeof(string), &error_code);
+
+    if (cured == NULL)
+    {
+        print_error(error_code);
+        return 1;
+    }
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
     assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with");
