@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate napi_derive;
 
-use napi::{Env, JsString, Result};
+use napi::{bindgen_prelude::Error, Env, JsString, Result, Status};
 
 #[napi]
 pub struct CuredString(decancer::CuredString);
@@ -37,6 +37,9 @@ impl CuredString {
 }
 
 #[napi]
-fn decancer(input: String) -> CuredString {
-  CuredString(decancer::cure(&input))
+fn decancer(input: String) -> Result<CuredString> {
+  match decancer::cure(&input) {
+    Ok(output) => Ok(CuredString(output)),
+    Err(err) => Err(Error::new(Status::InvalidArg, err)),
+  }
 }
