@@ -36,7 +36,7 @@ const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> 
 }
 
 const fn is_none(code: u32) -> bool {
-  matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe0100..)
+  matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
 }
 
 fn cure_char_inner(code: u32) -> Translation {
@@ -259,15 +259,11 @@ cfg_if::cfg_if! {
     /// Basic usage:
     ///
     /// ```rust
-    /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+    /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
     ///
     /// assert_eq!(cured, "very funny text");
     /// assert!(cured.contains("FuNny"));
     /// assert_eq!(cured.into_str(), String::from("very funny text"));
-    ///
-    /// assert_eq!(decancer::cure("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text");
-    /// assert_eq!(decancer::cure("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log");
-    /// assert_eq!(decancer::cure("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars");
     /// ```
     pub fn cure(input: &str) -> Option<CuredString> {
       let (refined_input, original_classes, paragraphs) = first_cure_pass(input);

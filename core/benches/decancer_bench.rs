@@ -4,7 +4,7 @@ use rand::random;
 fn cure(c: &mut Criterion) {
   let input = String::from("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
 
-  c.bench_function("cure", |b| b.iter(|| decancer::cure(&input)));
+  c.bench_function("cure", |b| b.iter(|| decancer::cure(&input).unwrap()));
 }
 
 fn cure_char(c: &mut Criterion) {
