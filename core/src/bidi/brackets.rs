@@ -16,8 +16,8 @@ pub(crate) struct OpeningBracket {
 
 impl OpeningBracket {
   pub(crate) fn new(code: u32) -> Option<Self> {
-    let mut start = 0;
-    let mut end = BIDI_BRACKETS_COUNT;
+    let mut start = 0i32;
+    let mut end = BIDI_BRACKETS_COUNT as i32;
 
     while start <= end {
       let mid = (start + end) / 2;

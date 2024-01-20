@@ -35,12 +35,12 @@ pub(crate) enum Class {
 
 impl Class {
   pub(crate) const fn new(code: u32) -> Option<Self> {
-    let mut start = 0;
-    let mut end = BIDI_DICTIONARY_COUNT;
+    let mut start = 0i32;
+    let mut end = BIDI_DICTIONARY_COUNT as i32;
 
     while start <= end {
       let mid = (start + end) / 2;
-      let offset = (BIDI_DICTIONARY_OFFSET + (mid * 6)) as isize;
+      let offset = ((BIDI_DICTIONARY_OFFSET as i32) + (mid * 6)) as isize;
 
       let kv = read_u32_le(unsafe { BIDI.offset(offset) });
 

@@ -71,7 +71,7 @@ impl IsolatingRunSequence {
           }
 
           Class::ES | Class::CS => {
-            if let Some(character) = text.get(i..).unwrap().chars().next() {
+            if let Some(character) = text.get(i..).and_then(|x| x.chars().next()) {
               let char_len = character.len_utf8();
 
               let mut next_class = self

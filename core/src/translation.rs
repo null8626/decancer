@@ -13,7 +13,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// The translation for a single character/codepoint.
 #[must_use]
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Translation {
   /// A single unicode character.
   Character(char),
@@ -50,21 +50,6 @@ impl Translation {
 }
 
 /// Checks if this [`Translation`] is ***similar*** into another string.
-///
-/// # Examples
-///
-/// Basic usage:
-///
-/// ```rust
-/// assert_eq!(decancer::cure_char('Ｅ'), "e");
-/// ```
-///
-/// And since it checks if the strings are similar, please note that this is valid too:
-///
-/// ```rust
-/// // it assumes that e is similar to 3
-/// assert_eq!(decancer::cure_char('Ｅ'), "3");
-/// ```
 impl<S> PartialEq<S> for Translation
 where
   S: AsRef<str> + ?Sized,

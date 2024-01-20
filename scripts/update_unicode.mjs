@@ -47,7 +47,7 @@ function* unicodeIter(unicode) {
       const rest = unicode[i].slice(1)
 
       for (let start = parseInt(unicode[i - 1][0], 16); start <= end; start++) {
-        yield [start, ...rest]
+        yield [start.toString(16), ...rest]
       }
     } else {
       yield unicode[i]
@@ -85,8 +85,8 @@ const unicode = (
   .split('\n')
   .map(x => x.split(';'))
 
-const cache = {
-  expected: [],
+let expected = new SortedSet()
+let cache = {
   alreadyHandledCount: 0
 }
 
@@ -102,7 +102,7 @@ for (const data of unicodeIter(unicode)) {
   let notHandled = bidiIndex !== -1
 
   if (validCodepoint(codepoint, data[4]) && notHandled) {
-    notHandled = data[4] !== 'WS'
+    notHandled = BIDI_CLASSES[bidiIndex] !== 'WS'
 
     if (
       !BLACKLISTED_RANGES.some(([start, end]) =>
@@ -110,7 +110,7 @@ for (const data of unicodeIter(unicode)) {
       ) &&
       notHandled
     ) {
-      cache.expected.push(codepoint)
+      expected.push(codepoint)
     }
 
     const decomp = data[5]
@@ -126,6 +126,8 @@ for (const data of unicodeIter(unicode)) {
     cache.alreadyHandledCount += 1
   }
 }
+
+cache.expected = expected.array
 
 void (await Promise.all([
   (async () => {
