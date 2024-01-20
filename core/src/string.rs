@@ -1,4 +1,4 @@
-use crate::{cure_char, similar, translation::Translation};
+use crate::similar;
 use core::{
   cmp::PartialEq,
   fmt::{self, Debug, Display, Formatter},
