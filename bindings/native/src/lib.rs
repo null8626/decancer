@@ -1,6 +1,6 @@
 #![allow(clippy::missing_safety_doc)]
 
-use core::{ffi::c_void, slice, str};
+use core::{convert::AsRef, ffi::c_void, mem::transmute, slice, str};
 
 #[repr(C)]
 pub struct Translation {
@@ -13,11 +13,27 @@ const unsafe fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> &'static 
   str::from_utf8_unchecked(slice::from_raw_parts(input_ptr, input_size))
 }
 
+pub unsafe extern "C" fn decancer_error(error: u8, string_size: *mut u8) -> *const u8 {
+  let err = transmute::<_, decancer::Error>(error);
+  let msg = <decancer::Error as AsRef<str>>::as_ref(&err);
+
+  *string_size = msg.len() as _;
+  msg.as_ptr()
+}
+
 #[no_mangle]
-pub unsafe extern "C" fn decancer_cure(input_str: *mut u8, input_size: usize) -> *mut c_void {
-  Box::into_raw(Box::new(decancer::cure(str_from_ptr(
-    input_str, input_size,
-  )))) as _
+pub unsafe extern "C" fn decancer_cure(
+  input_str: *mut u8,
+  input_size: usize,
+  error: *mut u8,
+) -> *mut c_void {
+  match decancer::cure(str_from_ptr(input_str, input_size)) {
+    Ok(res) => Box::into_raw(Box::new(res)) as _,
+    Err(err) => {
+      *error = err as _;
+      0 as _
+    }
+  }
 }
 
 #[no_mangle]
