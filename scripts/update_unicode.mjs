@@ -72,7 +72,7 @@ function* bidiDerivedIter(bidiDerived) {
   }
 }
 
-function validCodepoint(codepoint, bidi) {
+function validCodepoint(codepoint) {
   return codepoint < 0xe01f0 && (codepoint < 0xd800 || codepoint > 0xf8ff)
 }
 
@@ -101,7 +101,7 @@ for (const data of unicodeIter(unicode)) {
   const bidiIndex = BIDI_CLASSES.indexOf(data[4])
   let notHandled = bidiIndex !== -1
 
-  if (validCodepoint(codepoint, data[4]) && notHandled) {
+  if (validCodepoint(codepoint) && notHandled) {
     notHandled = BIDI_CLASSES[bidiIndex] !== 'WS'
 
     if (
@@ -158,7 +158,7 @@ void (await Promise.all([
       const bidiClass = bidi[1].match(/^\s*([A-Z]+)/)[1]
       const bidiIndex = BIDI_CLASSES.indexOf(bidiClass)
 
-      if (validCodepoint(bidi[0], bidiClass) && bidiIndex !== -1) {
+      if (validCodepoint(bidi[0]) && bidiIndex !== -1) {
         bidiExpanded.push([bidi[0], bidiIndex])
       }
     }
