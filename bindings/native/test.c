@@ -33,10 +33,9 @@ static void print_error(decancer_error_t error_code)
     const uint8_t *ptr = decancer_error(error_code, &message_size);
     memcpy(message, ptr, message_size);
 
-    // rust strings are NOT null-terminated
     message[message_size] = '\0';
 
-    fprintf(stderr, "%s", message);
+    fprintf(stderr, "error: %s", message);
 }
 
 int main(void)
