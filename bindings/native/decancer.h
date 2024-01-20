@@ -41,7 +41,8 @@ extern "C"
     typedef void *decancer_cured_t;
 
     _DECANCER_EXPORT bool decancer_contains(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
-    _DECANCER_EXPORT decancer_cured_t decancer_cure(uint8_t *input_str, const size_t input_size, decancer_error_t *error);
+    _DECANCER_EXPORT decancer_cured_t decancer_cure(uint8_t *input_str, const size_t input_size,
+                                                    decancer_error_t *error);
     _DECANCER_EXPORT const uint8_t *decancer_error(decancer_error_t error, uint8_t *string_size);
     _DECANCER_EXPORT void decancer_cure_char(uint32_t input, decancer_translation_t *translation);
     _DECANCER_EXPORT bool decancer_ends_with(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
