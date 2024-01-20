@@ -216,7 +216,6 @@ console.log(cured.toString())
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <stdio.h>
 
 // global variable for assertion purposes only
@@ -236,7 +235,6 @@ static void assert(const bool expr, const char *message)
 static void print_error(decancer_error_t error_code)
 {
     char message[90];
-    
     uint8_t message_size;
     
     const uint8_t *ptr = decancer_error(error_code, &message_size);
@@ -261,7 +259,7 @@ int main(void) {
     if (cured == NULL)
     {
         print_error(error_code);
-        return 1;        
+        return 1;
     }
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
