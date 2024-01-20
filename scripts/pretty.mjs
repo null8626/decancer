@@ -1,14 +1,26 @@
 import { readFile, writeFile } from 'node:fs/promises'
-import { exec } from 'node:child_process'
+import { exec, execSync } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 
 const CODEPOINT_MASK = 0xfffff
-const NOT_INCLUDED_COUNT = 0x22210
+// 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..=0x10ffff
+const NONE_CODEPOINTS_COUNT = 10 + 18 + 1 + 8448 + 196112
 const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const STRING_TRANSLATION_MASK = 0x10000000
+
+if (!existsSync(join(ROOT_DIR, '.cache.json'))) {
+  execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
+    stdio: 'inherit'
+  })
+}
+
+const { alreadyHandledCount } = JSON.parse(
+  readFileSync(join(ROOT_DIR, '.cache.json'))
+)
 
 const execute = promisify(exec)
 
@@ -19,7 +31,7 @@ async function updateReadme() {
 
   console.log('- [readme] parsing codepoints.bin...')
 
-  let codepointsCount = NOT_INCLUDED_COUNT
+  let codepointsCount = NONE_CODEPOINTS_COUNT + alreadyHandledCount
   let confusablesCount = 0
 
   const codepointsEnd = bin.readUint16LE()
@@ -85,7 +97,6 @@ async function updateReadme() {
   console.log('- [readme] reading README.md...')
 
   const readme = await readFile(join(ROOT_DIR, 'core', 'README.md'))
-  const sizeExponent = Math.floor(Math.log2(bin.byteLength) / 10)
 
   await writeFile(
     join(ROOT_DIR, 'core', 'README.md'),
@@ -102,12 +113,6 @@ async function updateReadme() {
       .replace(
         /\*\*[\d,]+ different unicode confusables\*\*/,
         `**${confusablesCount.toLocaleString()} different unicode confusables**`
-      )
-      .replace(
-        /customized [\d\.]+ \w?B binary file/,
-        `customized ${(bin.byteLength / Math.pow(1000, sizeExponent)).toFixed(
-          2
-        )} ${sizeExponent > 0 ? 'KMG'[sizeExponent - 1] : ''}B binary file`
       )
   )
 

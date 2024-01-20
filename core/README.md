@@ -34,9 +34,7 @@
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
-- It virtually has **no third-party dependencies** - it only depends on itself.
-- It stores its huge collection of codepoints in an [optimized 25.72 KB binary file](https://github.com/null8626/decancer/blob/main/core/bin/codepoints.bin) instead of a huge JSON or text file to optimize its bundle size!
-- It's capable of filtering **149,513 (13.42%) different unicode codepoints** including **9,628 different confusables**, like:
+- It's capable of filtering **211,894 (19.02%) different unicode codepoints** including **9,628 different confusables**, like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
@@ -140,15 +138,11 @@ And the binary files should be generated in the `target/release` directory.
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
 
 assert_eq!(cured, "very funny text");
 assert!(cured.contains("FuNny"));
 assert_eq!(cured.into_str(), String::from("very funny text"));
-
-assert_eq!(decancer::cure("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text");
-assert_eq!(decancer::cure("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log");
-assert_eq!(decancer::cure("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars");
 ```
 
 </details>
@@ -164,10 +158,6 @@ assert(cured.contains('funny'))
 
 console.log(cured.toString())
 // => 'very funny text'
-
-assert(decancer("v̵̨̟̩͕̭̼͍̜͊̎̽̅͊̍́̏̓̕ͅe̴̡͙̳̭͚͕͕̞̦̱͊͗̈̓̑̈́̀͘ͅr̵̡̢̫̞͕͎̱͇̠͕͎̺̱̭̪̈͜ͅy̴̧̯͈̥͔̣̫̮̦̪͎̮͑̄̏̂̽͘̚͘̚͜͜͠ ̸̨̛̬͈̲̗͕̜͚̟̈̔́̾͝f̷̪̺͓̽̃̽̀̀̓̽́̾͗̋̇̀̀͐u̴͕̜̗͛̈͆̐n̸̡͙̣̙̳̥͕̥̼̪̻̪̋̀̀̽̈́͜n̷̨̗͖̗̹̜͈̗̲͔͕͉̗̻͓̟̓̽̾͗͑̾̈͜ỹ̶̧̧̩̜̹̩̩̠̦͉̮̳̦̀͛͗̒͑̅̿͌͋͠ ̴̛̠͕̥͇͉̙̯͙̠͇̝̍̃̓̆̈́̐͊̈́͘͝͠t̴̨̰̜̟͓̬͊̂̽̃͌́͂̓̊̅̃̕̚ͅȩ̵̛̬͈͔̮͙͇̫̄̽͒̊́́̀͒̚x̸̖͖̜͍̣̹̺̟̬̞̝͇̐̇̽̒͋̒̑̃̒̄̐͘͝t̸̥̅̓̉̽͑̔̑̿̇"), "very funny text")
-assert(decancer("foo ㍴ ㎈ls console.㏒"), "foo bar calls console.log")
-assert(decancer("you 🆚 w3ird un1c0de ch4rs"), "you vs weird unicode chars")
 ```
 
 </details>
