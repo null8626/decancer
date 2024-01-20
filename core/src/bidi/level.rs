@@ -1,4 +1,5 @@
 use super::Class;
+use crate::Error;
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub(crate) struct Level(u8);
@@ -19,39 +20,45 @@ impl Level {
     self.0
   }
 
-  pub(crate) const fn new_explicit(number: u8) -> Option<Self> {
+  pub(crate) const fn new_explicit(number: u8) -> Result<Self, Error> {
     if number <= MAX_EXPLICIT_DEPTH {
-      Some(Self(number))
+      Ok(Self(number))
     } else {
-      None
+      Err(Error::LevelExplicitOverflow)
     }
   }
 
-  pub(crate) const fn new_implicit(number: u8) -> Option<Self> {
+  pub(crate) const fn new_implicit(number: u8) -> Result<Self, Error> {
     if number <= MAX_IMPLICIT_DEPTH {
-      Some(Self(number))
+      Ok(Self(number))
     } else {
-      None
+      Err(Error::LevelImplicitOverflow)
     }
   }
 
   #[inline(always)]
-  pub fn lower(&mut self, amount: u8) -> Option<()> {
-    self.0 = self.0.checked_sub(amount)?;
+  pub fn lower(&mut self, amount: u8) -> Result<(), Error> {
+    self.0 = self
+      .0
+      .checked_sub(amount)
+      .ok_or(Error::LevelModificationUnderflow)?;
 
-    Some(())
+    Ok(())
   }
 
   #[inline(always)]
-  pub fn raise(&mut self, amount: u8) -> Option<()> {
-    let number = self.0.checked_add(amount)?;
+  pub fn raise(&mut self, amount: u8) -> Result<(), Error> {
+    let number = self
+      .0
+      .checked_add(amount)
+      .ok_or(Error::LevelModificationOverflow)?;
 
     if number <= MAX_IMPLICIT_DEPTH {
       self.0 = number;
 
-      Some(())
+      Ok(())
     } else {
-      None
+      Err(Error::LevelModificationOverflow)
     }
   }
 
@@ -71,15 +78,15 @@ impl Level {
     }
   }
 
-  pub(crate) const fn new_explicit_next_ltr(&self) -> Option<Self> {
+  pub(crate) const fn new_explicit_next_ltr(&self) -> Result<Self, Error> {
     Self::new_explicit((self.0 + 2) & !1)
   }
 
-  pub(crate) const fn new_explicit_next_rtl(&self) -> Option<Self> {
+  pub(crate) const fn new_explicit_next_rtl(&self) -> Result<Self, Error> {
     Self::new_explicit((self.0 + 1) | 1)
   }
 
-  pub(crate) const fn new_lowest_ge_rtl(&self) -> Option<Self> {
+  pub(crate) const fn new_lowest_ge_rtl(&self) -> Result<Self, Error> {
     Self::new_implicit(self.0 | 1)
   }
 }

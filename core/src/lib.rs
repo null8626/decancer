@@ -18,6 +18,54 @@ use codepoints::{
 };
 use core::cmp::Ordering;
 
+macro_rules! error_enum {
+  (
+  $(#[$enum_attrs:meta])*
+  pub enum $enum_name:ident {
+    $(
+      #[doc = $prop_doc:literal]
+      $prop_name:ident,
+    )*
+  }
+  ) => {
+    $(#[$enum_attrs])*
+    pub enum $enum_name {
+      $(
+        #[doc = $prop_doc]
+        $prop_name,
+      )*
+    }
+
+    impl core::fmt::Display for $enum_name {
+      fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        match *self {
+          $(
+            Self::$prop_name => write!(f, stringify!($prop_doc)),
+          )*
+        }
+      }
+    }
+
+    #[cfg(feature = "std")]
+    impl std::error::Error for $enum_name {}
+  }
+}
+
+error_enum! {
+  /// An error enum for unicode bidi errors caused by malformed string inputs.
+  #[derive(Copy, Clone, Debug)]
+  pub enum Error {
+    /// Attempted to create a unicode bidi level that exceeds `MAX_EXPLICIT_DEPTH` (125).
+    LevelExplicitOverflow,
+    /// Attempted to create a unicode bidi level that exceeds `MAX_IMPLICIT_DEPTH` (126).
+    LevelImplicitOverflow,
+    /// Attempted to lower a unicode bidi level that is already zero.
+    LevelModificationUnderflow,
+    /// Attempted to raise a unicode bidi level that is already at `MAX_IMPLICIT_DEPTH` (126).
+    LevelModificationOverflow,
+  }
+}
+
 const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> {
   let mut start = 0;
 
@@ -65,7 +113,9 @@ fn cure_char_inner(code: u32) -> Translation {
     .unwrap_or(Translation::character(code_lowercased))
 }
 
-/// Cures a single character/unicode codepoint. Output will always be in lowercase and equality methods provided by [`Translation`] is case-insensitive.
+/// Cures a single character/unicode codepoint.
+///
+/// Output will always be in lowercase and equality methods provided by [`Translation`] are case-insensitive.
 ///
 /// # Examples
 ///
@@ -252,7 +302,13 @@ cfg_if::cfg_if! {
       (refined_input, original_classes, paragraphs)
     }
 
-    /// Cures a string. Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] is case-insensitive.
+    /// Cures a string.
+    ///
+    /// Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] are case-insensitive.
+    ///
+    /// # Errors
+    ///
+    /// Errors if the string is malformed to the point where it's not possible to apply unicode's bidirectional alrogithm to it.
     ///
     /// # Examples
     ///
@@ -265,7 +321,7 @@ cfg_if::cfg_if! {
     /// assert!(cured.contains("FuNny"));
     /// assert_eq!(cured.into_str(), String::from("very funny text"));
     /// ```
-    pub fn cure(input: &str) -> Option<CuredString> {
+    pub fn cure(input: &str) -> Result<CuredString, Error> {
       let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
 
       let mut levels = Vec::with_capacity(refined_input.len());
@@ -327,7 +383,7 @@ cfg_if::cfg_if! {
         }
       }
 
-      Some(CuredString(output))
+      Ok(CuredString(output))
     }
   }
 }

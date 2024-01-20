@@ -1,5 +1,5 @@
 use super::{BracketPair, Class, Level, OpeningBracket};
-use crate::util;
+use crate::{util, Error};
 use core::{
   cmp::{max, min},
   ops::{Index, IndexMut, Range},
@@ -425,7 +425,7 @@ impl Paragraph {
     text: &str,
     original_classes: &[Class],
     levels: &[Level],
-  ) -> Option<(Vec<Level>, Vec<Range<usize>>)> {
+  ) -> Result<(Vec<Level>, Vec<Range<usize>>), Error> {
     let mut levels = Vec::from(levels);
 
     let mut reset_from: Option<usize> = Some(0);
@@ -533,7 +533,7 @@ impl Paragraph {
       max_level.lower(1)?;
     }
 
-    Some((levels, runs))
+    Ok((levels, runs))
   }
 
   pub(crate) fn compute_explicit(
@@ -584,7 +584,7 @@ impl Paragraph {
             last.level.new_explicit_next_ltr()
           };
 
-          if new_level.is_some() && overflow_isolate_count == 0 && overflow_embedding_count == 0 {
+          if new_level.is_ok() && overflow_isolate_count == 0 && overflow_embedding_count == 0 {
             // SAFETY: new_level was already proven to be Some
             let new_level = unsafe { new_level.unwrap_unchecked() };
 
