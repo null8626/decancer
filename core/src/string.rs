@@ -6,7 +6,7 @@ use core::{
   ops::Deref,
 };
 #[cfg(feature = "serde")]
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 /// A small wrapper around the [`String`] datatype for comparison purposes.
 ///
@@ -135,6 +135,7 @@ impl<'de> Deserialize<'de> for CuredString {
   where
     D: Deserializer<'de>,
   {
-    Deserialize::deserialize(deserializer).map(|s: &str| crate::cure(s))
+    Deserialize::deserialize(deserializer)
+      .and_then(|s: &str| crate::cure(s).map_err(de::Error::custom))
   }
 }

@@ -36,13 +36,20 @@ macro_rules! error_enum {
       )*
     }
 
-    impl core::fmt::Display for $enum_name {
-      fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    impl core::convert::AsRef<str> for $enum_name {
+      fn as_ref(&self) -> &str {
         match *self {
           $(
-            Self::$prop_name => write!(f, stringify!($prop_doc)),
+            Self::$prop_name => stringify!($prop_doc),
           )*
         }
+      }
+    }
+
+    impl core::fmt::Display for $enum_name {
+      #[inline(always)]
+      fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "{}", <$enum_name as core::convert::AsRef<str>>::as_ref(self))
       }
     }
 
@@ -53,6 +60,7 @@ macro_rules! error_enum {
 
 error_enum! {
   /// An error enum for unicode bidi errors caused by malformed string inputs.
+  #[repr(u8)]
   #[derive(Copy, Clone, Debug)]
   pub enum Error {
     /// Attempted to create a unicode bidi level that exceeds `MAX_EXPLICIT_DEPTH` (125).

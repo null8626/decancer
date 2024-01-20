@@ -216,6 +216,7 @@ console.log(cured.toString())
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 
 // global variable for assertion purposes only
@@ -232,13 +233,36 @@ static void assert(const bool expr, const char *message)
     }
 }
 
+static void print_error(decancer_error_t error_code)
+{
+    char message[90];
+    
+    uint8_t message_size;
+    
+    const uint8_t *ptr = decancer_error(error_code, &message_size);
+    memcpy(message, ptr, message_size);
+   
+    // rust strings are NOT null-terminated
+    message[message_size] = '\0';
+    
+    fprintf(stderr, "%s", message);
+}
+
 int main(void) {
+    decancer_error_t error_code;
+
     // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
     uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string));
+    cured = decancer_cure(string, sizeof(string), &error_code);
+
+    if (cured == NULL)
+    {
+        print_error(error_code);
+        return 1;        
+    }
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
     assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
