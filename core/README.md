@@ -34,7 +34,7 @@
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
-- It's capable of filtering **214,580 (19.26%) different unicode codepoints** including **9,628 different confusables**, like:
+- It's capable of filtering **215,337 (19.33%) different unicode codepoints** including **9,628 different confusables**, like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
@@ -216,7 +216,6 @@ console.log(cured.toString())
 
 #include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <stdio.h>
 
 // global variable for assertion purposes only
@@ -236,7 +235,6 @@ static void assert(const bool expr, const char *message)
 static void print_error(decancer_error_t error_code)
 {
     char message[90];
-    
     uint8_t message_size;
     
     const uint8_t *ptr = decancer_error(error_code, &message_size);
@@ -245,7 +243,7 @@ static void print_error(decancer_error_t error_code)
     // rust strings are NOT null-terminated
     message[message_size] = '\0';
     
-    fprintf(stderr, "%s", message);
+    fprintf(stderr, "error: %s", message);
 }
 
 int main(void) {
@@ -261,7 +259,7 @@ int main(void) {
     if (cured == NULL)
     {
         print_error(error_code);
-        return 1;        
+        return 1;
     }
 
     assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");

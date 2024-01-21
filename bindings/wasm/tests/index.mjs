@@ -103,7 +103,9 @@ server.on('message', async message => {
         }
 
         try {
-          const decancer = await window.init()
+          const decancer = await window.init({
+            local: true
+          })
 
           return new TestContext(decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣'))
             .test(true, 'equals', 'very funny text')
