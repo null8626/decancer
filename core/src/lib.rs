@@ -6,7 +6,7 @@ mod bidi;
 mod codepoints;
 mod similar;
 #[cfg(test)]
-mod test;
+mod tests;
 mod translation;
 mod util;
 
@@ -337,7 +337,7 @@ cfg_if::cfg_if! {
           }
 
           for j in 0..levels.len() {
-            match (levels[j].is_rtl(), original_classes[j]) {
+            match (levels[j].is_rtl(), processing_classes[j]) {
               (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
               (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
                 levels[j].raise(1)?
