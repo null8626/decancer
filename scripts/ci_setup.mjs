@@ -30,7 +30,7 @@ appendFileSync(
     ),
     wasm_affected:
       coreAffected ||
-      files.some(({ filename }) => filename.startsWith('bindings/wasm/src')),
+      files.some(({ filename }) => filename.startsWith('bindings/wasm/')),
     native_affected: files.some(
       ({ filename }) =>
         filename.startsWith('bindings/native/src') ||
