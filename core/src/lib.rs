@@ -323,7 +323,7 @@ cfg_if::cfg_if! {
       for paragraph in paragraphs.iter() {
         levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
 
-        if paragraph.level.level() != 0 || !paragraph.pure_ltr {
+        if paragraph.level.0 != 0 || !paragraph.pure_ltr {
           let input = paragraph.sliced(&refined_input);
           let original_classes = paragraph.sliced(&original_classes);
           let processing_classes = paragraph.sliced_mut(&mut processing_classes);
