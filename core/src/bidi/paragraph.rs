@@ -18,10 +18,11 @@ struct Status {
   status: OverrideStatus,
 }
 
+#[cfg_attr(test, derive(Debug, PartialEq))]
 pub(crate) struct IsolatingRunSequence {
-  runs: Vec<Range<usize>>,
-  start_class: Class,
-  end_class: Class,
+  pub(crate) runs: Vec<Range<usize>>,
+  pub(crate) start_class: Class,
+  pub(crate) end_class: Class,
 }
 
 impl IsolatingRunSequence {

@@ -310,26 +310,10 @@ cfg_if::cfg_if! {
       (refined_input, original_classes, paragraphs)
     }
 
-    /// Cures a string.
-    ///
-    /// Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] are case-insensitive.
-    ///
-    /// # Errors
-    ///
-    /// Errors if the string is malformed to the point where it's not possible to apply unicode's bidirectional alrogithm to it.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```rust
-    /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
-    ///
-    /// assert_eq!(cured, "very funny text");
-    /// assert!(cured.contains("FuNny"));
-    /// assert_eq!(cured.into_str(), String::from("very funny text"));
-    /// ```
-    pub fn cure(input: &str) -> Result<CuredString, Error> {
+    pub(crate) fn reorder<F>(input: &str, map: F) -> Result<String, Error>
+    where
+      F: Fn(char, &mut String),
+    {
       let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
 
       let mut levels = Vec::with_capacity(refined_input.len());
@@ -381,17 +365,40 @@ cfg_if::cfg_if! {
 
           if revised_levels[run.start].is_rtl() {
             for c in text.chars().rev() {
-              cure_char_inner(c as _).add_to(&mut output);
+              map(c, &mut output);
             }
           } else {
             for c in text.chars() {
-              cure_char_inner(c as _).add_to(&mut output);
+              map(c, &mut output);
             }
           }
         }
       }
 
-      Ok(CuredString(output))
+      Ok(output)
+    }
+
+    /// Cures a string.
+    ///
+    /// Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] are case-insensitive.
+    ///
+    /// # Errors
+    ///
+    /// Errors if the string is malformed to the point where it's not possible to apply unicode's bidirectional alrogithm to it.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```rust
+    /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+    ///
+    /// assert_eq!(cured, "very funny text");
+    /// assert!(cured.contains("FuNny"));
+    /// assert_eq!(cured.into_str(), String::from("very funny text"));
+    /// ```
+    pub fn cure(input: &str) -> Result<CuredString, Error> {
+      Ok(CuredString(reorder(input, |c, output| cure_char_inner(c as _).add_to(output))?))
     }
   }
 }

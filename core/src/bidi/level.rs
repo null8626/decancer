@@ -2,7 +2,7 @@ use super::Class;
 use crate::Error;
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub(crate) struct Level(u8);
+pub(crate) struct Level(pub(crate) u8);
 
 pub(crate) const MAX_EXPLICIT_DEPTH: u8 = 125;
 pub(crate) const MAX_IMPLICIT_DEPTH: u8 = MAX_EXPLICIT_DEPTH + 1;
