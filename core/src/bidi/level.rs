@@ -16,10 +16,6 @@ impl Level {
     Self(1)
   }
 
-  pub(crate) const fn level(&self) -> u8 {
-    self.0
-  }
-
   pub(crate) const fn new_explicit(number: u8) -> Result<Self, Error> {
     if number <= MAX_EXPLICIT_DEPTH {
       Ok(Self(number))
