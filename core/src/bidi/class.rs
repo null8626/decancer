@@ -7,6 +7,7 @@ use super::OverrideStatus;
 
 #[repr(u8)]
 #[allow(dead_code)]
+#[cfg_attr(test, derive(Debug))]
 #[derive(Copy, Clone, PartialEq)]
 pub(crate) enum Class {
   B,

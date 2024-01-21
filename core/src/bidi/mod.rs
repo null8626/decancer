@@ -19,6 +19,8 @@ cfg_if::cfg_if! {
     use brackets::{BracketPair, OpeningBracket};
     use paragraph::OverrideStatus;
 
+    #[cfg(test)]
+    pub(crate) use paragraph::IsolatingRunSequence;
     pub(crate) use paragraph::Paragraph;
     pub(crate) use level::Level;
   }
