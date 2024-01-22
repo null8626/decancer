@@ -380,7 +380,7 @@ cfg_if::cfg_if! {
 
     /// Cures a string.
     ///
-    /// Output will always be in lowercase.
+    /// Output will always be in lowercase and it will be [bidirectionally reordered](https://en.wikipedia.org/wiki/Bidirectional_text) in order to treat right-to-left characters. Therefore, the output of this function *should not* be displayed visually.
     ///
     /// # Errors
     ///
