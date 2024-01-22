@@ -327,7 +327,7 @@ headers.writeUint16LE(
 headers.writeUint16LE(headers.readUint16LE(2) + similarBytes.length, 4)
 
 writeFileSync(
-  'output.bin',
+  join(ROOT_DIR, 'core', 'bin', 'codepoints.bin'),
   Buffer.concat([
     headers,
     Buffer.concat(codepointsBuffers),
@@ -337,4 +337,4 @@ writeFileSync(
   ])
 )
 
-console.log('- wrote to output.bin.')
+console.log('- wrote to codepoints.bin.')

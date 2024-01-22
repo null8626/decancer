@@ -1,13 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const CODEPOINT_MASK = 0xfffff
 const RANGE_MASK = 0x8000000
+const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const STRING_TRANSLATION_MASK = 0x10000000
-
-if (typeof process.argv[2] !== 'string') {
-  console.error('error: missing binary file path.')
-  process.exit(1)
-}
 
 class Codepoints {
   #inner
@@ -21,7 +19,7 @@ class Codepoints {
       input.translation = ''
     }
 
-    if (process.argv[3] === '--full') {
+    if (process.argv[2] === '--full') {
       if (input.rangeUntil === null) {
         this.#inner.push({
           codepoint: input.codepoint,
@@ -51,7 +49,7 @@ class Codepoints {
   }
 }
 
-const binary = readFileSync(process.argv[2])
+const binary = readFileSync(join(ROOT_DIR, 'core', 'bin', 'codepoints.bin'))
 
 const similar = []
 let currentSimilar = []
