@@ -6,7 +6,7 @@ mod bidi;
 mod codepoints;
 mod similar;
 #[cfg(test)]
-mod test;
+mod tests;
 mod translation;
 mod util;
 
@@ -323,7 +323,7 @@ cfg_if::cfg_if! {
       for paragraph in paragraphs.iter() {
         levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
 
-        if paragraph.level.level() != 0 || !paragraph.pure_ltr {
+        if paragraph.level.0 != 0 || !paragraph.pure_ltr {
           let input = paragraph.sliced(&refined_input);
           let original_classes = paragraph.sliced(&original_classes);
           let processing_classes = paragraph.sliced_mut(&mut processing_classes);
@@ -337,7 +337,7 @@ cfg_if::cfg_if! {
           }
 
           for j in 0..levels.len() {
-            match (levels[j].is_rtl(), original_classes[j]) {
+            match (levels[j].is_rtl(), processing_classes[j]) {
               (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
               (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
                 levels[j].raise(1)?

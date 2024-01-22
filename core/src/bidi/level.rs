@@ -16,10 +16,6 @@ impl Level {
     Self(1)
   }
 
-  pub(crate) const fn level(&self) -> u8 {
-    self.0
-  }
-
   pub(crate) const fn new_explicit(number: u8) -> Result<Self, Error> {
     if number <= MAX_EXPLICIT_DEPTH {
       Ok(Self(number))
@@ -37,7 +33,7 @@ impl Level {
   }
 
   #[inline(always)]
-  pub fn lower(&mut self, amount: u8) -> Result<(), Error> {
+  pub(crate) fn lower(&mut self, amount: u8) -> Result<(), Error> {
     self.0 = self
       .0
       .checked_sub(amount)
@@ -47,7 +43,7 @@ impl Level {
   }
 
   #[inline(always)]
-  pub fn raise(&mut self, amount: u8) -> Result<(), Error> {
+  pub(crate) fn raise(&mut self, amount: u8) -> Result<(), Error> {
     let number = self
       .0
       .checked_add(amount)

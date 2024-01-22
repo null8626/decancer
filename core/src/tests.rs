@@ -200,6 +200,8 @@ fn reorder() {
   test_reorder("abc\ndef\nghi", "abc\ndef\nghi");
   test_reorder("ab1\nde2\ngh3", "ab1\nde2\ngh3");
 
+  test_reorder(concat!("א", "ב", "ג", "abc"), concat!("abc", "ג", "ב", "א"));
+
   test_reorder("abc\nابج", concat!("abc\n", "جبا"));
   test_reorder(
     "\u{0627}\u{0628}\u{062C}\nabc",
@@ -221,11 +223,14 @@ fn reorder() {
   test_reorder("\u{05D0}בג? אבג", "גבא ?גבא");
 
   test_reorder("A אבג?", "A גבא?");
-  // test_reorder("A אבג?\u{200F}", "A \u{200F}?גבא");
+  test_reorder("A אבג?\u{200F}", "A \u{200F}?גבא");
 
   test_reorder("\u{05D0}בג abc", "abc גבא");
   test_reorder("abc\u{2067}.-\u{2069}ghi", "abc\u{2067}-.\u{2069}ghi");
-  // test_reorder("Hello, \u{2068}\u{202E}world\u{202C}\u{2069}!", "Hello, \u{2068}\u{202E}\u{202C}dlrow\u{2069}!");
+  test_reorder(
+    "Hello, \u{2068}\u{202E}world\u{202C}\u{2069}!",
+    "Hello, \u{2068}\u{202E}\u{202C}dlrow\u{2069}!",
+  );
   test_reorder("\u{05D0}(ב)ג.", ".ג)ב(א");
   test_reorder("\u{05D0}ב(גד[&ef].)gh", "gh).]ef&[דג(בא");
 }
