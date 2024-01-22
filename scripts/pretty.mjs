@@ -10,7 +10,6 @@ const CODEPOINT_MASK = 0xfffff
 const NONE_CODEPOINTS_COUNT = 10 + 18 + 1 + 8448 + 196112
 const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const STRING_TRANSLATION_MASK = 0x10000000
 
 if (!existsSync(join(ROOT_DIR, '.cache.json'))) {
   execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
@@ -32,7 +31,6 @@ async function updateReadme() {
   console.log('- [readme] parsing codepoints.bin...')
 
   let codepointsCount = NONE_CODEPOINTS_COUNT + alreadyHandledCount
-  let confusablesCount = 0
 
   const codepointsEnd = bin.readUint16LE()
   const caseSensitiveCodepointsEnd = bin.readUint16LE(2)
@@ -54,10 +52,6 @@ async function updateReadme() {
         ...Array.from({ length: rangeUntil }, (_, i) => codepoint + 1 + i)
       )
       toAdd += rangeUntil
-    }
-
-    if (((integer >> 20) & 0x7f) !== 0) {
-      confusablesCount += toAdd
     }
 
     codepointsCount += toAdd
@@ -84,13 +78,6 @@ async function updateReadme() {
       toAdd *= 2
     }
 
-    if (
-      (integer & STRING_TRANSLATION_MASK) !== 0 ||
-      ((integer >> 20) & 0x7f) !== 0
-    ) {
-      confusablesCount += toAdd
-    }
-
     codepointsCount += toAdd
   }
 
@@ -109,10 +96,6 @@ async function updateReadme() {
           (codepointsCount / 0x10ffff) *
           100
         ).toFixed(2)}%) different unicode codepoints**`
-      )
-      .replace(
-        /\*\*[\d,]+ different unicode confusables\*\*/,
-        `**${confusablesCount.toLocaleString()} different unicode confusables**`
       )
   )
 
