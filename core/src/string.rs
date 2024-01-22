@@ -24,27 +24,33 @@ impl CuredString {
   }
 
   /// Checks if this [`CuredString`] ***similarly*** starts with another string.
+  ///
+  /// This comparison is *case-insensitive*.
   #[must_use]
   #[inline(always)]
-  pub fn starts_with(&self, o: &str) -> bool {
-    self.len() >= o.len() && similar::is_str(self, o)
+  pub fn starts_with(&self, other: &str) -> bool {
+    self.len() >= other.len() && similar::is_str(self, other)
   }
 
   /// Checks if this [`CuredString`] ***similarly*** ends with another string.
+  ///
+  /// This comparison is *case-insensitive*.
   #[must_use]
   #[inline(always)]
-  pub fn ends_with(&self, o: &str) -> bool {
-    self.len() >= o.len() && similar::is_iter(self.chars().rev(), o.chars().rev())
+  pub fn ends_with(&self, other: &str) -> bool {
+    self.len() >= other.len() && similar::is_iter(self.chars().rev(), other.chars().rev())
   }
 
   /// Checks if this [`CuredString`] ***similarly*** contains another string.
+  ///
+  /// This comparison is *case-insensitive*.
   #[must_use]
-  pub fn contains(&self, o: &str) -> bool {
-    if o.len() > self.len() {
+  pub fn contains(&self, other: &str) -> bool {
+    if other.len() > self.len() {
       return false;
     }
 
-    let other_chars: Vec<_> = o.chars().collect();
+    let other_chars: Vec<_> = other.chars().collect();
     let mut other_index = 0usize;
 
     for self_char in self.chars() {
@@ -78,16 +84,18 @@ impl AsRef<str> for CuredString {
 }
 
 /// Checks if this [`CuredString`] is ***similar*** into another string.
+///
+/// This comparison is *case-insensitive*.
 impl<S> PartialEq<S> for CuredString
 where
   S: AsRef<str> + ?Sized,
 {
   #[must_use]
   #[inline(always)]
-  fn eq(&self, o: &S) -> bool {
-    let o = o.as_ref();
+  fn eq(&self, other: &S) -> bool {
+    let other = other.as_ref();
 
-    self.len() == o.len() && similar::is_str(self, o)
+    self.len() == other.len() && similar::is_str(self, other)
   }
 }
 

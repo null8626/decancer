@@ -50,6 +50,8 @@ impl Translation {
 }
 
 /// Checks if this [`Translation`] is ***similar*** into another string.
+///
+/// This comparison is *case-insensitive*.
 impl<S> PartialEq<S> for Translation
 where
   S: AsRef<str> + ?Sized,

@@ -39,6 +39,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Several emojis
+- Unlike other packages, this package is **[unicode bidi-aware](https://en.wikipedia.org/wiki/Bidirectional_text)** in a way that it also interprets right-to-left characters in the same way as it were to be rendered by an application.
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
@@ -129,8 +130,6 @@ And the binary files should be generated in the `target/release` directory.
 </details>
 
 ## Examples
-
-> **note:** cured output will always be in lowercase.
 
 <details>
 <summary><b>Rust</b></summary>

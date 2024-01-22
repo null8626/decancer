@@ -123,7 +123,7 @@ fn cure_char_inner(code: u32) -> Translation {
 
 /// Cures a single character/unicode codepoint.
 ///
-/// Output will always be in lowercase and equality methods provided by [`Translation`] are case-insensitive.
+/// Output will always be in lowercase.
 ///
 /// # Examples
 ///
@@ -380,7 +380,7 @@ cfg_if::cfg_if! {
 
     /// Cures a string.
     ///
-    /// Output will always be in lowercase and all overridden comparison methods provided by [`CuredString`] are case-insensitive.
+    /// Output will always be in lowercase.
     ///
     /// # Errors
     ///
