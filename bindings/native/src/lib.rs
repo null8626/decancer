@@ -13,6 +13,7 @@ const unsafe fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> &'static 
   str::from_utf8_unchecked(slice::from_raw_parts(input_ptr, input_size))
 }
 
+#[no_mangle]
 pub unsafe extern "C" fn decancer_error(error: u8, string_size: *mut u8) -> *const u8 {
   let err = transmute::<_, decancer::Error>(error);
   let msg = <decancer::Error as AsRef<str>>::as_ref(&err);
