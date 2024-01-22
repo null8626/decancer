@@ -68,6 +68,7 @@ jobs:
         run: cargo test --all-features
   native:
     strategy:
+      fail-fast: true
       matrix:
         settings:
           - host: macos-latest
@@ -182,44 +183,6 @@ jobs:
           name: native-${{ matrix.settings.target }}
           path: ./artifacts/**
           if-no-files-found: error
-  native-freebsd:
-    runs-on: macos-latest
-    name: Build native bindings on FreeBSD
-    needs:
-      - setup
-      - core
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build
-        id: build
-        uses: vmactions/freebsd-vm@v1
-        env:
-          DEBUG: napi:*
-          RUSTUP_HOME: /usr/local/rustup
-          CARGO_HOME: /usr/local/cargo
-          RUSTUP_IO_THREADS: 1
-        with:
-          envs: DEBUG RUSTUP_HOME CARGO_HOME RUSTUP_IO_THREADS
-          usesh: true
-          mem: 3000
-          prepare: |
-            pkg install -y curl
-            curl https://sh.rustup.rs -sSf --output rustup.sh
-            sh rustup.sh -y --profile minimal --default-toolchain stable
-          run: |
-            export PATH="/usr/local/cargo/bin:$PATH"
-            cd bindings/native
-            cargo build --release
-            strip -x ./target/release/libdecancer.so
-            mv ./target/release/libdecancer.so ../..
-            rm -rf target
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: native-freebsd
-          path: libdecancer.so
-          if-no-files-found: error
   native-test:
     name: Test native bindings
     needs:
@@ -242,6 +205,7 @@ jobs:
           .\test.exe
   node:
     strategy:
+      fail-fast: true
       matrix:
         settings:
           - host: macos-latest
@@ -485,7 +449,6 @@ jobs:
     needs:
       - setup
       - node-test
-      - native-freebsd
       - native-test
       - prettier
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
