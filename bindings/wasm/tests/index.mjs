@@ -1,32 +1,14 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import { Worker } from 'node:worker_threads'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import puppeteer from 'puppeteer'
-import { exists } from 'node:fs'
 
 const CURRENT_DIR = join(dirname(fileURLToPath(import.meta.url)))
-const TEMP_JS_FILE = join(CURRENT_DIR, '..', 'bin', 'temp_decancer.min.js')
-const fileExists = promisify(exists)
 
 function error(message) {
   process.exitCode = 1
   console.error(message)
-}
-
-console.log(`- [client] checking for the availability of ${TEMP_JS_FILE}...`)
-
-if (!(await fileExists(TEMP_JS_FILE))) {
-  console.log(`- [client] creating ${TEMP_JS_FILE}...`)
-
-  const modifiedJs = (
-    await readFile(join(CURRENT_DIR, '..', 'bin', 'decancer.min.js'))
-  )
-    .toString()
-    .replace(/https\:\/\/(.*?)\.wasm/, 'http://localhost:8080/decancer.wasm')
-
-  await writeFile(TEMP_JS_FILE, modifiedJs)
 }
 
 console.log('- [client] running worker...')
