@@ -8,13 +8,13 @@ If you want to see/modify on the codepoints supported and/or their respective tr
 - **To convert the binary into a readable and modifiable JSON, do the following:**
 
 ```console
-node scripts/decode.mjs core/bin/codepoints.bin
+node scripts/read.mjs
 ```
 
 - **Or if you want a simplified and unoptimized version without ranges and all of that nonsenese, run:**
 
 ```console
-node scripts/decode.mjs core/bin/codepoints.bin --full
+node scripts/read.mjs --full
 ```
 
 And a file called `output.json` should be generated in the same directory.
@@ -22,12 +22,8 @@ And a file called `output.json` should be generated in the same directory.
 - **And to validate, optimize, and convert the JSON back into a binary, do the following:**
 
 ```console
-node scripts/encode.mjs path/to/file.json
+node scripts/write.mjs path/to/file.json
 ```
-
-And a file called `output.bin` should be generated in the same directory, and an optimized version of the JSON file should appear at `path/to/fileOptimized.json`.
-
-> P.S: for further optimizations purposes, it's recommended to do a second run of the encoding process, e.g `node scripts/encode.mjs path/to/fileOptimized.json`
 
 - **The structure of the JSON is as follows:**
 
@@ -82,4 +78,10 @@ $ node scripts/pretty.mjs
 
 ```console
 $ node scripts/version.mjs 1.2.3
+```
+
+### Update cache if a new unicode version is released
+
+```console
+$ node scripts/update_unicode.mjs
 ```
