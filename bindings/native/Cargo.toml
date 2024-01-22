@@ -1,6 +1,6 @@
 [package]
 name = "decancer_native"
-version = "1.6.5"
+version = "2.0.0"
 edition = "2021"
 publish = false
 
