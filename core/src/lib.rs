@@ -20,13 +20,13 @@ use core::cmp::Ordering;
 
 macro_rules! error_enum {
   (
-  $(#[$enum_attrs:meta])*
-  pub enum $enum_name:ident {
-    $(
-      #[doc = $prop_doc:literal]
-      $prop_name:ident,
-    )*
-  }
+    $(#[$enum_attrs:meta])*
+    pub enum $enum_name:ident {
+      $(
+        #[doc = $prop_doc:literal]
+        $prop_name:ident,
+      )*
+    }
   ) => {
     $(#[$enum_attrs])*
     pub enum $enum_name {
@@ -384,7 +384,7 @@ cfg_if::cfg_if! {
     ///
     /// # Errors
     ///
-    /// Errors if the string is malformed to the point where it's not possible to apply unicode's bidirectional alrogithm to it.
+    /// Errors if the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
     ///
     /// # Examples
     ///
