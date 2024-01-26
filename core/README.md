@@ -110,7 +110,6 @@ In your code:
 - [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v2.0.0/decancer-aarch64-unknown-linux-gnu.zip)
 - [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v2.0.0/decancer-aarch64-unknown-linux-musl.zip)
 - [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.0/decancer-armv7-unknown-linux-gnueabihf.zip)
-- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v2.0.0/decancer-freebsd.zip)
 
 ### Building from source
 

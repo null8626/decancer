@@ -4,6 +4,8 @@
 **/*.node
 **/target/
 
+.yarn/
+.yarnrc.yml
 bindings/native/*.exe
 bindings/native/*.dll
 bindings/native/*.lib

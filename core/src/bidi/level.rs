@@ -32,7 +32,6 @@ impl Level {
     }
   }
 
-  #[inline(always)]
   pub(crate) fn lower(&mut self, amount: u8) -> Result<(), Error> {
     self.0 = self
       .0
@@ -42,7 +41,6 @@ impl Level {
     Ok(())
   }
 
-  #[inline(always)]
   pub(crate) fn raise(&mut self, amount: u8) -> Result<(), Error> {
     let number = self
       .0
