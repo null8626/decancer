@@ -46,7 +46,7 @@ fn bidi_class() {
   assert_eq!(Class::new(0xfeff), Some(Class::BN));
 
   assert_eq!(Class::new(0x10800), Some(Class::R));
-  assert_eq!(Class::new(0x1E800), Some(Class::R));
+  assert_eq!(Class::new(0x1e800), Some(Class::R));
   assert_eq!(Class::new(0x1ee00), Some(Class::AL));
 
   assert_eq!(Class::new(0x30000), Some(Class::L));
