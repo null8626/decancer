@@ -398,7 +398,11 @@ cfg_if::cfg_if! {
     /// assert_eq!(cured.into_str(), String::from("very funny text"));
     /// ```
     pub fn cure(input: &str) -> Result<CuredString, Error> {
-      Ok(CuredString(reorder(input, |c, output| cure_char_inner(c as _).add_to(output))?))
+      Ok(CuredString(reorder(input, |c, output| match cure_char_inner(c as _) {
+        Translation::Character(ch) => output.push(ch),
+        Translation::String(s) => output.push_str(s),
+        Translation::None => {}
+      })?))
     }
   }
 }
