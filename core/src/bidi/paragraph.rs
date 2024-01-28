@@ -586,7 +586,7 @@ impl Paragraph {
           };
 
           if new_level.is_ok() && overflow_isolate_count == 0 && overflow_embedding_count == 0 {
-            // SAFETY: new_level was already proven to be Some
+            // SAFETY: new_level was already proven to be Ok
             let new_level = unsafe { new_level.unwrap_unchecked() };
 
             stack.push(Status {
