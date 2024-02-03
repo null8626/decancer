@@ -700,8 +700,7 @@ impl Paragraph {
     }
 
     let mut sequences = Vec::with_capacity(runs.len());
-    let mut stack = Vec::with_capacity(1);
-    stack.push(Vec::new());
+    let mut stack = vec![vec![]];
 
     for run in runs {
       let start_class = original_classes[run.start];
@@ -709,8 +708,7 @@ impl Paragraph {
         .iter()
         .copied()
         .rev()
-        .filter(|x| !x.removed_by_x9())
-        .next()
+        .find(|x| !x.removed_by_x9())
         .unwrap_or(start_class);
 
       let mut sequence = if start_class == Class::PDI && stack.len() > 1 {
