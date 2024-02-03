@@ -19,7 +19,7 @@
   "license": "MIT",
   "main": "index.mjs",
   "dependencies": {
-    "@fastify/static": "^6.10.2",
+    "@fastify/static": "^7.0.0",
     "fastify": "^4.21.0",
     "puppeteer": "^21.0.1"
   },
