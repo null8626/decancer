@@ -517,7 +517,7 @@ impl Paragraph {
 
         let mut seq_end = seq_start + 1;
 
-        while seq_end < run_count && levels[runs[seq_end].start] < max_level {
+        while seq_end < run_count && levels[runs[seq_end].start] >= max_level {
           seq_end += 1;
         }
 
