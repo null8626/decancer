@@ -186,8 +186,8 @@ impl IsolatingRunSequence {
             stack.push((matched.opening, actual_index, run_index))
           } else if let Some((stack_index, element)) = stack
             .iter()
-            .rev()
             .enumerate()
+            .rev()
             .find(|(_, element)| element.0 == matched.opening)
           {
             ret.push(BracketPair {
@@ -239,7 +239,7 @@ impl IsolatingRunSequence {
           found_e = true;
         } else if class == not_e {
           found_not_e = true;
-        } else if class == Class::EN || class == Class::AN {
+        } else if matches!(class, Class::EN | Class::AN) {
           if e == Class::L {
             found_not_e = true;
           } else {
@@ -261,7 +261,7 @@ impl IsolatingRunSequence {
           .find(|class| matches!(class, Class::L | Class::R | Class::EN | Class::AN))
           .unwrap_or(self.start_class);
 
-        if previous_strong == Class::EN || previous_strong == Class::AN {
+        if matches!(previous_strong, Class::EN | Class::AN) {
           previous_strong = Class::R;
         }
 
