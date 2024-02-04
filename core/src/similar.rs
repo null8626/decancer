@@ -28,9 +28,7 @@ pub(crate) fn is(self_char: u32, other_char: char) -> bool {
 
       if contains_a && contains_b {
         return true;
-      }
-
-      if cur >= 0x80 {
+      } else if cur >= 0x80 {
         contains_a = false;
         contains_b = false;
       }
