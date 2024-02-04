@@ -186,20 +186,20 @@ impl IsolatingRunSequence {
             }
 
             stack.push((matched.opening, actual_index, run_index))
-          } else {
-            for (stack_index, element) in stack.iter().enumerate().rev() {
-              if element.0 == matched.opening {
-                ret.push(BracketPair {
-                  start: element.1,
-                  end: actual_index,
-                  start_run: element.2,
-                  end_run: run_index,
-                });
+          } else if let Some((stack_index, element)) = stack
+            .iter()
+            .enumerate()
+            .rev()
+            .find(|(_, element)| element.0 == matched.opening)
+          {
+            ret.push(BracketPair {
+              start: element.1,
+              end: actual_index,
+              start_run: element.2,
+              end_run: run_index,
+            });
 
-                stack.truncate(stack_index);
-                break;
-              }
-            }
+            stack.truncate(stack_index);
           }
         }
       }
@@ -260,9 +260,7 @@ impl IsolatingRunSequence {
         let mut previous_strong = self
           .iter_backwards_from(pair.start, pair.start_run)
           .map(|i| processing_classes[i])
-          .find(|class| {
-            *class == Class::L || *class == Class::R || *class == Class::EN || *class == Class::AN
-          })
+          .find(|class| matches!(class, Class::L | Class::R | Class::EN | Class::AN))
           .unwrap_or(self.start_class);
 
         if previous_strong == Class::EN || previous_strong == Class::AN {
@@ -337,16 +335,16 @@ impl IsolatingRunSequence {
 
               if next_class.is_neutral_or_isolate() || next_class == Class::BN {
                 ni_run.push(i);
-              } else {
-                break;
+                continue;
               }
             }
 
             None => {
               next_class = self.end_class;
-              break;
             }
           };
+
+          break;
         }
 
         let new_class = match (prev_class, next_class) {
@@ -519,11 +517,7 @@ impl Paragraph {
 
         let mut seq_end = seq_start + 1;
 
-        while seq_end < run_count {
-          if levels[runs[seq_end].start] < max_level {
-            break;
-          }
-
+        while seq_end < run_count && levels[runs[seq_end].start] < max_level {
           seq_end += 1;
         }
 
@@ -544,12 +538,10 @@ impl Paragraph {
     processing_classes: &mut [Class],
     levels: &mut [Level],
   ) {
-    let mut stack = Vec::with_capacity(1);
-
-    stack.push(Status {
+    let mut stack = vec![Status {
       level: self.level,
       status: OverrideStatus::Neutral,
-    });
+    }];
 
     let mut overflow_isolate_count = 0;
     let mut overflow_embedding_count = 0;
@@ -616,16 +608,14 @@ impl Paragraph {
           } else if valid_isolate_count > 0 {
             overflow_embedding_count = 0;
 
-            loop {
-              match stack.pop() {
-                None
+            while !matches!(
+              stack.pop(),
+              None
                 | Some(Status {
                   status: OverrideStatus::Isolate,
                   ..
-                }) => break,
-                _ => continue,
-              }
-            }
+                })
+            ) {}
 
             valid_isolate_count -= 1;
           }

@@ -1,6 +1,5 @@
 use super::{BIDI, BIDI_BRACKETS_COUNT};
 use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
-use core::cmp::{max, min};
 
 pub(crate) struct BracketPair {
   pub(crate) start: usize,
@@ -14,8 +13,26 @@ pub(crate) struct OpeningBracket {
   pub(crate) is_open: bool,
 }
 
+// core::cmp::{max, min}; functions are not const because they have generics that prevent it from doing so
+
+const fn min(a: u32, b: u32) -> u32 {
+  if a > b {
+    b
+  } else {
+    a
+  }
+}
+
+const fn max(a: u32, b: u32) -> u32 {
+  if a > b {
+    a
+  } else {
+    b
+  }
+}
+
 impl OpeningBracket {
-  pub(crate) fn new(code: u32) -> Option<Self> {
+  pub(crate) const fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_BRACKETS_COUNT as i32;
 
