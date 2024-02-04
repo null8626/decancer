@@ -62,19 +62,19 @@ impl Class {
   cfg_if::cfg_if! {
     if #[cfg(feature = "std")] {
       pub(crate) const fn is_neutral_or_isolate(&self) -> bool {
-        matches!(*self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
+        matches!(self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
       }
 
       pub(crate) const fn is_rtl(&self) -> bool {
-        matches!(*self, Self::RLE | Self::RLO | Self::RLI)
+        matches!(self, Self::RLE | Self::RLO | Self::RLI)
       }
 
       pub(crate) const fn is_isolate(&self) -> bool {
-        matches!(*self, Self::RLI | Self::LRI | Self::FSI)
+        matches!(self, Self::RLI | Self::LRI | Self::FSI)
       }
 
       pub(crate) const fn override_status(&self) -> OverrideStatus {
-        match *self {
+        match self {
           Self::RLO => OverrideStatus::RTL,
           Self::LRO => OverrideStatus::LTR,
           Self::RLI | Self::LRI | Self::FSI => OverrideStatus::Isolate,
@@ -84,7 +84,7 @@ impl Class {
 
       pub(crate) const fn removed_by_x9(&self) -> bool {
         matches!(
-          *self,
+          self,
           Self::RLE | Self::LRE | Self::RLO | Self::LRO | Self::PDF | Self::BN
         )
       }
