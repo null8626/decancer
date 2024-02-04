@@ -484,9 +484,9 @@ impl Paragraph {
 
     for (i, &new_level) in levels
       .iter()
+      .enumerate()
       .take(self.range.end)
       .skip(start + 1)
-      .enumerate()
     {
       if new_level != run_level {
         runs.push(start..i);
