@@ -335,16 +335,16 @@ impl IsolatingRunSequence {
 
               if next_class.is_neutral_or_isolate() || next_class == Class::BN {
                 ni_run.push(i);
-                continue;
+              } else {
+                break;
               }
             }
 
             None => {
               next_class = self.end_class;
+              break;
             }
           };
-
-          break;
         }
 
         let new_class = match (prev_class, next_class) {
