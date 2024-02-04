@@ -151,15 +151,13 @@ impl IsolatingRunSequence {
 
     let mut last_strong_is_l = self.start_class == Class::L;
 
-    for run in &self.runs {
-      for i in run.clone() {
-        match processing_classes[i] {
-          Class::EN if last_strong_is_l => processing_classes[i] = Class::L,
-          Class::L => last_strong_is_l = true,
-          Class::R | Class::AL => last_strong_is_l = false,
-          _ => {}
-        };
-      }
+    for i in self.runs.iter().cloned().flatten() {
+      match processing_classes[i] {
+        Class::EN if last_strong_is_l => processing_classes[i] = Class::L,
+        Class::L => last_strong_is_l = true,
+        Class::R | Class::AL => last_strong_is_l = false,
+        _ => {}
+      };
     }
   }
 
@@ -188,8 +186,8 @@ impl IsolatingRunSequence {
             stack.push((matched.opening, actual_index, run_index))
           } else if let Some((stack_index, element)) = stack
             .iter()
-            .enumerate()
             .rev()
+            .enumerate()
             .find(|(_, element)| element.0 == matched.opening)
           {
             ret.push(BracketPair {
@@ -486,9 +484,9 @@ impl Paragraph {
 
     for (i, &new_level) in levels
       .iter()
-      .enumerate()
       .take(self.range.end)
       .skip(start + 1)
+      .enumerate()
     {
       if new_level != run_level {
         runs.push(start..i);
@@ -730,19 +728,15 @@ impl Paragraph {
       let runs_len = result.runs.len();
       let sequence_end = result.runs[runs_len - 1].end;
 
-      let sequence_level = result
+      let sequence_level = levels[result
         .iter_forwards_from(sequence_start, 0)
-        .filter(|i| !original_classes[*i].removed_by_x9())
-        .map(|i| levels[i])
-        .next()
-        .unwrap_or(levels[sequence_start]);
+        .find(|i| !original_classes[*i].removed_by_x9())
+        .unwrap_or(sequence_start)];
 
-      let end_level = result
+      let end_level = levels[result
         .iter_backwards_from(sequence_end, runs_len - 1)
-        .filter(|i| !original_classes[*i].removed_by_x9())
-        .map(|i| levels[i])
-        .next()
-        .unwrap_or(levels[sequence_end - 1]);
+        .find(|i| !original_classes[*i].removed_by_x9())
+        .unwrap_or(sequence_end - 1)];
 
       let preceeding_level = match original_classes[..sequence_start]
         .iter()
