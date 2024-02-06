@@ -15,19 +15,11 @@ pub(crate) struct OpeningBracket {
 
 // core::cmp::{max, min}; functions are not const because they have generics that prevent it from doing so
 
-const fn min(a: u32, b: u32) -> u32 {
+const fn min_max(a: u32, b: u32) -> (u32, u32) {
   if a > b {
-    b
+    (b, a)
   } else {
-    a
-  }
-}
-
-const fn max(a: u32, b: u32) -> u32 {
-  if a > b {
-    a
-  } else {
-    b
+    (a, b)
   }
 }
 
@@ -52,9 +44,11 @@ impl OpeningBracket {
         opening + diff
       };
 
-      if code < min(opening, closing) {
+      let (min, max) = min_max(opening, closing);
+
+      if code < min {
         end = mid - 1;
-      } else if code > max(opening, closing) {
+      } else if code > max {
         start = mid + 1;
       } else {
         let is_open = code == opening;
