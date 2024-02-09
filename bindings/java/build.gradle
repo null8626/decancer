@@ -1,0 +1,24 @@
+group 'io.github.null8626'
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation 'com.github.adamheinrich:native-utils:e6a3948966'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+jar {
+    from('./bin') {
+        include '*.so', '*.dylib', '*.dll'
+    }
+}

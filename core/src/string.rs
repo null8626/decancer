@@ -8,7 +8,7 @@ use core::{
 #[cfg(feature = "serde")]
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
-/// A small wrapper around the [`String`] datatype for comparison purposes.
+/// A small wrapper around the [`String`] data type for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[must_use]
@@ -17,6 +17,9 @@ pub struct CuredString(pub(crate) String);
 
 impl CuredString {
   /// Coerces this [`CuredString`] into a [`String`].
+  ///
+  /// > **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this.
+  /// > The string output is **NOT** meant to be displayed visually.
   #[must_use]
   pub const fn into_str(self) -> String {
     // SAFETY: see definition of CuredString

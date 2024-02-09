@@ -476,7 +476,7 @@ impl Paragraph {
       }
     }
 
-    let mut runs = Vec::new();
+    let mut runs = Vec::with_capacity(1);
     let mut start = self.range.start;
     let mut run_level = levels[start];
     let mut min_level = run_level;
