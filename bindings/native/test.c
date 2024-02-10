@@ -72,10 +72,10 @@ int main(void)
         return 1;
     }
 
-    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
-    assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with");
-    assert(decancer_ends_with(cured, (uint8_t *)("text"), 4), "ends_with");
-    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
+    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals failed");
+    assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with failed");
+    assert(decancer_ends_with(cured, (uint8_t *)("text"), 4), "ends_with failed");
+    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains failed");
 
     size_t output_size;
     const uint8_t *output_raw = decancer_raw(cured, &output_size);
