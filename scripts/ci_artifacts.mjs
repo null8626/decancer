@@ -9,44 +9,29 @@ const execute = promisify(exec)
 
 const [artifacts] = await Promise.all([
   readdir(join(ROOT_DIR, 'artifacts')),
-  mkdir(join(ROOT_DIR, 'bindings', 'node', 'artifacts')),
-  mkdir(join(ROOT_DIR, 'bindings', 'java', 'bin'))
+  mkdir(join(ROOT_DIR, 'bindings', 'node', 'artifacts'))
 ])
 
 void (await Promise.all(
-  artifacts.map(async artifact => {
-    if (artifact.startsWith('native-')) {
-      return await execute(
-        `zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`,
-        {
+  artifacts.map(artifact =>
+    artifact.startsWith('native-')
+      ? execute(`zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`, {
           cwd: join(ROOT_DIR, 'artifacts')
-        }
-      )
-    } else if (artifact.startsWith('node-')) {
-      const artifactsDir = join(
-        join(ROOT_DIR, 'bindings', 'node', 'artifacts'),
-        artifact.replace(/^node-/, 'bindings-')
-      )
-      const originDir = join(ROOT_DIR, 'artifacts', artifact)
-
-      return await Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
-        ([[nodeBinary]]) =>
-          rename(
-            join(originDir, nodeBinary),
-            join(artifactsDir, nodeBinary)
-          ).then(resolve)
-      )
-    } else if (artifact.startsWith('java-')) {
-      const files = await readdir(join(ROOT_DIR, 'artifacts', artifact))
-
-      return await Promise.all(
-        files.map(file =>
-          rename(
-            join(ROOT_DIR, 'artifacts', artifact, file),
-            join(ROOT_DIR, 'bindings', 'java', 'bin', file)
+        })
+      : new Promise(resolve => {
+          const artifactsDir = join(
+            join(ROOT_DIR, 'bindings', 'node', 'artifacts'),
+            artifact.replace(/^node-/, 'bindings-')
           )
-        )
-      )
-    }
-  })
+          const originDir = join(ROOT_DIR, 'artifacts', artifact)
+
+          Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
+            ([[nodeBinary]]) =>
+              rename(
+                join(originDir, nodeBinary),
+                join(artifactsDir, nodeBinary)
+              ).then(resolve)
+          )
+        })
+  )
 ))

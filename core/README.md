@@ -44,7 +44,6 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
   - C/C++
-  - Java
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
 ## Installation
@@ -206,26 +205,6 @@ console.log(cured.toString())
 
 [See this in action here.](https://null8626.github.io/decancer)
 
-</details>
-<details>
-<summary><b>Java</b></summary>
-
-```java
-import com.github.null8626.decancer.CuredString;
-
-public class Example {
-  public static void main(String[] args) {
-    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-    
-    assert cured.equals("very funny text");
-    assert cured.contains("funny");
-    
-    System.out.println(cured.toString());
-    
-    cured.destroy();
-  }
-}
-```
 </details>
 <details>
 <summary><b>C/C++</b></summary>

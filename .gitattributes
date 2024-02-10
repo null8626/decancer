@@ -1,6 +1,5 @@
 .github/** eol=lf
 **/*.bin binary
-**/*.jar binary
 **/*.wasm binary
 **/*.c linguist-vendored=true eol=lf
 **/*.ts linguist-vendored=true eol=lf
@@ -11,9 +10,4 @@
 **/*.js eol=lf
 **/*.md eol=lf
 **/*.toml eol=lf
-**/*.java eol=lf
-**/*.gradle eol=lf
-**/*.properties eol=lf
-**/*.bat eol=lf
-**/gradlew eol=lf
 **/*.json eol=lf

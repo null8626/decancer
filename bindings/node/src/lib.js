@@ -1,8 +1,8 @@
 'use strict'
 
-const { existsSync, readFileSync } = require('node:fs')
-const assert = require('node:assert')
-const { join } = require('node:path')
+const { existsSync, readFileSync } = require('fs')
+const assert = require('assert')
+const { join } = require('path')
 
 const PLATFORMS = {
   win32: {

@@ -103,14 +103,13 @@ async function updateReadme() {
 }
 
 async function prettier() {
-  console.log('- [prettier] checking the availability of prettier...')
+  try {
+    await execute('npm list -g prettier')
+  } catch {
+    await execute('npm i -g prettier')
+  }
 
-  void (await Promise.all([
-    execute('npm i -g prettier'),
-    execute('npm i prettier-plugin-java')
-  ]))
-
-  await execute('npx prettier **/*.{js,ts,mjs,cjs,json,java} --write', {
+  await execute('npx prettier **/*.{js,ts,mjs,cjs,json} --write', {
     cwd: ROOT_DIR
   })
 
@@ -139,7 +138,6 @@ async function clangFormat() {
 
 void (await Promise.all([
   cargo(join(ROOT_DIR, 'core')),
-  cargo(join(ROOT_DIR, 'bindings', 'java')),
   cargo(join(ROOT_DIR, 'bindings', 'node')),
   cargo(join(ROOT_DIR, 'bindings', 'wasm')),
   cargo(join(ROOT_DIR, 'bindings', 'native')),
