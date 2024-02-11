@@ -28,13 +28,12 @@ void (await Promise.all(
       )
       const originDir = join(ROOT_DIR, 'artifacts', artifact)
 
-      await Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
-        ([[nodeBinary]]) =>
-          rename(
-            join(originDir, nodeBinary),
-            join(artifactsDir, nodeBinary)
-          ).then(resolve)
-      )
+      const [[nodeBinary]] = await Promise.all([
+        readdir(originDir),
+        mkdir(artifactsDir)
+      ])
+
+      await rename(join(originDir, nodeBinary), join(artifactsDir, nodeBinary))
     }
   })
 ))
