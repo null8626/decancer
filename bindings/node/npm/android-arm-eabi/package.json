@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-android-arm-eabi",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "os": [
     "android"
   ],
