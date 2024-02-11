@@ -39,7 +39,7 @@ macro_rules! error_enum {
 
     impl core::convert::AsRef<str> for $enum_name {
       fn as_ref(&self) -> &str {
-        match *self {
+        match self {
           $(
             Self::$prop_name => stringify!($prop_doc),
           )*
