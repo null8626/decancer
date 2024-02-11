@@ -438,11 +438,6 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: '.'
-      - name: Remove wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: wasm
   publish:
     name: Publish
     runs-on: ubuntu-latest

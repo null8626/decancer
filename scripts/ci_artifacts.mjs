@@ -13,25 +13,28 @@ const [artifacts] = await Promise.all([
 ])
 
 void (await Promise.all(
-  artifacts.map(artifact =>
-    artifact.startsWith('native-')
-      ? execute(`zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`, {
+  artifacts.map(async artifact => {
+    if (artifact.startsWith('native-')) {
+      await execute(
+        `zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`,
+        {
           cwd: join(ROOT_DIR, 'artifacts')
-        })
-      : new Promise(resolve => {
-          const artifactsDir = join(
-            join(ROOT_DIR, 'bindings', 'node', 'artifacts'),
-            artifact.replace(/^node-/, 'bindings-')
-          )
-          const originDir = join(ROOT_DIR, 'artifacts', artifact)
+        }
+      )
+    } else if (artifact.startsWith('node-')) {
+      const artifactsDir = join(
+        join(ROOT_DIR, 'bindings', 'node', 'artifacts'),
+        artifact.replace(/^node-/, 'bindings-')
+      )
+      const originDir = join(ROOT_DIR, 'artifacts', artifact)
 
-          Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
-            ([[nodeBinary]]) =>
-              rename(
-                join(originDir, nodeBinary),
-                join(artifactsDir, nodeBinary)
-              ).then(resolve)
-          )
-        })
-  )
+      await Promise.all([readdir(originDir), mkdir(artifactsDir)]).then(
+        ([[nodeBinary]]) =>
+          rename(
+            join(originDir, nodeBinary),
+            join(artifactsDir, nodeBinary)
+          ).then(resolve)
+      )
+    }
+  })
 ))
