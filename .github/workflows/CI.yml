@@ -71,112 +71,89 @@ jobs:
       fail-fast: true
       matrix:
         settings:
-          - target: 'aarch64-apple-darwin'
-            host: 'macos-latest'
-          - target: 'aarch64-apple-ios'
-            host: 'macos-latest'
-          - target: 'aarch64-apple-ios-sim'
-            host: 'macos-latest'
-          # - target: 'aarch64-linux-android'
-          #   host: 'ubuntu-latest'
-          - target: 'aarch64-pc-windows-msvc'
-            host: 'windows-latest'
-          #- target: 'aarch64-unknown-fuchsia'
-          #  host: 'ubuntu-latest'
-          - target: 'aarch64-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          ####- target: 'aarch64-unknown-linux-musl'
-          ####  host: 'ubuntu-latest'
-          #- target: 'arm-linux-androideabi'
-          #  host: 'ubuntu-latest'
-          - target: 'arm-unknown-linux-gnueabi'
-            host: 'ubuntu-latest'
-          #- target: 'arm-unknown-linux-gnueabihf'
-          #  host: 'ubuntu-latest'
-          #- target: 'arm-unknown-linux-musleabi'
-          #  host: 'ubuntu-latest'
-          #- target: 'arm-unknown-linux-musleabihf'
-          #  host: 'ubuntu-latest'
-          - target: 'armv5te-unknown-linux-gnueabi'
-            host: 'ubuntu-latest'
-          #- target: 'armv5te-unknown-linux-musleabi'
-          #  host: 'ubuntu-latest'
-          #- target: 'armv7-linux-androideabi'
-          #  host: 'ubuntu-latest'
-          - target: 'armv7-unknown-linux-gnueabi'
-            host: 'ubuntu-latest'
-          - target: 'armv7-unknown-linux-gnueabihf'
-            host: 'ubuntu-latest'
-          #- target: 'armv7-unknown-linux-musleabi'
-          #  host: 'ubuntu-latest'
-          #- target: 'armv7-unknown-linux-musleabihf'
-          #  host: 'ubuntu-latest'
-          - target: 'i586-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          #- target: 'i586-unknown-linux-musl'
-          #  host: 'ubuntu-latest'
-          #- target: 'i686-linux-android'
-          #  host: 'ubuntu-latest'
-          #- target: 'i686-pc-windows-gnu'
-          #  host: 'windows-latest'
-          - target: 'i686-pc-windows-msvc'
-            host: 'windows-latest'
-          - target: 'i686-unknown-freebsd'
-            host: 'ubuntu-latest'
-          - target: 'i686-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          #- target: 'i686-unknown-linux-musl'
-          #  host: 'ubuntu-latest'
-          #- target: 'loongarch64-unknown-linux-gnu'
-          #  host: 'ubuntu-latest'
-          #- target: 'powerpc-unknown-linux-gnu'
-          #  host: 'ubuntu-latest'
-          #- target: 'powerpc64-unknown-linux-gnu'
-          #  host: 'ubuntu-latest'
-          - target: 'powerpc64le-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          - target: 'riscv64gc-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          - target: 's390x-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          #- target: 'sparc64-unknown-linux-gnu'
-          #  host: 'ubuntu-latest'
-          - target: 'sparcv9-sun-solaris'
-            host: 'ubuntu-latest'
-          #- target: 'thumbv7neon-linux-androideabi'
-          #  host: 'ubuntu-latest'
-          - target: 'thumbv7neon-unknown-linux-gnueabihf'
-            host: 'ubuntu-latest'
-          - target: 'x86_64-apple-darwin'
-            host: 'macos-latest'
-          - target: 'x86_64-apple-ios'
-            host: 'macos-latest'
-          #- target: 'x86_64-fortanix-unknown-sgx'
-          #  host: 'ubuntu-latest'
-          #- target: 'x86_64-linux-android'
-          #  host: 'ubuntu-latest'
-          #- target: 'x86_64-pc-solaris'
-          #  host: 'ubuntu-latest'
-          #- target: 'x86_64-pc-windows-gnu'
-          #  host: 'windows-latest'
-          - target: 'x86_64-pc-windows-msvc'
-            host: 'windows-latest'
-          - target: 'x86_64-unknown-freebsd'
-            host: 'ubuntu-latest'
-          #- target: 'x86_64-unknown-fuchsia'
-          #  host: 'ubuntu-latest'
-          - target: 'x86_64-unknown-illumos'
-            host: 'ubuntu-latest'
-          - target: 'x86_64-unknown-linux-gnu'
-            host: 'ubuntu-latest'
-          #- target: 'x86_64-unknown-linux-gnux32'
-          #  host: 'ubuntu-latest'
-          ####- target: 'x86_64-unknown-linux-musl'
-          ####  host: 'ubuntu-latest'
-          - target: 'x86_64-unknown-netbsd'
-            host: 'ubuntu-latest'
-          #- target: 'x86_64-unknown-redox'
-          #  host: 'ubuntu-latest'
+          - target: aarch64-apple-darwin
+            host: macos-latest
+          - target: aarch64-apple-ios
+            host: macos-latest
+          - target: aarch64-apple-ios-sim
+            host: macos-latest
+          - target: aarch64-linux-android
+            host: ubuntu-latest
+            build: |
+              export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang"
+              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
+              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+              cargo build --target aarch64-linux-android --release
+              llvm-strip ./target/release/*.so
+              mv ./target/release/*.so ../../artifacts
+          - target: aarch64-pc-windows-msvc
+            host: windows-latest
+          - target: aarch64-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            host: ubuntu-latest
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              rustup target add aarch64-unknown-linux-musl
+              cargo build --target aarch64-unknown-linux-musl --release
+              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/release/*.so
+              mv ./target/release/*.so ../../artifacts
+          - target: arm-unknown-linux-gnueabi
+            host: ubuntu-latest
+          - target: armv5te-unknown-linux-gnueabi
+            host: ubuntu-latest
+          - target: armv7-linux-androideabi
+            host: ubuntu-latest
+            build: |
+              export CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+              export CC="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang"
+              export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
+              export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
+              cargo build --target armv7-linux-androideabi --release
+              llvm-strip ./target/release/*.so
+              mv ./target/release/*.so ../../artifacts
+          - target: armv7-unknown-linux-gnueabi
+            host: ubuntu-latest
+          - target: armv7-unknown-linux-gnueabihf
+            host: ubuntu-latest
+          - target: i586-unknown-linux-gnu
+            host: 'ubuntu-latest
+          - target: i686-pc-windows-msvc
+            host: windows-latest
+          - target: i686-unknown-freebsd
+            host: ubuntu-latest
+          - target: i686-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: powerpc64le-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: riscv64gc-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: s390x-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: sparcv9-sun-solaris
+            host: ubuntu-latest
+          - target: thumbv7neon-unknown-linux-gnueabihf
+            host: ubuntu-latest
+          - target: x86_64-apple-darwin
+            host: macos-latest
+          - target: x86_64-apple-ios
+            host: macos-latest
+          - target: x86_64-pc-windows-msvc
+            host: windows-latest
+          - target: x86_64-unknown-freebsd
+            host: ubuntu-latest
+          - target: x86_64-unknown-illumos
+            host: ubuntu-latest
+          - target: x86_64-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: x86_64-unknown-linux-musl
+            host: ubuntu-latest
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              cargo build --release
+              strip ./target/release/*.so
+              mv ./target/release/*.so ../../artifacts
     needs:
       - setup
       - core
@@ -195,19 +172,32 @@ jobs:
           profile: minimal
           override: true
           toolchain: stable
-      - name: Build
+      - name: Make artifacts directory
+        if: ${{ matrix.settings.build }}
+        run: mkdir artifacts
+        shell: bash
+      - name: Build with cross
+        if: ${{ !matrix.settings.build }}
         uses: houseabsolute/actions-rust-cross@v0
         with:
           working-directory: bindings/native
           args: '--release --target-dir=.'
           command: build
           target: ${{ matrix.settings.target }}
-      - name: asdf
-        run: |
-          ls -p -R .
+      - name: Build in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker && matrix.settings.build }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: '--user 0:0 -v ${{ github.workspace }}/bindings/native/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/native/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/native'
+          run: ${{ matrix.settings.build }}
+      - name: Build
         working-directory: bindings/native
+        run: ${{ matrix.settings.build }}
+        if: ${{ !matrix.settings.docker && matrix.settings.build }}
         shell: bash
       - name: Move binaries
+        if: ${{ !matrix.settings.build }}
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }}
         shell: bash
       - name: Upload artifact
@@ -342,11 +332,11 @@ jobs:
         with:
           version: 0.11.0
       - name: Configure architecture to use with node
-        if: matrix.settings.target == 'i686-pc-windows-msvc'
+        if: matrix.settings.target == i686-pc-windows-msvc
         run: yarn config set supportedArchitectures.cpu "ia32"
         shell: bash
       - uses: actions/setup-node@v3
-        if: matrix.settings.target == 'i686-pc-windows-msvc'
+        if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
         with:
           node-version: 20
           check-latest: true
