@@ -202,6 +202,11 @@ jobs:
           args: '--release --target-dir=.'
           command: build
           target: ${{ matrix.settings.target }}
+      - name: asdf
+        run: |
+          ls -p -R .
+        working-directory: bindings/native
+        shell: bash
       - name: Move binaries
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }}
         shell: bash
