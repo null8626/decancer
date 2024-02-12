@@ -27,7 +27,7 @@ for (const artifact of artifacts) {
             'release',
             artifact
           ),
-          join(ROOT_DIR, 'artifacts', artifact.replace('.dll.lib', '.lib'))
+          join(ROOT_DIR, 'artifacts', artifact.replace('.dll', ''))
         )
       )
     }
