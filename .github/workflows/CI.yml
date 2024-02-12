@@ -196,14 +196,17 @@ jobs:
           override: true
           toolchain: stable
       - name: Build
-        #run: cargo build --release
-        #working-directory: bindings/native
-        uses: houseabsolute/actions-rust-cross@v0
-        with:
-          working-directory: bindings/native
-          args: '--release'
-          command: build
-          target: ${{ matrix.settings.target }}
+        run: |
+          cargo install cross --git https://github.com/cross-rs/cross
+          cross build --release --target=${{ matrix.settings.target }}
+        working-directory: bindings/native
+        shell: bash
+        #uses: houseabsolute/actions-rust-cross@v0
+        #with:
+        #  working-directory: bindings/native
+        #  args: '--release'
+        #  command: build
+        #  target: ${{ matrix.settings.target }}
       - run: ls -R .
         shell: bash
         working-directory: bindings/native/target/release
