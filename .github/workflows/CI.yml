@@ -332,7 +332,7 @@ jobs:
         with:
           version: 0.11.0
       - name: Configure architecture to use with node
-        if: matrix.settings.target == i686-pc-windows-msvc
+        if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
         run: yarn config set supportedArchitectures.cpu "ia32"
         shell: bash
       - uses: actions/setup-node@v3
