@@ -6,28 +6,36 @@ import { promisify } from 'node:util'
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 try {
-  const [artifacts] = await Promise.all([readdir(join(ROOT_DIR, 'bindings', 'native', 'target', 'release')), mkdir(join(ROOT_DIR, 'artifacts'))])
-  
+  const [artifacts] = await Promise.all([
+    readdir(join(ROOT_DIR, 'bindings', 'native', 'target', 'release')),
+    mkdir(join(ROOT_DIR, 'artifacts'))
+  ])
+
   const promises = []
-  
+
   for (const artifact of artifacts) {
     try {
       const [ext] = artifact.match(/\.[^\.]+$/)[0].slice(1)
-      
+
       if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
-        promises.push(rename(join(ROOT_DIR, 'bindings', 'native', 'target', 'release', artifact), join(ROOT_DIR, 'artifacts')))
+        promises.push(
+          rename(
+            join(ROOT_DIR, 'bindings', 'native', 'target', 'release', artifact),
+            join(ROOT_DIR, 'artifacts')
+          )
+        )
       }
     } catch {
       continue
     }
   }
-  
+
   if (promises.length === 0) {
     // throw me away
     throw null
   }
-  
-  void await Promise.all(promises)
+
+  void (await Promise.all(promises))
 } catch {
   console.error('- error: target directory is empty')
   process.exit(1)
