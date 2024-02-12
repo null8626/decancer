@@ -118,7 +118,7 @@ jobs:
           - target: armv7-unknown-linux-gnueabihf
             host: ubuntu-latest
           - target: i586-unknown-linux-gnu
-            host: 'ubuntu-latest
+            host: ubuntu-latest
           - target: i686-pc-windows-msvc
             host: windows-latest
           - target: i686-unknown-freebsd
