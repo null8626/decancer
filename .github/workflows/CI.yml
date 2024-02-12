@@ -197,7 +197,7 @@ jobs:
           toolchain: stable
       - name: Build
         #run: cargo build --release
-        working-directory: bindings/native
+        #working-directory: bindings/native
         uses: houseabsolute/actions-rust-cross@v0
         with:
           working-directory: bindings/native
