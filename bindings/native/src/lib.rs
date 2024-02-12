@@ -105,4 +105,3 @@ pub unsafe extern "C" fn decancer_raw(cured: *mut c_void, output_size: *mut usiz
 pub unsafe extern "C" fn decancer_free(cured: *mut c_void) {
   let _ = Box::from_raw(cured as *mut decancer::CuredString);
 }
-
