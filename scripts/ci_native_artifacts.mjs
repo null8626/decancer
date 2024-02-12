@@ -21,7 +21,7 @@ for (const artifact of artifacts) {
       promises.push(
         rename(
           join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release', artifact),
-          join(ROOT_DIR, 'artifacts')
+          join(ROOT_DIR, 'artifacts', artifact)
         )
       )
     }
