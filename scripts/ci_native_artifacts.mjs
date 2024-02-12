@@ -14,7 +14,7 @@ const promises = []
 
 for (const artifact of artifacts) {
   try {
-    const [ext] = artifact.match(/\.[^\.]+$/)[0].slice(1)
+    const ext = artifact.match(/\.[^\.]+$/)[0].slice(1)
 
     if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
       promises.push(
