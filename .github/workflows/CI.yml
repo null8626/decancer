@@ -86,6 +86,7 @@ jobs:
               export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++"
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               cargo build --target aarch64-linux-android --release
+              ls -p -R .
               llvm-strip ./target/release/*.so
               mv ./target/release/*.so ../../artifacts
           - target: aarch64-pc-windows-msvc
@@ -98,6 +99,7 @@ jobs:
             build: |
               rustup target add aarch64-unknown-linux-musl
               cargo build --target aarch64-unknown-linux-musl --release
+              ls -p -R .
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/release/*.so
               mv ./target/release/*.so ../../artifacts
           - target: arm-unknown-linux-gnueabi
@@ -113,6 +115,7 @@ jobs:
               export CXX="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi24-clang++"
               export PATH="${ANDROID_NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin:${PATH}"
               cargo build --target armv7-linux-androideabi --release
+              ls -p -R .
               llvm-strip ./target/release/*.so
               mv ./target/release/*.so ../../artifacts
           - target: armv7-unknown-linux-gnueabi
@@ -154,6 +157,7 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
               cargo build --release
+              ls -p -R .
               strip ./target/release/*.so
               mv ./target/release/*.so ../../artifacts
     needs:
