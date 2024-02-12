@@ -202,6 +202,9 @@ jobs:
           args: '--release'
           command: build
           target: ${{ matrix.settings.target }}
+      - run: ls
+        shell: bash
+        working-directory: bindings/native/target/release
       - name: Move binaries
         run: node scripts/ci_native_artifacts.mjs
         shell: bash
