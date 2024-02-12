@@ -198,7 +198,7 @@ jobs:
       - name: Build
         run: |
           cargo install cross --git https://github.com/cross-rs/cross
-          cross build --release --target=${{ matrix.settings.target }}
+          cross build --release --target=${{ matrix.settings.target }} --target-dir=.
         working-directory: bindings/native
         shell: bash
         #uses: houseabsolute/actions-rust-cross@v0
@@ -209,7 +209,7 @@ jobs:
         #  target: ${{ matrix.settings.target }}
       - run: ls -R .
         shell: bash
-        working-directory: bindings/native/target/release
+        working-directory: bindings/native
       - name: Move binaries
         run: node scripts/ci_native_artifacts.mjs
         shell: bash
