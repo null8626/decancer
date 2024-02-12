@@ -20,21 +20,14 @@ for (const artifact of artifacts) {
     if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
       promises.push(
         rename(
-          join(
-            ROOT_DIR,
-            'bindings',
-            'native',
-            process.argv[2],
-            'release',
-            artifact
-          ),
-          join(ROOT_DIR, 'artifacts', artifact)
+          join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release', artifact),
+          join(ROOT_DIR, 'artifacts', artifact.replace('.dll.lib', '.lib'))
         )
       )
     }
   } catch (err) {
     console.log(err.stack)
-
+    
     continue
   }
 }
