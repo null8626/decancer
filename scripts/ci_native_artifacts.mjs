@@ -6,7 +6,7 @@ import { promisify } from 'node:util'
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 const [artifacts] = await Promise.all([
-  readdir(join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release', 'deps')),
+  readdir(join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release')),
   mkdir(join(ROOT_DIR, 'artifacts'))
 ])
 
@@ -20,7 +20,7 @@ for (const artifact of artifacts) {
     if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
       promises.push(
         rename(
-          join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release', 'deps', artifact),
+          join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release', artifact),
           join(ROOT_DIR, 'artifacts')
         )
       )
