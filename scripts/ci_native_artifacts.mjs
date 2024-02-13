@@ -21,18 +21,17 @@ for (const artifact of artifacts) {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 
     if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
-      let newPath = join(ROOT_DIR, 'artifacts', artifact.replace('.dll.lib', '.lib'))
-      
+      let newPath = join(
+        ROOT_DIR,
+        'artifacts',
+        artifact.replace('.dll.lib', '.lib')
+      )
+
       if (IS_JAVA) {
         newPath = newPath.replace('decancer', `decancer-${TARGET}`)
       }
-      
-      promises.push(
-        rename(
-          join(TARGET_DIR, 'release', artifact),
-          newPath
-        )
-      )
+
+      promises.push(rename(join(TARGET_DIR, 'release', artifact), newPath))
     }
   } catch {
     continue
@@ -44,4 +43,4 @@ if (promises.length === 0) {
   process.exit(1)
 }
 
-void await Promise.all(promises)
+void (await Promise.all(promises))
