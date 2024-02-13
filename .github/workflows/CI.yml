@@ -85,8 +85,8 @@ jobs:
             build: |
               rustup target add aarch64-unknown-linux-musl
               cargo build --target aarch64-unknown-linux-musl --release
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/*.so
-              mv ./target/aarch64-unknown-linux-musl/release/*.so ../../artifacts
+              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
+              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts/libdecancer-aarch64-unknown-linux-musl.so
           - target: arm-unknown-linux-gnueabi
             host: ubuntu-latest
           - target: armv5te-unknown-linux-gnueabi
@@ -116,8 +116,8 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
               cargo build --release
-              strip ./target/release/*.so
-              mv ./target/release/*.so ../../artifacts
+              strip ./target/release/libdecancer.so
+              mv ./target/release/libdecancer.so ../../artifacts/libdecancer-x86_64-unknown-linux-musl.so
     needs:
       - setup
       - core
@@ -161,10 +161,6 @@ jobs:
         shell: bash
       - name: Move and rename binaries
         if: ${{ !matrix.settings.build }}
-        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java --move
-        shell: bash
-      - name: Rename binaries
-        if: ${{ matrix.settings.build }}
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
         shell: bash
       - name: Upload artifact
