@@ -6,6 +6,8 @@ const TARGET = process.argv[2]
 const IS_MOVE = process.argv.some(argv => argv === '--move')
 const IS_JAVA = process.argv.some(argv => argv === '--java')
 
+console.log(process.argv, IS_JAVA)
+
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGET_DIR = join(
   ROOT_DIR,
@@ -41,6 +43,8 @@ if (IS_MOVE) {
     process.exit(1)
   }
 }
+
+console.log(await readdir(ARTIFACTS_DIR))
 
 if (IS_JAVA) {
   const binaries = await readdir(ARTIFACTS_DIR)
