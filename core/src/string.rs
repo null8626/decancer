@@ -18,8 +18,7 @@ pub struct CuredString(pub(crate) String);
 impl CuredString {
   /// Coerces this [`CuredString`] into a [`String`].
   ///
-  /// > **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this.
-  /// > The string output is **NOT** meant to be displayed visually.
+  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this. The string output is **NOT** meant to be displayed visually.
   #[must_use]
   pub const fn into_str(self) -> String {
     // SAFETY: see definition of CuredString
@@ -86,7 +85,7 @@ impl AsRef<str> for CuredString {
   }
 }
 
-/// Checks if this [`CuredString`] is ***similar*** into another string.
+/// Checks if this [`CuredString`] is ***similar*** with another string.
 ///
 /// This comparison is *case-insensitive*.
 impl<S> PartialEq<S> for CuredString

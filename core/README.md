@@ -44,6 +44,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
   - C/C++
+  - Java
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
 ## Installation
@@ -93,6 +94,40 @@ In your code:
 </script>
 ```
 
+</details>
+<details>
+<summary><b>Java</b></summary>
+
+In your `build.gradle`:
+
+```gradle
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.null8626:decancer:2.0.2'
+}
+```
+
+In your `pom.xml`:
+
+```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.github.null8626</groupId>
+    <artifactId>decancer</artifactId>
+    <version>2.0.2</version>
+  </dependency>
+</dependencies>
+```
 </details>
 <details>
 <summary><b>C/C++</b></summary>
@@ -148,7 +183,7 @@ assert_eq!(cured.into_str(), String::from("very funny text"));
 <summary><b>JavaScript (Node.js)</b></summary>
 
 ```js
-const assert = require('node:assert')
+const assert = require('assert')
 const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
 assert(cured.equals('very funny text'))
@@ -204,6 +239,27 @@ console.log(cured.toString())
 ```
 
 [See this in action here.](https://null8626.github.io/decancer)
+
+</details>
+<details>
+<summary><b>Java</b></summary>
+
+```java
+import com.github.null8626.decancer.CuredString;
+
+public class Program {
+  public static void main(String[] args) {
+    final CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+    
+    assert cured.equals("very funny text");
+    assert cured.contains("funny");
+    
+    System.out.println(cured.toString());
+    
+    cured.destroy();
+  }
+}
+```
 
 </details>
 <details>
