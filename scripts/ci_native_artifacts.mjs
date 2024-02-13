@@ -42,11 +42,15 @@ if (IS_MOVE) {
   }
 }
 
+console.log(process.argv, IS_JAVA)
+
 if (IS_JAVA) {
   const binaries = await readdir(ARTIFACTS_DIR)
   const promises = []
 
   for (const binary of binaries) {
+    console.log(TARGET, binary, binary.replace('decancer', `decancer-${TARGET}`))
+    
     promises.push(
       rename(
         join(ARTIFACTS_DIR, binary),
