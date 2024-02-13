@@ -6,6 +6,9 @@
 
 .yarn/
 .yarnrc.yml
+bindings/java/.gradle/
+bindings/java/bin/
+bindings/java/build/
 bindings/native/*.exe
 bindings/native/*.dll
 bindings/native/*.lib

@@ -1,0 +1,13 @@
+[package]
+name = "decancer_java"
+version = "2.0.2"
+edition = "2021"
+publish = false
+
+[lib]
+name = "decancer"
+crate-type = ["cdylib"]
+
+[dependencies]
+decancer = { path = "../../core" }
+jni = "0.21"

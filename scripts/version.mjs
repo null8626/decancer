@@ -3,6 +3,8 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+const CORE_DIR = join(ROOT_DIR, 'core')
+const NODE_DIR = join(ROOT_DIR, 'bindings', 'node')
 
 async function update(filename, callback) {
   await writeFile(filename, callback(await readFile(filename, 'utf-8')))
@@ -21,26 +23,23 @@ const updateTomlFunc = x =>
 const directUpdateFunc = x => x.replace(/(\d\.\d\.\d)/g, process.argv[2])
 
 void (await Promise.all([
-  update(join(ROOT_DIR, 'core', 'Cargo.toml'), updateTomlFunc),
-  update(join(ROOT_DIR, 'bindings', 'node', 'Cargo.toml'), updateTomlFunc),
+  update(join(CORE_DIR, 'Cargo.toml'), updateTomlFunc),
+  update(join(NODE_DIR, 'Cargo.toml'), updateTomlFunc),
   update(join(ROOT_DIR, 'bindings', 'wasm', 'Cargo.toml'), updateTomlFunc),
   update(join(ROOT_DIR, 'bindings', 'native', 'Cargo.toml'), updateTomlFunc),
-  update(join(ROOT_DIR, 'bindings', 'node', 'package.json'), updateJsonFunc),
+  update(join(NODE_DIR, 'package.json'), updateJsonFunc),
   update(
     join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js'),
     directUpdateFunc
   ),
   update(join(ROOT_DIR, 'index.html'), directUpdateFunc),
-  update(join(ROOT_DIR, 'core', 'README.md'), directUpdateFunc),
-  update(join(ROOT_DIR, 'core', 'src', 'lib.rs'), directUpdateFunc),
+  update(join(CORE_DIR, 'README.md'), directUpdateFunc),
+  update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
   new Promise(resolve => {
-    readdir(join(ROOT_DIR, 'bindings', 'node', 'npm')).then(files => {
+    readdir(join(NODE_DIR, 'npm')).then(files => {
       Promise.all(
         files.map(file =>
-          update(
-            join(ROOT_DIR, 'bindings', 'node', 'npm', file, 'package.json'),
-            updateJsonFunc
-          )
+          update(join(NODE_DIR, 'npm', file, 'package.json'), updateJsonFunc)
         )
       ).then(resolve)
     })

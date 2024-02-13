@@ -1,0 +1,22 @@
+group 'com.github.null8626'
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+jar {
+    from('./bin') {
+        include '*.dll'
+        include '*.dylib'
+        include '*.so'
+    }
+}
+
+dependencies {
+    implementation 'com.github.adamheinrich:native-utils:e6a3948966'
+    implementation 'com.fizzed:jne:4.1.1'
+}

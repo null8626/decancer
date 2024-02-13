@@ -10,6 +10,8 @@ const CODEPOINT_MASK = 0xfffff
 const NONE_CODEPOINTS_COUNT = 10 + 18 + 1 + 8448 + 196112
 const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+const CORE_DIR = join(ROOT_DIR, 'core')
+const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
 
 if (!existsSync(join(ROOT_DIR, '.cache.json'))) {
   execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
@@ -26,7 +28,7 @@ const execute = promisify(exec)
 async function updateReadme() {
   console.log('- [readme] reading codepoints.bin...')
 
-  const bin = await readFile(join(ROOT_DIR, 'core', 'bin', 'codepoints.bin'))
+  const bin = await readFile(join(CORE_DIR, 'bin', 'codepoints.bin'))
 
   console.log('- [readme] parsing codepoints.bin...')
 
@@ -83,10 +85,10 @@ async function updateReadme() {
 
   console.log('- [readme] reading README.md...')
 
-  const readme = await readFile(join(ROOT_DIR, 'core', 'README.md'))
+  const readme = await readFile(join(CORE_DIR, 'README.md'))
 
   await writeFile(
-    join(ROOT_DIR, 'core', 'README.md'),
+    join(CORE_DIR, 'README.md'),
     readme
       .toString()
       .trim()
@@ -130,17 +132,18 @@ async function clangFormat() {
   console.log('- [clang-format] running...')
 
   await execute('clang-format -i decancer.h test.c', {
-    cwd: join(ROOT_DIR, 'bindings', 'native')
+    cwd: join(BINDINGS_DIR, 'native')
   })
 
   console.log('- [clang-format] completed')
 }
 
 void (await Promise.all([
-  cargo(join(ROOT_DIR, 'core')),
-  cargo(join(ROOT_DIR, 'bindings', 'node')),
-  cargo(join(ROOT_DIR, 'bindings', 'wasm')),
-  cargo(join(ROOT_DIR, 'bindings', 'native')),
+  cargo(join(CORE_DIR)),
+  cargo(join(BINDINGS_DIR, 'java')),
+  cargo(join(BINDINGS_DIR, 'node')),
+  cargo(join(BINDINGS_DIR, 'wasm')),
+  cargo(join(BINDINGS_DIR, 'native')),
   clangFormat(),
   prettier(),
   updateReadme()

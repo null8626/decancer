@@ -13,6 +13,7 @@ on:
       - '**/*.js'
       - '**/*.ts'
       - '**/*.mjs'
+      - '**/*.java'
       - '**/*.json'
       - 'core/README.md'
       - 'core/bin/codepoints.bin'
@@ -44,6 +45,7 @@ jobs:
       node_affected: ${{ steps.setup.outputs.node_affected }}
       wasm_affected: ${{ steps.setup.outputs.wasm_affected }}
       native_affected: ${{ steps.setup.outputs.native_affected }}
+      java_affected: ${{ steps.setup.outputs.java_affected }}
   core:
     name: Test core
     runs-on: ubuntu-latest
@@ -66,6 +68,155 @@ jobs:
       - name: Run cargo test
         working-directory: core
         run: cargo test --all-features
+  java-native:
+    strategy:
+      fail-fast: true
+      matrix:
+        settings:
+          - target: aarch64-apple-darwin
+            host: macos-latest
+          - target: aarch64-pc-windows-msvc
+            host: windows-latest
+          - target: aarch64-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: aarch64-unknown-linux-musl
+            host: ubuntu-latest
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              rustup target add aarch64-unknown-linux-musl
+              cargo build --target aarch64-unknown-linux-musl --release
+              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/*.so
+              mv ./target/aarch64-unknown-linux-musl/release/*.so ../../artifacts
+          - target: arm-unknown-linux-gnueabi
+            host: ubuntu-latest
+          - target: armv5te-unknown-linux-gnueabi
+            host: ubuntu-latest
+          - target: armv7-unknown-linux-gnueabi
+            host: ubuntu-latest
+          - target: armv7-unknown-linux-gnueabihf
+            host: ubuntu-latest
+          - target: i686-pc-windows-msvc
+            host: windows-latest
+          - target: i686-unknown-freebsd
+            host: ubuntu-latest
+          - target: i686-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: riscv64gc-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: x86_64-apple-darwin
+            host: macos-latest
+          - target: x86_64-pc-windows-msvc
+            host: windows-latest
+          - target: x86_64-unknown-freebsd
+            host: ubuntu-latest
+          - target: x86_64-unknown-linux-gnu
+            host: ubuntu-latest
+          - target: x86_64-unknown-linux-musl
+            host: ubuntu-latest
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            build: |
+              cargo build --release
+              strip ./target/release/*.so
+              mv ./target/release/*.so ../../artifacts
+    needs:
+      - setup
+      - core
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
+    name: Build native Java bindings on ${{ matrix.settings.target }}
+    runs-on: ${{ matrix.settings.host }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          check-latest: true
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+          toolchain: stable
+      - name: Make artifacts directory
+        if: ${{ matrix.settings.build }}
+        run: mkdir artifacts
+        shell: bash
+      - name: Build with cross
+        if: ${{ !matrix.settings.build }}
+        uses: houseabsolute/actions-rust-cross@v0
+        with:
+          working-directory: bindings/java
+          args: '--release --target-dir=.'
+          command: build
+          target: ${{ matrix.settings.target }}
+      - name: Build in docker
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker && matrix.settings.build }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: '--user 0:0 -v ${{ github.workspace }}/bindings/java/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/java/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/java'
+          run: ${{ matrix.settings.build }}
+      - name: Build
+        working-directory: bindings/java
+        run: ${{ matrix.settings.build }}
+        if: ${{ !matrix.settings.docker && matrix.settings.build }}
+        shell: bash
+      - name: Move and rename binaries
+        if: ${{ !matrix.settings.build }}
+        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java --move
+        shell: bash
+      - name: Rename binaries
+        if: ${{ matrix.settings.build }}
+        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
+        shell: bash
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-${{ matrix.settings.target }}
+          path: ./artifacts/**
+          if-no-files-found: error
+  java:
+    needs:
+      - setup
+      - java-native
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
+    name: Build Java binding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v4
+        with:
+          distribution: oracle
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Download all java artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: java-*
+          path: artifacts
+      - name: Move artifacts
+        run: |
+          mkdir ./bindings/java/bin
+          mv ./artifacts/**/*.dll ./bindings/java/bin
+          mv ./artifacts/**/*.dylib ./bindings/java/bin
+          mv ./artifacts/**/*.so ./bindings/java/bin
+        shell: bash
+      - name: Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
+          mv ./build/libs/java.jar ../../decancer.jar
+        working-directory: bindings/java
+        shell: bash
+      - name: Delete all java artifacts
+        uses: geekyeggo/delete-artifact@v4
+        with:
+          name: java-*
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: java
+          path: decancer.jar
+          if-no-files-found: error
   native:
     strategy:
       fail-fast: true
@@ -175,7 +326,6 @@ jobs:
           override: true
           toolchain: stable
       - name: Make artifacts directory
-        if: ${{ matrix.settings.build }}
         run: mkdir artifacts
         shell: bash
       - name: Build with cross
@@ -200,7 +350,7 @@ jobs:
         shell: bash
       - name: Move binaries
         if: ${{ !matrix.settings.build }}
-        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }}
+        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --move
         shell: bash
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -469,6 +619,7 @@ jobs:
       - setup
       - node-test
       - native-test
+      - java
       - prettier
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
     steps:

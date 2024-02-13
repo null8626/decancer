@@ -35,6 +35,9 @@ appendFileSync(
       ({ filename }) =>
         filename.startsWith('bindings/native/src') ||
         filename === 'bindings/native/decancer.h'
+    ),
+    java_affected: files.some(({ filename }) =>
+      filename.startsWith('bindings/java/src')
     )
   }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, '')
 )
