@@ -73,36 +73,36 @@ jobs:
       fail-fast: true
       matrix:
         settings:
-          - target: aarch64-apple-darwin
-            host: macos-latest
-          - target: aarch64-pc-windows-msvc
-            host: windows-latest
-          - target: aarch64-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: aarch64-unknown-linux-musl
-            host: ubuntu-latest
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              rustup target add aarch64-unknown-linux-musl
-              cargo build --target aarch64-unknown-linux-musl --release
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/*.so
-              mv ./target/aarch64-unknown-linux-musl/release/*.so ../../artifacts
-          - target: arm-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv5te-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv7-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv7-unknown-linux-gnueabihf
-            host: ubuntu-latest
-          - target: i686-pc-windows-msvc
-            host: windows-latest
-          - target: i686-unknown-freebsd
-            host: ubuntu-latest
-          - target: i686-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: riscv64gc-unknown-linux-gnu
-            host: ubuntu-latest
+          #- target: aarch64-apple-darwin
+          #  host: macos-latest
+          #- target: aarch64-pc-windows-msvc
+          #  host: windows-latest
+          #- target: aarch64-unknown-linux-gnu
+          #  host: ubuntu-latest
+          #- target: aarch64-unknown-linux-musl
+          #  host: ubuntu-latest
+          #  docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+          #  build: |
+          #    rustup target add aarch64-unknown-linux-musl
+          #    cargo build --target aarch64-unknown-linux-musl --release
+          #    /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/*.so
+          #    mv ./target/aarch64-unknown-linux-musl/release/*.so ../../artifacts
+          #- target: arm-unknown-linux-gnueabi
+          #  host: ubuntu-latest
+          #- target: armv5te-unknown-linux-gnueabi
+          #  host: ubuntu-latest
+          #- target: armv7-unknown-linux-gnueabi
+          #  host: ubuntu-latest
+          #- target: armv7-unknown-linux-gnueabihf
+          #  host: ubuntu-latest
+          #- target: i686-pc-windows-msvc
+          #  host: windows-latest
+          #- target: i686-unknown-freebsd
+          #  host: ubuntu-latest
+          #- target: i686-unknown-linux-gnu
+          #  host: ubuntu-latest
+          #- target: riscv64gc-unknown-linux-gnu
+          #  host: ubuntu-latest
           - target: x86_64-apple-darwin
             host: macos-latest
           - target: x86_64-pc-windows-msvc
@@ -190,7 +190,7 @@ jobs:
       - name: Download all java artifacts
         uses: actions/download-artifact@v4
         with:
-          name: java-*
+          pattern: java-*
           path: artifacts
       - name: Move artifacts
         run: |

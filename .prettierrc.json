@@ -3,5 +3,6 @@
   "singleQuote": true,
   "trailingComma": "none",
   "arrowParens": "avoid",
-  "htmlWhitespaceSensitivity": "ignore"
+  "htmlWhitespaceSensitivity": "ignore",
+  "plugins": ["prettier-plugin-java"]
 }
