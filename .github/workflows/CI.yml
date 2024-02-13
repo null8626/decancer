@@ -206,10 +206,6 @@ jobs:
           mv ./build/libs/java.jar ../../decancer.jar
         working-directory: bindings/java
         shell: bash
-      - name: Delete all java artifacts
-        uses: geekyeggo/delete-artifact@v4
-        with:
-          name: java-*
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:

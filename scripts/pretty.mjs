@@ -105,7 +105,8 @@ async function updateReadme() {
 }
 
 async function prettier() {
-  await execute('npm i -g prettier prettier-plugin-java')
+  await execute('npm i -g prettier')
+  await execute('npm i prettier-plugin-java --save-dev')
 
   await execute('npx prettier **/*.{js,ts,mjs,cjs,json,java} --write', {
     cwd: ROOT_DIR
