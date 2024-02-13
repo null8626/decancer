@@ -19,7 +19,6 @@ if (IS_MOVE) {
   const artifacts = await readdir(join(TARGET_DIR, 'release'))
   const promises = []
 
-<<<<<<< HEAD
   for (const artifact of artifacts) {
     try {
       const ext = artifact.match(/\.\w+$/)[0].slice(1)
@@ -30,46 +29,16 @@ if (IS_MOVE) {
             join(TARGET_DIR, 'release', artifact),
             join(ARTIFACTS_DIR, artifact.replace('.dll.lib', '.lib'))
           )
-=======
-const [artifacts] = await Promise.all([
-  readdir(join(ROOT_DIR, 'bindings', 'native', process.argv[2], 'release')),
-  mkdir(join(ROOT_DIR, 'artifacts'))
-])
-
-const promises = []
-
-for (const artifact of artifacts) {
-  try {
-    const ext = artifact.match(/\.\w+$/)[0].slice(1)
-
-    if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
-      promises.push(
-        rename(
-          join(
-            ROOT_DIR,
-            'bindings',
-            'native',
-            process.argv[2],
-            'release',
-            artifact
-          ),
-          join(ROOT_DIR, 'artifacts', artifact.replace('.dll.lib', '.lib'))
->>>>>>> 8eebe0798723e40034af6216ad47c419ff0bc11c
         )
       }
     } catch {
       continue
     }
-<<<<<<< HEAD
   }
 
   if (promises.length === 0) {
     console.error('error: target directory is empty')
     process.exit(1)
-=======
-  } catch {
-    continue
->>>>>>> 8eebe0798723e40034af6216ad47c419ff0bc11c
   }
 }
 
