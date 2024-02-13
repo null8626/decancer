@@ -10,10 +10,11 @@ const TARGET_DIR = join(
   ROOT_DIR,
   'bindings',
   IS_JAVA ? 'java' : 'native',
-  TARGET
+  TARGET,
+  'release'
 )
 
-const artifacts = await readdir(join(TARGET_DIR, 'release'))
+const artifacts = await readdir(TARGET_DIR)
 const promises = []
 
 for (const artifact of artifacts) {
@@ -21,17 +22,18 @@ for (const artifact of artifacts) {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 
     if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
-      let newPath = join(
-        ROOT_DIR,
-        'artifacts',
-        artifact.replace('.dll.lib', '.lib')
-      )
-
+      let name = artifact.replace('.dll.lib', '.lib')
+      
       if (IS_JAVA) {
-        newPath = newPath.replace('decancer', `decancer-${TARGET}`)
+        name = name.replace('decancer', `decancer-${TARGET}`)
       }
-
-      promises.push(rename(join(TARGET_DIR, 'release', artifact), newPath))
+      
+      promises.push(
+        rename(
+          join(TARGET_DIR, artifact),
+          join(ROOT_DIR, 'artifacts', name)
+        )
+      )
     }
   } catch {
     continue
@@ -43,4 +45,4 @@ if (promises.length === 0) {
   process.exit(1)
 }
 
-void (await Promise.all(promises))
+void await Promise.all(promises)
