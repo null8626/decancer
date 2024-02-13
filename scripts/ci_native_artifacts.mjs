@@ -49,7 +49,7 @@ if (IS_JAVA) {
     binaries.map(binary =>
       rename(
         join(ARTIFACTS_DIR, binary),
-        join(ARTIFACTS_DIR, binary.replace('decancer', `decancer-${TARGET}`))
+        join(ARTIFACTS_DIR, binary.replaceAll('decancer', `decancer-${TARGET}`))
       )
     )
   ))
