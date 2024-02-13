@@ -23,16 +23,13 @@ for (const artifact of artifacts) {
 
     if (ext === 'lib' || ext === 'dll' || ext === 'so' || ext === 'dylib') {
       let name = artifact.replace('.dll.lib', '.lib')
-      
+
       if (IS_JAVA) {
         name = name.replace('decancer', `decancer-${TARGET}`)
       }
-      
+
       promises.push(
-        rename(
-          join(TARGET_DIR, artifact),
-          join(ROOT_DIR, 'artifacts', name)
-        )
+        rename(join(TARGET_DIR, artifact), join(ROOT_DIR, 'artifacts', name))
       )
     }
   } catch {
@@ -45,4 +42,4 @@ if (promises.length === 0) {
   process.exit(1)
 }
 
-void await Promise.all(promises)
+void (await Promise.all(promises))
