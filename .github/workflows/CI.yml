@@ -137,7 +137,6 @@ jobs:
           override: true
           toolchain: stable
       - name: Make artifacts directory
-        if: ${{ matrix.settings.build }}
         run: mkdir artifacts
         shell: bash
       - name: Build with cross
