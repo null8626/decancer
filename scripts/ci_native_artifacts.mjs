@@ -44,13 +44,16 @@ if (IS_MOVE) {
 
 if (IS_JAVA) {
   const binaries = await readdir(ARTIFACTS_DIR)
+  const promises = []
 
-  void (await Promise.all(
-    binaries.map(binary =>
+  for (const binary of binaries) {
+    promises.push(
       rename(
         join(ARTIFACTS_DIR, binary),
-        join(ARTIFACTS_DIR, binary.replaceAll('decancer', `decancer-${TARGET}`))
+        join(ARTIFACTS_DIR, binary.replace('decancer', `decancer-${TARGET}`))
       )
     )
-  ))
+  }
+
+  void (await Promise.all(promises))
 }
