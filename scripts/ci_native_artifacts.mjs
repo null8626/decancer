@@ -44,7 +44,7 @@ if (IS_MOVE) {
 
 if (IS_JAVA) {
   const binaries = await readdir(ARTIFACTS_DIR)
-  
+
   for (const binary of binaries) {
     await rename(
       join(ARTIFACTS_DIR, binary),
