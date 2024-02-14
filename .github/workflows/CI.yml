@@ -188,16 +188,18 @@ jobs:
         with:
           name: java-x86_64-unknown-linux-gnu
           path: bindings/java/bin
-      - name: Run ls
-        working-directory: bindings/java
-        run: ls -p -R .
-        shell: bash
       - name: Test
         run: |
           chmod +x ./gradlew
-          ./gradlew test -i
+          ./gradlew test --warning-mode all
         working-directory: bindings/java
         shell: bash
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-test
+          path: bindings/java/build/reports/tests/test/**
+          if-no-files-found: error
   native:
     strategy:
       fail-fast: true
@@ -590,7 +592,9 @@ jobs:
           path: java-artifacts
       - name: Create java binding.zip
         if: ${{ needs.setup.outputs.java_affected == 'true' || needs.setup.outputs.release != 'null' }}
-        run: zip ./bindings/java/bin/bindings.zip ./java-artifacts/**/*.{dll,so,dylib}
+        run: |
+          mv ./java-artifacts/**/*.{dll,so,dylib} .
+          zip ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
         shell: bash
       - name: Commit
         uses: EndBug/add-and-commit@v9

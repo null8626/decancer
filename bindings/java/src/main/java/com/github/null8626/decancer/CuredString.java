@@ -4,6 +4,15 @@ import com.fizzed.jne.NativeTarget;
 import com.fizzed.jne.OperatingSystem;
 import cz.adamh.utils.NativeUtils;
 
+/**
+ * A small wrapper around the String data type for comparison purposes.
+ *
+ * <p>
+ * This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: letter I and lowercase L)
+ *
+ * @see <a href="https://github.com/null8626/decancer">github.com/null8626/decancer</a>
+ * @author null8626
+ */
 public class CuredString {
 
   private static boolean isJUnit() {
@@ -71,18 +80,91 @@ public class CuredString {
 
   private static native long cure(String input);
 
+  /**
+   * Checks if this object is similar with another string.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   * 
+   * @param other The other string to compare with.
+   * @return Whether this object is similar with another string.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public native boolean equals(String other);
 
+  /**
+   * Checks if this object similarly starts with another string.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   * 
+   * @param other The other string to compare with.
+   * @return Whether this object similarly starts with another string.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public native boolean startsWith(String other);
 
+  /**
+   * Checks if this object similarly ends with another string.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   * 
+   * @param other The other string to compare with.
+   * @return Whether this object similarly ends with another string.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public native boolean endsWith(String other);
 
+  /**
+   * Checks if this object similarly contains another string.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   * 
+   * @param other The other string to compare with.
+   * @return Whether this object similarly contains another string.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public native boolean contains(String other);
 
+  /**
+   * Coerces this object into a String.
+   *
+   * <p>
+   * NOTE: It's highly NOT recommended to use Java's comparison methods after calling this. The string output is NOT meant to be displayed visually.
+   * 
+   * @return The String representation of this object.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public native String toString();
 
+  /**
+   * Destroys and frees the memory used by this object.
+   *
+   * <p>
+   * Any subsequent String objects from toString() calls can still be used after this.
+   * 
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public native void destroy();
 
+  /**
+   * Cures a string.
+   *
+   * <p>
+   * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters. Therefore, the output of this function should NOT be displayed visually.
+   * 
+   * @param input The string to cure.
+   * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
   public CuredString(String input) {
     this.inner = CuredString.cure(input);
   }
