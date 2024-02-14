@@ -19,9 +19,7 @@ jar {
 test {
     useJUnitPlatform()
     
-    systemProperty 'java.library.path', "$rootDir/bin"
-    environment 'LD_LIBRARY_PATH', "$rootDir/bin"
-    environment 'DYLD_LIBRARY_PATH', "$rootDir/bin"
+    systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
 }
 
 dependencies {

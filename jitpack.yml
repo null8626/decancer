@@ -3,5 +3,4 @@ before_install:
 install:
   - cd ./bindings/java
   - chmod +x ./gradlew
-  - ./gradlew test -i
-  - ./gradlew build publishToMavenLocal --warning-mode all --scan
+  - ./gradlew build publishToMavenLocal --warning-mode all
