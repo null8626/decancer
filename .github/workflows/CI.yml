@@ -73,36 +73,36 @@ jobs:
       fail-fast: true
       matrix:
         settings:
-          - target: aarch64-apple-darwin
-            host: macos-latest
-          - target: aarch64-pc-windows-msvc
-            host: windows-latest
-          - target: aarch64-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: aarch64-unknown-linux-musl
-            host: ubuntu-latest
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              rustup target add aarch64-unknown-linux-musl
-              cargo build --target aarch64-unknown-linux-musl --release
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
-              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts/libdecancer-aarch64-unknown-linux-musl.so
-          - target: arm-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv5te-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv7-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv7-unknown-linux-gnueabihf
-            host: ubuntu-latest
-          - target: i686-pc-windows-msvc
-            host: windows-latest
-          - target: i686-unknown-freebsd
-            host: ubuntu-latest
-          - target: i686-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: riscv64gc-unknown-linux-gnu
-            host: ubuntu-latest
+          #- target: aarch64-apple-darwin
+          #  host: macos-latest
+          #- target: aarch64-pc-windows-msvc
+          #  host: windows-latest
+          #- target: aarch64-unknown-linux-gnu
+          #  host: ubuntu-latest
+          #- target: aarch64-unknown-linux-musl
+          #  host: ubuntu-latest
+          #  docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+          #  build: |
+          #    rustup target add aarch64-unknown-linux-musl
+          #    cargo build --target aarch64-unknown-linux-musl --release
+          #    /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
+          #    mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts/libdecancer-aarch64-unknown-linux-musl.so
+          #- target: arm-unknown-linux-gnueabi
+          #  host: ubuntu-latest
+          #- target: armv5te-unknown-linux-gnueabi
+          #  host: ubuntu-latest
+          #- target: armv7-unknown-linux-gnueabi
+          #  host: ubuntu-latest
+          #- target: armv7-unknown-linux-gnueabihf
+          #  host: ubuntu-latest
+          #- target: i686-pc-windows-msvc
+          #  host: windows-latest
+          #- target: i686-unknown-freebsd
+          #  host: ubuntu-latest
+          #- target: i686-unknown-linux-gnu
+          #  host: ubuntu-latest
+          #- target: riscv64gc-unknown-linux-gnu
+          #  host: ubuntu-latest
           - target: x86_64-apple-darwin
             host: macos-latest
           - target: x86_64-pc-windows-msvc
@@ -174,7 +174,7 @@ jobs:
       - setup
       - java-native
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Build Java binding
+    name: Test Java binding
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -183,16 +183,16 @@ jobs:
           distribution: oracle
           java-version: 21
       - uses: gradle/actions/setup-gradle@v3
-      - name: Download all java artifacts
+      - name: Download java artifact
         uses: actions/download-artifact@v4
         with:
-          pattern: java-x86_64-unknown-linux-gnu
-          path: artifacts
-      - name: Move artifacts
-        run: |
-          mv ./artifacts/x86_64-unknown-linux-gnu/libdecancer-x86_64-unknown-linux-gnu.so ./bindings/java/bin
+          name: java-x86_64-unknown-linux-gnu
+          path: bindings/java/bin
+      - name: Run ls
+        working-directory: bindings/java
+        run: ls -p -R .
         shell: bash
-      - name: Build
+      - name: Test
         run: |
           chmod +x ./gradlew
           ./gradlew test -i
@@ -521,7 +521,6 @@ jobs:
         with:
           name: node-x86_64-unknown-linux-gnu
           path: bindings/node
-      - run: ls -R .
       - name: Test bindings
         working-directory: bindings/node
         run: yarn test
