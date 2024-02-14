@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
+import { deserialize } from 'node:v8'
 
 const CODEPOINT_MASK = 0xfffff
 // 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..=0x10ffff
@@ -13,14 +14,14 @@ const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CORE_DIR = join(ROOT_DIR, 'core')
 const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
 
-if (!existsSync(join(ROOT_DIR, '.cache.json'))) {
+if (!existsSync(join(ROOT_DIR, '.cache.bin'))) {
   execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
     stdio: 'inherit'
   })
 }
 
-const { alreadyHandledCount } = JSON.parse(
-  readFileSync(join(ROOT_DIR, '.cache.json'))
+const { alreadyHandledCount } = deserialize(
+  readFileSync(join(ROOT_DIR, '.cache.bin'))
 )
 
 const execute = promisify(exec)

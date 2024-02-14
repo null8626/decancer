@@ -1,12 +1,12 @@
 use crate::similar;
-use core::{
+#[cfg(feature = "serde")]
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use std::{
   cmp::PartialEq,
   fmt::{self, Debug, Display, Formatter},
   mem::transmute,
   ops::Deref,
 };
-#[cfg(feature = "serde")]
-use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 /// A small wrapper around the [`String`] data type for comparison purposes.
 ///
@@ -18,7 +18,7 @@ pub struct CuredString(pub(crate) String);
 impl CuredString {
   /// Coerces this [`CuredString`] into a [`String`].
   ///
-  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this. The string output is **NOT** meant to be displayed visually.
+  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.
   #[must_use]
   pub const fn into_str(self) -> String {
     // SAFETY: see definition of CuredString
@@ -146,6 +146,6 @@ impl<'de> Deserialize<'de> for CuredString {
     D: Deserializer<'de>,
   {
     Deserialize::deserialize(deserializer)
-      .and_then(|s: &str| crate::cure(s).map_err(de::Error::custom))
+      .and_then(|s: &str| crate::cure!(s).map_err(de::Error::custom))
   }
 }

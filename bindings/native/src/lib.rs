@@ -26,9 +26,10 @@ pub unsafe extern "C" fn decancer_error(error: u8, string_size: *mut u8) -> *con
 pub unsafe extern "C" fn decancer_cure(
   input_str: *mut u8,
   input_size: usize,
+  options: u32,
   error: *mut u8,
 ) -> *mut c_void {
-  match decancer::cure(str_from_ptr(input_str, input_size)) {
+  match decancer::cure(str_from_ptr(input_str, input_size), transmute(options)) {
     Ok(res) => Box::into_raw(Box::new(res)) as _,
     Err(err) => {
       *error = err as _;
@@ -38,8 +39,8 @@ pub unsafe extern "C" fn decancer_cure(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_cure_char(input: u32, output: *mut Translation) {
-  match decancer::cure_char(input) {
+pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *mut Translation) {
+  match decancer::cure_char(input, transmute(options)) {
     decancer::Translation::Character(c) => {
       (*output).kind = 0;
       (*output).contents_a = c as _;
