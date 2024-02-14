@@ -16,7 +16,17 @@ jar {
     }
 }
 
+test {
+    useJUnitPlatform()
+    
+    systemProperty 'java.library.path', "$rootDir/bin"
+    environment 'LD_LIBRARY_PATH', "$rootDir/bin"
+    environment 'DYLD_LIBRARY_PATH', "$rootDir/bin"
+}
+
 dependencies {
     implementation 'com.github.adamheinrich:native-utils:e6a3948966'
     implementation 'com.fizzed:jne:4.1.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }

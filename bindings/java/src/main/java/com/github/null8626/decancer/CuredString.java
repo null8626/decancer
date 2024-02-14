@@ -5,6 +5,16 @@ import com.fizzed.jne.OperatingSystem;
 import cz.adamh.utils.NativeUtils;
 
 public class CuredString {
+  private static boolean isJUnit() {
+    for (StackTraceElement element: Thread.currentThread().getStackTrace()) {
+      if (element.getClassName().startsWith("org.junit.")) {
+        return true;
+      }           
+    }
+    
+    return false;
+  }
+  
   static {
     String osName = System.getProperty("os.name");
     String archName = System.getProperty("os.arch");
@@ -34,10 +44,14 @@ public class CuredString {
             fileExtension = "dylib";
           }
       }
-
-      NativeUtils.loadLibraryFromJar(
-        "/" + libPrefix + "decancer-" + rustTarget + "." + fileExtension
-      );
+      
+      if (CuredString.isJUnit()) {
+        System.loadLibrary("decancer-" + rustTarget);
+      } else {
+        NativeUtils.loadLibraryFromJar(
+          "/" + libPrefix + "decancer-" + rustTarget + "." + fileExtension
+        );
+      }
     } catch (Throwable err) {
       throw new RuntimeException(
         "[" +
@@ -46,7 +60,8 @@ public class CuredString {
         osName +
         ") and/or architecture (" +
         archName +
-        ") is not supported."
+        ") is not supported.\noriginal error:\n" +
+        err.getMessage()
       );
     }
   }

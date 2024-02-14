@@ -3,17 +3,20 @@
 **/Cargo.lock
 **/*.node
 **/target/
+**/artifacts/
+**/java-artifacts/
 
 .yarn/
 .yarnrc.yml
 bindings/java/.gradle/
-bindings/java/bin/
+bindings/java/bin/*.dll
+bindings/java/bin/*.dylib
+bindings/java/bin/*.so
 bindings/java/build/
 bindings/native/*.exe
 bindings/native/*.dll
 bindings/native/*.lib
 bindings/native/*.obj
-bindings/node/artifacts/
 bindings/wasm/pkg/
 core/proptest-regressions/
 

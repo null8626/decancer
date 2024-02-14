@@ -186,28 +186,18 @@ jobs:
       - name: Download all java artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: java-*
+          pattern: java-x86_64-unknown-linux-gnu
           path: artifacts
       - name: Move artifacts
         run: |
-          mkdir ./bindings/java/bin
-          mv ./artifacts/**/*.dylib ./bindings/java/bin
-          mv ./artifacts/**/*.dll ./bindings/java/bin
-          mv ./artifacts/**/*.so ./bindings/java/bin
+          mv ./artifacts/x86_64-unknown-linux-gnu/libdecancer-x86_64-unknown-linux-gnu.so ./bindings/java/bin
         shell: bash
       - name: Build
         run: |
           chmod +x ./gradlew
-          ./gradlew build
-          mv ./build/libs/java.jar ../../decancer.jar
+          ./gradlew test -i
         working-directory: bindings/java
         shell: bash
-      - name: Upload jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: java
-          path: decancer.jar
-          if-no-files-found: error
   native:
     strategy:
       fail-fast: true
@@ -573,6 +563,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
+      - java
       - wasm
     if: ${{ always() }}
     steps:
@@ -592,6 +583,16 @@ jobs:
         with:
           name: wasm
           path: bindings/wasm/bin
+      - name: Download all java artifacts
+        if: ${{ needs.setup.outputs.java_affected == 'true' || needs.setup.outputs.release != 'null' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: java-*
+          path: java-artifacts
+      - name: Create java binding.zip
+        if: ${{ needs.setup.outputs.java_affected == 'true' || needs.setup.outputs.release != 'null' }}
+        run: zip ./bindings/java/bin/bindings.zip ./java-artifacts/**/*.{dll,so,dylib}
+        shell: bash
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
