@@ -590,11 +590,11 @@ jobs:
         with:
           pattern: java-*
           path: java-artifacts
-      - name: Create java binding.zip
+      - name: Modify bindings.zip
         if: ${{ needs.setup.outputs.java_affected == 'true' || needs.setup.outputs.release != 'null' }}
         run: |
           mv ./java-artifacts/**/*.{dll,so,dylib} .
-          zip ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
+          zip -FSr ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
         shell: bash
       - name: Commit
         uses: EndBug/add-and-commit@v9
