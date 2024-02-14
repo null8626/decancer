@@ -1,4 +1,7 @@
 group 'com.github.null8626'
+artifactId 'decancer'
+version '2.0.2'
+description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
 
 apply plugin: 'java'
 apply plugin: 'maven-publish'
