@@ -98,6 +98,8 @@ In your code:
 <details>
 <summary><b>Java</b></summary>
 
+### As a dependency
+
 In your `build.gradle`:
 
 ```gradle
@@ -128,6 +130,16 @@ In your `pom.xml`:
   </dependency>
 </dependencies>
 ```
+
+### Building from source
+
+```console
+$ git clone https://github.com/null8626/decancer.git --depth 1
+$ cd ./decancer/bindings/java
+$ unzip ./bin/bindings.zip -d ./bin
+$ chmod +x ./gradlew
+$ ./gradlew build --warning-mode all
+```
 </details>
 <details>
 <summary><b>C/C++</b></summary>
@@ -148,10 +160,7 @@ In your `pom.xml`:
 
 ### Building from source
 
-Prerequisites:
-
-- [Git](https://git-scm.com/)
-- [Rust v1.64 or later](https://rustup.rs/)
+Building from source requires [Rust v1.64 or later](https://rustup.rs/).
 
 ```console
 $ git clone https://github.com/null8626/decancer.git --depth 1

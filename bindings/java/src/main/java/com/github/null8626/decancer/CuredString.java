@@ -43,16 +43,12 @@ public class CuredString {
       rustTarget = target.toRustTarget();
 
       switch (os) {
-        case OperatingSystem.WINDOWS:
-          {
-            libPrefix = "";
-            fileExtension = "dll";
-            break;
-          }
-        case OperatingSystem.MACOS:
-          {
-            fileExtension = "dylib";
-          }
+        case WINDOWS:
+          libPrefix = "";
+          fileExtension = "dll";
+          break;
+        case MACOS:
+          fileExtension = "dylib";
       }
 
       if (CuredString.isJUnit()) {
