@@ -5,16 +5,17 @@ import com.fizzed.jne.OperatingSystem;
 import cz.adamh.utils.NativeUtils;
 
 public class CuredString {
+
   private static boolean isJUnit() {
-    for (StackTraceElement element: Thread.currentThread().getStackTrace()) {
+    for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
       if (element.getClassName().startsWith("org.junit.")) {
         return true;
-      }           
+      }
     }
-    
+
     return false;
   }
-  
+
   static {
     String osName = System.getProperty("os.name");
     String archName = System.getProperty("os.arch");
@@ -44,7 +45,7 @@ public class CuredString {
             fileExtension = "dylib";
           }
       }
-      
+
       if (CuredString.isJUnit()) {
         System.loadLibrary("decancer-" + rustTarget);
       } else {
