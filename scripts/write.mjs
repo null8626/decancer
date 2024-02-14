@@ -14,17 +14,18 @@ import assert from 'node:assert'
 
 const RANGE_MASK = 0x8000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+const CACHE_FILE = join(ROOT_DIR, '.cache.json')
 const STRING_TRANSLATION_MASK = 0x10000000n
 
 console.log('- fetching unicode data...')
 
-if (!existsSync(join(ROOT_DIR, '.cache.json'))) {
+if (!existsSync(CACHE_FILE)) {
   execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
     stdio: 'inherit'
   })
 }
 
-const { expected } = JSON.parse(readFileSync(join(ROOT_DIR, '.cache.json')))
+const { expected } = JSON.parse(readFileSync(CACHE_FILE))
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing json file path.')

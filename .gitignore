@@ -2,15 +2,20 @@
 **/package-lock.json
 **/Cargo.lock
 **/*.node
+**/*.dll
+**/*.dylib
+**/*.so
+**/*.exe
+**/*.lib
+**/*.obj
 **/target/
+**/artifacts/
+**/java-artifacts/
 
 .yarn/
 .yarnrc.yml
-bindings/native/*.exe
-bindings/native/*.dll
-bindings/native/*.lib
-bindings/native/*.obj
-bindings/node/artifacts/
+bindings/java/.gradle/
+bindings/java/build/
 bindings/wasm/pkg/
 core/proptest-regressions/
 

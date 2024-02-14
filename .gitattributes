@@ -1,13 +1,19 @@
 .github/** eol=lf
 **/*.bin binary
 **/*.wasm binary
+**/*.jar binary
+**/*.zip binary
 **/*.c linguist-vendored=true eol=lf
 **/*.ts linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf
 **/*.html linguist-vendored=true eol=lf
+**/*.java eol=lf
 **/*.rs eol=lf
 **/*.js eol=lf
 **/*.md eol=lf
+**/*.bat eol=lf
 **/*.toml eol=lf
+**/*.properties eol=lf
 **/*.json eol=lf
+bindings/java/gradlew eol=lf
