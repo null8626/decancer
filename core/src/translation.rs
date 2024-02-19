@@ -2,23 +2,24 @@ use crate::{
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
-use core::{
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use std::{
+  borrow::Cow,
   cmp::PartialEq,
   fmt::{self, Debug, Display},
   mem::transmute,
   slice, str,
 };
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// The translation for a single character/codepoint.
 #[must_use]
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Translation {
   /// A single unicode character.
   Character(char),
   /// An [ASCII](https://en.wikipedia.org/wiki/ASCII) string slice.
-  String(&'static str),
+  String(Cow<'static, str>),
   /// This suggests that the translation is an empty string. You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values) (e.g diacritics), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]).
   None,
 }
@@ -26,17 +27,27 @@ pub enum Translation {
 impl Translation {
   pub(crate) const fn string(integer: u32, second_byte: u8) -> Self {
     unsafe {
-      Self::String(str::from_utf8_unchecked(slice::from_raw_parts(
+      let string = str::from_utf8_unchecked(slice::from_raw_parts(
         CODEPOINTS.offset(
           (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
         ),
         ((integer >> 23) & 0x1f) as _,
-      )))
+      ));
+
+      Self::String(Cow::Borrowed(string))
     }
   }
 
   pub(crate) const fn character(code: u32) -> Self {
     Self::Character(unsafe { transmute(code) })
+  }
+
+  pub(crate) fn to_uppercase(self) -> Self {
+    match self {
+      Self::Character(c) => Self::Character(unsafe { c.to_uppercase().next().unwrap_unchecked() }),
+      Self::String(s) => Self::String(Cow::Owned(s.as_ref().to_uppercase())),
+      Self::None => Self::None,
+    }
   }
 }
 

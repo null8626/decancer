@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 
-use core::convert::AsRef;
+use std::{mem::transmute, convert::AsRef};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -30,9 +30,14 @@ impl CuredString {
 }
 
 #[wasm_bindgen]
-pub fn decancer(input: &str) -> Result<CuredString, JsError> {
-  match decancer::cure(input) {
+pub fn cure(input: &str, options: u32) -> Result<CuredString, JsError> {
+  match decancer::cure(input, unsafe { transmute(options) }) {
     Ok(output) => Ok(CuredString(output)),
     Err(err) => Err(JsError::new(<decancer::Error as AsRef<str>>::as_ref(&err))),
   }
+}
+
+#[wasm_bindgen]
+pub fn format(input: &str) -> String {
+  decancer::format!(input)
 }

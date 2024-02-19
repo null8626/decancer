@@ -1,6 +1,6 @@
 plugins {
-    id 'java'
-    id 'maven-publish'
+  id 'java'
+  id 'maven-publish'
 }
 
 group 'com.github.null8626'
@@ -8,61 +8,61 @@ version '2.0.2'
 description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
 
 repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
+  mavenCentral()
+  maven { url 'https://jitpack.io' }
 }
 
 jar {
-    archiveBaseName = 'decancer'
-    archiveVersion = '2.0.2'
+  archiveBaseName = 'decancer'
+  archiveVersion = '2.0.2'
 
-    from('./bin') {
-        include '*.dll'
-        include '*.dylib'
-        include '*.so'
-    }
+  from('./bin') {
+    include '*.dll'
+    include '*.dylib'
+    include '*.so'
+  }
 }
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId 'com.github.null8626'
-            artifactId 'decancer'
-            version '2.0.2'
-            
-            from components.java
-            
-            pom {
-                name = 'decancer'
-                description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
-                
-                licenses {
-                    license {
-                        name = 'MIT License'
-                        url = 'https://github.com/null8626/decancer/blob/v2.0.2/LICENSE'
-                    }
-                }
-                
-                developers {
-                    developer {
-                        id = 'null8626'
-                        name = 'null8626'
-                    }
-                }
-            }
+  publications {
+    mavenJava(MavenPublication) {
+      groupId 'com.github.null8626'
+      artifactId 'decancer'
+      version '2.0.2'
+      
+      from components.java
+      
+      pom {
+        name = 'decancer'
+        description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
+        
+        licenses {
+          license {
+            name = 'MIT License'
+            url = 'https://github.com/null8626/decancer/blob/v2.0.2/LICENSE'
+          }
         }
+        
+        developers {
+          developer {
+            id = 'null8626'
+            name = 'null8626'
+          }
+        }
+      }
     }
+  }
 }
 
 test {
-    useJUnitPlatform()
-    
-    systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
+  useJUnitPlatform()
+  
+  systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
 }
 
 dependencies {
-    implementation 'com.github.adamheinrich:native-utils:e6a3948966'
-    implementation 'com.fizzed:jne:4.1.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+  implementation 'com.github.adamheinrich:native-utils:e6a3948966'
+  implementation 'com.fizzed:jne:4.1.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
 }

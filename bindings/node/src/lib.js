@@ -45,6 +45,8 @@ function getBinding(name) {
   return require(existsSync(path) ? path : `@vierofernando/decancer-${name}`)
 }
 
+let binding
+
 try {
   const data = PLATFORMS[process.platform][process.arch]
 
@@ -52,12 +54,17 @@ try {
     data != null,
     `This platform (${process.platform} on a ${process.arch}) is not supported.`
   )
-
-  module.exports = getBinding(
+  
+  binding = getBinding(
     typeof data === 'string'
       ? data
       : `${data.name}-${data.musl && isMusl() ? 'musl' : 'gnu'}`
-  ).decancer
+  )
+  
+  module.exports = Object.assign(binding.cure, {
+    options: binding.options,
+    format: binding.format
+  })
 } catch (err) {
   console.error(
     `Error: cannot load module. OS: ${process.platform} Arch: ${process.arch} may not be supported.`

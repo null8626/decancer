@@ -1,6 +1,6 @@
 use super::{BracketPair, Class, Level, OpeningBracket};
 use crate::{util, Error};
-use core::{
+use std::{
   cmp::{max, min},
   ops::{Index, IndexMut, Range},
 };

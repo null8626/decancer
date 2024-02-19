@@ -1,5 +1,6 @@
 import {
   binarySearchExists,
+  containsInclusive,
   isCaseSensitive,
   mergeArray,
   removeFromSet,
@@ -9,12 +10,13 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { deserialize } from 'node:v8'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
 
 const RANGE_MASK = 0x8000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const CACHE_FILE = join(ROOT_DIR, '.cache.json')
+const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
 const STRING_TRANSLATION_MASK = 0x10000000n
 
 console.log('- fetching unicode data...')
@@ -25,11 +27,63 @@ if (!existsSync(CACHE_FILE)) {
   })
 }
 
-const { expected } = JSON.parse(readFileSync(CACHE_FILE))
+const { blocks, diacritics, expected } = deserialize(readFileSync(CACHE_FILE))
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing json file path.')
   process.exit(1)
+}
+
+const RETAINABLE_SCRIPTS = Object.entries({
+  greek: {
+    shift: 3,
+    check: name => name.includes('greek') && !name.includes('ancient')
+  },
+  cyrillic: 4,
+  hebrew: 5,
+  arabic: 6,
+  devanagari: 7,
+  bengali: 8,
+  armenian: 9,
+  gujarati: 10,
+  tamil: 11,
+  thai: 12,
+  lao: 13,
+  burmese: {
+    shift: 14,
+    check: name => name.includes('myanmar')
+  },
+  khmer: 15,
+  mongolian: 16,
+  chinese: {
+    shift: 17,
+    check: name => /[\b\s]?cjk\s/.test(name)
+  },
+  japanese: {
+    shift: 18,
+    check: name => name.includes('katakana') || name.includes('hiragana')
+  },
+  korean: {
+    shift: 19,
+    check: name => name.includes('hangul')
+  },
+  braille: 20
+})
+
+function getAttributes(codepoint) {
+  const { name } = blocks.find(({ start, end }) => containsInclusive(codepoint, start, end))
+  
+  const retainableScript = RETAINABLE_SCRIPTS.find(([n, data]) => {
+    if (typeof data === 'number') {
+      return name.includes(n)
+    } else {
+      return data.check(name)
+    }
+  })
+  
+  const retainableScriptShift = retainableScript ? (retainableScript[1].shift ?? retainableScript[1]) : 0
+
+  return (retainableScriptShift << 1) | Number(binarySearchExists(diacritics, codepoint))
 }
 
 const { codepoints, similar } = JSON.parse(readFileSync(process.argv[2]))
@@ -83,7 +137,7 @@ for (const conf of codepoints) {
 
     conf.translation = '\0'
   }
-
+  
   if (typeof conf.rangeUntil === 'number') {
     assert(
       Number.isSafeInteger(conf.rangeUntil) &&
@@ -194,12 +248,14 @@ let curr
 for (i = 0, curr = null; i < expanded.length; i++) {
   const [codepoint, translation] = expanded[i]
   const caseSensitive = isCaseSensitive(codepoint)
+  const attributes = getAttributes(codepoint)
 
   if (translation.length === 1) {
     const [nextCodepoint, nextTranslation] = expanded[i + 1] ?? []
     const ordered =
       codepoint + 1 === nextCodepoint &&
-      caseSensitive === isCaseSensitive(nextCodepoint)
+      caseSensitive === isCaseSensitive(nextCodepoint) &&
+      attributes === getAttributes(nextCodepoint)
 
     if (curr !== null) {
       if (
@@ -220,8 +276,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
     }
 
     const synced =
-      nextTranslation &&
-      translation.charCodeAt() + 1 === nextTranslation.charCodeAt() &&
+      translation.charCodeAt() + 1 === nextTranslation?.charCodeAt() &&
       nextTranslation.length === 1
 
     if (ordered && (synced || nextTranslation === translation)) {
@@ -230,7 +285,8 @@ for (i = 0, curr = null; i < expanded.length; i++) {
         codepoint,
         translation,
         rangeUntil: codepoint + 1,
-        syncedTranslation: synced
+        syncedTranslation: synced,
+        attributes
       }
 
       continue
@@ -242,7 +298,8 @@ for (i = 0, curr = null; i < expanded.length; i++) {
     codepoint,
     translation,
     rangeUntil: null,
-    syncedTranslation: false
+    syncedTranslation: false,
+    attributes
   })
 }
 
@@ -280,32 +337,34 @@ for (const {
   codepoint,
   translation,
   rangeUntil,
-  syncedTranslation
+  syncedTranslation,
+  attributes
 } of grandTotal.array) {
-  const buf = Buffer.alloc(5)
-  let integer = BigInt(codepoint)
-  let secondByte = 0
+  const buf = Buffer.alloc(6)
+  let firstBytes = BigInt(codepoint)
+  let middleByte = 0
 
   if (translation.length > 1) {
     const offset = strings.indexOf(translation)
 
-    integer |=
+    firstBytes |=
       STRING_TRANSLATION_MASK |
       BigInt(((translation.length << 3) | (offset >> 8)) << 20)
-    secondByte = offset & 0xff
-  } else {
+    middleByte = offset & 0xff
+  } else { 
     if (rangeUntil !== null) {
-      if (syncedTranslation) secondByte = 0x80
+      if (syncedTranslation) middleByte = 0x80
 
-      integer |= RANGE_MASK
-      secondByte |= rangeUntil - codepoint
+      firstBytes |= RANGE_MASK
+      middleByte |= rangeUntil - codepoint
     }
 
-    integer |= BigInt(translation.charCodeAt() << 20)
+    firstBytes |= BigInt(translation.charCodeAt() << 20)
   }
 
-  buf.writeUint32LE(Number(integer))
-  buf.writeUint8(secondByte, 4)
+  buf.writeUint32LE(Number(firstBytes))
+  buf.writeUint8(middleByte, 4)
+  buf.writeUint8(attributes, 5)
 
   if (caseSensitive) {
     caseSensitiveCodepointsBuffers.push(buf)
@@ -320,9 +379,9 @@ assert(
 )
 
 const headers = Buffer.alloc(6)
-headers.writeUint16LE(headers.byteLength + codepointsBuffers.length * 5)
+headers.writeUint16LE(headers.byteLength + codepointsBuffers.length * 6)
 headers.writeUint16LE(
-  headers.readUint16LE() + caseSensitiveCodepointsBuffers.length * 5,
+  headers.readUint16LE() + caseSensitiveCodepointsBuffers.length * 6,
   2
 )
 headers.writeUint16LE(headers.readUint16LE(2) + similarBytes.length, 4)

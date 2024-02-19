@@ -1,8 +1,11 @@
 import { containsInclusive, request, strongAssert, SortedSet } from './util.mjs'
 import { writeFile } from 'node:fs/promises'
+import { exec } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
 import { existsSync } from 'node:fs'
+import { serialize } from 'node:v8'
 
 const BIDI_CLASSES = [
   'B',
@@ -32,6 +35,7 @@ const BIDI_CLASSES = [
 const BLACKLISTED_RANGES = [
   [0, 0x7f],
   [0x200e, 0x200f],
+  [0x202a, 0x202e],
   [0x2066, 0x2069],
   [0x11700, 0x1173f],
   [0x16f00, 0x16f9f],
@@ -41,6 +45,8 @@ const BLACKLISTED_RANGES = [
 ]
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+
+const execute = promisify(exec)
 
 function* unicodeIter(unicode) {
   for (let i = 0; i < unicode.length; i++) {
@@ -89,7 +95,9 @@ const unicode = (
 
 let expected = new SortedSet()
 let cache = {
-  alreadyHandledCount: 0
+  alreadyHandledCount: 0,
+  blocks: [],
+  diacritics: []
 }
 
 const onDecomps = {}
@@ -112,6 +120,10 @@ for (const data of unicodeIter(unicode)) {
       ) &&
       notHandled
     ) {
+      if (/LETTER \w* WITH /.test(data[1])) {
+        cache.diacritics.push(codepoint)
+      }
+      
       expected.push(codepoint)
     }
 
@@ -131,11 +143,41 @@ for (const data of unicodeIter(unicode)) {
 
 cache.expected = expected.array
 
+console.log('- installing cheerio...')
+
+await execute('npm i cheerio', {
+  stdio: 'inherit'
+})
+
+import cheerio from 'cheerio'
+
+console.log('- fetching unicode blocks...')
+
+const blocksResponse = await fetch('https://en.wikipedia.org/wiki/Unicode_block')
+const $ = cheerio.load(await blocksResponse.text())
+
+// we do a little scraping
+$('tr').each((i, element) => {
+  if (element.children?.length === 12) {
+    const tags = element.children.filter(y => y.type === 'tag')
+    
+    try {
+      const [start, end] = tags[1].children.find(y => y.name === 'span').children[0].data.split('..').map(z => parseInt(z.slice(2), 16))
+      
+      cache.blocks.push({
+        start,
+        end,
+        name: tags[2].children.find(y => y.name === 'a').children[0].data.toLowerCase()
+      })
+    } catch {}
+  }
+})
+
 void (await Promise.all([
   (async () => {
     console.log('- writing to cache...')
 
-    await writeFile(join(ROOT_DIR, '.cache.json'), JSON.stringify(cache))
+    await writeFile(join(ROOT_DIR, '.cache.bin'), serialize(cache))
 
     console.log('- wrote to cache.')
   })(),
