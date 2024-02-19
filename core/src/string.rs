@@ -146,6 +146,6 @@ impl<'de> Deserialize<'de> for CuredString {
     D: Deserializer<'de>,
   {
     Deserialize::deserialize(deserializer)
-      .and_then(|s: &str| crate::cure(s).map_err(de::Error::custom))
+      .and_then(|s: &str| crate::cure!(s).map_err(de::Error::custom))
   }
 }
