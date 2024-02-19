@@ -49,39 +49,6 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 ## Installation
 
-Decancer is supported in the following platforms:
-
-Platform name | C/C++/Rust | Java | JavaScript
----- | ---- | ---- | ----
-ARM64 macOS (11.0+, Big Sur+) | ✓ | ✓ | ✓ |
-ARM64 iOS | ✓ | | |
-Apple iOS Simulator on ARM6 | ✓ | | |
-ARM64 Android | ✓ | | ✓ |
-ARM64 Windows MSVC | ✓ | ✓ | ✓ |
-ARM64 Linux (kernel 4.1, glibc 2.17+) | ✓ | ✓ | ✓ |
-ARM64 Linux with MUSL | ✓ | ✓ | ✓ |
-ARMv6 Linux (kernel 3.2, glibc 2.17) | ✓ | ✓ | |
-ARMv5TE Linux (kernel 4.4, glibc 2.23) | ✓ | ✓ | |
-ARMv7-A Android | ✓ | | ✓ |
-ARMv7-A Linux (kernel 4.15, glibc 2.27) | ✓ | ✓ | |
-ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17) | ✓ | ✓ | ✓ |
-32-bit Linux w/o SSE (kernel 3.2, glibc 2.17) | ✓ | | |
-32-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
-32-bit FreeBSD | ✓ | ✓ | |
-32-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | |
-PPC64LE Linux (kernel 3.10, glibc 2.17) | ✓ | | |
-RISC-V Linux (kernel 4.20, glibc 2.29) | ✓ | ✓ | |
-S390x Linux (kernel 3.2, glibc 2.17) | ✓ | | |
-SPARC Solaris 11, illumos | ✓ | | |
-Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23) | ✓ | | |
-64-bit macOS (10.12+, Sierra+) | ✓ | ✓ | ✓ |
-64-bit iOS | ✓ | | |
-64-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
-64-bit FreeBSD | ✓ | ✓ | |
-64-bit illumos | ✓ | | |
-64-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | ✓ |
-64-bit Linux with MUSL | ✓ | ✓ | ✓ |
-
 <details>
 <summary><b>Rust (v1.64 or later)</b></summary>
 
@@ -401,6 +368,42 @@ int main(void) {
 ```
 
 </details>
+
+## Compatibility
+
+
+Decancer is supported in the following platforms:
+
+Platform name | C/C++/Rust | Java | JavaScript
+---- | ---- | ---- | ----
+ARM64 macOS (11.0+, Big Sur+) | ✓ | ✓ | ✓ |
+ARM64 iOS | ✓ | | |
+Apple iOS Simulator on ARM6 | ✓ | | |
+ARM64 Android | ✓ | | ✓ |
+ARM64 Windows MSVC | ✓ | ✓ | ✓ |
+ARM64 Linux (kernel 4.1, glibc 2.17+) | ✓ | ✓ | ✓ |
+ARM64 Linux with MUSL | ✓ | ✓ | ✓ |
+ARMv6 Linux (kernel 3.2, glibc 2.17) | ✓ | ✓ | |
+ARMv5TE Linux (kernel 4.4, glibc 2.23) | ✓ | ✓ | |
+ARMv7-A Android | ✓ | | ✓ |
+ARMv7-A Linux (kernel 4.15, glibc 2.27) | ✓ | ✓ | |
+ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17) | ✓ | ✓ | ✓ |
+32-bit Linux w/o SSE (kernel 3.2, glibc 2.17) | ✓ | | |
+32-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
+32-bit FreeBSD | ✓ | ✓ | |
+32-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | |
+PPC64LE Linux (kernel 3.10, glibc 2.17) | ✓ | | |
+RISC-V Linux (kernel 4.20, glibc 2.29) | ✓ | ✓ | |
+S390x Linux (kernel 3.2, glibc 2.17) | ✓ | | |
+SPARC Solaris 11, illumos | ✓ | | |
+Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23) | ✓ | | |
+64-bit macOS (10.12+, Sierra+) | ✓ | ✓ | ✓ |
+64-bit iOS | ✓ | | |
+64-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
+64-bit FreeBSD | ✓ | ✓ | |
+64-bit illumos | ✓ | | |
+64-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | ✓ |
+64-bit Linux with MUSL | ✓ | ✓ | ✓ |
 
 ## Contributing
 
