@@ -1,23 +1,25 @@
 #![doc = include_str!("../README.md")]
 #![allow(clippy::upper_case_acronyms)]
-#![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
 mod bidi;
 mod codepoints;
+mod options;
 mod similar;
+mod string;
 #[cfg(test)]
 mod tests;
 mod translation;
 mod util;
 
-use bidi::Class;
+use bidi::{Class, Level, Paragraph};
+pub use options::Options;
+pub use string::CuredString;
 pub use translation::Translation;
 
 use codepoints::{
-  Codepoint, CASE_SENSITIVE_CODEPOINTS_COUNT, CASE_SENSITIVE_CODEPOINTS_OFFSET, CODEPOINTS_COUNT,
+  CASE_SENSITIVE_CODEPOINTS_COUNT, CASE_SENSITIVE_CODEPOINTS_OFFSET, CODEPOINTS_COUNT,
 };
-use core::cmp::Ordering;
 
 macro_rules! error_enum {
   (
@@ -37,7 +39,7 @@ macro_rules! error_enum {
       )*
     }
 
-    impl core::convert::AsRef<str> for $enum_name {
+    impl std::convert::AsRef<str> for $enum_name {
       fn as_ref(&self) -> &str {
         match self {
           $(
@@ -47,14 +49,13 @@ macro_rules! error_enum {
       }
     }
 
-    impl core::fmt::Display for $enum_name {
+    impl std::fmt::Display for $enum_name {
       #[inline(always)]
-      fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "{}", <$enum_name as core::convert::AsRef<str>>::as_ref(self))
+      fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", <$enum_name as std::convert::AsRef<str>>::as_ref(self))
       }
     }
 
-    #[cfg(feature = "std")]
     impl std::error::Error for $enum_name {}
   }
 }
@@ -75,28 +76,15 @@ error_enum! {
   }
 }
 
-const fn translate(code: u32, offset: i32, mut end: i32) -> Option<Translation> {
-  let mut start = 0;
-
-  while start <= end {
-    let mid = (start + end) / 2;
-    let codepoint = Codepoint::at(offset + (mid * 5));
-
-    match codepoint.matches(code) {
-      Ordering::Equal => return Some(codepoint.translation(code)),
-      Ordering::Greater => start = mid + 1,
-      Ordering::Less => end = mid - 1,
-    };
-  }
-
-  None
-}
-
 const fn is_none(code: u32) -> bool {
   matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
 }
 
-fn cure_char_inner(code: u32) -> Translation {
+const fn is_special_rtl(code: u32) -> bool {
+  matches!(code, 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069)
+}
+
+fn cure_char_inner(code: u32, options: Options) -> Translation {
   // SAFETY: even if there is no lowercase mapping for some codepoints, it would just return itself.
   // therefore, the first iteration and/or codepoint always exists.
   let code_lowercased = unsafe {
@@ -106,82 +94,40 @@ fn cure_char_inner(code: u32) -> Translation {
       .unwrap_unchecked() as _
   };
 
+  let is_case_sensitive = code != code_lowercased;
+  let retain_capitalization = options.is(0);
+
+  let default_output = if is_case_sensitive && retain_capitalization {
+    code
+  } else {
+    code_lowercased
+  };
+
   if code_lowercased < 0x80 {
-    return Translation::character(code_lowercased);
-  } else if code != code_lowercased {
-    if let Some(translation) = translate(
+    return Translation::character(default_output);
+  } else if is_case_sensitive {
+    if let Some(translation) = options.translate(
       code,
       CASE_SENSITIVE_CODEPOINTS_OFFSET as _,
       CASE_SENSITIVE_CODEPOINTS_COUNT as _,
     ) {
-      return translation;
+      return if retain_capitalization {
+        translation.to_uppercase()
+      } else {
+        translation
+      };
     }
   }
 
-  translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
-    .unwrap_or(Translation::character(code_lowercased))
+  options
+    .translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
+    .unwrap_or(Translation::character(default_output))
 }
 
-/// Cures a single character/unicode codepoint.
+/// Cures a single character/unicode codepoint with the specified [`Options`].
 ///
-/// Output will always be in lowercase.
-///
-/// # Examples
-///
-/// Most of the time, this would yield only a single unicode character:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// assert_eq!(decancer::cure_char('Ｅ'), Translation::Character('e'));
-/// ```
-///
-/// However, for several special cases, it would yield an [ASCII](https://en.wikipedia.org/wiki/ASCII) [`&'static str`][prim@str]:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// assert_eq!(decancer::cure_char('æ'), Translation::String("ae"));
-/// assert_eq!(decancer::cure_char('ĳ'), Translation::String("ij"));
-/// assert_eq!(decancer::cure_char('œ'), Translation::String("oe"));
-/// assert_eq!(decancer::cure_char('🆐'), Translation::String("dj"));
-/// assert_eq!(decancer::cure_char('🆑'), Translation::String("cl"));
-/// assert_eq!(decancer::cure_char('🆔'), Translation::String("id"));
-/// assert_eq!(decancer::cure_char('🆖'), Translation::String("ng"));
-/// assert_eq!(decancer::cure_char('🆗'), Translation::String("ok"));
-/// assert_eq!(decancer::cure_char('🆚'), Translation::String("vs"));
-/// assert_eq!(decancer::cure_char('🜀'), Translation::String("qe"));
-/// assert_eq!(decancer::cure_char('🜇'), Translation::String("ar"));
-///
-/// assert_eq!(decancer::cure_char('⅓'), Translation::String("1/3"));
-/// assert_eq!(decancer::cure_char('⅔'), Translation::String("2/3"));
-/// assert_eq!(decancer::cure_char('⅕'), Translation::String("1/5"));
-/// assert_eq!(decancer::cure_char('⅖'), Translation::String("2/5"));
-/// assert_eq!(decancer::cure_char('⅗'), Translation::String("3/5"));
-/// assert_eq!(decancer::cure_char('⅘'), Translation::String("4/5"));
-/// assert_eq!(decancer::cure_char('㋍'), Translation::String("erg"));
-/// assert_eq!(decancer::cure_char('㋏'), Translation::String("ltd"));
-///
-/// assert_eq!(decancer::cure_char('㍴'), Translation::String("bar"));
-/// assert_eq!(decancer::cure_char('㎈'), Translation::String("cal"));
-/// assert_eq!(decancer::cure_char('㎭'), Translation::String("rad"));
-/// assert_eq!(decancer::cure_char('㏇'), Translation::String("co."));
-/// assert_eq!(decancer::cure_char('㏒'), Translation::String("log"));
-/// assert_eq!(decancer::cure_char('㏕'), Translation::String("mil"));
-/// assert_eq!(decancer::cure_char('㏖'), Translation::String("mol"));
-/// assert_eq!(decancer::cure_char('㏙'), Translation::String("ppm"));
-/// ```
-///
-/// If your unicode character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values) (e.g diacritics), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]), you would get [`None`][Translation::None]:
-///
-/// ```rust
-/// use decancer::Translation;
-///
-/// assert_eq!(decancer::cure_char(0xD800u32), Translation::None);
-/// assert_eq!(decancer::cure_char(char::REPLACEMENT_CHARACTER), Translation::None);
-/// assert_eq!(decancer::cure_char((char::MAX as u32) + 1), Translation::None);
-/// ```
-pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
+/// To use this function with decancer's default options, use [the `cure_char` macro][cure_char!] instead.
+pub fn cure_char<C: Into<u32>>(code: C, options: Options) -> Translation {
   let code = code.into();
 
   if is_none(code) {
@@ -190,220 +136,303 @@ pub fn cure_char<C: Into<u32>>(code: C) -> Translation {
     match Class::new(code) {
       Some(Class::WS) => Translation::character(if code > 0x7f { 0x20 } else { code }),
       None => Translation::None,
-      _ => cure_char_inner(code),
+      _ => cure_char_inner(code, options),
     }
   }
 }
 
-cfg_if::cfg_if! {
-  if #[cfg(feature = "std")] {
-    mod string;
+/// Cures a single character/unicode codepoint with decancer's default options.
+///
+/// Output will always be in lowercase.
+///
+/// This macro expands to:
+///
+/// ```rust,ignore
+/// decancer::cure_char(code, decancer::Options::default());
+/// ```
+///
+/// For more information, see [the `cure_char` function][cure_char()].
+#[macro_export]
+macro_rules! cure_char {
+  ($code:expr) => {
+    $crate::cure_char($code, $crate::Options::default())
+  };
+}
 
-    use bidi::{Level, Paragraph};
-    pub use string::CuredString;
+/// Formats a single character/unicode codepoint by only removing [pure homoglyphs][Options::pure_homoglyph] while still [retaining capitalization][Options::retain_capitalization].
+///
+/// This macro expands to:
+///
+/// ```rust,ignore
+/// decancer::cure_char(code, decancer::Options::formatter());
+/// ```
+///
+/// For more information, see [`Options::formatter`].
+#[macro_export]
+macro_rules! format_char {
+  ($code:expr) => {
+    $crate::cure_char($code, $crate::Options::formatter())
+  };
+}
 
-    fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
-      let mut refined_input = String::with_capacity(input.len());
+fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
+  let mut refined_input = String::with_capacity(input.len());
 
-      let mut original_classes = Vec::with_capacity(input.len());
-      let mut isolate_stack = Vec::new();
+  let mut original_classes = Vec::with_capacity(input.len());
+  let mut isolate_stack = Vec::new();
 
-      let mut paragraphs = Vec::new();
-      let mut paragraph_start = 0;
-      let mut paragraph_level: Option<Level> = None;
-      let mut pure_ltr = true;
+  let mut paragraphs = Vec::new();
+  let mut paragraph_start = 0;
+  let mut paragraph_level: Option<Level> = None;
+  let mut pure_ltr = true;
 
-      let mut idx = 0;
+  let mut idx = 0;
 
-      for codepoint in input.chars() {
-        let mut character_len = codepoint.len_utf8();
-        let mut codepoint = codepoint as u32;
+  for codepoint in input.chars() {
+    let mut character_len = codepoint.len_utf8();
+    let mut codepoint = codepoint as u32;
 
-        if !is_none(codepoint) {
-          if let Some(class) = Class::new(codepoint) {
-            if class == Class::WS && codepoint > 0x7f {
-              character_len = 1;
-              codepoint = 0x20;
+    if !is_none(codepoint) {
+      if let Some(class) = Class::new(codepoint) {
+        if class == Class::WS && codepoint > 0x7f {
+          character_len = 1;
+          codepoint = 0x20;
+        }
+
+        original_classes.resize(original_classes.len() + character_len, class);
+
+        match class {
+          Class::B => {
+            let paragraph_end = idx + character_len;
+
+            paragraphs.push(Paragraph {
+              range: paragraph_start..paragraph_end,
+              level: paragraph_level.unwrap_or(Level::ltr()),
+              pure_ltr,
+            });
+
+            paragraph_start = paragraph_end;
+            pure_ltr = true;
+            isolate_stack.clear();
+            paragraph_level = None;
+          }
+
+          Class::L | Class::R | Class::AL => {
+            if class != Class::L {
+              pure_ltr = false;
             }
 
-            original_classes.resize(original_classes.len() + character_len, class);
+            match isolate_stack.last() {
+              Some(&start_idx) => {
+                if original_classes[start_idx] == Class::FSI {
+                  let new_class = if class == Class::L {
+                    Class::LRI
+                  } else {
+                    Class::RLI
+                  };
 
-            match class {
-              Class::B => {
-                let paragraph_end = idx + character_len;
-
-                paragraphs.push(Paragraph {
-                  range: paragraph_start..paragraph_end,
-                  level: paragraph_level.unwrap_or(Level::ltr()),
-                  pure_ltr,
-                });
-
-                paragraph_start = paragraph_end;
-                pure_ltr = true;
-                isolate_stack.clear();
-                paragraph_level = None;
-              }
-
-              Class::L | Class::R | Class::AL => {
-                if class != Class::L {
-                  pure_ltr = false;
-                }
-
-                match isolate_stack.last() {
-                  Some(&start_idx) => {
-                    if original_classes[start_idx] == Class::FSI {
-                      let new_class = if class == Class::L {
-                        Class::LRI
-                      } else {
-                        Class::RLI
-                      };
-
-                      for j in 0..3 {
-                        original_classes[start_idx + j] = new_class;
-                      }
-                    }
+                  for j in 0..3 {
+                    original_classes[start_idx + j] = new_class;
                   }
-
-                  None => {
-                    if paragraph_level.is_none() {
-                      paragraph_level.replace(if class == Class::L {
-                        Level::ltr()
-                      } else {
-                        Level::rtl()
-                      });
-                    }
-                  }
                 }
               }
 
-              Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
-                pure_ltr = false;
+              None => {
+                if paragraph_level.is_none() {
+                  paragraph_level.replace(if class == Class::L {
+                    Level::ltr()
+                  } else {
+                    Level::rtl()
+                  });
+                }
               }
-
-              Class::RLI | Class::LRI | Class::FSI => {
-                pure_ltr = false;
-                isolate_stack.push(idx);
-              }
-
-              Class::PDI => {
-                isolate_stack.pop();
-              }
-
-              _ => {}
             }
-
-            // SAFETY: the only modification to this codepoint is in the if-statement above.
-            refined_input.push(unsafe { char::from_u32_unchecked(codepoint) });
-
-            idx += character_len;
           }
+
+          Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
+            pure_ltr = false;
+          }
+
+          Class::RLI | Class::LRI | Class::FSI => {
+            pure_ltr = false;
+            isolate_stack.push(idx);
+          }
+
+          Class::PDI => {
+            isolate_stack.pop();
+          }
+
+          _ => {}
         }
+
+        // SAFETY: the only modification to this codepoint is in the if-statement above.
+        refined_input.push(unsafe { char::from_u32_unchecked(codepoint) });
+
+        idx += character_len;
       }
-
-      if paragraph_start < idx {
-        paragraphs.push(Paragraph {
-          range: paragraph_start..idx,
-          level: paragraph_level.unwrap_or(Level::ltr()),
-          pure_ltr,
-        });
-      }
-
-      (refined_input, original_classes, paragraphs)
-    }
-
-    pub(crate) fn reorder<F>(input: &str, map: F) -> Result<String, Error>
-    where
-      F: Fn(char, &mut String),
-    {
-      let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
-
-      let mut levels = Vec::with_capacity(refined_input.len());
-      let mut processing_classes = original_classes.clone();
-      let mut output = String::with_capacity(refined_input.len());
-
-      for paragraph in paragraphs.iter() {
-        levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
-
-        if paragraph.level.0 != 0 || !paragraph.pure_ltr {
-          let input = paragraph.sliced(&refined_input);
-          let original_classes = paragraph.sliced(&original_classes);
-          let processing_classes = paragraph.sliced_mut(&mut processing_classes);
-          let levels = paragraph.sliced_mut(&mut levels);
-
-          paragraph.compute_explicit(input, original_classes, processing_classes, levels);
-
-          for sequence in paragraph.isolating_run_sequences(levels, original_classes) {
-            sequence.resolve_implicit_weak(input, processing_classes);
-            sequence.resolve_implicit_neutral(input, processing_classes, levels);
-          }
-
-          for j in 0..levels.len() {
-            match (levels[j].is_rtl(), processing_classes[j]) {
-              (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
-              (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
-                levels[j].raise(1)?
-              }
-              (_, _) => {}
-            }
-
-            if original_classes[j].removed_by_x9() {
-              levels[j] = if j > 0 {
-                levels[j - 1]
-              } else {
-                paragraph.level
-              };
-            }
-          }
-        }
-      }
-
-      for paragraph in paragraphs.iter() {
-        let (revised_levels, runs) =
-          paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
-
-        for run in runs {
-          let text = &refined_input[run.clone()];
-
-          if revised_levels[run.start].is_rtl() {
-            for c in text.chars().rev() {
-              map(c, &mut output);
-            }
-          } else {
-            for c in text.chars() {
-              map(c, &mut output);
-            }
-          }
-        }
-      }
-
-      Ok(output)
-    }
-
-    /// Cures a string.
-    ///
-    /// Output will always be in lowercase and [bidirectionally reordered](https://en.wikipedia.org/wiki/Bidirectional_text) in order to treat right-to-left characters. Therefore, the output of this function *should not* be displayed visually.
-    ///
-    /// # Errors
-    ///
-    /// Errors if the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```rust
-    /// let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
-    ///
-    /// assert_eq!(cured, "very funny text");
-    /// assert!(cured.contains("FuNny"));
-    /// assert_eq!(cured.into_str(), String::from("very funny text"));
-    /// ```
-    pub fn cure(input: &str) -> Result<CuredString, Error> {
-      Ok(CuredString(reorder(input, |c, output| match cure_char_inner(c as _) {
-        Translation::Character(ch) => output.push(ch),
-        Translation::String(s) => output.push_str(s),
-        Translation::None => {}
-      })?))
     }
   }
+
+  if paragraph_start < idx {
+    paragraphs.push(Paragraph {
+      range: paragraph_start..idx,
+      level: paragraph_level.unwrap_or(Level::ltr()),
+      pure_ltr,
+    });
+  }
+
+  (refined_input, original_classes, paragraphs)
+}
+
+pub(crate) fn reorder<F>(input: &str, map: F) -> Result<String, Error>
+where
+  F: Fn(char, &mut String),
+{
+  let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
+
+  let mut levels = Vec::with_capacity(refined_input.len());
+  let mut processing_classes = original_classes.clone();
+  let mut output = String::with_capacity(refined_input.len());
+
+  for paragraph in paragraphs.iter() {
+    levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
+
+    if paragraph.level.0 != 0 || !paragraph.pure_ltr {
+      let input = paragraph.sliced(&refined_input);
+      let original_classes = paragraph.sliced(&original_classes);
+      let processing_classes = paragraph.sliced_mut(&mut processing_classes);
+      let levels = paragraph.sliced_mut(&mut levels);
+
+      paragraph.compute_explicit(input, original_classes, processing_classes, levels);
+
+      for sequence in paragraph.isolating_run_sequences(levels, original_classes) {
+        sequence.resolve_implicit_weak(input, processing_classes);
+        sequence.resolve_implicit_neutral(input, processing_classes, levels);
+      }
+
+      for j in 0..levels.len() {
+        match (levels[j].is_rtl(), processing_classes[j]) {
+          (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
+          (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
+            levels[j].raise(1)?
+          }
+          (_, _) => {}
+        }
+
+        if original_classes[j].removed_by_x9() {
+          levels[j] = if j > 0 {
+            levels[j - 1]
+          } else {
+            paragraph.level
+          };
+        }
+      }
+    }
+  }
+
+  for paragraph in paragraphs.iter() {
+    let (revised_levels, runs) =
+      paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
+
+    for run in runs {
+      let text = &refined_input[run.clone()];
+
+      if revised_levels[run.start].is_rtl() {
+        for c in text.chars().rev() {
+          map(c, &mut output);
+        }
+      } else {
+        for c in text.chars() {
+          map(c, &mut output);
+        }
+      }
+    }
+  }
+
+  Ok(output)
+}
+
+fn push_translation(translation: Translation, output: &mut String) {
+  match translation {
+    Translation::Character(ch) => output.push(ch),
+    Translation::String(s) => output.push_str(&s),
+    Translation::None => {}
+  }
+}
+
+/// Cures a string with the specified [`Options`].
+///
+/// To use this function with decancer's default options, use [the `cure` macro][cure!] instead.
+///
+/// # Errors
+///
+/// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
+pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
+  Ok(CuredString(if options.is(1) {
+    reorder(input, |c, output| {
+      push_translation(cure_char_inner(c as _, options), output)
+    })?
+  } else {
+    input.chars().fold(
+      String::with_capacity(input.len()),
+      |mut output, character| {
+        if !is_special_rtl(character as _) {
+          push_translation(cure_char(character, options), &mut output);
+        }
+
+        output
+      },
+    )
+  }))
+}
+
+/// Cures a string with decancer's default options.
+///
+/// Output will always be in lowercase and [bidirectionally reordered](https://en.wikipedia.org/wiki/Bidirectional_text) in order to treat right-to-left characters. Therefore, the string output is laid out in memory the same way as it were to be displayed graphically, but **may break if displayed graphically** since some right-to-left characters are reversed.
+///
+/// This macro expands to:
+///
+/// ```rust,ignore
+/// decancer::cure(string, decancer::Options::default());
+/// ```
+///
+/// For more information, see [the `cure` function][cure()].
+///
+/// # Errors
+///
+/// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```rust
+/// let cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+///
+/// assert_eq!(cured, "very funny text");
+/// assert!(cured.contains("FuNny"));
+/// assert_eq!(cured.into_str(), String::from("very funny text"));
+/// ```
+#[macro_export]
+macro_rules! cure {
+  ($string:expr) => {
+    $crate::cure($string, $crate::Options::default())
+  };
+}
+
+/// Formats a string by only removing [pure homoglyphs][Options::pure_homoglyph] while still [retaining capitalization][Options::retain_capitalization].
+///
+/// This macro immediately returns a [`String`] type.
+///
+/// For more information, see [`Options::formatter`].
+#[macro_export]
+macro_rules! format {
+  ($string:expr) => {
+    // SAFETY: having disable_bidi enabled removes all possibilities of an Err
+    unsafe {
+      $crate::cure($string, $crate::Options::formatter())
+        .unwrap_unchecked()
+        .into_str()
+    }
+  };
 }

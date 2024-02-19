@@ -43,16 +43,12 @@ public class CuredString {
       rustTarget = target.toRustTarget();
 
       switch (os) {
-        case OperatingSystem.WINDOWS:
-          {
-            libPrefix = "";
-            fileExtension = "dll";
-            break;
-          }
-        case OperatingSystem.MACOS:
-          {
-            fileExtension = "dylib";
-          }
+        case WINDOWS:
+          libPrefix = "";
+          fileExtension = "dll";
+          break;
+        case MACOS:
+          fileExtension = "dylib";
       }
 
       if (CuredString.isJUnit()) {
@@ -78,7 +74,7 @@ public class CuredString {
 
   private long inner;
 
-  private static native long cure(String input);
+  private static native long cure(String input, int options);
 
   /**
    * Checks if this object is similar with another string.
@@ -156,7 +152,7 @@ public class CuredString {
   public native void destroy();
 
   /**
-   * Cures a string.
+   * Cures a string with decancer's default options.
    *
    * <p>
    * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters. Therefore, the output of this function should NOT be displayed visually.
@@ -166,6 +162,18 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public CuredString(String input) {
-    this.inner = CuredString.cure(input);
+    this.inner = CuredString.cure(input, 0);
+  }
+
+  /**
+   * Cures a string with the specified options.
+   *
+   * @param input The string to cure.
+   * @param options The explicit options.
+   * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
+  public CuredString(String input, Options options) {
+    this.inner = CuredString.cure(input, options.inner);
   }
 }

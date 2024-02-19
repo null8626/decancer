@@ -43,12 +43,12 @@ int main(void)
     decancer_error_t error_code;
     decancer_translation_t char_translation;
 
-    decancer_cure_char(0xFF25, &char_translation);
+    decancer_cure_char(0xFF25, DECANCER_OPTION_DEFAULT, &char_translation);
 
     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_CHARACTER, "char translation is a character");
     assert(char_translation.contents.character == 0x65, "char translation is 'e' (0x65)");
 
-    decancer_cure_char(0x04D5, &char_translation);
+    decancer_cure_char(0x04D5, DECANCER_OPTION_DEFAULT, &char_translation);
 
     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_STRING, "char translation is an ASCII string");
     assert(char_translation.contents.string.length == 2,
@@ -56,7 +56,7 @@ int main(void)
     assert(char_translation.contents.string.contents[0] == 'a' && char_translation.contents.string.contents[1] == 'e',
            "char translation is the ASCII string \"ae\".");
 
-    decancer_cure_char(0, &char_translation);
+    decancer_cure_char(0, DECANCER_OPTION_DEFAULT, &char_translation);
 
     assert(char_translation.kind == DECANCER_TRANSLATION_KIND_NONE, "char translation is an empty string ('')");
 
@@ -64,7 +64,7 @@ int main(void)
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string), &error_code);
+    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error_code);
 
     if (cured == NULL)
     {

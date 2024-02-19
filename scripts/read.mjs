@@ -80,7 +80,7 @@ function getTranslation(integer, secondByte) {
 let codepointsEnd = binary.readUint16LE()
 let codepoints = new Codepoints()
 
-for (let offset = 6; offset < codepointsEnd; offset += 5) {
+for (let offset = 6; offset < codepointsEnd; offset += 6) {
   const integer = binary.readUint32LE(offset)
   const secondByte = binary.readUint8(offset + 4)
 
@@ -100,7 +100,7 @@ for (let offset = 6; offset < codepointsEnd; offset += 5) {
 
 codepointsEnd = binary.readUint16LE(2)
 
-for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 5) {
+for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 6) {
   const integer = binary.readUint32LE(offset)
   const secondByte = binary.readUint8(offset + 4)
 

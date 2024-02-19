@@ -21,7 +21,8 @@ void (await Promise.all(
       await execute(
         `zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`,
         {
-          cwd: ARTIFACTS_DIR
+          cwd: ARTIFACTS_DIR,
+          stdio: 'inherit'
         }
       )
     } else if (artifact.startsWith('node-')) {

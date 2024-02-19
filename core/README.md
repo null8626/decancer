@@ -34,7 +34,7 @@
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
-- It's capable of filtering **215,361 (19.33%) different unicode codepoints** like:
+- By default, it's capable of filtering **263,302 (23.63%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
@@ -98,15 +98,17 @@ In your code:
 <details>
 <summary><b>Java</b></summary>
 
+### As a dependency
+
 In your `build.gradle`:
 
 ```gradle
 repositories {
-    maven { url 'https://jitpack.io' }
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.github.null8626:decancer:2.0.2'
+  implementation 'com.github.null8626:decancer:2.0.2'
 }
 ```
 
@@ -128,6 +130,16 @@ In your `pom.xml`:
   </dependency>
 </dependencies>
 ```
+
+### Building from source
+
+```console
+$ git clone https://github.com/null8626/decancer.git --depth 1
+$ cd ./decancer/bindings/java
+$ unzip ./bin/bindings.zip -d ./bin
+$ chmod +x ./gradlew
+$ ./gradlew build --warning-mode all
+```
 </details>
 <details>
 <summary><b>C/C++</b></summary>
@@ -148,10 +160,7 @@ In your `pom.xml`:
 
 ### Building from source
 
-Prerequisites:
-
-- [Git](https://git-scm.com/)
-- [Rust v1.64 or later](https://rustup.rs/)
+Building from source requires [Rust v1.64 or later](https://rustup.rs/).
 
 ```console
 $ git clone https://github.com/null8626/decancer.git --depth 1
@@ -171,7 +180,7 @@ And the binary files should be generated in the `target/release` directory.
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let cured = decancer::cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+let cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
 
 assert_eq!(cured, "very funny text");
 assert!(cured.contains("FuNny"));
@@ -308,7 +317,7 @@ int main(void) {
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string), &error_code);
+    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error_code);
 
     if (cured == NULL)
     {

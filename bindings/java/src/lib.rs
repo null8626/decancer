@@ -1,7 +1,7 @@
 use core::mem::transmute;
 use jni::{
   objects::{JClass, JObject, JString},
-  sys::{jboolean, jlong, jstring},
+  sys::{jboolean, jint, jlong, jstring},
   JNIEnv,
 };
 
@@ -50,14 +50,15 @@ macro_rules! get_inner_field {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_com_github_null8626_decancer_CuredString_cure<'local>(
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cure<'local>(
   mut env: JNIEnv<'local>,
   _: JClass<'local>,
   input: JString<'local>,
+  options: jint,
 ) -> jlong {
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  match decancer::cure(&input) {
+  match decancer::cure(&input, transmute(options)) {
     Ok(output) => Box::into_raw(Box::new(output)) as _,
 
     Err(error) => {
