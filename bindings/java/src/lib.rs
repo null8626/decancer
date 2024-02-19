@@ -1,7 +1,7 @@
 use core::mem::transmute;
 use jni::{
   objects::{JClass, JObject, JString},
-  sys::{jboolean, jlong, jint, jstring},
+  sys::{jboolean, jint, jlong, jstring},
   JNIEnv,
 };
 

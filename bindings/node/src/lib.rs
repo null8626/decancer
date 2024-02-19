@@ -14,7 +14,7 @@ macro_rules! options {
     keys {
       $($key_idx:literal: $key_name:ident,)*
     }
-    
+
     overrides {
       $($override_name:ident: $override_value:expr,)*
     }
@@ -39,7 +39,7 @@ macro_rules! options {
             options |= (1 << $key_idx);
           }
         )*
-        
+
         $(
           if self.$override_name.unwrap_or_default() {
             options = $override_value;
@@ -76,7 +76,7 @@ options! {
     19: retain_korean,
     20: retain_braille,
   }
-  
+
   overrides {
     pure_homoglyph: ((1 << 21) - 1) ^ 0b11,
   }

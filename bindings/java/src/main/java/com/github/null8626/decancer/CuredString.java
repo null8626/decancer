@@ -164,7 +164,7 @@ public class CuredString {
   public CuredString(String input) {
     this.inner = CuredString.cure(input, 0);
   }
-  
+
   /**
    * Cures a string with the specified options.
    *

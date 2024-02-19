@@ -71,8 +71,10 @@ const RETAINABLE_SCRIPTS = Object.entries({
 })
 
 function getAttributes(codepoint) {
-  const { name } = blocks.find(({ start, end }) => containsInclusive(codepoint, start, end))
-  
+  const { name } = blocks.find(({ start, end }) =>
+    containsInclusive(codepoint, start, end)
+  )
+
   const retainableScript = RETAINABLE_SCRIPTS.find(([n, data]) => {
     if (typeof data === 'number') {
       return name.includes(n)
@@ -80,10 +82,15 @@ function getAttributes(codepoint) {
       return data.check(name)
     }
   })
-  
-  const retainableScriptShift = retainableScript ? (retainableScript[1].shift ?? retainableScript[1]) : 0
 
-  return (retainableScriptShift << 1) | Number(binarySearchExists(diacritics, codepoint))
+  const retainableScriptShift = retainableScript
+    ? retainableScript[1].shift ?? retainableScript[1]
+    : 0
+
+  return (
+    (retainableScriptShift << 1) |
+    Number(binarySearchExists(diacritics, codepoint))
+  )
 }
 
 const { codepoints, similar } = JSON.parse(readFileSync(process.argv[2]))
@@ -137,7 +144,7 @@ for (const conf of codepoints) {
 
     conf.translation = '\0'
   }
-  
+
   if (typeof conf.rangeUntil === 'number') {
     assert(
       Number.isSafeInteger(conf.rangeUntil) &&
@@ -351,7 +358,7 @@ for (const {
       STRING_TRANSLATION_MASK |
       BigInt(((translation.length << 3) | (offset >> 8)) << 20)
     middleByte = offset & 0xff
-  } else { 
+  } else {
     if (rangeUntil !== null) {
       if (syncedTranslation) middleByte = 0x80
 

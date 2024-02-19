@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 
-use std::{mem::transmute, convert::AsRef};
+use std::{convert::AsRef, mem::transmute};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

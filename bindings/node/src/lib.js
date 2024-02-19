@@ -54,13 +54,13 @@ try {
     data != null,
     `This platform (${process.platform} on a ${process.arch}) is not supported.`
   )
-  
+
   binding = getBinding(
     typeof data === 'string'
       ? data
       : `${data.name}-${data.musl && isMusl() ? 'musl' : 'gnu'}`
   )
-  
+
   module.exports = Object.assign(binding.cure, {
     options: binding.options,
     format: binding.format

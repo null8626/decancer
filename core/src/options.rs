@@ -79,7 +79,7 @@ impl Options {
     ///
     /// **NOTE:** This speeds up the function call, but **can break [right-to-left characters](https://en.wikipedia.org/wiki/Bidirectional_text)**. It's highly recommended to also use [`retain_arabic`][Options::retain_arabic] and [`retain_hebrew`][Options::retain_hebrew].
     1: disable_bidi,
-    
+
     /// Prevents decancer from curing characters *with* diacritics or accents.
     ///
     /// ```rust
@@ -159,7 +159,7 @@ impl Options {
         None => break,
       };
     }
-    
+
     None
   }
 }

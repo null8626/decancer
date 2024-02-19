@@ -123,7 +123,7 @@ for (const data of unicodeIter(unicode)) {
       if (/LETTER \w* WITH /.test(data[1])) {
         cache.diacritics.push(codepoint)
       }
-      
+
       expected.push(codepoint)
     }
 
@@ -153,21 +153,28 @@ import cheerio from 'cheerio'
 
 console.log('- fetching unicode blocks...')
 
-const blocksResponse = await fetch('https://en.wikipedia.org/wiki/Unicode_block')
+const blocksResponse = await fetch(
+  'https://en.wikipedia.org/wiki/Unicode_block'
+)
 const $ = cheerio.load(await blocksResponse.text())
 
 // we do a little scraping
 $('tr').each((i, element) => {
   if (element.children?.length === 12) {
     const tags = element.children.filter(y => y.type === 'tag')
-    
+
     try {
-      const [start, end] = tags[1].children.find(y => y.name === 'span').children[0].data.split('..').map(z => parseInt(z.slice(2), 16))
-      
+      const [start, end] = tags[1].children
+        .find(y => y.name === 'span')
+        .children[0].data.split('..')
+        .map(z => parseInt(z.slice(2), 16))
+
       cache.blocks.push({
         start,
         end,
-        name: tags[2].children.find(y => y.name === 'a').children[0].data.toLowerCase()
+        name: tags[2].children
+          .find(y => y.name === 'a')
+          .children[0].data.toLowerCase()
       })
     } catch {}
   }
