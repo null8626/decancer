@@ -49,6 +49,39 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 ## Installation
 
+Decancer is supported in the following platforms:
+
+Platform name | C/C++/Rust | Java | JavaScript
+---- | ---- | ---- | ----
+ARM64 macOS (11.0+, Big Sur+) | ✓ | ✓ | ✓ |
+ARM64 iOS | ✓ | | |
+Apple iOS Simulator on ARM6 | ✓ | | |
+ARM64 Android | ✓ | | ✓ |
+ARM64 Windows MSVC | ✓ | ✓ | ✓ |
+ARM64 Linux (kernel 4.1, glibc 2.17+) | ✓ | ✓ | ✓ |
+ARM64 Linux with MUSL | ✓ | ✓ | ✓ |
+ARMv6 Linux (kernel 3.2, glibc 2.17) | ✓ | ✓ | |
+ARMv5TE Linux (kernel 4.4, glibc 2.23) | ✓ | ✓ | |
+ARMv7-A Android | ✓ | | ✓ |
+ARMv7-A Linux (kernel 4.15, glibc 2.27) | ✓ | ✓ | |
+ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17) | ✓ | ✓ | ✓ |
+32-bit Linux w/o SSE (kernel 3.2, glibc 2.17) | ✓ | | |
+32-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
+32-bit FreeBSD | ✓ | ✓ | |
+32-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | |
+PPC64LE Linux (kernel 3.10, glibc 2.17) | ✓ | | |
+RISC-V Linux (kernel 4.20, glibc 2.29) | ✓ | ✓ | |
+S390x Linux (kernel 3.2, glibc 2.17) | ✓ | | |
+SPARC Solaris 11, illumos | ✓ | | |
+Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23) | ✓ | | |
+64-bit macOS (10.12+, Sierra+) | ✓ | ✓ | ✓ |
+64-bit iOS | ✓ | | |
+64-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
+64-bit FreeBSD | ✓ | ✓ | |
+64-bit illumos | ✓ | | |
+64-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | ✓ |
+64-bit Linux with MUSL | ✓ | ✓ | ✓ |
+
 <details>
 <summary><b>Rust (v1.64 or later)</b></summary>
 
@@ -146,17 +179,34 @@ $ ./gradlew build --warning-mode all
 
 ### Download
 
-- [Library header file](https://raw.githubusercontent.com/null8626/decancer/v2.0.2/bindings/native/decancer.h)
-- [Download for 64-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-pc-windows-msvc.zip)
-- [Download for 32-bit Windows MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-i686-pc-windows-msvc.zip)
-- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-pc-windows-msvc.zip)
-- [Download for 64-bit macOS (10.7+, Lion+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-apple-darwin.zip)
 - [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-apple-darwin.zip)
-- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-unknown-linux-gnu.zip)
-- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-unknown-linux-musl.zip)
+- [Download for ARM64 iOS](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-apple-ios.zip)
+- [Download for Apple iOS Simulator on ARM6](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-apple-ios-sim.zip)
+- [Download for ARM64 Android](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-linux-android.zip)
+- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-pc-windows-msvc.zip)
 - [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-unknown-linux-gnu.zip)
 - [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-aarch64-unknown-linux-musl.zip)
-- [Download for ARMv7 Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-armv7-unknown-linux-gnueabihf.zip)
+- [Download for ARMv6 Linux (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-arm-unknown-linux-gnueabi.zip)
+- [Download for ARMv5TE Linux (kernel 4.4, glibc 2.23)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-armv5te-unknown-linux-gnueabi.zip)
+- [Download for ARMv7-A Android](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-armv7-linux-androideabi.zip)
+- [Download for ARMv7-A Linux (kernel 4.15, glibc 2.27)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-armv7-unknown-linux-gnueabi.zip)
+- [Download for ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-armv7-unknown-linux-gnueabihf.zip)
+- [Download for 32-bit Linux w/o SSE (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-i586-unknown-linux-gnu.zip)
+- [Download for 32-bit MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-i686-pc-windows-msvc.zip)
+- [Download for 32-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-i686-unknown-freebsd.zip)
+- [Download for 32-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-i686-unknown-linux-gnu.zip)
+- [Download for PPC64LE Linux (kernel 3.10, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-powerpc64le-unknown-linux-gnu.zip)
+- [Download for RISC-V Linux (kernel 4.20, glibc 2.29)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-riscv64gc-unknown-linux-gnu.zip)
+- [Download for S390x Linux (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-s390x-unknown-linux-gnu.zip)
+- [Download for SPARC Solaris 11, illumos](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-sparcv9-sun-solaris.zip)
+- [Download for Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-thumbv7neon-unknown-linux-gnueabihf.zip)
+- [Download for 64-bit macOS (10.12+, Sierra+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-apple-darwin.zip)
+- [Download for 64-bit iOS](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-apple-ios.zip)
+- [Download for 64-bit MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-pc-windows-msvc.zip)
+- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-unknown-freebsd.zip)
+- [Download for 64-bit illumos](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-unknown-illumos.zip)
+- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-unknown-linux-gnu.zip)
+- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v2.0.2/decancer-x86_64-unknown-linux-musl.zip)
 
 ### Building from source
 
