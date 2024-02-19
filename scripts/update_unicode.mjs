@@ -149,14 +149,14 @@ await execute('npm i cheerio', {
   stdio: 'inherit'
 })
 
-import cheerio from 'cheerio'
+const cheerio = await import('cheerio')
 
 console.log('- fetching unicode blocks...')
 
 const blocksResponse = await fetch(
   'https://en.wikipedia.org/wiki/Unicode_block'
 )
-const $ = cheerio.load(await blocksResponse.text())
+const $ = cheerio.default.load(await blocksResponse.text())
 
 // we do a little scraping
 $('tr').each((i, element) => {

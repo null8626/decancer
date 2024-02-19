@@ -548,7 +548,8 @@ jobs:
         working-directory: bindings/wasm
         run: |
           wasm-pack build --no-typescript --release -t web
-          mv ./pkg/decancer_wasm_bg.wasm ../../decancer.wasm
+          mv -f ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
+          cp ./bin/decancer.wasm ../..
       - name: Test wasm
         working-directory: bindings/wasm/tests
         run: |
@@ -559,6 +560,7 @@ jobs:
         with:
           name: wasm
           path: decancer.wasm
+          if-no-files-found: error
   commit:
     name: Commit changes
     runs-on: ubuntu-latest
