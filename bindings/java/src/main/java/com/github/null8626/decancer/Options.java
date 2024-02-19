@@ -47,8 +47,9 @@ public final class Options {
    * NOTE: Many confusables are neither an uppercase or a lowercase character.
    * Therefore, the decancer defaults to displaying the translation in lowercase.
    */
-  public void retainCapitalization() {
+  public Options retainCapitalization() {
     this.inner |= (1 << 0);
+    return this;
   }
 
   /**
@@ -58,8 +59,9 @@ public final class Options {
    * NOTE: This speeds up the function call, but can break right-to-left characters.
    * It's highly recommended to also use retainArabic() and retainHebrew().
    */
-  public void disableBidi() {
+  public Options disableBidi() {
     this.inner |= (1 << 1);
+    return this;
   }
 
   /**
@@ -68,113 +70,129 @@ public final class Options {
    * <p>
    * NOTE: Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
    */
-  public void retainDiacritics() {
+  public Options retainDiacritics() {
     this.inner |= (1 << 2);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all greek characters.
    */
-  public void retainGreek() {
+  public Options retainGreek() {
     this.inner |= (1 << 3);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all cyrillic characters.
    */
-  public void retainCyrillic() {
+  public Options retainCyrillic() {
     this.inner |= (1 << 4);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all hebrew characters.
    */
-  public void retainHebrew() {
+  public Options retainHebrew() {
     this.inner |= (1 << 5);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all arabic characters.
    */
-  public void retainArabic() {
+  public Options retainArabic() {
     this.inner |= (1 << 6);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all devanagari characters.
    */
-  public void retainDevanagari() {
+  public Options retainDevanagari() {
     this.inner |= (1 << 7);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all bengali characters.
    */
-  public void retainBengali() {
+  public Options retainBengali() {
     this.inner |= (1 << 8);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all armenian characters.
    */
-  public void retainArmenian() {
+  public Options retainArmenian() {
     this.inner |= (1 << 9);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all gujarati characters.
    */
-  public void retainGujarati() {
+  public Options retainGujarati() {
     this.inner |= (1 << 10);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all tamil characters.
    */
-  public void retainTamil() {
+  public Options retainTamil() {
     this.inner |= (1 << 11);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all thai characters.
    */
-  public void retainThai() {
+  public Options retainThai() {
     this.inner |= (1 << 12);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all lao characters.
    */
-  public void retainLao() {
+  public Options retainLao() {
     this.inner |= (1 << 13);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all burmese characters.
    */
-  public void retainBurmese() {
+  public Options retainBurmese() {
     this.inner |= (1 << 14);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all khmer characters.
    */
-  public void retainKhmer() {
+  public Options retainKhmer() {
     this.inner |= (1 << 15);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all mongolian characters.
    */
-  public void retainMongolian() {
+  public Options retainMongolian() {
     this.inner |= (1 << 16);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all chinese characters.
    */
-  public void retainChinese() {
+  public Options retainChinese() {
     this.inner |= (1 << 17);
+    return this;
   }
 
   /**
@@ -183,21 +201,24 @@ public final class Options {
    * <p>
    * NOTE: To also provent decancer from curing kanji characters, use retainChinese().
    */
-  public void retainJapanese() {
+  public Options retainJapanese() {
     this.inner |= (1 << 18);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all korean characters.
    */
-  public void retainKorean() {
+  public Options retainKorean() {
     this.inner |= (1 << 19);
+    return this;
   }
 
   /**
    * Prevents decancer from curing all braille characters.
    */
-  public void retainBraille() {
+  public Options retainBraille() {
     this.inner |= (1 << 20);
+    return this;
   }
 }
