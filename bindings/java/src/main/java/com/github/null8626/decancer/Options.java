@@ -19,12 +19,12 @@ public final class Options {
   /**
    * Predefined options with all options disabled. This is useful if you want to use decancer solely for formatting.
    */
-  public static Options FORMATTER = new Options((1 << 21) - 1);
+  public static Options FORMATTER = new Options((1 << 22) - 1);
 
   /**
    * Predefined options that prevents decancer from curing characters from major foreign writing systems.
    */
-  public static Options PURE_HOMOGLYPH = new Options(((1 << 21) - 1) ^ 3);
+  public static Options PURE_HOMOGLYPH = new Options(((1 << 22) - 1) ^ 0x200003);
 
   /**
    * Creates a new Options object with decancer's default options.
@@ -219,6 +219,14 @@ public final class Options {
    */
   public Options retainBraille() {
     this.inner |= (1 << 20);
+    return this;
+  }
+  
+  /**
+   * Prevents decancer from curing all emojis.
+   */
+  public Options retainEmojis() {
+    this.inner |= (1 << 21);
     return this;
   }
 }
