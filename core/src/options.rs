@@ -50,12 +50,12 @@ macro_rules! retain {
 impl Options {
   /// Creates a new configuration where every option is enabled. This is useful if you want to use decancer solely for formatting.
   pub const fn formatter() -> Self {
-    Self((1 << 21) - 1)
+    Self((1 << 22) - 1)
   }
 
   /// Creates a new configuration that prevents decancer from curing characters from major foreign writing systems.
   pub const fn pure_homoglyph() -> Self {
-    Self(((1 << 21) - 1) ^ 0b11)
+    Self(((1 << 22) - 1) ^ 0x200003)
   }
 
   options! {
@@ -82,53 +82,36 @@ impl Options {
 
     /// Prevents decancer from curing characters *with* diacritics or accents.
     ///
-    /// ```rust
-    /// use decancer::Options;
-    ///
-    /// assert_eq!(decancer::cure!("àáâãäåèéêëìíîïñòóôõöùúûü").unwrap(), "aaaaaaeeeeiiiinooooouuuu");
-    ///
-    /// let options = Options::default().retain_diacritics();
-    ///
-    /// assert_eq!(decancer::cure("àáâãäåèéêëìíîïñòóôõöùúûü", options).unwrap(), "àáâãäåèéêëìíîïñòóôõöùúûü");
-    /// ```
-    ///
     /// **NOTE:** Decancer can still cure standalone diacritic characters, which is used in [Zalgo texts](https://en.wikipedia.org/wiki/Zalgo_text).
     2: retain_diacritics,
 
     /// Prevents decancer from curing all katakana and hiragana characters.
     ///
-    /// ```rust
-    /// use decancer::Options;
-    ///
-    /// assert_eq!(decancer::cure!("のひびぴるろん゜ァィ").unwrap(), "9uuu33hopt");
-    ///
-    /// let options = Options::default().retain_japanese();
-    ///
-    /// assert_eq!(decancer::cure("のひびぴるろん゜ァィ", options).unwrap(), "のひびぴるろん゜ァィ");
-    /// ```
-    ///
     /// **NOTE:** To also provent decancer from curing kanji characters, use [`retain_chinese`][Options::retain_chinese].
     18: retain_japanese,
+    
+    /// Prevents decancer from curing all emojis.
+    21: retain_emojis,
   }
 
   retain! {
-    3: greek("βγδεηθικλμνξοπρςστυ", "by6en0ikauveonpcotu"),
-    4: cyrillic("абвгдежзийклмхцчшщъыь", "a6braex3nnknmxu4wwbbib"),
-    5: hebrew("׀׆אבגדהוזחטךכםמןנסעפץצקרשתװ", "icxda7niino7dooijovgyyprwnii"),
-    6: arabic("١٤٥٦٧٨", "ieo7va"),
-    7: devanagari("टभऽ।॥०१२३५६७८॰", "c4siiioqr34e9co"),
-    8: bengali("ঀৎ০২৪৭৮৷৸", "qeo28qbih"),
-    9: armenian("աբգդեզէթժիլխծկհձղ", "wpqntqtpdhlno4han"),
-    10: gujarati("કઙટડપમરવષઽ૦૧૨૩૫૬૭૮૯૰૱", "ss2su4rq4soqr34e9ceo30"),
-    11: tamil("உஎடணபயறளஶௗ௦௭௰௱", "96tl6ootuwm6nuo6no6twm"),
-    12: thai("กคงฑดตถทนบปผฝพฟ", "navnaannuuuwwww"),
-    13: lao("ກຂງຊຍຖນບປຝພຟມເແ໐໓໗", "n2g2unuuuwwwucccodn"),
-    14: burmese("ဗဘယလဝသဟဢဿ၀၁၂၃", "oooooooooooooooooocjr"),
-    15: khmer("ឞសអឣឤឧឨឩឪឫឬឱ", "unhhhi2222yy2"),
-    16: mongolian("᠃᠉᠎", "\\\"\\\" "),
-    17: chinese("之乍乏乙乚乜九乞亅了", "zezzlenzj7"),
-    19: korean("ᄂᄄᄅᄆᄊᄋᄏᄐᄔᄕ", "lcc2omofelllc"),
-    20: braille("⡅⡇⡖⡟⡯⡸⡹⢗⢨⣖⣫⣻", "ilrpfj2ticsg"),
+    3: greek,
+    4: cyrillic,
+    5: hebrew,
+    6: arabic,
+    7: devanagari,
+    8: bengali,
+    9: armenian,
+    10: gujarati,
+    11: tamil,
+    12: thai,
+    13: lao,
+    14: burmese,
+    15: khmer,
+    16: mongolian,
+    17: chinese,
+    19: korean,
+    20: braille,
   }
 
   pub(crate) const fn is(self, attribute_idx: u8) -> bool {

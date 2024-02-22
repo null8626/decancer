@@ -84,20 +84,34 @@ function validCodepoint(codepoint) {
   return codepoint < 0xe01f0 && (codepoint < 0xd800 || codepoint > 0xf8ff)
 }
 
+function install(packageName) {
+  return execute(`npm i ${packageName}`, {
+    stdio: 'inherit'
+  })
+}
+
+console.log('- installing dependencies...')
+
+await Promise.all([install('cheerio'), install('twemoji-parser')])
+
 const bidiExpanded = new SortedSet(x => x[0])
 
-const unicode = (
-  await request('https://unicode.org/Public/UNIDATA/UnicodeData.txt')
-)
+console.log('- importing dependencies and fetching unicode data from Unicode...')
+
+const [unicodeResponse, cheerio, twemojiParser] = await Promise.all([request('https://unicode.org/Public/UNIDATA/UnicodeData.txt'), import('cheerio'), import('twemoji-parser')])
+
+const unicode =
+  unicodeResponse
   .trimRight()
   .split('\n')
   .map(x => x.split(';'))
 
-let expected = new SortedSet()
 let cache = {
   alreadyHandledCount: 0,
   blocks: [],
-  diacritics: []
+  diacritics: [],
+  emojis: [],
+  expected: []
 }
 
 const onDecomps = {}
@@ -122,9 +136,11 @@ for (const data of unicodeIter(unicode)) {
     ) {
       if (/LETTER \w* WITH /.test(data[1])) {
         cache.diacritics.push(codepoint)
+      } else if (twemojiParser.parse(String.fromCodePoint(codepoint)).length > 0) {
+        cache.emojis.push(codepoint)
       }
 
-      expected.push(codepoint)
+      cache.expected.push(codepoint)
     }
 
     const decomp = data[5]
@@ -140,16 +156,6 @@ for (const data of unicodeIter(unicode)) {
     cache.alreadyHandledCount += 1
   }
 }
-
-cache.expected = expected.array
-
-console.log('- installing cheerio...')
-
-await execute('npm i cheerio', {
-  stdio: 'inherit'
-})
-
-const cheerio = await import('cheerio')
 
 console.log('- fetching unicode blocks...')
 
