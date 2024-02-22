@@ -27,7 +27,9 @@ if (!existsSync(CACHE_FILE)) {
   })
 }
 
-const { blocks, diacritics, expected, emojis } = deserialize(readFileSync(CACHE_FILE))
+const { blocks, diacritics, expected, emojis } = deserialize(
+  readFileSync(CACHE_FILE)
+)
 
 if (typeof process.argv[2] !== 'string') {
   console.error('error: missing json file path.')
@@ -85,7 +87,9 @@ function getAttributes(codepoint) {
 
   const retainableScriptShift = retainableScript
     ? retainableScript[1].shift ?? retainableScript[1]
-    : (binarySearchExists(emojis, codepoint) ? 21 : 0)
+    : binarySearchExists(emojis, codepoint)
+      ? 21
+      : 0
 
   return (
     (retainableScriptShift << 1) |

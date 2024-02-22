@@ -96,12 +96,17 @@ await Promise.all([install('cheerio'), install('twemoji-parser')])
 
 const bidiExpanded = new SortedSet(x => x[0])
 
-console.log('- importing dependencies and fetching unicode data from Unicode...')
+console.log(
+  '- importing dependencies and fetching unicode data from Unicode...'
+)
 
-const [unicodeResponse, cheerio, twemojiParser] = await Promise.all([request('https://unicode.org/Public/UNIDATA/UnicodeData.txt'), import('cheerio'), import('twemoji-parser')])
+const [unicodeResponse, cheerio, twemojiParser] = await Promise.all([
+  request('https://unicode.org/Public/UNIDATA/UnicodeData.txt'),
+  import('cheerio'),
+  import('twemoji-parser')
+])
 
-const unicode =
-  unicodeResponse
+const unicode = unicodeResponse
   .trimRight()
   .split('\n')
   .map(x => x.split(';'))
@@ -136,7 +141,9 @@ for (const data of unicodeIter(unicode)) {
     ) {
       if (/LETTER \w* WITH /.test(data[1])) {
         cache.diacritics.push(codepoint)
-      } else if (twemojiParser.parse(String.fromCodePoint(codepoint)).length > 0) {
+      } else if (
+        twemojiParser.parse(String.fromCodePoint(codepoint)).length > 0
+      ) {
         cache.emojis.push(codepoint)
       }
 

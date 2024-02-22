@@ -79,7 +79,7 @@ impl Options {
     ///
     /// **NOTE:** To also provent decancer from curing kanji characters, use [`retain_chinese`][Options::retain_chinese].
     18: retain_japanese,
-    
+
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
   }
