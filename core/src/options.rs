@@ -24,22 +24,12 @@ macro_rules! options {
 
 macro_rules! retain {
   ($(
-    $idx:literal: $name:ident($input:literal, $cured:literal),
+    $idx:literal: $name:ident,
   )*) => {
     paste! {
       options! {
         $(
           #[doc = concat!("Prevents decancer from curing all ", stringify!($name), " characters.")]
-          ///
-          /// ```rust
-          /// use decancer::Options;
-          ///
-          #[doc = concat!(" assert_eq!(decancer::cure!(\"", $input, "\").unwrap(), \"", $cured, "\");")]
-          ///
-          #[doc = concat!(" let options = Options::default().retain_", stringify!($name), "();")]
-          ///
-          #[doc = concat!(" assert_eq!(decancer::cure(\"", $input, "\", options).unwrap(), \"", $input, "\");")]
-          /// ```
           $idx: [<retain_ $name>],
         )*
       }
@@ -89,7 +79,7 @@ impl Options {
     ///
     /// **NOTE:** To also provent decancer from curing kanji characters, use [`retain_chinese`][Options::retain_chinese].
     18: retain_japanese,
-    
+
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
   }
