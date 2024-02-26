@@ -65,12 +65,10 @@ impl Codepoint {
 
     if other > conf {
       Some(Ordering::Greater)
+    } else if options.refuse_cure(self.2) {
+      None
     } else {
-      if options.refuse_cure(self.2) {
-        None
-      } else {
-        Some(Ordering::Equal)
-      }
+      Some(Ordering::Equal)
     }
   }
 

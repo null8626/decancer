@@ -108,6 +108,7 @@ impl Options {
     (self.0 & (1 << attribute_idx as u32)) != 0
   }
 
+  #[allow(clippy::transmute_int_to_bool)]
   pub(crate) const fn refuse_cure(self, attributes: u8) -> bool {
     let locale = attributes >> 1;
 

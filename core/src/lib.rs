@@ -112,7 +112,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
       CASE_SENSITIVE_CODEPOINTS_COUNT as _,
     ) {
       return if retain_capitalization {
-        translation.to_uppercase()
+        translation.into_uppercase()
       } else {
         translation
       };

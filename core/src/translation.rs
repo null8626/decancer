@@ -42,7 +42,7 @@ impl Translation {
     Self::Character(unsafe { transmute(code) })
   }
 
-  pub(crate) fn to_uppercase(self) -> Self {
+  pub(crate) fn into_uppercase(self) -> Self {
     match self {
       Self::Character(c) => Self::Character(unsafe { c.to_uppercase().next().unwrap_unchecked() }),
       Self::String(s) => Self::String(Cow::Owned(s.as_ref().to_uppercase())),
@@ -72,7 +72,7 @@ where
           .unwrap_or_default()
       }
 
-      Self::String(s) => s.len() == o.len() && similar::is_str(s, o),
+      Self::String(s) => s.len() == o.len() && similar::is_str(s, o, true),
       Self::None => o.is_empty(),
     }
   }
