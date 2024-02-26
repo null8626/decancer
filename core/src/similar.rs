@@ -250,9 +250,7 @@ where
         Some(separator) => {
           if truly_ended(matched, state, &mut other_iterator) {
             return true;
-          }
-
-          if !is(self_char as _, separator) {
+          } else if !is(self_char as _, separator) {
             other_iterator.restart();
 
             // SAFETY: this is impossible to be None
