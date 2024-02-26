@@ -28,6 +28,7 @@ export type Options = {
   retainJapanese?: boolean
   retainKorean?: boolean
   retainBraille?: boolean
+  retainEmojis?: boolean
   pureHomoglyph?: boolean
 }
 

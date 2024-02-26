@@ -75,10 +75,11 @@ options! {
     18: retain_japanese,
     19: retain_korean,
     20: retain_braille,
+    21: retain_emojis,
   }
 
   overrides {
-    pure_homoglyph: ((1 << 21) - 1) ^ 0b11,
+    pure_homoglyph: ((1 << 22) - 1) ^ 0x200003,
   }
 }
 

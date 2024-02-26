@@ -1,4 +1,4 @@
-use std::ops::{Index, IndexMut, Range};
+use std::ops::{Deref, DerefMut, Index, IndexMut, Range};
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
@@ -24,4 +24,75 @@ pub(crate) fn sliced_mut<T: IndexMut<Range<usize>> + ?Sized>(
   range: Range<usize>,
 ) -> &mut <T as Index<Range<usize>>>::Output {
   slicable.index_mut(range)
+}
+
+pub(crate) trait RestartableOpt<T>: Iterator<Item = T> {
+  fn restart_callback(&mut self) {}
+}
+
+pub(crate) struct Restartable<I, E> {
+  iterator: I,
+  members: Vec<E>,
+  index: usize,
+}
+
+impl<I, E> Restartable<I, E>
+where
+  I: RestartableOpt<E>,
+{
+  #[inline(always)]
+  pub(crate) fn new(iterator: I) -> Self {
+    let (size_hint, _) = iterator.size_hint();
+
+    Self {
+      iterator,
+      members: Vec::with_capacity(size_hint),
+      index: 0,
+    }
+  }
+
+  #[inline(always)]
+  pub(crate) fn restart(&mut self) {
+    self.iterator.restart_callback();
+    self.index = 0;
+  }
+}
+
+impl<I, E> Iterator for Restartable<I, E>
+where
+  I: RestartableOpt<E>,
+  E: Clone,
+{
+  type Item = E;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.index += 1;
+
+    match self.members.get(self.index - 1) {
+      Some(value) => Some(value.clone()),
+
+      None => {
+        let value = self.iterator.next()?;
+        self.members.push(value.clone());
+
+        Some(value)
+      }
+    }
+  }
+}
+
+impl<I, E> Deref for Restartable<I, E> {
+  type Target = I;
+
+  #[inline(always)]
+  fn deref(&self) -> &Self::Target {
+    &self.iterator
+  }
+}
+
+impl<I, E> DerefMut for Restartable<I, E> {
+  #[inline(always)]
+  fn deref_mut(&mut self) -> &mut Self::Target {
+    &mut self.iterator
+  }
 }

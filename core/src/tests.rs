@@ -1,5 +1,9 @@
-use crate::Class;
+use crate::{
+  bidi::{IsolatingRunSequence, Paragraph},
+  similar, Class, Level,
+};
 use proptest::prelude::*;
+use std::{mem::MaybeUninit, ops::Range};
 
 proptest! {
   #![proptest_config(ProptestConfig::with_cases(2000))]
@@ -13,6 +17,50 @@ proptest! {
   fn string_crash(s in "\\PC*") {
     let _ = crate::cure!(&s);
   }
+}
+
+#[test]
+fn similar_equal() {
+  assert!(similar::is_str("hello", "hello", true));
+  assert!(similar::is_str("hhheeeeelllloo", "hello", true));
+  assert!(similar::is_str("hh-he  e ee!e!ll/l/lo//o", "hello", true));
+
+  assert!(!similar::is_str("-", "hello", true));
+  assert!(!similar::is_str("- !?", "hello", true));
+  assert!(!similar::is_str("hello-", "hello", true));
+  assert!(!similar::is_str("---hello", "hello", true));
+}
+
+#[test]
+fn similar_beginning() {
+  assert!(similar::is_str("hello?", "hello", false));
+  assert!(similar::is_str("hhheeeeelllloo!!", "hello", false));
+  assert!(similar::is_str(
+    "hh-he  e ee!e!ll/l/lo//o-?",
+    "hello",
+    false
+  ));
+
+  assert!(!similar::is_str("---hello-", "hello", false));
+}
+
+#[test]
+fn similar_contains() {
+  macro_rules! is_contains {
+    ($string:literal, $expected:literal) => {
+      $crate::similar::is_contains($string.chars(), $expected.chars())
+    };
+  }
+
+  assert!(is_contains!("hello?", "hello"));
+  assert!(is_contains!("hhheeeeelllloo!!", "hello"));
+  assert!(is_contains!("hh-he  e ee!e!ll/l/lo//o-?", "hello"));
+
+  assert!(is_contains!("-!?hel$2-hello?", "hello"));
+  assert!(is_contains!("-!?hel$2-hhheeeeelllloo!!", "hello"));
+  assert!(is_contains!("-!?hel$2-hh-he  e ee!e!ll/l/lo//o-?", "hello"));
+
+  assert!(!is_contains!("ello?", "hello"));
 }
 
 #[test]
@@ -49,42 +97,6 @@ fn bidi_class() {
   assert_eq!(Class::new(0x1ee00), Some(Class::AL));
 
   assert_eq!(Class::new(0x30000), Some(Class::L));
-}
-
-use crate::{
-  bidi::{IsolatingRunSequence, Paragraph},
-  Level,
-};
-use std::{mem::MaybeUninit, ops::Range};
-
-macro_rules! classes {
-  ($($rest:tt),*) => {
-    &[$(Class::$rest),*]
-  }
-}
-
-macro_rules! levels {
-  ($($rest:tt),*) => {
-    &[$(Level($rest)),*]
-  }
-}
-
-macro_rules! runs {
-  ($([$($start:literal..$end:literal),*]),*) => {
-    vec![$(vec![$($start..$end),*]),*]
-  }
-}
-
-macro_rules! irs {
-  ($(
-    [[$($start:literal..$end:literal),*],$sos:ident,$eos:ident],
-  )*) => {
-    &[$(IsolatingRunSequence {
-      runs: vec![$($start..$end),*],
-      start_class: Class::$sos,
-      end_class: Class::$eos,
-    },)*]
-  }
 }
 
 fn irs_sorted(
@@ -133,6 +145,36 @@ fn test_irs(
 #[test]
 #[allow(invalid_value)]
 fn isolating_run_sequences() {
+  macro_rules! classes {
+    ($($rest:tt),*) => {
+      &[$(Class::$rest),*]
+    }
+  }
+
+  macro_rules! levels {
+    ($($rest:tt),*) => {
+      &[$(Level($rest)),*]
+    }
+  }
+
+  macro_rules! runs {
+    ($([$($start:literal..$end:literal),*]),*) => {
+      vec![$(vec![$($start..$end),*]),*]
+    }
+  }
+
+  macro_rules! irs {
+    ($(
+      [[$($start:literal..$end:literal),*],$sos:ident,$eos:ident],
+    )*) => {
+      &[$(IsolatingRunSequence {
+        runs: vec![$($start..$end),*],
+        start_class: Class::$sos,
+        end_class: Class::$eos,
+      },)*]
+    }
+  }
+
   // SAFETY: only the level property is read in the isolating_run_sequences method.
   let mock_paragraph = unsafe {
     Paragraph {

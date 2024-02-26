@@ -40,7 +40,7 @@ async function updateReadme() {
   const caseSensitiveCodepoints = []
   let offset = codepointsEnd
 
-  for (; offset < caseSensitiveCodepointsEnd; offset += 5) {
+  for (; offset < caseSensitiveCodepointsEnd; offset += 6) {
     const integer = bin.readUint32LE(offset)
 
     const codepoint = integer & CODEPOINT_MASK
@@ -60,7 +60,7 @@ async function updateReadme() {
     codepointsCount += toAdd
   }
 
-  for (offset = 6; offset < codepointsEnd; offset += 5) {
+  for (offset = 6; offset < codepointsEnd; offset += 6) {
     const integer = bin.readUint32LE(offset)
 
     const codepoint = integer & CODEPOINT_MASK
