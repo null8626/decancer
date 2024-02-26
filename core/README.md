@@ -108,7 +108,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.null8626:decancer:3.0.0'
+  implementation 'com.github.null8626:decancer:c87fb210a'
 }
 ```
 
@@ -126,7 +126,7 @@ In your `pom.xml`:
   <dependency>
     <groupId>com.github.null8626</groupId>
     <artifactId>decancer</artifactId>
-    <version>3.0.0</version>
+    <version>c87fb210a</version>
   </dependency>
 </dependencies>
 ```
