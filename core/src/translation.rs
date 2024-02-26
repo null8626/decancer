@@ -72,7 +72,7 @@ where
           .unwrap_or_default()
       }
 
-      Self::String(s) => s.len() == o.len() && similar::is_str(s, o, true),
+      Self::String(s) => s.len() >= o.len() && similar::is_str(s, o, true),
       Self::None => o.is_empty(),
     }
   }

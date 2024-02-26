@@ -31,7 +31,7 @@ impl CuredString {
   #[must_use]
   #[inline(always)]
   pub fn starts_with(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_str(self, other, true)
+    self.len() >= other.len() && similar::is_str(self, other, false)
   }
 
   /// Checks if this [`CuredString`] ***similarly*** ends with another string.
@@ -40,7 +40,7 @@ impl CuredString {
   #[must_use]
   #[inline(always)]
   pub fn ends_with(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_iter(self.chars().rev(), other.chars().rev(), true)
+    self.len() >= other.len() && similar::is_iter(self.chars().rev(), other.chars().rev(), false)
   }
 
   /// Checks if this [`CuredString`] ***similarly*** contains another string.
@@ -79,7 +79,7 @@ where
   fn eq(&self, other: &S) -> bool {
     let other = other.as_ref();
 
-    self.len() == other.len() && similar::is_str(self, other, true)
+    self.len() >= other.len() && similar::is_str(self, other, true)
   }
 }
 
