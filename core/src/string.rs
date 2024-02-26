@@ -31,7 +31,7 @@ impl CuredString {
   #[must_use]
   #[inline(always)]
   pub fn starts_with(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_str(self, other)
+    self.len() >= other.len() && similar::is_str(self, other, true)
   }
 
   /// Checks if this [`CuredString`] ***similarly*** ends with another string.
@@ -40,34 +40,16 @@ impl CuredString {
   #[must_use]
   #[inline(always)]
   pub fn ends_with(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_iter(self.chars().rev(), other.chars().rev())
+    self.len() >= other.len() && similar::is_iter(self.chars().rev(), other.chars().rev(), true)
   }
 
   /// Checks if this [`CuredString`] ***similarly*** contains another string.
   ///
   /// This comparison is *case-insensitive*.
   #[must_use]
+  #[inline(always)]
   pub fn contains(&self, other: &str) -> bool {
-    if other.len() > self.len() {
-      return false;
-    }
-
-    let other_chars: Vec<_> = other.chars().collect();
-    let mut other_index = 0usize;
-
-    for self_char in self.chars() {
-      if similar::is(self_char as _, other_chars[other_index]) {
-        other_index += 1;
-
-        if other_index == other_chars.len() {
-          return true;
-        }
-      } else {
-        other_index = 0;
-      }
-    }
-
-    false
+    self.len() >= other.len() && similar::is_contains(self.chars(), other.chars())
   }
 }
 
@@ -97,7 +79,7 @@ where
   fn eq(&self, other: &S) -> bool {
     let other = other.as_ref();
 
-    self.len() == other.len() && similar::is_str(self, other)
+    self.len() == other.len() && similar::is_str(self, other, true)
   }
 }
 
