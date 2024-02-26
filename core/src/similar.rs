@@ -99,11 +99,10 @@ where
     let current = self.current;
     let next_char = self.iterator.next();
 
-    if let Some(next_char_inner) = next_char {
-      self.current = next_char_inner;
-    } else {
-      self.ended = true;
-    }
+    match next_char {
+      Some(next_char_inner) => self.current = next_char_inner,
+      None => self.ended = true,
+    };
 
     Some(PeekResult::new(current, next_char))
   }
@@ -251,9 +250,7 @@ where
         Some(separator) => {
           if truly_ended(matched, state, &mut other_iterator) {
             return true;
-          }
-
-          if !is(self_char as _, separator) {
+          } else if !is(self_char as _, separator) {
             other_iterator.restart();
 
             // SAFETY: this is impossible to be None

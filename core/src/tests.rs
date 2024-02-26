@@ -33,6 +33,7 @@ fn similar_equal() {
 
 #[test]
 fn similar_beginning() {
+  assert!(similar::is_str("hello", "hello", false));
   assert!(similar::is_str("hello?", "hello", false));
   assert!(similar::is_str("hhheeeeelllloo!!", "hello", false));
   assert!(similar::is_str(
@@ -52,6 +53,7 @@ fn similar_contains() {
     };
   }
 
+  assert!(is_contains!("hello", "hello"));
   assert!(is_contains!("hello?", "hello"));
   assert!(is_contains!("hhheeeeelllloo!!", "hello"));
   assert!(is_contains!("hh-he  e ee!e!ll/l/lo//o-?", "hello"));

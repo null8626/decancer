@@ -18,6 +18,12 @@ function updateJsonFunc(str) {
   return JSON.stringify(json, null, 2)
 }
 
+function updateGradleFunc(x) {
+  return x
+    .replace(/'\d+\.\d+\.\d+'/g, `'${process.argv[2]}'`)
+    .replace(/\/v\d+\.\d+\.\d+\//, `/v${process.argv[2]}/`)
+}
+
 const updateTomlFunc = x =>
   x.replace(/version = "\d+\.\d+\.\d+"/, `version = "${process.argv[2]}"`)
 const directUpdateFunc = x => x.replace(/(\d\.\d\.\d)/g, process.argv[2])
@@ -35,6 +41,7 @@ void (await Promise.all([
   update(join(ROOT_DIR, 'index.html'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
+  update(join(ROOT_DIR, 'bindings', 'java', 'build.gradle'), updateGradleFunc),
   new Promise(resolve => {
     readdir(join(NODE_DIR, 'npm')).then(files => {
       Promise.all(

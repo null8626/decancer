@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-linux-arm-gnueabihf",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "os": [
     "linux"
   ],
