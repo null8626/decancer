@@ -165,10 +165,8 @@ where
       };
     } else if current_other.matches_current(self_char) {
       state = State::Matched;
-      matched = other_iterator.ended;
       current_separator = None;
-
-      continue;
+      matched = other_iterator.ended;
     } else {
       if is_equal && matched {
         return false;
@@ -241,10 +239,8 @@ where
       };
     } else if current_other.matches_current(self_char) {
       state = State::Matched;
-      matched = other_iterator.ended;
       current_separator = None;
-
-      continue;
+      matched = other_iterator.ended;
     } else {
       match current_separator {
         Some(separator) => {
