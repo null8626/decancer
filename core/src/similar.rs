@@ -126,16 +126,12 @@ enum State {
   Separation,
 }
 
+#[inline(always)]
 fn truly_ended<I>(matched: bool, state: State, other_iterator: &mut I) -> bool
 where
   I: Iterator<Item = PeekResult>,
 {
-  matched
-    || (state == State::Matched
-      && match other_iterator.next() {
-        Some(last) => last.next.is_none(),
-        None => true,
-      })
+  matched || (state == State::Matched && other_iterator.next().is_none())
 }
 
 pub(crate) fn is_iter<I>(mut self_iterator: I, other_iterator: I, is_equal: bool) -> bool
