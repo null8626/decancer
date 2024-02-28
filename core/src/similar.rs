@@ -164,10 +164,6 @@ where
       current_separator = None;
       matched = other_iterator.ended;
     } else {
-      if is_equal && matched {
-        return false;
-      }
-
       match current_separator {
         Some(separator) => {
           if !is(self_char as _, separator) {
@@ -179,6 +175,7 @@ where
           if state == State::JustStarted {
             return false;
           } else if is_equal {
+            matched = false;
             state = State::Separation;
           }
 
