@@ -548,6 +548,7 @@ jobs:
         working-directory: bindings/wasm
         run: |
           wasm-pack build --no-typescript --release -t web
+          ls -R ./pkg
           mv -f ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
           cp ./bin/decancer.wasm ../..
       - name: Test wasm
