@@ -96,3 +96,14 @@ impl<I, E> DerefMut for Restartable<I, E> {
     &mut self.iterator
   }
 }
+
+macro_rules! unwrap_or_ret {
+  ($value:expr,$fallback:expr) => {
+    match $value {
+      Some(output) => output,
+      None => return $fallback,
+    }
+  };
+}
+
+pub(crate) use unwrap_or_ret;

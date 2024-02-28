@@ -1,5 +1,5 @@
 [package]
-name = "decancer_node"
+name = "decancer_wasm"
 version = "3.0.1"
 edition = "2021"
 publish = false
