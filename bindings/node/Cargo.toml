@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 [dependencies]
 napi = { version = "2", default-features = false }
 napi-derive = { version = "2", default-features = false }
-decancer = { path = "../../core" } 
+decancer = { path = "../../core" }
 
 [build-dependencies]
 napi-build = "2"
