@@ -1,6 +1,6 @@
 use crate::{
   codepoints::CODEPOINTS,
-  util::{read_u16_le, Restartable, RestartableOpt, unwrap_or_ret},
+  util::{read_u16_le, unwrap_or_ret, Restartable, RestartableOpt},
 };
 
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) });
@@ -138,7 +138,8 @@ pub(crate) fn is_iter<I>(mut self_iterator: I, other_iterator: I, is_equal: bool
 where
   I: Iterator<Item = char>,
 {
-  let mut other_iterator = unwrap_or_ret!(Peek::new(other_iterator), self_iterator.next().is_none());
+  let mut other_iterator =
+    unwrap_or_ret!(Peek::new(other_iterator), self_iterator.next().is_none());
 
   // SAFETY: this is impossible to be None.
   let mut current_other = unsafe { other_iterator.next().unwrap_unchecked() };
@@ -186,7 +187,10 @@ pub(crate) fn is_contains<I>(mut self_iterator: I, other_iterator: I) -> bool
 where
   I: Iterator<Item = char>,
 {
-  let mut other_iterator = Restartable::new(unwrap_or_ret!(Peek::new(other_iterator), self_iterator.next().is_none()));
+  let mut other_iterator = Restartable::new(unwrap_or_ret!(
+    Peek::new(other_iterator),
+    self_iterator.next().is_none()
+  ));
 
   let mut self_char_skip = unsafe { self_iterator.next().unwrap_unchecked() as _ };
   let mut current_other;
