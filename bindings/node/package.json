@@ -4,13 +4,13 @@
   "description": "A tiny package that removes common unicode confusables/homoglyphs from strings.",
   "author": "null8626",
   "keywords": [
-    "string",
+    "security",
     "unicode",
-    "zalgo",
-    "rust",
-    "confusables",
+    "homoglyphs",
+    "string",
     "moderation",
-    "homoglyph"
+    "sanitizer",
+    "confusables"
   ],
   "repository": {
     "type": "git",

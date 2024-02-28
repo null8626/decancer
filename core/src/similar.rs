@@ -1,6 +1,6 @@
 use crate::{
   codepoints::CODEPOINTS,
-  util::{read_u16_le, Restartable, RestartableOpt},
+  util::{read_u16_le, unwrap_or_ret, Restartable, RestartableOpt},
 };
 
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) });
@@ -138,10 +138,8 @@ pub(crate) fn is_iter<I>(mut self_iterator: I, other_iterator: I, is_equal: bool
 where
   I: Iterator<Item = char>,
 {
-  let mut other_iterator = match Peek::new(other_iterator) {
-    Some(iterator) => iterator,
-    None => return self_iterator.next().is_none(),
-  };
+  let mut other_iterator =
+    unwrap_or_ret!(Peek::new(other_iterator), self_iterator.next().is_none());
 
   // SAFETY: this is impossible to be None.
   let mut current_other = unsafe { other_iterator.next().unwrap_unchecked() };
@@ -155,19 +153,12 @@ where
       current_separator = None;
       matched = other_iterator.ended;
 
-      current_other = match other_iterator.next() {
-        Some(current) => current,
-        None => return true,
-      };
+      current_other = unwrap_or_ret!(other_iterator.next(), true);
     } else if current_other.matches_current(self_char) {
       state = State::Matched;
       current_separator = None;
       matched = other_iterator.ended;
     } else {
-      if is_equal && matched {
-        return false;
-      }
-
       match current_separator {
         Some(separator) => {
           if !is(self_char as _, separator) {
@@ -179,6 +170,7 @@ where
           if state == State::JustStarted {
             return false;
           } else if is_equal {
+            matched = false;
             state = State::Separation;
           }
 
@@ -195,28 +187,21 @@ pub(crate) fn is_contains<I>(mut self_iterator: I, other_iterator: I) -> bool
 where
   I: Iterator<Item = char>,
 {
-  let mut other_iterator = match Peek::new(other_iterator) {
-    Some(iterator) => Restartable::new(iterator),
-    None => return self_iterator.next().is_none(),
-  };
+  let mut other_iterator = Restartable::new(unwrap_or_ret!(
+    Peek::new(other_iterator),
+    self_iterator.next().is_none()
+  ));
 
   let mut self_char_skip = unsafe { self_iterator.next().unwrap_unchecked() as _ };
   let mut current_other;
 
   loop {
     if is(self_char_skip as _, other_iterator.current) {
-      current_other = match other_iterator.next() {
-        Some(current_other) => current_other,
-        None => return false,
-      };
-
+      current_other = unwrap_or_ret!(other_iterator.next(), false);
       break;
     }
 
-    self_char_skip = match self_iterator.next() {
-      Some(output) => output,
-      None => return false,
-    };
+    self_char_skip = unwrap_or_ret!(self_iterator.next(), false);
   }
 
   let mut current_separator = None;
@@ -229,10 +214,7 @@ where
       current_separator = None;
       matched = other_iterator.ended;
 
-      current_other = match other_iterator.next() {
-        Some(current) => current,
-        None => return true,
-      };
+      current_other = unwrap_or_ret!(other_iterator.next(), true);
     } else if current_other.matches_current(self_char) {
       state = State::Matched;
       current_separator = None;

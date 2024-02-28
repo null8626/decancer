@@ -24,11 +24,13 @@ fn similar_equal() {
   assert!(similar::is_str("hello", "hello", true));
   assert!(similar::is_str("hhheeeeelllloo", "hello", true));
   assert!(similar::is_str("hh-he  e ee!e!ll/l/lo//o", "hello", true));
+  assert!(similar::is_str("shhhiii/iiiiitttttt/ttttt", "shit", true));
 
   assert!(!similar::is_str("-", "hello", true));
   assert!(!similar::is_str("- !?", "hello", true));
   assert!(!similar::is_str("hello-", "hello", true));
   assert!(!similar::is_str("---hello", "hello", true));
+  assert!(!similar::is_str("shhhiii/iiiiitttttt/ttttt/", "shit", true));
 }
 
 #[test]

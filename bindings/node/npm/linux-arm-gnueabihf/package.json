@@ -22,12 +22,12 @@
     "url": "https://github.com/null8626/decancer/issues"
   },
   "keywords": [
-    "string",
+    "security",
     "unicode",
-    "zalgo",
-    "regexp",
-    "confusables",
+    "homoglyphs",
+    "string",
     "moderation",
-    "homoglyph"
+    "sanitizer",
+    "confusables"
   ]
 }
