@@ -11,7 +11,7 @@ If you want to see/modify on the codepoints supported and/or their respective tr
 node scripts/read.mjs
 ```
 
-- **Or if you want a simplified and unoptimized version without ranges and all of that nonsenese, run:**
+- **Or if you want a simplified and unoptimized version without ranges and all of that nonsense, run:**
 
 ```console
 node scripts/read.mjs --full
