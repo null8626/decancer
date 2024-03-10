@@ -369,10 +369,6 @@ fn push_translation(translation: Translation, output: &mut String) {
 /// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
 pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
   Ok(CuredString(if options.is(1) {
-    reorder(input, |c, output| {
-      push_translation(cure_char_inner(c as _, options), output)
-    })?
-  } else {
     input.chars().fold(
       String::with_capacity(input.len()),
       |mut output, character| {
@@ -383,6 +379,10 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
         output
       },
     )
+  } else {
+    reorder(input, |c, output| {
+      push_translation(cure_char_inner(c as _, options), output)
+    })?
   }))
 }
 
