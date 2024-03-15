@@ -122,7 +122,7 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
 
   fn next(&mut self) -> Option<Self::Item> {
     self.other_iterator.restart();
-    
+
     let mut current_other = self.other_iterator.next()?;
 
     let (skipped, matched_skip) = self.skip_until(current_other.0)?;
