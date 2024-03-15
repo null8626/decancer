@@ -25,14 +25,17 @@ impl CuredString {
     unsafe { transmute(self) }
   }
 
+  /// Iterates throughout this string and yields every similar-looking match.
+  ///
+  /// This comparison is case-insensitive.
   #[inline(always)]
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Option<Matcher<'a, 'b>> {
     Matcher::new(self.as_str(), other)
   }
 
-  /// Checks if this [`CuredString`] ***similarly*** starts with another string.
+  /// Checks if this [`CuredString`] similarly starts with another string.
   ///
-  /// This comparison is *case-insensitive*.
+  /// This comparison is case-insensitive.
   #[must_use]
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = unwrap_or_ret!(self.find(other), false);
@@ -41,9 +44,9 @@ impl CuredString {
     mat.start == 0
   }
 
-  /// Checks if this [`CuredString`] ***similarly*** ends with another string.
+  /// Checks if this [`CuredString`] similarly ends with another string.
   ///
-  /// This comparison is *case-insensitive*.
+  /// This comparison is case-insensitive.
   #[must_use]
   pub fn ends_with(&self, other: &str) -> bool {
     let last = unwrap_or_ret!(self.find(other).and_then(|iter| iter.last()), false);
@@ -51,9 +54,9 @@ impl CuredString {
     last.end == self.len()
   }
 
-  /// Checks if this [`CuredString`] ***similarly*** contains another string.
+  /// Checks if this [`CuredString`] similarly contains another string.
   ///
-  /// This comparison is *case-insensitive*.
+  /// This comparison is case-insensitive.
   #[must_use]
   pub fn contains(&self, other: &str) -> bool {
     let mut iter = unwrap_or_ret!(self.find(other), false);
@@ -78,7 +81,7 @@ impl AsRef<str> for CuredString {
 
 /// Checks if this [`CuredString`] is ***similar*** with another string.
 ///
-/// This comparison is *case-insensitive*.
+/// This comparison is case-insensitive.
 impl<S> PartialEq<S> for CuredString
 where
   S: AsRef<str> + ?Sized,
