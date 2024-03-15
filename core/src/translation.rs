@@ -1,6 +1,7 @@
 use crate::{
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
+  Matcher,
 };
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -72,7 +73,7 @@ where
           .unwrap_or_default()
       }
 
-      Self::String(s) => s.len() >= o.len() && similar::is_str(s, o, true),
+      Self::String(s) => Matcher::is_equal(s.as_ref(), o),
       Self::None => o.is_empty(),
     }
   }

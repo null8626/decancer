@@ -1,7 +1,10 @@
+#[cfg(feature = "leetspeak")]
+use crate::leetspeak;
 use crate::{
   codepoints::CODEPOINTS,
-  util::{read_u16_le, unwrap_or_ret, Restartable, RestartableOpt},
+  util::{read_u16_le, unwrap_or_ret, Peek, Restartable},
 };
+use std::{ops::Range, str::Chars};
 
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) });
 pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CODEPOINTS.offset(4) });
@@ -41,210 +44,148 @@ pub(crate) fn is(self_char: u32, other_char: char) -> bool {
   false
 }
 
-#[derive(Copy, Clone)]
-struct PeekResult {
-  current: char,
-  next: Option<char>,
+#[must_use]
+pub struct Matcher<'a, 'b> {
+  self_iterator: Chars<'a>,
+  self_str: &'a str,
+  self_index: usize,
+  other_iterator: Restartable<Peek<Chars<'b>, char>, (char, Option<char>)>,
 }
 
-impl PeekResult {
-  const fn new(current: char, next: Option<char>) -> Self {
-    Self { current, next }
-  }
-
-  #[inline(always)]
-  fn matches_current(&mut self, self_char: char) -> bool {
-    is(self_char as _, self.current)
-  }
-
-  fn matches_next(&self, self_char: char) -> bool {
-    match self.next {
-      Some(next) => is(self_char as _, next),
-      None => false,
-    }
-  }
-}
-
-struct Peek<I> {
-  iterator: I,
-  current: char,
-  ended: bool,
-}
-
-impl<I> Peek<I>
-where
-  I: Iterator<Item = char>,
-{
-  #[inline(always)]
-  fn new(mut iterator: I) -> Option<Self> {
-    iterator.next().map(|current| Self {
-      iterator,
-      current,
-      ended: false,
+impl<'a, 'b> Matcher<'a, 'b> {
+  pub(crate) fn new(self_str: &'a str, other_str: &'b str) -> Option<Self> {
+    Some(Self {
+      self_iterator: self_str.chars(),
+      self_str,
+      self_index: 0,
+      other_iterator: Restartable::new(Peek::new(other_str.chars())?),
     })
   }
+
+  #[cfg(feature = "leetspeak")]
+  fn matches_leetspeak(&mut self, other_char: char) -> Option<usize> {
+    // SAFETY: already guaranteed to be within the string's bounds.
+    let haystack = unsafe { self.self_str.get_unchecked(self.self_index..) };
+    let matched_len = leetspeak::find(haystack, other_char as _)?;
+
+    // SAFETY: this will never go out of bounds as well
+    //         the furthest it would go would be an empty string.
+    self.self_iterator =
+      unsafe { self.self_str.get_unchecked(self.self_index + matched_len..) }.chars();
+
+    Some(matched_len)
+  }
+
+  #[cfg_attr(not(feature = "leetspeak"), inline(always))]
+  fn matches_character(&self, self_char: char, other_char: char) -> Option<usize> {
+    if is(self_char as _, other_char) {
+      Some(other_char.len_utf8())
+    } else {
+      None
+    }
+  }
+
+  fn matches(&mut self, self_char: char, other_char: char) -> Option<usize> {
+    cfg_if::cfg_if! {
+      if #[cfg(feature = "leetspeak")] {
+        self.matches_leetspeak(other_char).or_else(|| self.matches_character(self_char, other_char))
+      } else {
+        self.matches_character(self_char, other_char)
+      }
+    }
+  }
+
+  pub(crate) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
+    let mut iter = unwrap_or_ret!(Self::new(self_str, other_str), false);
+    let mat = unwrap_or_ret!(iter.next(), false);
+
+    mat.start == 0 && mat.end == self_str.len()
+  }
+
+  fn skip_until(&mut self, other_char: char) -> Option<(usize, usize)> {
+    let mut skipped = 0;
+
+    loop {
+      let next_self_char = self.self_iterator.next()?;
+
+      if let Some(matched_skip) = self.matches(next_self_char, other_char) {
+        return Some((skipped, matched_skip));
+      } else {
+        skipped += next_self_char.len_utf8();
+      }
+    }
+  }
 }
 
-impl<I> Iterator for Peek<I>
-where
-  I: Iterator<Item = char>,
-{
-  type Item = PeekResult;
+impl<'a, 'b> Iterator for Matcher<'a, 'b> {
+  type Item = Range<usize>;
 
   fn next(&mut self) -> Option<Self::Item> {
-    if self.ended {
-      return None;
-    }
+    self.other_iterator.restart();
+    
+    let mut current_other = self.other_iterator.next()?;
 
-    let current = self.current;
-    let next_char = self.iterator.next();
+    let (skipped, matched_skip) = self.skip_until(current_other.0)?;
 
-    match next_char {
-      Some(next_char_inner) => self.current = next_char_inner,
-      None => self.ended = true,
-    };
+    let mut start_index = self.self_index + skipped;
+    self.self_index = start_index + matched_skip;
+    let mut last_match_end = start_index;
+    let mut current_separator: Option<char> = None;
 
-    Some(PeekResult::new(current, next_char))
-  }
-}
+    while let Some(next_self_char) = self.self_iterator.next() {
+      if let Some(next_other) = current_other.1 {
+        if let Some(matched_skip) = self.matches(next_self_char, next_other) {
+          self.self_index += matched_skip;
+          last_match_end = self.self_index;
+          current_separator = None;
 
-impl<I> RestartableOpt<PeekResult> for Peek<I>
-where
-  I: Iterator<Item = char>,
-{
-  #[inline(always)]
-  fn restart_callback(&mut self) {
-    self.ended = false;
-  }
-}
+          current_other = unwrap_or_ret!(
+            self.other_iterator.next(),
+            Some(start_index..last_match_end)
+          );
 
-#[repr(u8)]
-#[derive(Copy, Clone, PartialEq)]
-enum State {
-  JustStarted = 0,
-  Matched,
-  Separation,
-}
-
-#[inline(always)]
-fn truly_ended<I>(matched: bool, state: State, other_iterator: &mut I) -> bool
-where
-  I: Iterator<Item = PeekResult>,
-{
-  matched || (state == State::Matched && other_iterator.next().is_none())
-}
-
-pub(crate) fn is_iter<I>(mut self_iterator: I, other_iterator: I, is_equal: bool) -> bool
-where
-  I: Iterator<Item = char>,
-{
-  let mut other_iterator =
-    unwrap_or_ret!(Peek::new(other_iterator), self_iterator.next().is_none());
-
-  // SAFETY: this is impossible to be None.
-  let mut current_other = unsafe { other_iterator.next().unwrap_unchecked() };
-  let mut current_separator = None;
-  let mut matched = false;
-  let mut state = State::JustStarted;
-
-  for self_char in self_iterator {
-    if current_other.matches_next(self_char) && state != State::JustStarted {
-      state = State::Matched;
-      current_separator = None;
-      matched = other_iterator.ended;
-
-      current_other = unwrap_or_ret!(other_iterator.next(), true);
-    } else if current_other.matches_current(self_char) {
-      state = State::Matched;
-      current_separator = None;
-      matched = other_iterator.ended;
-    } else {
-      match current_separator {
-        Some(separator) => {
-          if !is(self_char as _, separator) {
-            break;
-          }
+          continue;
         }
+      }
 
-        None => {
-          if state == State::JustStarted {
-            return false;
-          } else if is_equal {
-            matched = false;
-            state = State::Separation;
+      if let Some(matched_skip) = self.matches(next_self_char, current_other.0) {
+        self.self_index += matched_skip;
+        last_match_end = self.self_index;
+        current_separator = None;
+      } else {
+        self.self_index += next_self_char.len_utf8();
+
+        match current_separator {
+          Some(separator) => {
+            if !is(next_self_char as _, separator) {
+              if current_other.1.is_none() {
+                return Some(start_index..last_match_end);
+              }
+
+              self.other_iterator.restart();
+
+              current_separator = None;
+              // SAFETY: this state of the program wouldn't be accessible if the first iteration returns a None
+              current_other = unsafe { self.other_iterator.next().unwrap_unchecked() };
+
+              let (skipped, matched_skip) = self.skip_until(current_other.0)?;
+
+              start_index = self.self_index + skipped;
+              self.self_index = start_index + matched_skip;
+            }
           }
 
-          current_separator.replace(self_char);
+          None => {
+            current_separator.replace(next_self_char);
+          }
         }
       }
     }
-  }
 
-  truly_ended(matched, state, &mut other_iterator)
-}
-
-pub(crate) fn is_contains<I>(mut self_iterator: I, other_iterator: I) -> bool
-where
-  I: Iterator<Item = char>,
-{
-  let mut other_iterator = Restartable::new(unwrap_or_ret!(
-    Peek::new(other_iterator),
-    self_iterator.next().is_none()
-  ));
-
-  let mut self_char_skip = unsafe { self_iterator.next().unwrap_unchecked() as _ };
-  let mut current_other;
-
-  loop {
-    if is(self_char_skip as _, other_iterator.current) {
-      current_other = unwrap_or_ret!(other_iterator.next(), false);
-      break;
-    }
-
-    self_char_skip = unwrap_or_ret!(self_iterator.next(), false);
-  }
-
-  let mut current_separator = None;
-  let mut matched = false;
-  let mut state = State::Matched;
-
-  for self_char in self_iterator {
-    if current_other.matches_next(self_char) && state != State::JustStarted {
-      state = State::Matched;
-      current_separator = None;
-      matched = other_iterator.ended;
-
-      current_other = unwrap_or_ret!(other_iterator.next(), true);
-    } else if current_other.matches_current(self_char) {
-      state = State::Matched;
-      current_separator = None;
-      matched = other_iterator.ended;
+    if current_other.1.is_none() {
+      Some(start_index..last_match_end)
     } else {
-      match current_separator {
-        Some(separator) => {
-          if truly_ended(matched, state, &mut other_iterator) {
-            return true;
-          } else if !is(self_char as _, separator) {
-            other_iterator.restart();
-
-            // SAFETY: this is impossible to be None
-            current_separator = None;
-            current_other = unsafe { other_iterator.next().unwrap_unchecked() };
-            state = State::JustStarted;
-          }
-        }
-
-        None => {
-          current_separator.replace(self_char);
-        }
-      }
+      None
     }
   }
-
-  truly_ended(matched, state, &mut other_iterator)
-}
-
-#[inline(always)]
-pub(crate) fn is_str<'a>(s: &'a str, o: &'a str, is_equal: bool) -> bool {
-  is_iter(s.chars(), o.chars(), is_equal)
 }

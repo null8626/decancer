@@ -4,6 +4,8 @@
 
 mod bidi;
 mod codepoints;
+#[cfg(feature = "leetspeak")]
+mod leetspeak;
 mod options;
 mod similar;
 mod string;
@@ -14,6 +16,7 @@ mod util;
 
 use bidi::{Class, Level, Paragraph};
 pub use options::Options;
+pub use similar::Matcher;
 pub use string::CuredString;
 pub use translation::Translation;
 
