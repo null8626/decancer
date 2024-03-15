@@ -86,12 +86,12 @@ impl<'a, 'b> Matcher<'a, 'b> {
   }
 
   fn matches(&mut self, self_char: char, other_char: char) -> Option<usize> {
-    cfg_if::cfg_if! {
-      if #[cfg(feature = "leetspeak")] {
-        self.matches_leetspeak(other_char).or_else(|| self.matches_character(self_char, other_char))
-      } else {
-        self.matches_character(self_char, other_char)
-      }
+    if cfg!(feature = "leetspeak") {
+      self
+        .matches_leetspeak(other_char)
+        .or_else(|| self.matches_character(self_char, other_char))
+    } else {
+      self.matches_character(self_char, other_char)
     }
   }
 
