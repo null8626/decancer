@@ -63,7 +63,7 @@ impl<'a> CachedPeek<'a> {
       ended: false,
     })
   }
-  
+
   fn next_value(&mut self) -> Option<char> {
     self.index += 1;
 
@@ -78,11 +78,11 @@ impl<'a> CachedPeek<'a> {
       }
     }
   }
-  
+
   #[inline(always)]
   fn restart(&mut self) {
     // SAFETY: the first value always exists.
-    self.current = unsafe { *self.cache.get(0).unwrap_unchecked() };
+    self.current = unsafe { *self.cache.first().unwrap_unchecked() };
     self.index = 0;
     self.ended = false;
   }
@@ -108,6 +108,7 @@ impl<'a> Iterator for CachedPeek<'a> {
   }
 }
 
+/// A matcher iterator around a string that yields a non-inclusive [`Range`] whenever it detects a similar match.
 #[must_use]
 pub struct Matcher<'a, 'b> {
   self_iterator: Chars<'a>,
