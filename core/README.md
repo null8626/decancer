@@ -35,10 +35,11 @@
 
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
-- Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed! Absolutely NO [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) are used.
+- Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
 - By default, it's capable of filtering **215.356 (19.33%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
+  - Most [leetspeak](https://en.wikipedia.org/wiki/Leet) characters
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Several emojis
 - Unlike other packages, this package is **[unicode bidi-aware](https://en.wikipedia.org/wiki/Bidirectional_text)** in a way that it also interprets right-to-left characters in the same way as it were to be rendered by an application.

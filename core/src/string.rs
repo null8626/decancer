@@ -1,4 +1,4 @@
-use crate::similar;
+use crate::{util::unwrap_or_ret, Matcher};
 #[cfg(feature = "serde")]
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
@@ -25,31 +25,40 @@ impl CuredString {
     unsafe { transmute(self) }
   }
 
+  #[inline(always)]
+  pub fn find<'a, 'b>(&'a self, other: &'b str) -> Option<Matcher<'a, 'b>> {
+    Matcher::new(self.as_str(), other)
+  }
+
   /// Checks if this [`CuredString`] ***similarly*** starts with another string.
   ///
   /// This comparison is *case-insensitive*.
   #[must_use]
-  #[inline(always)]
   pub fn starts_with(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_str(self, other, false)
+    let mut iter = unwrap_or_ret!(self.find(other), false);
+    let mat = unwrap_or_ret!(iter.next(), false);
+
+    mat.start == 0
   }
 
   /// Checks if this [`CuredString`] ***similarly*** ends with another string.
   ///
   /// This comparison is *case-insensitive*.
   #[must_use]
-  #[inline(always)]
   pub fn ends_with(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_iter(self.chars().rev(), other.chars().rev(), false)
+    let last = unwrap_or_ret!(self.find(other).and_then(|iter| iter.last()), false);
+
+    last.end == self.len()
   }
 
   /// Checks if this [`CuredString`] ***similarly*** contains another string.
   ///
   /// This comparison is *case-insensitive*.
   #[must_use]
-  #[inline(always)]
   pub fn contains(&self, other: &str) -> bool {
-    self.len() >= other.len() && similar::is_contains(self.chars(), other.chars())
+    let mut iter = unwrap_or_ret!(self.find(other), false);
+
+    iter.next().is_some()
   }
 }
 
@@ -77,9 +86,7 @@ where
   #[must_use]
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
-    let other = other.as_ref();
-
-    self.len() >= other.len() && similar::is_str(self, other, true)
+    Matcher::is_equal(self.as_str(), other.as_ref())
   }
 }
 

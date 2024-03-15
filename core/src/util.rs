@@ -61,7 +61,7 @@ where
 impl<I, E> Iterator for Restartable<I, E>
 where
   I: RestartableOpt<E>,
-  E: Clone,
+  E: Copy,
 {
   type Item = E;
 
@@ -69,11 +69,11 @@ where
     self.index += 1;
 
     match self.members.get(self.index - 1) {
-      Some(value) => Some(value.clone()),
+      Some(value) => Some(*value),
 
       None => {
         let value = self.iterator.next()?;
-        self.members.push(value.clone());
+        self.members.push(value);
 
         Some(value)
       }
@@ -81,7 +81,10 @@ where
   }
 }
 
-impl<I, E> Deref for Restartable<I, E> {
+impl<I, E> Deref for Restartable<I, E>
+where
+  I: RestartableOpt<E>,
+{
   type Target = I;
 
   #[inline(always)]
@@ -90,17 +93,80 @@ impl<I, E> Deref for Restartable<I, E> {
   }
 }
 
-impl<I, E> DerefMut for Restartable<I, E> {
+impl<I, E> DerefMut for Restartable<I, E>
+where
+  I: RestartableOpt<E>,
+{
   #[inline(always)]
   fn deref_mut(&mut self) -> &mut Self::Target {
     &mut self.iterator
   }
 }
 
+pub(crate) struct Peek<I, E> {
+  iterator: I,
+  current: E,
+  ended: bool,
+}
+
+impl<I, E> Peek<I, E>
+where
+  I: Iterator<Item = E>,
+  E: Copy,
+{
+  #[inline(always)]
+  pub(crate) fn new(mut iterator: I) -> Option<Self> {
+    iterator.next().map(|current| Self {
+      iterator,
+      current,
+      ended: false,
+    })
+  }
+
+  pub(crate) const fn has_ended(&self) -> bool {
+    self.ended
+  }
+}
+
+impl<I, E> Iterator for Peek<I, E>
+where
+  I: Iterator<Item = E>,
+  E: Copy,
+{
+  type Item = (E, Option<E>);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    if self.has_ended() {
+      return None;
+    }
+
+    let current = self.current;
+    let next_element = self.iterator.next();
+
+    match next_element {
+      Some(next_element_inner) => self.current = next_element_inner,
+      None => self.ended = true,
+    };
+
+    Some((current, next_element))
+  }
+}
+
+impl<I, E> RestartableOpt<(E, Option<E>)> for Peek<I, E>
+where
+  I: Iterator<Item = E>,
+  E: Copy,
+{
+  #[inline(always)]
+  fn restart_callback(&mut self) {
+    self.ended = false;
+  }
+}
+
 macro_rules! unwrap_or_ret {
-  ($value:expr,$fallback:expr) => {
-    match $value {
-      Some(output) => output,
+  ($option:expr,$fallback:expr) => {
+    match $option {
+      Some(inner) => inner,
       None => return $fallback,
     }
   };
