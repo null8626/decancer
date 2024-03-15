@@ -7,14 +7,21 @@ description = "A tiny package that removes common unicode confusables/homoglyphs
 readme = "README.md"
 repository = "https://github.com/null8626/decancer"
 license = "MIT"
-keywords = ["security", "unicode", "homoglyphs", "string", "moderation", "sanitizer", "confusables"]
+keywords = ["security", "unicode", "homoglyphs", "moderation", "confusables"]
 categories = ["parsing", "text-processing", "value-formatting"]
 exclude = ["rustfmt.toml"]
 rust-version = "1.64.0"
 
 [dependencies]
+cfg-if = "1"
 paste = "1"
 serde = { version = "1", default-features = false, optional = true }
+regex = { version = "1", default-features = false, features = ["std", "perf"], optional = true }
+lazy_static = { version = "1", optional = true }
+
+[features]
+default = ["leetspeak"]
+leetspeak = ["regex", "lazy_static"]
 
 [dev-dependencies]
 proptest = { version = "1", default-features = false, features = ["std"] }
@@ -31,3 +38,6 @@ harness = false
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 rustc-args = ["--cfg", "docsrs"]
+
+[lib]
+doctest = false
