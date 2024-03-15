@@ -2,7 +2,7 @@
 use crate::leetspeak;
 use crate::{
   codepoints::CODEPOINTS,
-  util::{read_u16_le, unwrap_or_ret, Peek, Restartable},
+  util::{read_u16_le, unwrap_or_ret},
 };
 use std::{ops::Range, str::Chars};
 
@@ -44,12 +44,76 @@ pub(crate) fn is(self_char: u32, other_char: char) -> bool {
   false
 }
 
+struct CachedPeek<'a> {
+  iterator: Chars<'a>,
+  current: char,
+  cache: Vec<char>,
+  index: usize,
+  ended: bool,
+}
+
+impl<'a> CachedPeek<'a> {
+  #[inline(always)]
+  pub(crate) fn new(mut iterator: Chars<'a>) -> Option<Self> {
+    iterator.next().map(|current| Self {
+      iterator,
+      current,
+      cache: vec![current],
+      index: 0,
+      ended: false,
+    })
+  }
+  
+  fn next_value(&mut self) -> Option<char> {
+    self.index += 1;
+
+    match self.cache.get(self.index) {
+      Some(value) => Some(*value),
+
+      None => {
+        let value = self.iterator.next()?;
+        self.cache.push(value);
+
+        Some(value)
+      }
+    }
+  }
+  
+  #[inline(always)]
+  fn restart(&mut self) {
+    // SAFETY: the first value always exists.
+    self.current = unsafe { *self.cache.get(0).unwrap_unchecked() };
+    self.index = 0;
+    self.ended = false;
+  }
+}
+
+impl<'a> Iterator for CachedPeek<'a> {
+  type Item = (char, Option<char>);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    if self.ended {
+      return None;
+    }
+
+    let current = self.current;
+    let next_element = self.next_value();
+
+    match next_element {
+      Some(next_element_inner) => self.current = next_element_inner,
+      None => self.ended = true,
+    };
+
+    Some((current, next_element))
+  }
+}
+
 #[must_use]
 pub struct Matcher<'a, 'b> {
   self_iterator: Chars<'a>,
   self_str: &'a str,
   self_index: usize,
-  other_iterator: Restartable<Peek<Chars<'b>, char>, (char, Option<char>)>,
+  other_iterator: CachedPeek<'b>,
 }
 
 impl<'a, 'b> Matcher<'a, 'b> {
@@ -58,7 +122,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
       self_iterator: self_str.chars(),
       self_str,
       self_index: 0,
-      other_iterator: Restartable::new(Peek::new(other_str.chars())?),
+      other_iterator: CachedPeek::new(other_str.chars())?,
     })
   }
 
