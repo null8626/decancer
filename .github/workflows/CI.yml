@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: 20
           check-latest: true
-      - name: Ensure no_std is working
+      - name: Ensure no default features is working
         working-directory: core
         run: cargo c --no-default-features
       - name: Run cargo test
