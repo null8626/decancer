@@ -92,7 +92,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
         .matches_leetspeak(other_char)
         .or_else(|| self.matches_character(self_char, other_char))
     }
-    
+
     #[cfg(not(feature = "leetspeak"))]
     {
       self.matches_character(self_char, other_char)
