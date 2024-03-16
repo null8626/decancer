@@ -12,6 +12,6 @@ crate-type = ["cdylib"]
 decancer = { path = "../../core", default-features = false }
 
 [features]
-default = ["customization", "leetspeak"]
-customization = ["decancer/customization"]
+default = ["options", "leetspeak"]
+options = ["decancer/options"]
 leetspeak = ["decancer/leetspeak"]

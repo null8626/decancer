@@ -98,11 +98,6 @@ fn similar_find() {
   }
 
   test_find! {
-    ("wow hello wow heellllo!", "hello") {
-      4..9,
-      14..22,
-    }
-
     ("wow hell  wow heellllo", "hello") {
       14..22,
     }

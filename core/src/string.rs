@@ -30,6 +30,15 @@ impl CuredString {
   /// Returns `None` if `other` is longer than the cured string.
   ///
   /// This comparison is case-insensitive.
+  ///
+  /// ```rs
+  /// let cured = decancer::cure!("wow hello wow heellllo!").unwrap();
+  /// let mut matcher = cured.find("hello").unwrap();
+  ///
+  /// assert_eq!(matcher.next(), Some(4..9));
+  /// assert_eq!(matcher.next(), Some(14..22));
+  /// assert_eq!(matcher.next(), None);
+  /// ```
   #[inline(always)]
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Option<Matcher<'a, 'b>> {
     Matcher::new(self, other)

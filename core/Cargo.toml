@@ -19,8 +19,8 @@ regex = { version = "1", default-features = false, features = ["std", "perf"], o
 lazy_static = { version = "1", optional = true }
 
 [features]
-default = ["customization", "leetspeak"]
-customization = []
+default = ["options", "leetspeak"]
+options = []
 leetspeak = ["regex", "lazy_static"]
 
 [dev-dependencies]

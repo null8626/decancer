@@ -43,7 +43,7 @@ impl Translation {
     Self::Character(unsafe { transmute(code) })
   }
 
-  #[cfg(feature = "customization")]
+  #[cfg(feature = "options")]
   pub(crate) fn into_uppercase(self) -> Self {
     match self {
       Self::Character(c) => Self::Character(unsafe { c.to_uppercase().next().unwrap_unchecked() }),

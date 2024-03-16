@@ -1,4 +1,4 @@
-#[cfg(feature = "customization")]
+#[cfg(feature = "options")]
 use crate::Options;
 use crate::{
   similar::SIMILAR_START,
@@ -58,7 +58,7 @@ impl Codepoint {
   pub(crate) const fn matches(
     self,
     other: u32,
-    #[cfg(feature = "customization")] options: Options,
+    #[cfg(feature = "options")] options: Options,
   ) -> Option<Ordering> {
     let mut conf = self.get_codepoint();
 
@@ -72,7 +72,7 @@ impl Codepoint {
       return Some(Ordering::Greater);
     }
 
-    #[cfg(feature = "customization")]
+    #[cfg(feature = "options")]
     if options.refuse_cure(self.2) {
       return None;
     }
