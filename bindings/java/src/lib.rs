@@ -100,7 +100,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
       env,
       env.new_object(
         MATCH_CLASS,
-        "(J;J;Ljava/lang/String;)V",
+        "(JJLjava/lang/String;)V",
         &[
           JValueGen::Long(result.start as _),
           JValueGen::Long(result.end as _),

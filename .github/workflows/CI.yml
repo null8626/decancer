@@ -122,7 +122,7 @@ jobs:
       - setup
       - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Build native Java bindings on ${{ matrix.settings.target }}
+    name: Build native java bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v3
@@ -174,7 +174,7 @@ jobs:
       - setup
       - java-native
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Test Java binding
+    name: Test java bindings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
