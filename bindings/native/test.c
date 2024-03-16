@@ -88,9 +88,9 @@ int main(void)
 
     matcher = decancer_find(cured, (uint8_t *)("funny"), 5);
     assert(matcher != NULL, "find returned NULL");
-    
+
     decancer_match_t match;
-    
+
     assert(decancer_matcher_next(matcher, &match) != 0, "match_next failed");
     assert(match.start == 5, "match.start is not 5");
     assert(match.end == 10, "match.end is not 10");
