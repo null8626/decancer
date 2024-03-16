@@ -114,16 +114,14 @@ pub struct CuredString(decancer::CuredString);
 impl CuredString {
   #[napi]
   pub fn find(&self, other: String) -> Vec<Match> {
-    match self.0.find(&other) {
-      Some(iter) => iter
-        .map(|mat| Match {
-          range: mat.clone(),
-          portion: String::from(unsafe { self.0.get_unchecked(mat) }),
-        })
-        .collect(),
-
-      None => Vec::new(),
-    }
+    self
+      .0
+      .find(&other)
+      .map(|mat| Match {
+        range: mat.clone(),
+        portion: String::from(unsafe { self.0.get_unchecked(mat) }),
+      })
+      .collect()
   }
 
   #[napi]

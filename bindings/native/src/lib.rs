@@ -84,10 +84,9 @@ pub unsafe extern "C" fn decancer_find(
   other_str: *mut u8,
   other_size: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
-  match (*cured).find(str_from_ptr(other_str, other_size)) {
-    Some(mat) => Box::into_raw(Box::new(transmute(mat))),
-    None => 0 as _,
-  }
+  Box::into_raw(Box::new(transmute(
+    (*cured).find(str_from_ptr(other_str, other_size)),
+  )))
 }
 
 #[no_mangle]

@@ -82,7 +82,7 @@ extern "C"
     _DECANCER_EXPORT void decancer_cure_char(uint32_t input, decancer_translation_t *translation);
     _DECANCER_EXPORT decancer_matcher_t decancer_find(decancer_cured_t cured, uint8_t *other_str,
                                                       const size_t other_size);
-    _DECANCER_EXPORT bool decancer_matcher_next(decancer_cured_t cured, decancer_match_t *match);
+    _DECANCER_EXPORT bool decancer_matcher_next(decancer_matcher_t matcher, decancer_match_t *match);
     _DECANCER_EXPORT bool decancer_ends_with(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
     _DECANCER_EXPORT bool decancer_equals(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
     _DECANCER_EXPORT void decancer_matcher_free(decancer_matcher_t matcher);

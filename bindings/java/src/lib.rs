@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use jni::{
   objects::{JClass, JObject, JString, JValueGen},
   sys::{jboolean, jint, jlong, jobject, jstring},
@@ -5,7 +7,7 @@ use jni::{
 };
 use std::mem::transmute;
 
-const MATCH_CLASS: &'static str = "com/github/null8626/decancer/Match";
+const MATCH_CLASS: &str = "com/github/null8626/decancer/Match";
 
 macro_rules! jni_unwrap {
   ($env:ident, $value:expr, $return_value:expr) => {
@@ -83,11 +85,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
   let inner = get_inner_field!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  let matches = match (*inner).find(&input) {
-    Some(matches_inner) => matches_inner.collect::<Vec<_>>(),
-    None => Vec::new(),
-  };
-
+  let matches = (*inner).find(&input).collect::<Vec<_>>();
   let array = jni_unwrap!(
     env,
     env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())
@@ -98,7 +96,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
       env,
       env.new_object(
         MATCH_CLASS,
-        "(J;J;Ljava/lang/String;)V",
+        "(JJLjava/lang/String;)V",
         &[
           JValueGen::Long(result.start as _),
           JValueGen::Long(result.end as _),
@@ -128,7 +126,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_equa
   let inner = get_inner_field!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  transmute((*inner) == &input)
+  transmute((*inner) == input)
 }
 
 #[no_mangle]
@@ -178,6 +176,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_toSt
 }
 
 #[no_mangle]
+#[allow(clippy::unused_unit)]
 pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_destroy<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
