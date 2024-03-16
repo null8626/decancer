@@ -90,7 +90,7 @@ fn similar_contains() {
 fn similar_find() {
   macro_rules! test_find {
     ($(($self_str:expr, $other_str:expr) {$($expected_range:expr,)*})*) => {$({
-      let mut mat = Matcher::new($self_str, $other_str).unwrap();
+      let mut mat = Matcher::new($self_str, $other_str);
 
       $(assert_eq!(mat.next(), Some($expected_range));)*
       assert_eq!(mat.next(), None);
