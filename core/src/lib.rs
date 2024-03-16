@@ -83,6 +83,7 @@ const fn is_none(code: u32) -> bool {
   matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
 }
 
+#[cfg(feature = "customization")]
 const fn is_special_rtl(code: u32) -> bool {
   matches!(code, 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069)
 }
@@ -98,27 +99,37 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   };
 
   let is_case_sensitive = code != code_lowercased;
+  
+  #[cfg(feature = "customization")]
   let retain_capitalization = options.is(0);
 
+  #[cfg(feature = "customization")]
   let default_output = if is_case_sensitive && retain_capitalization {
     code
   } else {
     code_lowercased
   };
+  
+  #[cfg(not(feature = "customization"))]
+  let default_output = code_lowercased;
 
   if code_lowercased < 0x80 {
-    return Translation::character(default_output);
+    return Translation::character(code_lowercased);
   } else if is_case_sensitive {
     if let Some(translation) = options.translate(
       code,
       CASE_SENSITIVE_CODEPOINTS_OFFSET as _,
       CASE_SENSITIVE_CODEPOINTS_COUNT as _,
     ) {
+      #[cfg(feature = "customization")]
       return if retain_capitalization {
         translation.into_uppercase()
       } else {
         translation
       };
+      
+      #[cfg(not(feature = "customization"))]
+      return translation;
     }
   }
 
@@ -147,6 +158,8 @@ pub fn cure_char<C: Into<u32>>(code: C, options: Options) -> Translation {
 /// Cures a single character/unicode codepoint with decancer's default options.
 ///
 /// Output will always be in lowercase.
+///
+/// If you plan on only using this macro, it's recommended to disable the default `customization` feature flag to optimize away unnecessary option checks.
 ///
 /// This macro expands to:
 ///
@@ -371,18 +384,26 @@ fn push_translation(translation: Translation, output: &mut String) {
 ///
 /// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
 pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
-  Ok(CuredString(if options.is(1) {
-    input.chars().fold(
-      String::with_capacity(input.len()),
-      |mut output, character| {
-        if !is_special_rtl(character as _) {
-          push_translation(cure_char(character, options), &mut output);
-        }
-
-        output
-      },
-    )
-  } else {
+  Ok(CuredString({
+    #[cfg(feature = "customization")]
+    if options.is(1) {
+      input.chars().fold(
+        String::with_capacity(input.len()),
+        |mut output, character| {
+          if !is_special_rtl(character as _) {
+            push_translation(cure_char(character, options), &mut output);
+          }
+    
+          output
+        },
+      )
+    } else {
+      reorder(input, |c, output| {
+        push_translation(cure_char_inner(c as _, options), output)
+      })?
+    }
+    
+    #[cfg(not(feature = "customization"))]
     reorder(input, |c, output| {
       push_translation(cure_char_inner(c as _, options), output)
     })?
@@ -392,6 +413,8 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
 /// Cures a string with decancer's default options.
 ///
 /// Output will always be in lowercase and [bidirectionally reordered](https://en.wikipedia.org/wiki/Bidirectional_text) in order to treat right-to-left characters. Therefore, the string output is laid out in memory the same way as it were to be displayed graphically, but **may break if displayed graphically** since some right-to-left characters are reversed.
+///
+/// If you plan on only using this macro, it's recommended to disable the default `customization` feature flag to optimize away unnecessary option checks.
 ///
 /// This macro expands to:
 ///

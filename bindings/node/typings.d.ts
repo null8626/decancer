@@ -1,4 +1,11 @@
+export class Match {
+  readonly start: number
+  readonly end: number
+  toString(): string
+}
+
 export class CuredString {
+  find(other: string): Match[]
   startsWith(other: string): boolean
   endsWith(other: string): boolean
   contains(other: string): boolean

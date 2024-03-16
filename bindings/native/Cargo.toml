@@ -9,4 +9,9 @@ name = "decancer"
 crate-type = ["cdylib"]
 
 [dependencies]
-decancer = { path = "../../core" }
+decancer = { path = "../../core", default-features = false }
+
+[features]
+default = ["customization", "leetspeak"]
+customization = ["decancer/customization"]
+leetspeak = ["decancer/leetspeak"]
