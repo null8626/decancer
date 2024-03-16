@@ -27,20 +27,18 @@ impl CuredString {
 
   /// Iterates throughout this string and yields every similar-looking match.
   ///
-  /// Returns `None` if `other` is longer than the cured string.
-  ///
   /// This comparison is case-insensitive.
   ///
   /// ```rs
   /// let cured = decancer::cure!("wow hello wow heellllo!").unwrap();
-  /// let mut matcher = cured.find("hello").unwrap();
+  /// let mut matcher = cured.find("hello");
   ///
   /// assert_eq!(matcher.next(), Some(4..9));
   /// assert_eq!(matcher.next(), Some(14..22));
   /// assert_eq!(matcher.next(), None);
   /// ```
   #[inline(always)]
-  pub fn find<'a, 'b>(&'a self, other: &'b str) -> Option<Matcher<'a, 'b>> {
+  pub fn find<'a, 'b>(&'a self, other: &'b str) -> Matcher<'a, 'b> {
     Matcher::new(self, other)
   }
 
@@ -49,7 +47,7 @@ impl CuredString {
   /// This comparison is case-insensitive.
   #[must_use]
   pub fn starts_with(&self, other: &str) -> bool {
-    let mut iter = unwrap_or_ret!(self.find(other), false);
+    let mut iter = self.find(other);
     let mat = unwrap_or_ret!(iter.next(), false);
 
     mat.start == 0
@@ -60,7 +58,7 @@ impl CuredString {
   /// This comparison is case-insensitive.
   #[must_use]
   pub fn ends_with(&self, other: &str) -> bool {
-    let last = unwrap_or_ret!(self.find(other).and_then(|iter| iter.last()), false);
+    let last = unwrap_or_ret!(self.find(other).last(), false);
 
     last.end == self.len()
   }
@@ -70,7 +68,7 @@ impl CuredString {
   /// This comparison is case-insensitive.
   #[must_use]
   pub fn contains(&self, other: &str) -> bool {
-    let mut iter = unwrap_or_ret!(self.find(other), false);
+    let mut iter = self.find(other);
 
     iter.next().is_some()
   }
@@ -100,7 +98,7 @@ where
   #[must_use]
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
-    Matcher::is_equal(self.as_str(), other.as_ref())
+    Matcher::is_equal(self, other.as_ref())
   }
 }
 
