@@ -7,7 +7,7 @@ use jni::{
 };
 use std::mem::transmute;
 
-const MATCH_CLASS: &'static str = "com/github/null8626/decancer/Match";
+const MATCH_CLASS: &str = "com/github/null8626/decancer/Match";
 
 macro_rules! jni_unwrap {
   ($env:ident, $value:expr, $return_value:expr) => {
@@ -130,7 +130,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_equa
   let inner = get_inner_field!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  transmute((*inner) == &input)
+  transmute((*inner) == input)
 }
 
 #[no_mangle]
@@ -180,6 +180,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_toSt
 }
 
 #[no_mangle]
+#[allow(clippy::unused_unit)]
 pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_destroy<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
