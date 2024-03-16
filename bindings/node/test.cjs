@@ -15,6 +15,19 @@ class TestContext {
 
     return this
   }
+
+  testFind() {
+    it('find', () => {
+      const match = this.#inner.find('funny')
+
+      strictEqual(match.length, 1)
+      strictEqual(match[0].start, 5)
+      strictEqual(match[0].end, 10)
+      strictEqual(match[0].toString(), 'funny')
+    })
+
+    return this
+  }
 }
 
 describe('decancer', () => {
@@ -26,4 +39,5 @@ describe('decancer', () => {
     .test('endsWith', true, 'text')
     .test('contains', true, 'funny')
     .test('toString', 'very funny text')
+    .testFind()
 })

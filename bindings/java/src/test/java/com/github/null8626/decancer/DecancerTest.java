@@ -1,4 +1,5 @@
 import com.github.null8626.decancer.CuredString;
+import com.github.null8626.decancer.Match;
 import org.junit.jupiter.api.*;
 
 public class DecancerTest {
@@ -8,6 +9,16 @@ public class DecancerTest {
   @BeforeEach
   public void cure() {
     this.cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  }
+
+  @Test
+  public void find() {
+    final Match[] match = this.cured.find("funny");
+
+    Assertions.assertEquals(match.length, 1);
+    Assertions.assertEquals(match[0].start, 5);
+    Assertions.assertEquals(match[0].end, 10);
+    Assertions.assertEquals(match[0].toString(), "funny");
   }
 
   @Test
