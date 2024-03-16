@@ -43,6 +43,7 @@ impl Translation {
     Self::Character(unsafe { transmute(code) })
   }
 
+  #[cfg(feature = "customization")]
   pub(crate) fn into_uppercase(self) -> Self {
     match self {
       Self::Character(c) => Self::Character(unsafe { c.to_uppercase().next().unwrap_unchecked() }),
@@ -52,7 +53,7 @@ impl Translation {
   }
 }
 
-/// Checks if this [`Translation`] is ***similar*** into another string.
+/// Checks if this [`Translation`] is similar into another string.
 ///
 /// This comparison is *case-insensitive*.
 impl<S> PartialEq<S> for Translation

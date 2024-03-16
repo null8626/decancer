@@ -1,10 +1,14 @@
 use crate::{codepoints::Codepoint, Translation};
 use paste::paste;
-use std::{cmp::Ordering, mem::transmute};
+use std::cmp::Ordering;
+#[cfg(feature = "customization")]
+use std::mem::transmute;
 
 /// A configuration struct where you can customize decancer's behavior.
 ///
 /// By default, decancer cures as much characters as possible and turns all of the output characters to lowercase.
+///
+/// If you don't plan on using this struct and only using decancer's defaults, it's recommended to disable the default `customization` feature flag to optimize away unnecessary option checks.
 #[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub struct Options(pub(crate) u32);
 
@@ -16,7 +20,11 @@ macro_rules! options {
     $(
       $(#[$extra_meta])*
       pub const fn $name(self) -> Self {
-        Self(self.0 | (1 << $idx))
+        #[cfg(feature = "customization")]
+        return Self(self.0 | (1 << $idx));
+
+        #[cfg(not(feature = "customization"))]
+        return self;
       }
     )*
   };
@@ -40,12 +48,20 @@ macro_rules! retain {
 impl Options {
   /// Creates a new configuration where every option is enabled. This is useful if you want to use decancer solely for formatting.
   pub const fn formatter() -> Self {
-    Self((1 << 22) - 1)
+    #[cfg(feature = "customization")]
+    return Self((1 << 22) - 1);
+
+    #[cfg(not(feature = "customization"))]
+    return Self(0);
   }
 
   /// Creates a new configuration that prevents decancer from curing characters from major foreign writing systems.
   pub const fn pure_homoglyph() -> Self {
-    Self(((1 << 22) - 1) ^ 0x200003)
+    #[cfg(feature = "customization")]
+    return Self(((1 << 22) - 1) ^ 0x200003);
+
+    #[cfg(not(feature = "customization"))]
+    return Self(0);
   }
 
   options! {
@@ -104,10 +120,12 @@ impl Options {
     20: braille,
   }
 
+  #[cfg(feature = "customization")]
   pub(crate) const fn is(self, attribute_idx: u8) -> bool {
     (self.0 & (1 << attribute_idx as u32)) != 0
   }
 
+  #[cfg(feature = "customization")]
   #[allow(clippy::transmute_int_to_bool)]
   pub(crate) const fn refuse_cure(self, attributes: u8) -> bool {
     let locale = attributes >> 1;
@@ -121,8 +139,13 @@ impl Options {
     while start <= end {
       let mid = (start + end) / 2;
       let codepoint = Codepoint::at(offset + (mid * 6));
+      #[cfg(feature = "customization")]
+      let mat = codepoint.matches(code, self);
 
-      match codepoint.matches(code, self) {
+      #[cfg(not(feature = "customization"))]
+      let mat = codepoint.matches(code);
+
+      match mat {
         Some(ord) => match ord {
           Ordering::Equal => return Some(codepoint.translation(code)),
           Ordering::Greater => start = mid + 1,

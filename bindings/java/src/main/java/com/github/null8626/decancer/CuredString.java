@@ -77,6 +77,19 @@ public class CuredString {
   private static native long cure(String input, int options);
 
   /**
+   * Iterates throughout this string and yields every similar-looking match.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   *
+   * @param other The other string to compare with.
+   * @return An array of Match objects containing every similar-looking match.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
+  public native Match[] find(String other);
+
+  /**
    * Checks if this object is similar with another string.
    *
    * <p>

@@ -9,9 +9,10 @@ use std::{ops::Range, str::Chars};
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) });
 pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CODEPOINTS.offset(4) });
 
-pub(crate) fn is(self_char: u32, other_char: char) -> bool {
+pub(crate) fn is(self_char: char, other_char: char) -> bool {
   // SAFETY: even if there is no lowercase mapping for some codepoints, it would just return itself.
   // therefore, the first iteration and/or codepoint always exists.
+  let self_char = unsafe { self_char.to_lowercase().next().unwrap_unchecked() as u32 };
   let other_char = unsafe { other_char.to_lowercase().next().unwrap_unchecked() as u32 };
 
   if self_char == other_char {
@@ -112,6 +113,7 @@ impl<'a> Iterator for CachedPeek<'a> {
 #[must_use]
 pub struct Matcher<'a, 'b> {
   self_iterator: Chars<'a>,
+  #[cfg(feature = "leetspeak")]
   self_str: &'a str,
   self_index: usize,
   other_iterator: CachedPeek<'b>,
@@ -121,6 +123,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   pub(crate) fn new(self_str: &'a str, other_str: &'b str) -> Option<Self> {
     Some(Self {
       self_iterator: self_str.chars(),
+      #[cfg(feature = "leetspeak")]
       self_str,
       self_index: 0,
       other_iterator: CachedPeek::new(other_str.chars())?,
@@ -143,7 +146,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
 
   #[cfg_attr(not(feature = "leetspeak"), inline(always))]
   fn matches_character(&self, self_char: char, other_char: char) -> Option<usize> {
-    if is(self_char as _, other_char) {
+    if is(self_char, other_char) {
       Some(other_char.len_utf8())
     } else {
       None
@@ -226,7 +229,7 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
 
         match current_separator {
           Some(separator) => {
-            if !is(next_self_char as _, separator) {
+            if !is(next_self_char, separator) {
               if current_other.1.is_none() {
                 return Some(start_index..last_match_end);
               }

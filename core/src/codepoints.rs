@@ -1,8 +1,9 @@
+#[cfg(feature = "customization")]
+use crate::Options;
 use crate::{
   similar::SIMILAR_START,
   translation::Translation,
   util::{read_u16_le, read_u32_le, CODEPOINT_MASK},
-  Options,
 };
 use std::cmp::Ordering;
 
@@ -54,7 +55,11 @@ impl Codepoint {
     }
   }
 
-  pub(crate) const fn matches(self, other: u32, options: Options) -> Option<Ordering> {
+  pub(crate) const fn matches(
+    self,
+    other: u32,
+    #[cfg(feature = "customization")] options: Options,
+  ) -> Option<Ordering> {
     let mut conf = self.get_codepoint();
 
     if other < conf {
@@ -64,12 +69,15 @@ impl Codepoint {
     }
 
     if other > conf {
-      Some(Ordering::Greater)
-    } else if options.refuse_cure(self.2) {
-      None
-    } else {
-      Some(Ordering::Equal)
+      return Some(Ordering::Greater);
     }
+
+    #[cfg(feature = "customization")]
+    if options.refuse_cure(self.2) {
+      return None;
+    }
+
+    Some(Ordering::Equal)
   }
 
   pub(crate) const fn translation(self, other: u32) -> Translation {

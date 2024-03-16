@@ -5,9 +5,9 @@ extern crate napi_derive;
 
 use napi::{
   bindgen_prelude::{Error, FromNapiValue},
-  Env, JsString, JsUnknown, Result, Status, ValueType,
+  Env, JsNumber, JsString, JsUnknown, Result, Status, ValueType,
 };
-use std::mem::transmute;
+use std::{mem::transmute, ops::Range};
 
 macro_rules! options {
   (
@@ -84,10 +84,48 @@ options! {
 }
 
 #[napi]
+pub struct Match {
+  range: Range<usize>,
+  portion: String,
+}
+
+#[napi]
+impl Match {
+  #[napi(getter)]
+  pub fn start(&self, env: Env) -> Result<JsNumber> {
+    env.create_int64(self.range.start as _)
+  }
+
+  #[napi(getter)]
+  pub fn end(&self, env: Env) -> Result<JsNumber> {
+    env.create_int64(self.range.end as _)
+  }
+
+  #[napi]
+  pub fn to_string(&self, env: Env) -> Result<JsString> {
+    env.create_string(&self.portion)
+  }
+}
+
+#[napi]
 pub struct CuredString(decancer::CuredString);
 
 #[napi]
 impl CuredString {
+  #[napi]
+  pub fn find(&self, other: String) -> Vec<Match> {
+    match self.0.find(&other) {
+      Some(iter) => iter
+        .map(|mat| Match {
+          range: mat.clone(),
+          portion: String::from(unsafe { self.0.get_unchecked(mat) }),
+        })
+        .collect(),
+
+      None => Vec::new(),
+    }
+  }
+
   #[napi]
   pub fn starts_with(&self, other: String) -> bool {
     self.0.starts_with(&other)
