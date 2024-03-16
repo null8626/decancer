@@ -1,3 +1,5 @@
+#![allow(clippy::missing_safety_doc)]
+
 use jni::{
   objects::{JClass, JObject, JString, JValueGen},
   sys::{jboolean, jint, jlong, jobject, jstring},
