@@ -99,7 +99,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   };
 
   let is_case_sensitive = code != code_lowercased;
-  
+
   #[cfg(feature = "customization")]
   let retain_capitalization = options.is(0);
 
@@ -109,7 +109,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   } else {
     code_lowercased
   };
-  
+
   #[cfg(not(feature = "customization"))]
   let default_output = code_lowercased;
 
@@ -127,7 +127,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
       } else {
         translation
       };
-      
+
       #[cfg(not(feature = "customization"))]
       return translation;
     }
@@ -393,7 +393,7 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
           if !is_special_rtl(character as _) {
             push_translation(cure_char(character, options), &mut output);
           }
-    
+
           output
         },
       )
@@ -402,7 +402,7 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
         push_translation(cure_char_inner(c as _, options), output)
       })?
     }
-    
+
     #[cfg(not(feature = "customization"))]
     reorder(input, |c, output| {
       push_translation(cure_char_inner(c as _, options), output)

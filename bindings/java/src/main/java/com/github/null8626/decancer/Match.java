@@ -7,24 +7,25 @@ package com.github.null8626.decancer;
  * @author null8626
  */
 public class Match {
+
   /**
    * The UTF-8 byte offset to the beginning of the match.
    */
   public final long start;
-  
+
   /**
    * The UTF-8 byte offset to the end of the match (non-inclusive).
    */
   public final long end;
-  
+
   protected final String matched;
-  
+
   protected Match(final long start, final long end, final String matched) {
     this.start = start;
     this.end = end;
     this.matched = matched;
   }
-  
+
   /**
    * @return Returns the matched portion of the original String.
    */

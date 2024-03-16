@@ -1,10 +1,10 @@
+#[cfg(feature = "customization")]
+use crate::Options;
 use crate::{
   similar::SIMILAR_START,
   translation::Translation,
   util::{read_u16_le, read_u32_le, CODEPOINT_MASK},
 };
-#[cfg(feature = "customization")]
-use crate::Options;
 use std::cmp::Ordering;
 
 pub(crate) const CODEPOINTS: *const u8 = include_bytes!("../bin/codepoints.bin").as_ptr();
@@ -57,9 +57,8 @@ impl Codepoint {
 
   pub(crate) const fn matches(
     self,
-    other: u32, 
-    #[cfg(feature = "customization")]
-    options: Options,
+    other: u32,
+    #[cfg(feature = "customization")] options: Options,
   ) -> Option<Ordering> {
     let mut conf = self.get_codepoint();
 
@@ -72,12 +71,12 @@ impl Codepoint {
     if other > conf {
       return Some(Ordering::Greater);
     }
-    
+
     #[cfg(feature = "customization")]
     if options.refuse_cure(self.2) {
       return None;
     }
-    
+
     Some(Ordering::Equal)
   }
 

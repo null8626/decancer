@@ -75,7 +75,7 @@ public class CuredString {
   private long inner;
 
   private static native long cure(String input, int options);
-  
+
   /**
    * Iterates throughout this string and yields every similar-looking match.
    *

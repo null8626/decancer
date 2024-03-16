@@ -22,7 +22,7 @@ macro_rules! options {
       pub const fn $name(self) -> Self {
         #[cfg(feature = "customization")]
         return Self(self.0 | (1 << $idx));
-        
+
         #[cfg(not(feature = "customization"))]
         return self;
       }
@@ -50,7 +50,7 @@ impl Options {
   pub const fn formatter() -> Self {
     #[cfg(feature = "customization")]
     return Self((1 << 22) - 1);
-    
+
     #[cfg(not(feature = "customization"))]
     return Self(0);
   }
@@ -59,7 +59,7 @@ impl Options {
   pub const fn pure_homoglyph() -> Self {
     #[cfg(feature = "customization")]
     return Self(((1 << 22) - 1) ^ 0x200003);
-    
+
     #[cfg(not(feature = "customization"))]
     return Self(0);
   }
@@ -141,7 +141,7 @@ impl Options {
       let codepoint = Codepoint::at(offset + (mid * 6));
       #[cfg(feature = "customization")]
       let mat = codepoint.matches(code, self);
-      
+
       #[cfg(not(feature = "customization"))]
       let mat = codepoint.matches(code);
 
