@@ -16,7 +16,7 @@ use std::{
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  /// Coerces this [`CuredString`] into a [`String`].
+  /// Coerces this cured string into a [`String`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.
   #[must_use]
@@ -27,13 +27,15 @@ impl CuredString {
 
   /// Iterates throughout this string and yields every similar-looking match.
   ///
+  /// Returns `None` if `other` is longer than the cured string.
+  ///
   /// This comparison is case-insensitive.
   #[inline(always)]
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Option<Matcher<'a, 'b>> {
-    Matcher::new(self.as_str(), other)
+    Matcher::new(self, other)
   }
 
-  /// Checks if this [`CuredString`] similarly starts with another string.
+  /// Checks if this cured string similarly starts with another string.
   ///
   /// This comparison is case-insensitive.
   #[must_use]
@@ -44,7 +46,7 @@ impl CuredString {
     mat.start == 0
   }
 
-  /// Checks if this [`CuredString`] similarly ends with another string.
+  /// Checks if this cured string similarly ends with another string.
   ///
   /// This comparison is case-insensitive.
   #[must_use]
@@ -54,7 +56,7 @@ impl CuredString {
     last.end == self.len()
   }
 
-  /// Checks if this [`CuredString`] similarly contains another string.
+  /// Checks if this cured string similarly contains another string.
   ///
   /// This comparison is case-insensitive.
   #[must_use]
@@ -79,7 +81,7 @@ impl AsRef<str> for CuredString {
   }
 }
 
-/// Checks if this [`CuredString`] is ***similar*** with another string.
+/// Checks if this cured string is similar with another string.
 ///
 /// This comparison is case-insensitive.
 impl<S> PartialEq<S> for CuredString

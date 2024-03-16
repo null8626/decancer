@@ -1,12 +1,19 @@
 #![allow(clippy::missing_safety_doc)]
 
-use core::{convert::AsRef, ffi::c_void, mem::transmute, slice, str};
+use std::{
+  borrow::Cow,
+  convert::AsRef,
+  mem::transmute,
+  ops::{Deref, Range},
+  slice, str,
+};
 
 #[repr(C)]
 pub struct Translation {
   kind: u8,
-  contents_a: usize,
-  contents_b: usize,
+  slot_a: usize,
+  slot_b: usize,
+  slot_c: usize,
 }
 
 const unsafe fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> &'static str {
@@ -28,9 +35,9 @@ pub unsafe extern "C" fn decancer_cure(
   input_size: usize,
   options: u32,
   error: *mut u8,
-) -> *mut c_void {
+) -> *mut decancer::CuredString {
   match decancer::cure(str_from_ptr(input_str, input_size), transmute(options)) {
-    Ok(res) => Box::into_raw(Box::new(res)) as _,
+    Ok(res) => Box::into_raw(Box::new(res)),
     Err(err) => {
       *error = err as _;
       0 as _
@@ -43,13 +50,26 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
   match decancer::cure_char(input, transmute(options)) {
     decancer::Translation::Character(c) => {
       (*output).kind = 0;
-      (*output).contents_a = c as _;
+      (*output).slot_a = c as _;
     }
 
     decancer::Translation::String(s) => {
       (*output).kind = 1;
-      (*output).contents_a = s.as_ptr() as _;
-      (*output).contents_b = s.len();
+      (*output).slot_b = s.len();
+
+      match s {
+        Cow::Borrowed(_) => {
+          (*output).slot_a = s.as_ptr() as _;
+          (*output).slot_c = 0 as _;
+        }
+
+        Cow::Owned(s) => {
+          let s = Box::new(s);
+
+          (*output).slot_a = s.deref().as_ptr() as _;
+          (*output).slot_c = Box::into_raw(Box::new(s)) as *mut u8 as _;
+        }
+      }
     }
 
     decancer::Translation::None => {
@@ -59,50 +79,91 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn decancer_find(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+) -> *mut decancer::Matcher<'static, 'static> {
+  match (*cured).find(str_from_ptr(other_str, other_size)) {
+    Some(mat) => Box::into_raw(Box::new(transmute(mat))),
+    None => 0 as _,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_next(
+  matcher: *mut decancer::Matcher<'static, 'static>,
+  output: *mut Range<usize>,
+) -> bool {
+  match (*matcher).next() {
+    Some(mat) => {
+      *output = mat;
+      true
+    }
+
+    None => false,
+  }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn decancer_equals(
-  cured: *mut c_void,
+  cured: *mut decancer::CuredString,
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  *(cured as *mut decancer::CuredString) == str_from_ptr(other_str, other_size)
+  (*cured) == str_from_ptr(other_str, other_size)
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_contains(
-  cured: *mut c_void,
+  cured: *mut decancer::CuredString,
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  (*(cured as *mut decancer::CuredString)).contains(str_from_ptr(other_str, other_size))
+  (*cured).contains(str_from_ptr(other_str, other_size))
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_starts_with(
-  cured: *mut c_void,
+  cured: *mut decancer::CuredString,
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  (*(cured as *mut decancer::CuredString)).starts_with(str_from_ptr(other_str, other_size))
+  (*cured).starts_with(str_from_ptr(other_str, other_size))
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_ends_with(
-  cured: *mut c_void,
+  cured: *mut decancer::CuredString,
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  (*(cured as *mut decancer::CuredString)).ends_with(str_from_ptr(other_str, other_size))
+  (*cured).ends_with(str_from_ptr(other_str, other_size))
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_raw(cured: *mut c_void, output_size: *mut usize) -> *const u8 {
-  let cured = cured as *mut decancer::CuredString;
+pub unsafe extern "C" fn decancer_raw(
+  cured: *mut decancer::CuredString,
+  output_size: *mut usize,
+) -> *const u8 {
   *output_size = (*cured).len();
 
   (*cured).as_ptr()
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_free(cured: *mut c_void) {
-  let _ = Box::from_raw(cured as *mut decancer::CuredString);
+pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'static, 'static>) {
+  let _ = Box::from_raw(matcher);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_translation_free(translation: *mut Translation) {
+  if (*translation).kind == 1 && (*translation).slot_c != 0 {
+    let _ = Box::from_raw((*translation).slot_c as *mut String);
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_free(cured: *mut decancer::CuredString) {
+  let _ = Box::from_raw(cured);
 }

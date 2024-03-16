@@ -1,9 +1,11 @@
-use core::mem::transmute;
 use jni::{
-  objects::{JClass, JObject, JString},
-  sys::{jboolean, jint, jlong, jstring},
+  objects::{JClass, JObject, JString, JValueGen},
+  sys::{jboolean, jint, jlong, jobject, jstring},
   JNIEnv,
 };
+use std::mem::transmute;
+
+const MATCH_CLASS: &'static str = "com/github/null8626/decancer/Match";
 
 macro_rules! jni_unwrap {
   ($env:ident, $value:expr, $return_value:expr) => {
@@ -70,6 +72,51 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cure
       0 as _
     }
   }
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find<'local>(
+  mut env: JNIEnv<'local>,
+  this: JObject<'local>,
+  input: JString<'local>,
+) -> jobject {
+  let inner = get_inner_field!(env, this);
+  let input: String = jni_unwrap!(env, env.get_string(&input)).into();
+
+  let matches = match (*inner).find(&input) {
+    Some(matches_inner) => matches_inner.collect::<Vec<_>>(),
+    None => Vec::new(),
+  };
+
+  let array = jni_unwrap!(
+    env,
+    env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())
+  );
+
+  for (idx, result) in matches.into_iter().enumerate() {
+    let element = jni_unwrap!(
+      env,
+      env.new_object(
+        MATCH_CLASS,
+        "(J;J;Ljava/lang/String;)V",
+        &[
+          JValueGen::Long(result.start as _),
+          JValueGen::Long(result.end as _),
+          JValueGen::Object(
+            &jni_unwrap!(
+              env,
+              env.new_string(unsafe { (*inner).get_unchecked(result) })
+            )
+            .into()
+          ),
+        ]
+      )
+    );
+
+    jni_unwrap!(env, env.set_object_array_element(&array, idx as _, element));
+  }
+
+  array.into_raw()
 }
 
 #[no_mangle]
