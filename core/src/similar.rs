@@ -123,11 +123,11 @@ impl<'a, 'b> Matcher<'a, 'b> {
   pub(crate) fn new(mut self_str: &'a str, other_str: &'b str) -> Self {
     let mut other_chars = other_str.chars();
     let other_first = other_chars.next();
-    
+
     if other_first.is_none() || self_str.len() < other_str.len() {
       self_str = "";
     }
-    
+
     // SAFETY: self_str = "" would immediately cancel out the first iteration.
     Self {
       self_iterator: self_str.chars(),
