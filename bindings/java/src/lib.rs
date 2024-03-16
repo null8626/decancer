@@ -85,11 +85,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
   let inner = get_inner_field!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  let matches = match (*inner).find(&input) {
-    Some(matches_inner) => matches_inner.collect::<Vec<_>>(),
-    None => Vec::new(),
-  };
-
+  let matches = (*inner).find(&input).collect::<Vec<_>>();
   let array = jni_unwrap!(
     env,
     env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())

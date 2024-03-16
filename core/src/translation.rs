@@ -74,7 +74,7 @@ where
           .unwrap_or_default()
       }
 
-      Self::String(s) => Matcher::is_equal(s.as_ref(), o),
+      Self::String(s) => Matcher::is_equal(s, o),
       Self::None => o.is_empty(),
     }
   }

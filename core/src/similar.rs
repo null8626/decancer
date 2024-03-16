@@ -55,14 +55,14 @@ struct CachedPeek<'a> {
 
 impl<'a> CachedPeek<'a> {
   #[inline(always)]
-  pub(crate) fn new(mut iterator: Chars<'a>) -> Option<Self> {
-    iterator.next().map(|current| Self {
+  pub(crate) fn new(iterator: Chars<'a>, first: char) -> Self {
+    Self {
       iterator,
-      current,
-      cache: vec![current],
+      current: first,
+      cache: vec![first],
       index: 0,
       ended: false,
-    })
+    }
   }
 
   fn next_value(&mut self) -> Option<char> {
@@ -120,14 +120,22 @@ pub struct Matcher<'a, 'b> {
 }
 
 impl<'a, 'b> Matcher<'a, 'b> {
-  pub(crate) fn new(self_str: &'a str, other_str: &'b str) -> Option<Self> {
-    Some(Self {
+  pub(crate) fn new(mut self_str: &'a str, other_str: &'b str) -> Self {
+    let mut other_chars = other_str.chars();
+    let other_first = other_chars.next();
+    
+    if other_first.is_none() || self_str.len() < other_str.len() {
+      self_str = "";
+    }
+    
+    // SAFETY: self_str = "" would immediately cancel out the first iteration.
+    Self {
       self_iterator: self_str.chars(),
       #[cfg(feature = "leetspeak")]
       self_str,
       self_index: 0,
-      other_iterator: CachedPeek::new(other_str.chars())?,
-    })
+      other_iterator: CachedPeek::new(other_chars, unsafe { other_first.unwrap_unchecked() }),
+    }
   }
 
   #[cfg(feature = "leetspeak")]
@@ -168,7 +176,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   }
 
   pub(crate) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
-    let mut iter = unwrap_or_ret!(Self::new(self_str, other_str), false);
+    let mut iter = Self::new(self_str, other_str);
     let mat = unwrap_or_ret!(iter.next(), false);
 
     mat.start == 0 && mat.end == self_str.len()
