@@ -9,12 +9,21 @@
 #endif
 
 decancer_cured_t cured = NULL;
+decancer_matcher_t matcher = NULL;
+decancer_translation_t char_translation;
 
 static void assert(const bool expr, const char *message)
 {
     if (!expr)
     {
         fprintf(stderr, "assertion failed (%s)\n", message);
+
+        decancer_translation_free(&char_translation);
+
+        if (matcher != NULL)
+        {
+            decancer_matcher_free(matcher);
+        }
 
         if (cured != NULL)
         {
@@ -41,7 +50,7 @@ static void print_error(decancer_error_t error_code)
 int main(void)
 {
     decancer_error_t error_code;
-    decancer_translation_t char_translation;
+    memset(&char_translation, 0, sizeof(decancer_translation_t));
 
     decancer_cure_char(0xFF25, DECANCER_OPTION_DEFAULT, &char_translation);
 
@@ -76,6 +85,15 @@ int main(void)
     assert(decancer_starts_with(cured, (uint8_t *)("very"), 4), "starts_with failed");
     assert(decancer_ends_with(cured, (uint8_t *)("text"), 4), "ends_with failed");
     assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains failed");
+
+    matcher = decancer_find(cured, (uint8_t *)("funny"), 5);
+    assert(matcher != NULL, "find returned NULL");
+    
+    decancer_match_t match;
+    
+    assert(decancer_matcher_next(matcher, &match) != 0, "match_next failed");
+    assert(match.start == 5, "match.start is not 5");
+    assert(match.end == 10, "match.end is not 10");
 
     size_t output_size;
     const uint8_t *output_raw = decancer_raw(cured, &output_size);
