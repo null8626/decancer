@@ -11,7 +11,7 @@ use std::{
 
 #[repr(C)]
 pub struct Error {
-  message: *const u8,
+  message: usize,
   message_size: u8,
 }
 
@@ -26,11 +26,14 @@ pub struct Translation {
 const INVALID_UTF8_MESSAGE: &str = "Invalid UTF-8 bytes.";
 const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
-struct NullTerminatedPointer<T>(*mut T);
+struct NullTerminatedPointer<T> {
+  ptr: *mut T,
+  size: usize,
+}
 
 impl<T> NullTerminatedPointer<T> {
   const fn new(ptr: *mut T) -> Self {
-    Self(ptr)
+    Self { ptr, size: 0 }
   }
 }
 
@@ -41,13 +44,15 @@ where
   type Item = T;
 
   fn next(&mut self) -> Option<Self::Item> {
-    let value = unsafe { *self.0 };
+    let value = unsafe { *self.ptr };
 
-    self.0 = unsafe { self.0.offset(1) };
+    self.ptr = unsafe { self.ptr.offset(1) };
 
     if value == Default::default() {
       None
     } else {
+      self.size += size_of::<T>();
+
       Some(value)
     }
   }
@@ -84,33 +89,24 @@ where
   }
 }
 
-fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> Option<&'static str> {
+fn str_from_ptr(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
     let mut input_ptr = NullTerminatedPointer::new(input_ptr);
 
-    loop {
-      let value = input_ptr.next();
-
-      match value {
-        None => break,
-        Some(0xA0..=0xBF | 0xF8..) => return None,
-        Some(value) => {
-          if value >= 0xC0 {
-            if (input_ptr.next()? >> 6) != 0x02 {
-              return None;
-            }
-
-            if value >= 0xE0 {
-              if (input_ptr.next()? >> 6) != 0x02 {
-                return None;
-              } else if value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02 {
-                return None;
-              }
-            }
-          }
-        }
-      };
+    while let Some(value) = input_ptr.next() {
+      if (value >= 0xA0 && value <= 0xBF)
+        || value >= 0xF8
+        || (value >= 0xC0
+          && ((input_ptr.next()? >> 6) != 0x02
+            || (value >= 0xE0
+              && ((input_ptr.next()? >> 6) != 0x02
+                || (value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02)))))
+      {
+        return None;
+      }
     }
+
+    input_size = input_ptr.size;
   }
 
   unsafe {
@@ -136,11 +132,11 @@ fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<
     if c <= 0x7f {
       output.push(c as _);
     } else if c <= 0x7ff {
-      output.extend([((c & 0x7c0) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
+      output.extend([((c >> 6) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
     } else if c < 0xd800 || c >= 0xe000 {
       output.extend([
-        ((c & 0xf000) as u8) | 0xe0,
-        ((c & 0xfc0) as u8) | 0x80,
+        ((c >> 12) as u8) | 0xe0,
+        (((c >> 6) & 0x3f) as u8) | 0x80,
         ((c & 0x3f) as u8) | 0x80,
       ]);
     } else {
@@ -150,9 +146,9 @@ fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<
         let c = 0x10000 + (((c - 0xd800) as u32) << 10) + ((n as u32) - 0xdc00);
 
         output.extend([
-          ((c & 0x1c0000) as u8) | 0xf0,
-          ((c & 0xfc00) as u8) | 0x80,
-          ((c & 0xfc0) as u8) | 0x80,
+          ((c >> 18) as u8) | 0xf0,
+          (((c >> 12) & 0x3f) as u8) | 0x80,
+          (((c >> 6) & 0x3f) as u8) | 0x80,
           ((c & 0x3f) as u8) | 0x80,
         ]);
       } else {
@@ -184,7 +180,7 @@ pub unsafe extern "C" fn decancer_cure(
   let input = match str_from_ptr(input_str, input_size) {
     Some(result) => result,
     None => {
-      (*error).message = INVALID_UTF8_MESSAGE.as_ptr();
+      (*error).message = INVALID_UTF8_MESSAGE.as_ptr() as _;
       (*error).message_size = INVALID_UTF8_MESSAGE.len() as _;
 
       return 0 as _;
@@ -196,7 +192,7 @@ pub unsafe extern "C" fn decancer_cure(
     Err(err) => {
       let message = <decancer::Error as AsRef<str>>::as_ref(&err);
 
-      (*error).message = message.as_ptr();
+      (*error).message = message.as_ptr() as _;
       (*error).message_size = message.len() as _;
 
       0 as _
@@ -214,7 +210,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
   let input = match utf8_from_wide_ptr(input_str, input_size) {
     Some(result) => result,
     None => {
-      (*error).message = INVALID_UTF16_MESSAGE.as_ptr();
+      (*error).message = INVALID_UTF16_MESSAGE.as_ptr() as _;
       (*error).message_size = INVALID_UTF16_MESSAGE.len() as _;
 
       return 0 as _;
@@ -228,7 +224,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
     Err(err) => {
       let message = <decancer::Error as AsRef<str>>::as_ref(&err);
 
-      (*error).message = message.as_ptr();
+      (*error).message = message.as_ptr() as _;
       (*error).message_size = message.len() as _;
 
       0 as _
@@ -356,22 +352,22 @@ comparison_fn! {
 pub unsafe extern "C" fn decancer_raw(
   cured: *mut decancer::CuredString,
   output_size: *mut usize,
-) -> *const u8 {
+) -> usize {
   *output_size = (*cured).len();
 
-  (*cured).as_ptr()
+  (*cured).as_ptr() as _
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_raw_wide(
   cured: *mut decancer::CuredString,
-  output_ptr: *mut *const u16,
+  output_ptr: *mut usize,
   output_size: *mut usize,
 ) -> *mut Vec<u16> {
   let vec = Box::new((*cured).encode_utf16().collect::<Vec<_>>());
 
-  *output_ptr = vec.as_ptr();
-  *output_size = vec.len();
+  *output_ptr = vec.as_ptr() as _;
+  *output_size = vec.len() * size_of::<u16>();
 
   Box::into_raw(vec)
 }

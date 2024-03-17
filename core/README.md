@@ -338,7 +338,7 @@ int main(void) {
 
     assert(output_size == 15, "raw output size");
 
-    // utf-8 bytes for "very funny text"
+    // UTF-8 bytes for "very funny text"
     const uint8_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                     0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
 
@@ -424,17 +424,17 @@ int main(void) {
 
     // coerce output as a raw UTF-16 pointer and retrieve its size (in bytes)
     const uint16_t *output_ptr;
-    size_t output_size;
-    wide = decancer_raw_wide(cured, &output_ptr, &output_size);
+    size_t utf16_output_size;
+    wide = decancer_raw_wide(cured, &output_ptr, &utf16_output_size);
 
-    assert(output_size == 15, "raw output size");
+    assert(utf16_output_size == (15 * sizeof(uint16_t)), "raw output size");
 
-    // utf-8 bytes for "very funny text"
+    // UTF-16 bytes for "very funny text"
     const uint16_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                      0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
 
     char assert_message[39];
-    for (uint32_t i = 0; i < sizeof(expected_raw); i++)
+    for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(uint16_t); i++)
     {
         sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
         assert(output_raw[i] == expected_raw[i], assert_message);
