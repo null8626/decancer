@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-downloads-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -7,31 +7,8 @@
 [npm-url]: https://npmjs.org/package/decancer
 [jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
 [jitpack-io-url]: https://jitpack.io/#null8626/decancer
-[downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/decancer
-[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-[prettier-url]: https://github.com/prettier/prettier
-[ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
-[github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
-[github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
-[blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
-[blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
-[crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
-[crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
-[crates-io-url]: https://crates.io/crates/decancer
-[npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/decancer
-[downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/decancer
-[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-[prettier-url]: https://github.com/prettier/prettier
-[ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
-[github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
-[github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
-[blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
-[blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
+[npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
+[npm-downloads-url]: https://npmjs.org/package/decancer
 
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
@@ -39,7 +16,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 - By default, it's capable of filtering **215.356 (19.33%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
-  - Most [leetspeak](https://en.wikipedia.org/wiki/Leet) characters
+  - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Several emojis
 - Unlike other packages, this package is **[unicode bidi-aware](https://en.wikipedia.org/wiki/Bidirectional_text)** in a way that it also interprets right-to-left characters in the same way as it were to be rendered by an application.
@@ -300,6 +277,8 @@ public class Program {
 <details>
 <summary><b>C/C++</b></summary>
 
+UTF-8 example:
+
 ```c
 #include <decancer.h>
 
@@ -321,33 +300,32 @@ static void assert(const bool expr, const char *message)
     }
 }
 
-static void print_error(decancer_error_t error_code)
+static void print_error(decancer_error_t *error)
 {
     char message[90];
     uint8_t message_size;
     
-    const uint8_t *ptr = decancer_error(error_code, &message_size);
-    memcpy(message, ptr, message_size);
+    memcpy(message, error->message, error->message_size);
    
     // rust strings are NOT null-terminated
-    message[message_size] = '\0';
+    message[error->message_size] = '\0';
     
     fprintf(stderr, "error: %s", message);
 }
 
 int main(void) {
-    decancer_error_t error_code;
+    decancer_error_t error;
 
-    // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
     uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error_code);
+    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
 
     if (cured == NULL)
     {
-        print_error(error_code);
+        print_error(&error);
         return 1;
     }
 
@@ -371,7 +349,99 @@ int main(void) {
         assert(output_raw[i] == expected_raw[i], assert_message);
     }
 
-    decancer_free(cured);    
+    decancer_cured_free(cured);    
+    return 0;
+}
+```
+
+UTF-16 example:
+
+```c
+#include <decancer.h>
+
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+// global variable for assertion purposes only
+decancer_cured_t cured;
+decancer_raw_wide_t wide = NULL;
+
+static void assert(const bool expr, const char *message)
+{
+    if (!expr)
+    {
+        fprintf(stderr, "assertion failed (%s)\n", message);
+        
+        if (wide != NULL)
+        {
+            decancer_raw_wide_free(wide);
+        }
+        
+        decancer_free(cured);
+        
+        exit(1);
+    }
+}
+
+static void print_error(decancer_error_t *error)
+{
+    char message[90];
+    uint8_t message_size;
+    
+    memcpy(message, error->message, error->message_size);
+   
+    // rust strings are NOT null-terminated
+    message[error->message_size] = '\0';
+    
+    fprintf(stderr, "error: %s", message);
+}
+
+int main(void) {
+    decancer_error_t error;
+
+    // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    uint16_t string[] = {
+        0x0076, 0xff25, 0x24e1,
+        0xd835, 0xdd02, 0x0020,
+        0xd835, 0xdd3d, 0xd835,
+        0xdd4c, 0x0147, 0x2115,
+        0xff59, 0x0020, 0x0163,
+        0x4e47, 0xd835, 0xdd4f,
+        0xd835, 0xdce3
+    };
+
+    cured = decancer_cure_wide(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+
+    if (cured == NULL)
+    {
+        print_error(&error);
+        return 1;
+    }
+
+    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
+    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
+
+    // coerce output as a raw UTF-16 pointer and retrieve its size (in bytes)
+    const uint16_t *output_ptr;
+    size_t output_size;
+    wide = decancer_raw_wide(cured, &output_ptr, &output_size);
+
+    assert(output_size == 15, "raw output size");
+
+    // utf-8 bytes for "very funny text"
+    const uint16_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
+                                     0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
+
+    char assert_message[39];
+    for (uint32_t i = 0; i < sizeof(expected_raw); i++)
+    {
+        sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
+        assert(output_raw[i] == expected_raw[i], assert_message);
+    }
+
+    decancer_raw_wide_free(wide);
+    decancer_cured_free(cured);    
     return 0;
 }
 ```
