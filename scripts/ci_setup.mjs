@@ -25,9 +25,10 @@ appendFileSync(
       ? process.env.COMMIT_MESSAGE
       : 'null',
     core_affected: coreAffected,
-    node_affected: files.some(({ filename }) =>
-      filename.startsWith('bindings/node/src') ||
-      filename === 'bindings/node/test.cjs'
+    node_affected: files.some(
+      ({ filename }) =>
+        filename.startsWith('bindings/node/src') ||
+        filename === 'bindings/node/test.cjs'
     ),
     wasm_affected:
       coreAffected ||
