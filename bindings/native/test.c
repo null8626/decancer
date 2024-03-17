@@ -34,7 +34,7 @@ static void assert(const bool expr, const char *message)
     }
 }
 
-static void print_error(decancer_error_t* error)
+static void print_error(decancer_error_t *error)
 {
     char message[90];
     uint8_t message_size;
