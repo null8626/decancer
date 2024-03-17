@@ -4,7 +4,7 @@ use paste::paste;
 use std::{
   borrow::Cow,
   convert::AsRef,
-  mem::{size_of, transmute},
+  mem::{transmute, size_of},
   ops::{Deref, Range},
   slice, str,
 };
@@ -43,7 +43,7 @@ where
   fn next(&mut self) -> Option<Self::Item> {
     let value = unsafe { *self.0 };
 
-    self.0 = unsafe { self.0.offset(size_of::<T>() as _) };
+    self.0 = unsafe { self.0.offset(1) };
 
     if value == Default::default() {
       None
@@ -77,8 +77,8 @@ where
 
     let value = unsafe { *self.ptr };
 
-    self.ptr = unsafe { self.ptr.offset(size_of::<T>() as _) };
-    self.size -= 1;
+    self.ptr = unsafe { self.ptr.offset(1) };
+    self.size -= size_of::<T>();
 
     Some(value)
   }
