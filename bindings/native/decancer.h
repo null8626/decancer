@@ -105,7 +105,7 @@ extern "C"
     _DECANCER_EXPORT bool decancer_equals(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
     _DECANCER_EXPORT bool decancer_equals_wide(decancer_cured_t cured, uint16_t *other_str, const size_t other_size);
 
-    _DECANCER_EXPORT void decancer_raw_wide_free(decancer_raw_wide wide);
+    _DECANCER_EXPORT void decancer_raw_wide_free(decancer_raw_wide_t wide);
     _DECANCER_EXPORT void decancer_matcher_free(decancer_matcher_t matcher);
     _DECANCER_EXPORT void decancer_translation_free(decancer_translation_t *translation);
     _DECANCER_EXPORT void decancer_cured_free(decancer_cured_t cured);
