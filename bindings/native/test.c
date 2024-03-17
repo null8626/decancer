@@ -9,6 +9,7 @@
 #endif
 
 decancer_cured_t cured = NULL;
+decancer_raw_wide_t wide = NULL;
 decancer_matcher_t matcher = NULL;
 decancer_translation_t char_translation;
 
@@ -19,6 +20,11 @@ static void assert(const bool expr, const char *message)
         fprintf(stderr, "assertion failed (%s)\n", message);
 
         decancer_translation_free(&char_translation);
+
+        if (wide != NULL)
+        {
+            decancer_raw_wide_free(wide);
+        }
 
         if (matcher != NULL)
         {
@@ -34,7 +40,7 @@ static void assert(const bool expr, const char *message)
     }
 }
 
-static void print_error(decancer_error_t *error)
+static void print_error(decancer_error_t *error, const bool utf16)
 {
     char message[90];
     uint8_t message_size;
@@ -42,6 +48,11 @@ static void print_error(decancer_error_t *error)
     memcpy(message, error->message, error->message_size);
 
     message[error->message_size] = '\0';
+    
+    if (utf16) 
+    {
+        fprintf(stderr, "utf-16 ");
+    }
 
     fprintf(stderr, "error: %s", message);
 }
@@ -76,7 +87,7 @@ int main(void)
 
     if (cured == NULL)
     {
-        print_error(&error);
+        print_error(&error, false);
         return 1;
     }
 
@@ -102,13 +113,51 @@ int main(void)
     const uint8_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                     0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
 
-    char assert_message[38];
+    char assert_message[40];
     for (uint32_t i = 0; i < sizeof(expected_raw); i++)
     {
         sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
         assert(output_raw[i] == expected_raw[i], assert_message);
     }
+    
+    decancer_cured_free(cured);
+    
+    uint16_t utf16_string[] = {
+        0x0076, 0xff25, 0x24e1,
+        0xd835, 0xdd02, 0x0020,
+        0xd835, 0xdd3d, 0xd835,
+        0xdd4c, 0x0147, 0x2115,
+        0xff59, 0x0020, 0x0163,
+        0x4e47, 0xd835, 0xdd4f,
+        0xd835, 0xdce3
+    };
 
+    cured = decancer_cure_wide(utf16_string, sizeof(utf16_string), DECANCER_OPTION_DEFAULT, &error);
+
+    if (cured == NULL)
+    {
+        print_error(&error, true);
+        return 1;
+    }
+
+    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "utf-16 equals");
+    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "utf-16 contains");
+
+    uint16_t *utf16_output_ptr;
+    wide = decancer_raw_wide(cured, &utf16_output_ptr, &output_size);
+
+    assert(output_size == (15 * sizeof(uint16_t)), "raw output size");
+
+    const uint16_t expected_utf16_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
+                                           0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
+
+    for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(uint16_t); i++)
+    {
+        sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
+        assert(utf16_output_ptr[i] == expected_utf16_raw[i], assert_message);
+    }
+
+    decancer_raw_wide_free(wide);
     decancer_cured_free(cured);
     puts("ok");
 

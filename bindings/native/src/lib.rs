@@ -11,7 +11,7 @@ use std::{
 
 #[repr(C)]
 pub struct Error {
-  message: *const u8,
+  message: usize,
   message_size: u8,
 }
 
@@ -95,18 +95,13 @@ fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> Option<&'static str> {
         None => break,
         Some(0xA0..=0xBF | 0xF8..) => return None,
         Some(value) => {
-          if value >= 0xC0 {
-            if (input_ptr.next()? >> 6) != 0x02 {
-              return None;
-            }
-
-            if value >= 0xE0 {
-              if (input_ptr.next()? >> 6) != 0x02 {
-                return None;
-              } else if value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02 {
-                return None;
-              }
-            }
+          if value >= 0xC0
+            && ((input_ptr.next()? >> 6) != 0x02
+              || (value >= 0xE0
+                && ((input_ptr.next()? >> 6) != 0x02
+                  || (value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02))))
+          {
+            return None;
           }
         }
       };
@@ -184,7 +179,7 @@ pub unsafe extern "C" fn decancer_cure(
   let input = match str_from_ptr(input_str, input_size) {
     Some(result) => result,
     None => {
-      (*error).message = INVALID_UTF8_MESSAGE.as_ptr();
+      (*error).message = INVALID_UTF8_MESSAGE.as_ptr() as _;
       (*error).message_size = INVALID_UTF8_MESSAGE.len() as _;
 
       return 0 as _;
@@ -196,7 +191,7 @@ pub unsafe extern "C" fn decancer_cure(
     Err(err) => {
       let message = <decancer::Error as AsRef<str>>::as_ref(&err);
 
-      (*error).message = message.as_ptr();
+      (*error).message = message.as_ptr() as _;
       (*error).message_size = message.len() as _;
 
       0 as _
@@ -214,7 +209,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
   let input = match utf8_from_wide_ptr(input_str, input_size) {
     Some(result) => result,
     None => {
-      (*error).message = INVALID_UTF16_MESSAGE.as_ptr();
+      (*error).message = INVALID_UTF16_MESSAGE.as_ptr() as _;
       (*error).message_size = INVALID_UTF16_MESSAGE.len() as _;
 
       return 0 as _;
@@ -228,7 +223,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
     Err(err) => {
       let message = <decancer::Error as AsRef<str>>::as_ref(&err);
 
-      (*error).message = message.as_ptr();
+      (*error).message = message.as_ptr() as _;
       (*error).message_size = message.len() as _;
 
       0 as _
@@ -356,22 +351,22 @@ comparison_fn! {
 pub unsafe extern "C" fn decancer_raw(
   cured: *mut decancer::CuredString,
   output_size: *mut usize,
-) -> *const u8 {
+) -> usize {
   *output_size = (*cured).len();
 
-  (*cured).as_ptr()
+  (*cured).as_ptr() as _
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_raw_wide(
   cured: *mut decancer::CuredString,
-  output_ptr: *mut *const u16,
+  output_ptr: *mut usize,
   output_size: *mut usize,
 ) -> *mut Vec<u16> {
   let vec = Box::new((*cured).encode_utf16().collect::<Vec<_>>());
 
-  *output_ptr = vec.as_ptr();
-  *output_size = vec.len();
+  *output_ptr = vec.as_ptr() as _;
+  *output_size = vec.len() * size_of::<u16>();
 
   Box::into_raw(vec)
 }
