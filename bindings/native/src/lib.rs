@@ -9,6 +9,12 @@ use std::{
 };
 
 #[repr(C)]
+pub struct Error {
+  message: *const u8,
+  message_size: u8,
+}
+
+#[repr(C)]
 pub struct Translation {
   kind: u8,
   slot_a: usize,
@@ -21,25 +27,20 @@ const unsafe fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> &'static 
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_error(error: u8, string_size: *mut u8) -> *const u8 {
-  let err = transmute::<_, decancer::Error>(error);
-  let msg = <decancer::Error as AsRef<str>>::as_ref(&err);
-
-  *string_size = msg.len() as _;
-  msg.as_ptr()
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn decancer_cure(
   input_str: *mut u8,
   input_size: usize,
   options: u32,
-  error: *mut u8,
+  error: *mut Error,
 ) -> *mut decancer::CuredString {
   match decancer::cure(str_from_ptr(input_str, input_size), transmute(options)) {
     Ok(res) => Box::into_raw(Box::new(res)),
     Err(err) => {
-      *error = err as _;
+      let message = <decancer::Error as AsRef<str>>::as_ref(&err);
+
+      (*error).message = message.as_ptr();
+      (*error).message_size = message.len() as _;
+
       0 as _
     }
   }
