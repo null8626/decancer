@@ -4,7 +4,7 @@ use paste::paste;
 use std::{
   borrow::Cow,
   convert::AsRef,
-  mem::{transmute, size_of},
+  mem::{size_of, transmute},
   ops::{Deref, Range},
   slice, str,
 };

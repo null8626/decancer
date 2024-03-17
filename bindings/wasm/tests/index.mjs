@@ -62,7 +62,7 @@ server.on('message', async message => {
             this.#err = null
             this.#object = object
           }
-          
+
           #assert(received, expected, functionName) {
             if (received !== expected) {
               this.#err = {
@@ -75,12 +75,16 @@ server.on('message', async message => {
 
           test(expected, functionName, ...args) {
             if (this.#err === null) {
-              this.#assert(this.#object[functionName](...args), expected, functionName)
+              this.#assert(
+                this.#object[functionName](...args),
+                expected,
+                functionName
+              )
             }
 
             return this
           }
-          
+
           testFind() {
             if (this.#err === null) {
               const match = this.#object.find('funny')
@@ -88,9 +92,13 @@ server.on('message', async message => {
               this.#assert(match.length, 1, 'find:match.length')
               this.#assert(match[0].start, 5, 'find:match[0].start')
               this.#assert(match[0].end, 10, 'find:match[0].end')
-              this.#assert(match[0].toString(), 'funny', 'find:match[0].toString()')
+              this.#assert(
+                match[0].toString(),
+                'funny',
+                'find:match[0].toString()'
+              )
             }
-            
+
             return this
           }
 
