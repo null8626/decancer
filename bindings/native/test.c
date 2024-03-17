@@ -48,8 +48,8 @@ static void print_error(decancer_error_t *error, const bool utf16)
     memcpy(message, error->message, error->message_size);
 
     message[error->message_size] = '\0';
-    
-    if (utf16) 
+
+    if (utf16)
     {
         fprintf(stderr, "utf-16 ");
     }
@@ -119,18 +119,11 @@ int main(void)
         sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
         assert(output_raw[i] == expected_raw[i], assert_message);
     }
-    
+
     decancer_cured_free(cured);
-    
-    uint16_t utf16_string[] = {
-        0x0076, 0xff25, 0x24e1,
-        0xd835, 0xdd02, 0x0020,
-        0xd835, 0xdd3d, 0xd835,
-        0xdd4c, 0x0147, 0x2115,
-        0xff59, 0x0020, 0x0163,
-        0x4e47, 0xd835, 0xdd4f,
-        0xd835, 0xdce3
-    };
+
+    uint16_t utf16_string[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c,
+                               0x0147, 0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3};
 
     cured = decancer_cure_wide(utf16_string, sizeof(utf16_string), DECANCER_OPTION_DEFAULT, &error);
 
