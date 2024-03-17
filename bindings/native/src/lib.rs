@@ -377,8 +377,8 @@ pub unsafe extern "C" fn decancer_raw_wide(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_raw_wide_free(matcher: *mut Vec<u16>) {
-  let _ = Box::from_raw(matcher);
+pub unsafe extern "C" fn decancer_raw_wide_free(wide: *mut Vec<u16>) {
+  let _ = Box::from_raw(wide);
 }
 
 #[no_mangle]
