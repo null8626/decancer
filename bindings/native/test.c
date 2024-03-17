@@ -109,7 +109,7 @@ int main(void)
         assert(output_raw[i] == expected_raw[i], assert_message);
     }
 
-    decancer_free(cured);
+    decancer_cured_free(cured);
     puts("ok");
 
     return 0;
