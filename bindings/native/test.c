@@ -34,22 +34,21 @@ static void assert(const bool expr, const char *message)
     }
 }
 
-static void print_error(decancer_error_t error_code)
+static void print_error(decancer_error_t *error)
 {
     char message[90];
     uint8_t message_size;
 
-    const uint8_t *ptr = decancer_error(error_code, &message_size);
-    memcpy(message, ptr, message_size);
+    memcpy(message, error->message, error->message_size);
 
-    message[message_size] = '\0';
+    message[error->message_size] = '\0';
 
     fprintf(stderr, "error: %s", message);
 }
 
 int main(void)
 {
-    decancer_error_t error_code;
+    decancer_error_t error;
     memset(&char_translation, 0, sizeof(decancer_translation_t));
 
     decancer_cure_char(0xFF25, DECANCER_OPTION_DEFAULT, &char_translation);
@@ -73,11 +72,11 @@ int main(void)
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error_code);
+    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
 
     if (cured == NULL)
     {
-        print_error(error_code);
+        print_error(&error);
         return 1;
     }
 

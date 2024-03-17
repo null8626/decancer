@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][downloads-image]][downloads-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![code style: prettier][prettier-image]][prettier-url] [![Build Status][ci-image]][ci-url] [![license][github-license-image]][github-license-url] [![BLAZINGLY FAST!!!][blazingly-fast-image]][blazingly-fast-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-downloads-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -7,31 +7,8 @@
 [npm-url]: https://npmjs.org/package/decancer
 [jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
 [jitpack-io-url]: https://jitpack.io/#null8626/decancer
-[downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/decancer
-[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-[prettier-url]: https://github.com/prettier/prettier
-[ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
-[github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
-[github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
-[blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
-[blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
-[crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
-[crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
-[crates-io-url]: https://crates.io/crates/decancer
-[npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/decancer
-[downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/decancer
-[prettier-image]: https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square
-[prettier-url]: https://github.com/prettier/prettier
-[ci-image]: https://github.com/null8626/decancer/workflows/CI/badge.svg
-[ci-url]: https://github.com/null8626/decancer/actions/workflows/CI.yml
-[github-license-image]: https://img.shields.io/github/license/null8626/decancer?style=flat-square
-[github-license-url]: https://github.com/null8626/decancer/blob/main/LICENSE
-[blazingly-fast-image]: https://img.shields.io/badge/speed-BLAZINGLY%20FAST!!!%20%F0%9F%94%A5%F0%9F%9A%80%F0%9F%92%AA%F0%9F%98%8E-brightgreen.svg?style=flat-square
-[blazingly-fast-url]: https://twitter.com/acdlite/status/974390255393505280
+[npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
+[npm-downloads-url]: https://npmjs.org/package/decancer
 
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
@@ -321,33 +298,32 @@ static void assert(const bool expr, const char *message)
     }
 }
 
-static void print_error(decancer_error_t error_code)
+static void print_error(decancer_error_t *error)
 {
     char message[90];
     uint8_t message_size;
     
-    const uint8_t *ptr = decancer_error(error_code, &message_size);
-    memcpy(message, ptr, message_size);
+    memcpy(message, error->message, error->message_size);
    
     // rust strings are NOT null-terminated
-    message[message_size] = '\0';
+    message[error->message_size] = '\0';
     
     fprintf(stderr, "error: %s", message);
 }
 
 int main(void) {
-    decancer_error_t error_code;
+    decancer_error_t error;
 
     // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
     uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error_code);
+    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
 
     if (cured == NULL)
     {
-        print_error(error_code);
+        print_error(&error);
         return 1;
     }
 

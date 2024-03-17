@@ -66,19 +66,23 @@ extern "C"
 
     typedef struct
     {
+        const char *message;
+        uint8_t message_size;
+    } decancer_error_t;
+
+    typedef struct
+    {
         size_t start;
         size_t end;
     } decancer_match_t;
 
     typedef uint32_t decancer_options_t;
-    typedef uint8_t decancer_error_t;
     typedef void *decancer_matcher_t;
     typedef void *decancer_cured_t;
 
     _DECANCER_EXPORT bool decancer_contains(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
     _DECANCER_EXPORT decancer_cured_t decancer_cure(uint8_t *input_str, const size_t input_size,
                                                     const decancer_options_t options, decancer_error_t *error);
-    _DECANCER_EXPORT const uint8_t *decancer_error(decancer_error_t error, uint8_t *string_size);
     _DECANCER_EXPORT void decancer_cure_char(uint32_t input, decancer_translation_t *translation);
     _DECANCER_EXPORT decancer_matcher_t decancer_find(decancer_cured_t cured, uint8_t *other_str,
                                                       const size_t other_size);
