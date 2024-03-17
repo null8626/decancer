@@ -26,11 +26,14 @@ pub struct Translation {
 const INVALID_UTF8_MESSAGE: &str = "Invalid UTF-8 bytes.";
 const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
-struct NullTerminatedPointer<T>(*mut T);
+struct NullTerminatedPointer<T> {
+  ptr: *mut T,
+  size: usize,
+}
 
 impl<T> NullTerminatedPointer<T> {
   const fn new(ptr: *mut T) -> Self {
-    Self(ptr)
+    Self { ptr, size: 0 }
   }
 }
 
@@ -41,13 +44,15 @@ where
   type Item = T;
 
   fn next(&mut self) -> Option<Self::Item> {
-    let value = unsafe { *self.0 };
+    let value = unsafe { *self.ptr };
 
-    self.0 = unsafe { self.0.offset(1) };
+    self.ptr = unsafe { self.ptr.offset(1) };
 
     if value == Default::default() {
       None
     } else {
+      self.size += size_of::<T>();
+
       Some(value)
     }
   }
@@ -84,28 +89,24 @@ where
   }
 }
 
-fn str_from_ptr(input_ptr: *mut u8, input_size: usize) -> Option<&'static str> {
+fn str_from_ptr(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
     let mut input_ptr = NullTerminatedPointer::new(input_ptr);
 
-    loop {
-      let value = input_ptr.next();
-
-      match value {
-        None => break,
-        Some(0xA0..=0xBF | 0xF8..) => return None,
-        Some(value) => {
-          if value >= 0xC0
-            && ((input_ptr.next()? >> 6) != 0x02
-              || (value >= 0xE0
-                && ((input_ptr.next()? >> 6) != 0x02
-                  || (value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02))))
-          {
-            return None;
-          }
-        }
-      };
+    while let Some(value) = input_ptr.next() {
+      if (value >= 0xA0 && value <= 0xBF)
+        || value >= 0xF8
+        || (value >= 0xC0
+          && ((input_ptr.next()? >> 6) != 0x02
+            || (value >= 0xE0
+              && ((input_ptr.next()? >> 6) != 0x02
+                || (value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02)))))
+      {
+        return None;
+      }
     }
+
+    input_size = input_ptr.size;
   }
 
   unsafe {
