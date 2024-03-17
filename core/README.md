@@ -316,7 +316,7 @@ static void print_error(decancer_error_t *error)
 int main(void) {
     decancer_error_t error;
 
-    // utf-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
     uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
                         0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
                         0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
@@ -400,7 +400,7 @@ static void print_error(decancer_error_t *error)
 int main(void) {
     decancer_error_t error;
 
-    // utf-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+    // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
     uint16_t string[] = {
         0x0076, 0xff25, 0x24e1,
         0xd835, 0xdd02, 0x0020,
@@ -411,7 +411,7 @@ int main(void) {
         0xd835, 0xdce3
     };
 
-    cured = decancer_cure_wide(string, sizeof(string) * sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+    cured = decancer_cure_wide(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
 
     if (cured == NULL)
     {
