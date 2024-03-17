@@ -12,7 +12,7 @@ pub struct Match {
 
 #[wasm_bindgen]
 impl Match {
-  fn toString(&self) -> String {
+  pub fn toString(&self) -> String {
     self.portion.clone()
   }
 }
