@@ -48,7 +48,7 @@ static void print_error(decancer_error_t *error, const char *prefix)
     memcpy(message, error->message, error->message_size);
 
     message[error->message_size] = '\0';
-
+    
     fprintf(stderr, "%serror: %s", prefix, message);
 }
 
@@ -87,17 +87,17 @@ static bool test_utf8(uint8_t *string, size_t size, const char *error_prefix, de
     char assert_message[60];
     for (uint32_t i = 0; i < sizeof(expected_raw); i++)
     {
-        sprintf(assert_message, "%smismatched utf-8 contents at index %u", error_prefix, i);
-        assert(output_raw[i] == expected_raw[i], assert_message);
+        sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
+        assert(output_raw[i] == expected_raw[i], assert_message, error_prefix);
     }
-
+    
     decancer_cured_free(cured);
     return true;
 }
 
 static bool test_utf16(uint16_t *string, size_t size, const char *error_prefix, decancer_error_t *error)
 {
-    cured = decancer_cure_wide(utf16_string, sizeof(utf16_string), DECANCER_OPTION_DEFAULT, error);
+    cured = decancer_cure_wide(string, size, DECANCER_OPTION_DEFAULT, error);
 
     if (cured == NULL)
     {
@@ -117,11 +117,11 @@ static bool test_utf16(uint16_t *string, size_t size, const char *error_prefix, 
     const uint16_t expected_utf16_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                            0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
     char assert_message[60];
-
-    for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(uint16_t); i++)
+    
+    for (uint32_t i = 0; i < sizeof(expected_utf16_raw) / sizeof(uint16_t); i++)
     {
-        sprintf(assert_message, "%smismatched utf-16 contents at index %u", error_prefix, i);
-        assert(utf16_output_ptr[i] == expected_utf16_raw[i], assert_message);
+        sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
+        assert(utf16_output_ptr[i] == expected_utf16_raw[i], assert_message, error_prefix);
     }
 
     decancer_raw_wide_free(wide);
@@ -136,40 +136,45 @@ int main(void)
 
     decancer_cure_char(0xFF25, DECANCER_OPTION_DEFAULT, &char_translation);
 
-    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_CHARACTER, "char translation is a character");
-    assert(char_translation.contents.character == 0x65, "char translation is 'e' (0x65)");
+    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_CHARACTER, "char translation is a character", "");
+    assert(char_translation.contents.character == 0x65, "char translation is 'e' (0x65)", "");
 
     decancer_cure_char(0x04D5, DECANCER_OPTION_DEFAULT, &char_translation);
 
-    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_STRING, "char translation is an ASCII string");
+    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_STRING, "char translation is an ASCII string", "");
     assert(char_translation.contents.string.length == 2,
-           "char translation is an ASCII string with the length of 2 bytes");
+           "char translation is an ASCII string with the length of 2 bytes", "");
     assert(char_translation.contents.string.contents[0] == 'a' && char_translation.contents.string.contents[1] == 'e',
-           "char translation is the ASCII string \"ae\".");
+           "char translation is the ASCII string \"ae\".", "");
 
     decancer_cure_char(0, DECANCER_OPTION_DEFAULT, &char_translation);
 
-    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_NONE, "char translation is an empty string ('')");
+    assert(char_translation.kind == DECANCER_TRANSLATION_KIND_NONE, "char translation is an empty string ('')", "");
 
-    uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
-                        0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
-                        0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
+    uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+                        0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+                        0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
 
-    if (!test_utf8(string, sizeof(string) - sizeof(uint8_t), "", &error) ||
-        !test_utf8(string, 0, "null-terminated ", &error))
+    if (!test_utf8(string, sizeof(string) - sizeof(uint8_t), "", &error) || !test_utf8(string, 0, "null-terminated ", &error))
     {
         return 1;
     }
+    
+    uint16_t utf16_string[] = {
+        0x0076, 0xff25, 0x24e1,
+        0xd835, 0xdd02, 0x0020,
+        0xd835, 0xdd3d, 0xd835,
+        0xdd4c, 0x0147, 0x2115,
+        0xff59, 0x0020, 0x0163,
+        0x4e47, 0xd835, 0xdd4f,
+        0xd835, 0xdce3, 0x0000
+    };
 
-    uint16_t utf16_string[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
-                               0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-
-    if (!test_utf16(string, sizeof(utf16_string) - sizeof(uint16_t), "utf-16 ", &error) ||
-        !test_utf16(utf16_string, 0, "utf-16 null-terminated ", &error))
+    if (!test_utf16(utf16_string, sizeof(utf16_string) - sizeof(uint16_t), "utf-16 ", &error) || !test_utf16(utf16_string, 0, "utf-16 null-terminated ", &error))
     {
         return 1;
     }
-
+    
     puts("ok");
 
     return 0;
