@@ -423,7 +423,7 @@ int main(void) {
     assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
 
     // coerce output as a raw UTF-16 pointer and retrieve its size (in bytes)
-    const uint16_t *output_ptr;
+    uint16_t *output_ptr;
     size_t utf16_output_size;
     wide = decancer_raw_wide(cured, &output_ptr, &utf16_output_size);
 
