@@ -294,7 +294,7 @@ static void assert(const bool expr, const char *message)
     if (!expr)
     {
         fprintf(stderr, "assertion failed (%s)\n", message);
-        decancer_free(cured);
+        decancer_cured_free(cured);
         
         exit(1);
     }
@@ -378,7 +378,7 @@ static void assert(const bool expr, const char *message)
             decancer_raw_wide_free(wide);
         }
         
-        decancer_free(cured);
+        decancer_cured_free(cured);
         
         exit(1);
     }
@@ -423,7 +423,7 @@ int main(void) {
     assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
 
     // coerce output as a raw UTF-16 pointer and retrieve its size (in bytes)
-    const uint16_t *output_ptr;
+    uint16_t *output_ptr;
     size_t utf16_output_size;
     wide = decancer_raw_wide(cured, &output_ptr, &utf16_output_size);
 
