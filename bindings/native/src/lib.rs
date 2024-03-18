@@ -128,7 +128,7 @@ fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<
         None => return Some(output),
       },
     };
-    
+
     if c <= 0x7f {
       output.push(c as _);
     } else if c <= 0x7ff {
@@ -144,7 +144,7 @@ fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<
 
       if n >= 0xdc00 && n < 0xe000 {
         let c = 0x10000 + (((c - 0xd800) as u32) << 10) + ((n as u32) - 0xdc00);
-        
+
         output.extend([
           ((c >> 18) as u8) | 0xf0,
           (((c >> 12) & 0x3f) as u8) | 0x80,
