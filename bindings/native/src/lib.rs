@@ -128,15 +128,15 @@ fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<
         None => return Some(output),
       },
     };
-
+    
     if c <= 0x7f {
       output.push(c as _);
     } else if c <= 0x7ff {
-      output.extend([((c & 0x7c0) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
+      output.extend([((c >> 6) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
     } else if c < 0xd800 || c >= 0xe000 {
       output.extend([
-        ((c & 0xf000) as u8) | 0xe0,
-        ((c & 0xfc0) as u8) | 0x80,
+        ((c >> 12) as u8) | 0xe0,
+        (((c >> 6) & 0x3f) as u8) | 0x80,
         ((c & 0x3f) as u8) | 0x80,
       ]);
     } else {
@@ -144,11 +144,11 @@ fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<
 
       if n >= 0xdc00 && n < 0xe000 {
         let c = 0x10000 + (((c - 0xd800) as u32) << 10) + ((n as u32) - 0xdc00);
-
+        
         output.extend([
-          ((c & 0x1c0000) as u8) | 0xf0,
-          ((c & 0xfc00) as u8) | 0x80,
-          ((c & 0xfc0) as u8) | 0x80,
+          ((c >> 18) as u8) | 0xf0,
+          (((c >> 12) & 0x3f) as u8) | 0x80,
+          (((c >> 6) & 0x3f) as u8) | 0x80,
           ((c & 0x3f) as u8) | 0x80,
         ]);
       } else {

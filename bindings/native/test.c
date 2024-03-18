@@ -105,14 +105,14 @@ static bool test_utf16(uint16_t *string, size_t size, const char *error_prefix, 
         return false;
     }
 
-    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "utf-16 equals", error_prefix);
-    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "utf-16 contains", error_prefix);
+    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals", error_prefix);
+    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains", error_prefix);
 
     uint16_t *utf16_output_ptr;
     size_t utf16_output_size;
     wide = decancer_raw_wide(cured, &utf16_output_ptr, &utf16_output_size);
 
-    assert(utf16_output_size == (15 * sizeof(uint16_t)), "utf-16 raw output size", error_prefix);
+    assert(utf16_output_size == (15 * sizeof(uint16_t)), "raw output size", error_prefix);
 
     const uint16_t expected_utf16_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                            0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
