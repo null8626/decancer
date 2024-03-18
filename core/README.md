@@ -294,7 +294,7 @@ static void assert(const bool expr, const char *message)
     if (!expr)
     {
         fprintf(stderr, "assertion failed (%s)\n", message);
-        decancer_free(cured);
+        decancer_cured_free(cured);
         
         exit(1);
     }
@@ -378,7 +378,7 @@ static void assert(const bool expr, const char *message)
             decancer_raw_wide_free(wide);
         }
         
-        decancer_free(cured);
+        decancer_cured_free(cured);
         
         exit(1);
     }
