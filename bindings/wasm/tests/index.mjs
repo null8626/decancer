@@ -64,7 +64,7 @@ server.on('message', async message => {
           }
 
           #assert(received, expected, functionName) {
-            if (received !== expected) {
+            if (this.#err === null && received !== expected) {
               this.#err = {
                 expected,
                 received,
@@ -79,6 +79,28 @@ server.on('message', async message => {
                 this.#object[functionName](...args),
                 expected,
                 functionName
+              )
+            }
+
+            return this
+          }
+
+          testModifications() {
+            if (this.#err === null) {
+              this.#object.replace('text', 'other')
+              this.#assert(
+                this.#object.toString(),
+                'very funny other',
+                true,
+                'replace'
+              )
+
+              this.#object.censor('funny', '*')
+              this.#assert(
+                this.#object.toString(),
+                'very ***** other',
+                true,
+                'censor'
               )
             }
 
@@ -119,6 +141,7 @@ server.on('message', async message => {
             .test(true, 'contains', 'funny')
             .test('very funny text', 'toString')
             .testFind()
+            .testModifications()
             .finish()
         } catch (err) {
           return err.stack
