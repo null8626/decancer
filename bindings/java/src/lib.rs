@@ -142,7 +142,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replaceInner<'local>(
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replace<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
