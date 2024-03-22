@@ -293,6 +293,91 @@ pub unsafe extern "C" fn decancer_matcher_next(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn decancer_censor(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+  with_char: u32,
+) -> bool {
+  match (
+    str_from_ptr(other_str, other_size),
+    char::from_u32(with_char),
+  ) {
+    (Some(other_str), Some(with_char)) => {
+      (*cured).censor(other_str, with_char);
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_censor_wide(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u16,
+  other_size: usize,
+  with_char: u32,
+) -> bool {
+  match (
+    utf8_from_wide_ptr(other_str, other_size),
+    char::from_u32(with_char),
+  ) {
+    (Some(other_str), Some(with_char)) => {
+      (*cured).censor(str::from_utf8_unchecked(&other_str), with_char);
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_replace(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+  with_str: *mut u8,
+  with_size: usize,
+) -> bool {
+  match (
+    str_from_ptr(other_str, other_size),
+    str_from_ptr(with_str, with_size),
+  ) {
+    (Some(other_str), Some(with_str)) => {
+      (*cured).replace(other_str, with_str);
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_replace_wide(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u16,
+  other_size: usize,
+  with_str: *mut u16,
+  with_size: usize,
+) -> bool {
+  match (
+    utf8_from_wide_ptr(other_str, other_size),
+    utf8_from_wide_ptr(with_str, with_size),
+  ) {
+    (Some(other_str), Some(with_str)) => {
+      (*cured).replace(
+        str::from_utf8_unchecked(&other_str),
+        str::from_utf8_unchecked(&with_str),
+      );
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn decancer_equals(
   cured: *mut decancer::CuredString,
   other_str: *mut u8,
