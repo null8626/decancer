@@ -4,7 +4,7 @@ use crate::{
   codepoints::CODEPOINTS,
   util::{read_u16_le, unwrap_or_ret},
 };
-use std::{ops::Range, str::Chars};
+use std::{iter::FusedIterator, ops::Range, str::Chars};
 
 pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) });
 pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CODEPOINTS.offset(4) });
@@ -265,3 +265,5 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
     }
   }
 }
+
+impl<'a, 'b> FusedIterator for Matcher<'a, 'b> {}
