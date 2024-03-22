@@ -29,7 +29,7 @@ impl CuredString {
   ///
   /// This comparison is case-insensitive.
   ///
-  /// ```rs
+  /// ```rust
   /// let cured = decancer::cure!("wow hello wow heellllo!").unwrap();
   /// let mut matcher = cured.find("hello");
   ///
@@ -40,6 +40,64 @@ impl CuredString {
   #[inline(always)]
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Matcher<'a, 'b> {
     Matcher::new(self, other)
+  }
+
+  /// Censors every match of a string with a repetition of a character in-place.
+  ///
+  /// This comparison is case-insensitive.
+  ///
+  /// ```rust
+  /// let mut cured = decancer::cure!("wow heellllo wow hello wow!").unwrap();
+  /// cured.censor("hello", '*');
+  ///
+  /// assert_eq!(cured, "wow ******** wow ***** wow!");
+  /// ```
+  pub fn censor(&mut self, other: &str, with: char) {
+    let original = self.0.clone();
+    let mut char_diff = 0isize;
+
+    for mat in Matcher::new(&original, other) {
+      // SAFETY: mat is always within the bounds of self
+      let chars = unsafe { original.get_unchecked(mat.clone()) }
+        .chars()
+        .count();
+      let mut with_str = String::with_capacity(chars);
+
+      for _ in 0..chars {
+        with_str.push(with);
+      }
+
+      self.0.replace_range(
+        (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
+        &with_str,
+      );
+
+      char_diff += (with.len_utf8() * chars) as isize - mat.len() as isize;
+    }
+  }
+
+  /// Replaces every match of a string with another string in-place.
+  ///
+  /// This comparison is case-insensitive.
+  ///
+  /// ```rust
+  /// let mut cured = decancer::cure!("wow hello wow heellllo!").unwrap();
+  /// cured.replace("hello", "world");
+  ///
+  /// assert_eq!(cured, "wow world wow world!");
+  /// ```
+  pub fn replace(&mut self, other: &str, with: &str) {
+    let original = self.0.clone();
+    let mut char_diff = 0isize;
+
+    for mat in Matcher::new(&original, other) {
+      self.0.replace_range(
+        (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
+        with,
+      );
+
+      char_diff += with.len() as isize - mat.len() as isize;
+    }
   }
 
   /// Checks if this cured string similarly starts with another string.
