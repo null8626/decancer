@@ -88,6 +88,34 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native Match[] find(String other);
+  
+  /**
+   * Censors every match of a string with a repetition of a character in-place.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   *
+   * @param other The other string to compare with.
+   * @param with The character to repeat.
+   * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
+  public native void censor(String other, char with);
+  
+  /**
+   * Replaces every match of a string with another string in-place.
+   *
+   * <p>
+   * This comparison is case-insensitive.
+   *
+   * @param other The other string to compare with.
+   * @param with The other string to replace with.
+   * @return Another instance of a CuredString.
+   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   */
+  public native void replace(String other, String with);
 
   /**
    * Checks if this object is similar with another string.

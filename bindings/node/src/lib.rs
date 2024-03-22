@@ -123,6 +123,24 @@ impl CuredString {
       })
       .collect()
   }
+  
+  #[napi]
+  pub fn censor(&mut self, other: String, with: String) -> Result<()> {
+    match with.chars().next() {
+      Some(with_char) => {
+        self.0.censor(&other, with_char);
+        
+        Ok(())
+      },
+      
+      None => Err(Error::new(Status::InvalidArg, "Replacement string is empty.")),
+    }
+  }
+  
+  #[napi]
+  pub fn replace(&mut self, other: String, with: String) {
+    self.0.replace(&other, &with);
+  }
 
   #[napi]
   pub fn starts_with(&self, other: String) -> bool {
