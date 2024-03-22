@@ -34,6 +34,14 @@ impl CuredString {
       .collect()
   }
 
+  pub fn censor(&mut self, other: &str, with: char) {
+    self.0.censor(other, with)
+  }
+
+  pub fn replace(&mut self, other: &str, with: &str) {
+    self.0.replace(other, with)
+  }
+  
   pub fn startsWith(&self, other: &str) -> bool {
     self.0.starts_with(other)
   }
