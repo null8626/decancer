@@ -6,8 +6,11 @@ export class Match {
 
 export class CuredString {
   find(other: string): Match[]
+  findMultiple(other: string[]): Match[]
   censor(other: string, character: string): void
+  censorMultiple(other: string[], character: string): void
   replace(other: string, withWhat: string): void
+  replaceMultiple(other: string[], withWhat: string): void
   startsWith(other: string): boolean
   endsWith(other: string): boolean
   contains(other: string): boolean

@@ -9,7 +9,7 @@
 #endif
 
 decancer_cured_t cured = NULL;
-decancer_raw_wide_t wide = NULL;
+decancer_cured_raw_wide_t wide = NULL;
 decancer_matcher_t matcher = NULL;
 decancer_translation_t char_translation;
 
@@ -23,7 +23,7 @@ static void assert(const bool expr, const char *message, const char *prefix)
 
         if (wide != NULL)
         {
-            decancer_raw_wide_free(wide);
+            decancer_cured_raw_wide_free(wide);
         }
 
         if (matcher != NULL)
@@ -77,7 +77,7 @@ static bool test_utf8(uint8_t *string, size_t size, const char *error_prefix, de
     assert(match.end == 10, "match.end is not 10", error_prefix);
 
     size_t output_size;
-    const uint8_t *output_raw = decancer_raw(cured, &output_size);
+    const uint8_t *output_raw = decancer_cured_raw(cured, &output_size);
 
     assert(output_size == 15, "raw output size", error_prefix);
 
@@ -110,7 +110,7 @@ static bool test_utf16(uint16_t *string, size_t size, const char *error_prefix, 
 
     uint16_t *utf16_output_ptr;
     size_t utf16_output_size;
-    wide = decancer_raw_wide(cured, &utf16_output_ptr, &utf16_output_size);
+    wide = decancer_cured_raw_wide(cured, &utf16_output_ptr, &utf16_output_size);
 
     assert(utf16_output_size == (15 * sizeof(uint16_t)), "raw output size", error_prefix);
 
@@ -124,7 +124,7 @@ static bool test_utf16(uint16_t *string, size_t size, const char *error_prefix, 
         assert(utf16_output_ptr[i] == expected_utf16_raw[i], assert_message, error_prefix);
     }
 
-    decancer_raw_wide_free(wide);
+    decancer_cured_raw_wide_free(wide);
     decancer_cured_free(cured);
     return true;
 }
