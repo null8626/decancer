@@ -88,15 +88,25 @@ server.on('message', async message => {
           testModifications() {
             if (this.#err === null) {
               this.#object.replace('text', 'other')
-              this.#assert(this.#object.toString(), 'very funny other', true, 'replace')
-              
+              this.#assert(
+                this.#object.toString(),
+                'very funny other',
+                true,
+                'replace'
+              )
+
               this.#object.censor('funny', '*')
-              this.#assert(this.#object.toString(), 'very ***** other', true, 'censor')
+              this.#assert(
+                this.#object.toString(),
+                'very ***** other',
+                true,
+                'censor'
+              )
             }
 
             return this
           }
-          
+
           testFind() {
             if (this.#err === null) {
               const match = this.#object.find('funny')
