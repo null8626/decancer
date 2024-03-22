@@ -112,15 +112,30 @@ pub struct CuredString(decancer::CuredString);
 
 #[napi]
 impl CuredString {
+  #[inline(always)]
+  fn new_match(&self, mat: Range<usize>) -> Match {
+    Match {
+      range: mat.clone(),
+      portion: String::from(unsafe { self.0.get_unchecked(mat) }),
+    }
+  }
+  
   #[napi]
   pub fn find(&self, other: String) -> Vec<Match> {
     self
       .0
       .find(&other)
-      .map(|mat| Match {
-        range: mat.clone(),
-        portion: String::from(unsafe { self.0.get_unchecked(mat) }),
-      })
+      .map(|mat| self.new_match(mat))
+      .collect()
+  }
+  
+  #[napi]
+  pub fn find_multiple(&self, other: Vec<String>) -> Vec<Match> {
+    self
+      .0
+      .find_multiple(&other)
+      .into_iter()
+      .map(|mat| self.new_match(mat))
       .collect()
   }
 
@@ -139,10 +154,31 @@ impl CuredString {
       )),
     }
   }
+  
+  #[napi]
+  pub fn censor_multiple(&mut self, other: Vec<String>, with: String) -> Result<()> {
+    match with.chars().next() {
+      Some(with_char) => {
+        self.0.censor_multiple(&other, with_char);
+
+        Ok(())
+      }
+
+      None => Err(Error::new(
+        Status::InvalidArg,
+        "Replacement string is empty.",
+      )),
+    }
+  }
 
   #[napi]
   pub fn replace(&mut self, other: String, with: String) {
     self.0.replace(&other, &with);
+  }
+
+  #[napi]
+  pub fn replace_multiple(&mut self, other: Vec<String>, with: String) {
+    self.0.replace_multiple(&other, &with);
   }
 
   #[napi]

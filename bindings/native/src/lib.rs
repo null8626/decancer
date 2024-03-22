@@ -1,12 +1,16 @@
 #![allow(clippy::missing_safety_doc)]
 
+mod ptr;
+mod utf16;
+mod utf8;
+
 use paste::paste;
 use std::{
   borrow::Cow,
   convert::AsRef,
   mem::{size_of, transmute},
   ops::{Deref, Range},
-  slice, str,
+  str,
 };
 
 #[repr(C)]
@@ -26,150 +30,6 @@ pub struct Translation {
 const INVALID_UTF8_MESSAGE: &str = "Invalid UTF-8 bytes.";
 const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
-struct NullTerminatedPointer<T> {
-  ptr: *mut T,
-  size: usize,
-}
-
-impl<T> NullTerminatedPointer<T> {
-  const fn new(ptr: *mut T) -> Self {
-    Self { ptr, size: 0 }
-  }
-}
-
-impl<T> Iterator for NullTerminatedPointer<T>
-where
-  T: PartialEq<T> + Default + Copy,
-{
-  type Item = T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    let value = unsafe { *self.ptr };
-
-    self.ptr = unsafe { self.ptr.offset(1) };
-
-    if value == Default::default() {
-      None
-    } else {
-      self.size += size_of::<T>();
-
-      Some(value)
-    }
-  }
-}
-
-struct SizedPointer<T> {
-  ptr: *mut T,
-  size: usize,
-}
-
-impl<T> SizedPointer<T> {
-  const fn new(ptr: *mut T, size: usize) -> Self {
-    Self { ptr, size }
-  }
-}
-
-impl<T> Iterator for SizedPointer<T>
-where
-  T: Copy,
-{
-  type Item = T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    if self.size == 0 {
-      return None;
-    }
-
-    let value = unsafe { *self.ptr };
-
-    self.ptr = unsafe { self.ptr.offset(1) };
-    self.size -= size_of::<T>();
-
-    Some(value)
-  }
-}
-
-fn str_from_ptr(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static str> {
-  if input_size == 0 {
-    let mut input_ptr = NullTerminatedPointer::new(input_ptr);
-
-    while let Some(value) = input_ptr.next() {
-      if (value >= 0xA0 && value <= 0xBF)
-        || value >= 0xF8
-        || (value >= 0xC0
-          && ((input_ptr.next()? >> 6) != 0x02
-            || (value >= 0xE0
-              && ((input_ptr.next()? >> 6) != 0x02
-                || (value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02)))))
-      {
-        return None;
-      }
-    }
-
-    input_size = input_ptr.size;
-  }
-
-  unsafe {
-    Some(str::from_utf8_unchecked(slice::from_raw_parts(
-      input_ptr, input_size,
-    )))
-  }
-}
-
-fn utf8_from_wide_ptr_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
-  let mut output: Vec<u8> = Vec::new();
-  let mut next: Option<u16> = None;
-
-  loop {
-    let c = match next.take() {
-      Some(res) => res,
-      None => match iter.next() {
-        Some(res) => res,
-        None => return Some(output),
-      },
-    };
-
-    if c <= 0x7f {
-      output.push(c as _);
-    } else if c <= 0x7ff {
-      output.extend([((c >> 6) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
-    } else if c < 0xd800 || c >= 0xe000 {
-      output.extend([
-        ((c >> 12) as u8) | 0xe0,
-        (((c >> 6) & 0x3f) as u8) | 0x80,
-        ((c & 0x3f) as u8) | 0x80,
-      ]);
-    } else {
-      let n = iter.next()?;
-
-      if n >= 0xdc00 && n < 0xe000 {
-        let c = 0x10000 + (((c - 0xd800) as u32) << 10) + ((n as u32) - 0xdc00);
-
-        output.extend([
-          ((c >> 18) as u8) | 0xf0,
-          (((c >> 12) & 0x3f) as u8) | 0x80,
-          (((c >> 6) & 0x3f) as u8) | 0x80,
-          ((c & 0x3f) as u8) | 0x80,
-        ]);
-      } else {
-        next.replace(n);
-      }
-    }
-  }
-}
-
-unsafe fn utf8_from_wide_ptr(input_ptr: *mut u16, input_size: usize) -> Option<Vec<u8>> {
-  if input_size == 0 {
-    let mut input_ptr = NullTerminatedPointer::new(input_ptr);
-
-    utf8_from_wide_ptr_inner(&mut input_ptr)
-  } else {
-    let mut input_ptr = SizedPointer::new(input_ptr, input_size);
-
-    utf8_from_wide_ptr_inner(&mut input_ptr)
-  }
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure(
   input_str: *mut u8,
@@ -177,7 +37,7 @@ pub unsafe extern "C" fn decancer_cure(
   options: u32,
   error: *mut Error,
 ) -> *mut decancer::CuredString {
-  let input = match str_from_ptr(input_str, input_size) {
+  let input = match utf8::get(input_str, input_size) {
     Some(result) => result,
     None => {
       (*error).message = INVALID_UTF8_MESSAGE.as_ptr() as _;
@@ -207,7 +67,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
   options: u32,
   error: *mut Error,
 ) -> *mut decancer::CuredString {
-  let input = match utf8_from_wide_ptr(input_str, input_size) {
+  let input = match utf16::get(input_str, input_size) {
     Some(result) => result,
     None => {
       (*error).message = INVALID_UTF16_MESSAGE.as_ptr() as _;
@@ -271,10 +131,57 @@ pub unsafe extern "C" fn decancer_find(
   other_str: *mut u8,
   other_size: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
-  match str_from_ptr(other_str, other_size) {
+  match utf8::get(other_str, other_size) {
     Some(result) => Box::into_raw(Box::new(transmute((*cured).find(result)))),
     None => 0 as _,
   }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_find_wide(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u16,
+  other_size: usize,
+) -> *mut decancer::Matcher<'static, 'static> {
+  match utf16::get(other_str, other_size) {
+    Some(result) => Box::into_raw(Box::new(transmute(
+      (*cured).find(str::from_utf8_unchecked(&result)),
+    ))),
+    None => 0 as _,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_find_multiple(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+) -> *mut Vec<Range<usize>> {
+  match utf8::get_array(other_str as _, other_size) {
+    Some(result) => Box::into_raw(Box::new(transmute((*cured).find_multiple(result)))),
+    None => 0 as _,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_find_multiple_wide(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+) -> *mut Vec<Range<usize>> {
+  match utf16::get_array(other_str as _, other_size) {
+    Some(result) => Box::into_raw(Box::new(transmute((*cured).find_multiple(result)))),
+    None => 0 as _,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matches_raw(
+  matches: *mut Vec<Range<usize>>,
+  output_size: *mut usize,
+) -> usize {
+  *output_size = (*matches).len();
+  (*matches).as_ptr() as _
 }
 
 #[no_mangle]
@@ -299,10 +206,7 @@ pub unsafe extern "C" fn decancer_censor(
   other_size: usize,
   with_char: u32,
 ) -> bool {
-  match (
-    str_from_ptr(other_str, other_size),
-    char::from_u32(with_char),
-  ) {
+  match (utf8::get(other_str, other_size), char::from_u32(with_char)) {
     (Some(other_str), Some(with_char)) => {
       (*cured).censor(other_str, with_char);
       true
@@ -319,12 +223,49 @@ pub unsafe extern "C" fn decancer_censor_wide(
   other_size: usize,
   with_char: u32,
 ) -> bool {
-  match (
-    utf8_from_wide_ptr(other_str, other_size),
-    char::from_u32(with_char),
-  ) {
+  match (utf16::get(other_str, other_size), char::from_u32(with_char)) {
     (Some(other_str), Some(with_char)) => {
       (*cured).censor(str::from_utf8_unchecked(&other_str), with_char);
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_censor_multiple(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+  with_char: u32,
+) -> bool {
+  match (
+    utf8::get_array(other_str as _, other_size),
+    char::from_u32(with_char),
+  ) {
+    (Some(result), Some(with_char)) => {
+      (*cured).censor_multiple(result, with_char);
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_censor_multiple_wide(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+  with_char: u32,
+) -> bool {
+  match (
+    utf16::get_array(other_str as _, other_size),
+    char::from_u32(with_char),
+  ) {
+    (Some(result), Some(with_char)) => {
+      (*cured).censor_multiple(result, with_char);
       true
     }
 
@@ -341,8 +282,8 @@ pub unsafe extern "C" fn decancer_replace(
   with_size: usize,
 ) -> bool {
   match (
-    str_from_ptr(other_str, other_size),
-    str_from_ptr(with_str, with_size),
+    utf8::get(other_str, other_size),
+    utf8::get(with_str, with_size),
   ) {
     (Some(other_str), Some(with_str)) => {
       (*cured).replace(other_str, with_str);
@@ -362,8 +303,8 @@ pub unsafe extern "C" fn decancer_replace_wide(
   with_size: usize,
 ) -> bool {
   match (
-    utf8_from_wide_ptr(other_str, other_size),
-    utf8_from_wide_ptr(with_str, with_size),
+    utf16::get(other_str, other_size),
+    utf16::get(with_str, with_size),
   ) {
     (Some(other_str), Some(with_str)) => {
       (*cured).replace(
@@ -378,12 +319,54 @@ pub unsafe extern "C" fn decancer_replace_wide(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn decancer_replace_multiple(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u8,
+  other_size: usize,
+  with_str: *mut u8,
+  with_size: usize,
+) -> bool {
+  match (
+    utf8::get_array(other_str as _, other_size),
+    utf8::get(with_str, with_size),
+  ) {
+    (Some(result), Some(with_str)) => {
+      (*cured).replace_multiple(result, with_str);
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_replace_multiple_wide(
+  cured: *mut decancer::CuredString,
+  other_str: *mut u16,
+  other_size: usize,
+  with_str: *mut u16,
+  with_size: usize,
+) -> bool {
+  match (
+    utf16::get_array(other_str as _, other_size),
+    utf16::get(with_str, with_size),
+  ) {
+    (Some(result), Some(with_str)) => {
+      (*cured).replace_multiple(result, str::from_utf8_unchecked(&with_str));
+      true
+    }
+
+    _ => false,
+  }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn decancer_equals(
   cured: *mut decancer::CuredString,
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  str_from_ptr(other_str, other_size)
+  utf8::get(other_str, other_size)
     .map(|s| (*cured) == s)
     .unwrap_or_default()
 }
@@ -394,7 +377,7 @@ pub unsafe extern "C" fn decancer_equals_wide(
   other_str: *mut u16,
   other_size: usize,
 ) -> bool {
-  utf8_from_wide_ptr(other_str, other_size)
+  utf16::get(other_str, other_size)
     .map(|vec| unsafe { (*cured) == str::from_utf8_unchecked(&vec) })
     .unwrap_or_default()
 }
@@ -408,7 +391,7 @@ macro_rules! comparison_fn {
         other_str: *mut u8,
         other_size: usize,
       ) -> bool {
-        str_from_ptr(other_str, other_size)
+        utf8::get(other_str, other_size)
           .map(|s| (*cured).$name(s))
           .unwrap_or_default()
       }
@@ -419,7 +402,7 @@ macro_rules! comparison_fn {
         other_str: *mut u16,
         other_size: usize,
       ) -> bool {
-        utf8_from_wide_ptr(other_str, other_size)
+        utf16::get(other_str, other_size)
           .map(|vec| unsafe { (*cured).$name(str::from_utf8_unchecked(&vec)) })
           .unwrap_or_default()
       }
@@ -434,7 +417,7 @@ comparison_fn! {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_raw(
+pub unsafe extern "C" fn decancer_cured_raw(
   cured: *mut decancer::CuredString,
   output_size: *mut usize,
 ) -> usize {
@@ -444,7 +427,7 @@ pub unsafe extern "C" fn decancer_raw(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_raw_wide(
+pub unsafe extern "C" fn decancer_cured_raw_wide(
   cured: *mut decancer::CuredString,
   output_ptr: *mut usize,
   output_size: *mut usize,
@@ -458,13 +441,18 @@ pub unsafe extern "C" fn decancer_raw_wide(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_raw_wide_free(wide: *mut Vec<u16>) {
+pub unsafe extern "C" fn decancer_cured_raw_wide_free(wide: *mut Vec<u16>) {
   let _ = Box::from_raw(wide);
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'static, 'static>) {
   let _ = Box::from_raw(matcher);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matches_free(matches: *mut Vec<Range<usize>>) {
+  let _ = Box::from_raw(matches);
 }
 
 #[no_mangle]

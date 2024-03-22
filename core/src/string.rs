@@ -1,11 +1,14 @@
-use crate::{util::unwrap_or_ret, Matcher};
+use crate::{
+  util::{merge_ranges, unwrap_or_ret},
+  Matcher,
+};
 #[cfg(feature = "serde")]
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
   cmp::PartialEq,
   fmt::{self, Debug, Display, Formatter},
   mem::transmute,
-  ops::Deref,
+  ops::{Deref, Range},
 };
 
 /// A small wrapper around the [`String`] data type for comparison purposes.
@@ -27,6 +30,8 @@ impl CuredString {
 
   /// Iterates throughout this string and yields every similar-looking match.
   ///
+  /// If you plan on using this method with an array of strings, use [`find_multiple`][CuredString::find_multiple].
+  ///
   /// This comparison is case-insensitive.
   ///
   /// ```rust
@@ -42,22 +47,40 @@ impl CuredString {
     Matcher::new(self, other)
   }
 
-  /// Censors every match of a string with a repetition of a character in-place.
+  /// Iterates throughout this string and returns a [`Vec`] of every similar-looking match. Unlike [`find`][CuredString::find], this method also takes note of overlapping matches and merges them together.
   ///
   /// This comparison is case-insensitive.
   ///
   /// ```rust
-  /// let mut cured = decancer::cure!("wow heellllo wow hello wow!").unwrap();
-  /// cured.censor("hello", '*');
+  /// let cured = decancer::cure!("helloh yeah").unwrap();
+  /// let matches = cured.find_multiple(["hello", "oh yeah"]);
   ///
-  /// assert_eq!(cured, "wow ******** wow ***** wow!");
+  /// assert_eq!(matches, [0..11]);
   /// ```
-  pub fn censor(&mut self, other: &str, with: char) {
-    let original = self.0.clone();
+  pub fn find_multiple<S, O>(&self, other: O) -> Vec<Range<usize>>
+  where
+    S: AsRef<str>,
+    O: IntoIterator<Item = S>,
+  {
+    let mut ranges = Vec::new();
+
+    for o in other.into_iter() {
+      for mat in self.find(o.as_ref()) {
+        ranges.push(mat);
+      }
+    }
+
+    merge_ranges(ranges)
+  }
+
+  fn censor_inner<I>(&mut self, original: &str, matches: I, with: char)
+  where
+    I: IntoIterator<Item = Range<usize>>,
+  {
     let mut char_diff = 0isize;
 
-    for mat in Matcher::new(&original, other) {
-      // SAFETY: mat is always within the bounds of self
+    for mat in matches {
+      // SAFETY: mat is always within the mat of self
       let chars = unsafe { original.get_unchecked(mat.clone()) }
         .chars()
         .count();
@@ -76,7 +99,63 @@ impl CuredString {
     }
   }
 
+  /// Censors every match of a string with a repetition of a character in-place.
+  ///
+  /// If you plan on using this method with an array of strings, use [`censor_multiple`][CuredString::censor_multiple].
+  ///
+  /// This comparison is case-insensitive.
+  ///
+  /// ```rust
+  /// let mut cured = decancer::cure!("wow heellllo wow hello wow!").unwrap();
+  /// cured.censor("hello", '*');
+  ///
+  /// assert_eq!(cured, "wow ******** wow ***** wow!");
+  /// ```
+  pub fn censor(&mut self, other: &str, with: char) {
+    let original = self.clone();
+
+    self.censor_inner(&original, original.find(other), with)
+  }
+
+  /// Censors every matches from an array of strings with a repetition of a character in-place.
+  ///
+  /// This comparison is case-insensitive.
+  ///
+  /// ```rust
+  /// let mut cured = decancer::cure!("helloh yeah").unwrap();
+  /// cured.censor_multiple(["hello", "oh yeah"], '*');
+  ///
+  /// assert_eq!(cured, "***********");
+  /// ```
+  pub fn censor_multiple<S, O>(&mut self, other: O, with: char)
+  where
+    S: AsRef<str>,
+    O: IntoIterator<Item = S>,
+  {
+    let original = self.clone();
+
+    self.censor_inner(&original, original.find_multiple(other), with)
+  }
+
+  fn replace_inner<I>(&mut self, matches: I, with: &str)
+  where
+    I: IntoIterator<Item = Range<usize>>,
+  {
+    let mut char_diff = 0isize;
+
+    for mat in matches {
+      self.0.replace_range(
+        (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
+        with,
+      );
+
+      char_diff += with.len() as isize - mat.len() as isize;
+    }
+  }
+
   /// Replaces every match of a string with another string in-place.
+  ///
+  /// If you plan on using this method with an array of strings, use [`replace_multiple`][CuredString::replace_multiple].
   ///
   /// This comparison is case-insensitive.
   ///
@@ -86,18 +165,28 @@ impl CuredString {
   ///
   /// assert_eq!(cured, "wow world wow world!");
   /// ```
+  #[inline(always)]
   pub fn replace(&mut self, other: &str, with: &str) {
-    let original = self.0.clone();
-    let mut char_diff = 0isize;
+    self.replace_inner(self.clone().find(other), with)
+  }
 
-    for mat in Matcher::new(&original, other) {
-      self.0.replace_range(
-        (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
-        with,
-      );
-
-      char_diff += with.len() as isize - mat.len() as isize;
-    }
+  /// Replaces every matches from an array of strings with another string in-place.
+  ///
+  /// This comparison is case-insensitive.
+  ///
+  /// ```rust
+  /// let mut cured = decancer::cure!("helloh yeah").unwrap();
+  /// cured.replace_multiple(["hello", "oh yeah"], "world");
+  ///
+  /// assert_eq!(cured, "world");
+  /// ```
+  #[inline(always)]
+  pub fn replace_multiple<S, O>(&mut self, other: O, with: &str)
+  where
+    S: AsRef<str>,
+    O: IntoIterator<Item = S>,
+  {
+    self.replace_inner(self.clone().find_multiple(other), with)
   }
 
   /// Checks if this cured string similarly starts with another string.

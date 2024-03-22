@@ -1,7 +1,7 @@
 #![allow(clippy::missing_safety_doc)]
 
 use jni::{
-  objects::{JClass, JObject, JString, JValueGen},
+  objects::{JClass, JObject, JString, JValueGen, JObjectArray},
   sys::{jboolean, jchar, jint, jlong, jobject, jstring},
   JNIEnv,
 };
@@ -50,6 +50,25 @@ macro_rules! get_inner_field {
 
   ($env:ident, $this:ident) => {
     get_inner_field!($env, $this, 0 as _)
+  };
+}
+
+macro_rules! get_string_array {
+  ($env:ident, $input:ident, $return_value:expr) => {{
+    let input_len = jni_unwrap!($env, $env.get_array_length(&$input), $return_value);
+    let mut inputs: Vec<String> = Vec::with_capacity(input_len as _);
+    
+    for i in 0..input_len {
+      let obj = $env.get_object_array_element(&$input, i);
+      
+      inputs.push(jni_unwrap!($env, $env.get_string(&JString::from(jni_unwrap!($env, obj, $return_value))), $return_value).into());
+    }
+    
+    inputs
+  }};
+  
+  ($env:ident, $input:ident) => {
+    get_string_array!($env, $input, 0 as _)
   };
 }
 
@@ -118,6 +137,47 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
 }
 
 #[no_mangle]
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_findMultiple<'local>(
+  mut env: JNIEnv<'local>,
+  this: JObject<'local>,
+  input: JObjectArray<'local>,
+) -> jobject {
+  let inner = get_inner_field!(env, this);
+  let inputs = get_string_array!(env, input);
+  
+  let matches = (*inner).find_multiple(&inputs);
+  let array = jni_unwrap!(
+    env,
+    env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())
+  );
+
+  for (idx, result) in matches.into_iter().enumerate() {
+    let element = jni_unwrap!(
+      env,
+      env.new_object(
+        MATCH_CLASS,
+        "(JJLjava/lang/String;)V",
+        &[
+          JValueGen::Long(result.start as _),
+          JValueGen::Long(result.end as _),
+          JValueGen::Object(
+            &jni_unwrap!(
+              env,
+              env.new_string(unsafe { (*inner).get_unchecked(result) })
+            )
+            .into()
+          ),
+        ]
+      )
+    );
+
+    jni_unwrap!(env, env.set_object_array_element(&array, idx as _, element));
+  }
+
+  array.into_raw()
+}
+
+#[no_mangle]
 pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_censor<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
@@ -142,6 +202,30 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
 }
 
 #[no_mangle]
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_censorMultiple<'local>(
+  mut env: JNIEnv<'local>,
+  this: JObject<'local>,
+  input: JObjectArray<'local>,
+  with: jchar,
+) {
+  let inner = get_inner_field!(env, this, ());
+  let inputs = get_string_array!(env, input, ());
+
+  match char::from_u32(with as _) {
+    Some(with) => {
+      (*inner).censor_multiple(&inputs, with);
+    }
+
+    None => {
+      let _ = env.throw_new(
+        "java/lang/IllegalArgumentException",
+        "Replacement character is a surrogate.",
+      );
+    }
+  };
+}
+
+#[no_mangle]
 pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replace<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
@@ -153,6 +237,20 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_repl
   let with: String = jni_unwrap!(env, env.get_string(&with), ()).into();
 
   (*inner).replace(&input, &with);
+}
+
+#[no_mangle]
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replaceMultiple<'local>(
+  mut env: JNIEnv<'local>,
+  this: JObject<'local>,
+  input: JObjectArray<'local>,
+  with: JString<'local>,
+) {
+  let inner = get_inner_field!(env, this, ());
+  let inputs = get_string_array!(env, input, ());
+  let with: String = jni_unwrap!(env, env.get_string(&with), ()).into();
+
+  (*inner).replace_multiple(&inputs, &with);
 }
 
 #[no_mangle]

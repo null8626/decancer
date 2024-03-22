@@ -1,4 +1,7 @@
-use std::ops::{Index, IndexMut, Range};
+use std::{
+  cmp::max,
+  ops::{Index, IndexMut, Range},
+};
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
@@ -24,6 +27,36 @@ pub(crate) fn sliced_mut<T: IndexMut<Range<usize>> + ?Sized>(
   range: Range<usize>,
 ) -> &mut <T as Index<Range<usize>>>::Output {
   slicable.index_mut(range)
+}
+
+// special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
+// except i've improved upon it :)
+pub(crate) fn merge_ranges<T>(mut ranges: Vec<Range<T>>) -> Vec<Range<T>>
+where
+  T: Ord + Copy,
+{
+  if ranges.is_empty() {
+    return Vec::new();
+  }
+  
+  ranges.sort_by(|a, b| a.start.cmp(&b.start));
+
+  let mut j = 0;
+
+  for i in 1..ranges.len() {
+    let current = unsafe { ranges.get_unchecked(i).clone() };
+    let previous = unsafe { ranges.get_unchecked_mut(j) };
+
+    if current.start >= previous.start && current.start <= previous.end {      
+      previous.end = max(current.end, previous.end);
+    } else {
+      j += 1;
+      ranges[j] = current;
+    }
+  }
+
+  ranges.truncate(j + 1);
+  ranges
 }
 
 macro_rules! unwrap_or_ret {
