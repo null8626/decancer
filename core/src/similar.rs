@@ -47,7 +47,6 @@ pub(crate) fn is(self_char: char, other_char: char) -> bool {
 
 struct CachedPeek<'a> {
   iterator: Chars<'a>,
-  current: char,
   cache: Vec<char>,
   index: usize,
   ended: bool,
@@ -58,7 +57,6 @@ impl<'a> CachedPeek<'a> {
   pub(crate) fn new(iterator: Chars<'a>, first: char) -> Self {
     Self {
       iterator,
-      current: first,
       cache: vec![first],
       index: 0,
       ended: false,
@@ -82,8 +80,6 @@ impl<'a> CachedPeek<'a> {
 
   #[inline(always)]
   fn restart(&mut self) {
-    // SAFETY: the first value always exists.
-    self.current = unsafe { *self.cache.first().unwrap_unchecked() };
     self.index = 0;
     self.ended = false;
   }
@@ -97,13 +93,13 @@ impl<'a> Iterator for CachedPeek<'a> {
       return None;
     }
 
-    let current = self.current;
+    // SAFETY: the current index always points to an existing element
+    let current = unsafe { *self.cache.get_unchecked(self.index) };
     let next_element = self.next_value();
 
-    match next_element {
-      Some(next_element_inner) => self.current = next_element_inner,
-      None => self.ended = true,
-    };
+    if next_element.is_none() {
+      self.ended = true;
+    }
 
     Some((current, next_element))
   }
