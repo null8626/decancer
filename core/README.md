@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-downloads-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -8,7 +8,6 @@
 [jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
 [jitpack-io-url]: https://jitpack.io/#null8626/decancer
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
-[npm-downloads-url]: https://npmjs.org/package/decancer
 
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
