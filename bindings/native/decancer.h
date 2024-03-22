@@ -91,10 +91,14 @@ extern "C"
                                                       const size_t other_size);
     _DECANCER_EXPORT bool decancer_matcher_next(decancer_matcher_t matcher, decancer_match_t *match);
 
-    _DECANCER_EXPORT bool decancer_censor(decancer_cured_t cured, uint8_t *other_str, const size_t other_size, const uint32_t with_char);
-    _DECANCER_EXPORT bool decancer_censor_wide(decancer_cured_t cured, uint16_t *other_str, const size_t other_size, const uint32_t with_char);
-    _DECANCER_EXPORT bool decancer_replace(decancer_cured_t cured, uint8_t *other_str, const size_t other_size, uint8_t *with_str, const size_t with_size);
-    _DECANCER_EXPORT bool decancer_replace_wide(decancer_cured_t cured, uint16_t *other_str, const size_t other_size, uint16_t *with_str, const size_t with_size);
+    _DECANCER_EXPORT bool decancer_censor(decancer_cured_t cured, uint8_t *other_str, const size_t other_size,
+                                          const uint32_t with_char);
+    _DECANCER_EXPORT bool decancer_censor_wide(decancer_cured_t cured, uint16_t *other_str, const size_t other_size,
+                                               const uint32_t with_char);
+    _DECANCER_EXPORT bool decancer_replace(decancer_cured_t cured, uint8_t *other_str, const size_t other_size,
+                                           uint8_t *with_str, const size_t with_size);
+    _DECANCER_EXPORT bool decancer_replace_wide(decancer_cured_t cured, uint16_t *other_str, const size_t other_size,
+                                                uint16_t *with_str, const size_t with_size);
     _DECANCER_EXPORT bool decancer_contains(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);
     _DECANCER_EXPORT bool decancer_contains_wide(decancer_cured_t cured, uint16_t *other_str, const size_t other_size);
     _DECANCER_EXPORT bool decancer_starts_with(decancer_cured_t cured, uint8_t *other_str, const size_t other_size);

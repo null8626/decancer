@@ -88,7 +88,7 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native Match[] find(String other);
-  
+
   /**
    * Censors every match of a string with a repetition of a character in-place.
    *
@@ -102,7 +102,7 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native void censor(String other, char with);
-  
+
   /**
    * Replaces every match of a string with another string in-place.
    *

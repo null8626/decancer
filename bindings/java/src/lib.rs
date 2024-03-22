@@ -2,7 +2,7 @@
 
 use jni::{
   objects::{JClass, JObject, JString, JValueGen},
-  sys::{jboolean, jint, jlong, jobject, jchar, jstring},
+  sys::{jboolean, jchar, jint, jlong, jobject, jstring},
   JNIEnv,
 };
 use std::mem::transmute;
@@ -126,14 +126,17 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
 ) {
   let inner = get_inner_field!(env, this, ());
   let input: String = jni_unwrap!(env, env.get_string(&input), ()).into();
-  
+
   match char::from_u32(with as _) {
     Some(with) => {
       (*inner).censor(&input, with);
-    },
-    
+    }
+
     None => {
-      let _ = env.throw_new("java/lang/IllegalArgumentException", "Replacement character is a surrogate.");
+      let _ = env.throw_new(
+        "java/lang/IllegalArgumentException",
+        "Replacement character is a surrogate.",
+      );
     }
   };
 }
@@ -148,7 +151,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_repl
   let inner = get_inner_field!(env, this, ());
   let input: String = jni_unwrap!(env, env.get_string(&input), ()).into();
   let with: String = jni_unwrap!(env, env.get_string(&with), ()).into();
-  
+
   (*inner).replace(&input, &with);
 }
 
