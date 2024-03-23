@@ -333,7 +333,7 @@ int main(void) {
 
     // coerce output as a raw UTF-8 pointer and retrieve its size (in bytes)
     size_t output_size;
-    const uint8_t *output_raw = decancer_raw(cured, &output_size);
+    const uint8_t *output_raw = decancer_cured_raw(cured, &output_size);
 
     assert(output_size == 15, "raw output size");
 
@@ -364,7 +364,7 @@ UTF-16 example:
 
 // global variable for assertion purposes only
 decancer_cured_t cured;
-decancer_raw_wide_t wide = NULL;
+decancer_cured_raw_wide_t wide = NULL;
 
 static void assert(const bool expr, const char *message)
 {
@@ -374,7 +374,7 @@ static void assert(const bool expr, const char *message)
         
         if (wide != NULL)
         {
-            decancer_raw_wide_free(wide);
+            decancer_cured_raw_wide_free(wide);
         }
         
         decancer_cured_free(cured);
@@ -424,7 +424,7 @@ int main(void) {
     // coerce output as a raw UTF-16 pointer and retrieve its size (in bytes)
     uint16_t *output_ptr;
     size_t utf16_output_size;
-    wide = decancer_raw_wide(cured, &output_ptr, &utf16_output_size);
+    wide = decancer_cured_raw_wide(cured, &output_ptr, &utf16_output_size);
 
     assert(utf16_output_size == (15 * sizeof(uint16_t)), "raw output size");
 
@@ -439,7 +439,7 @@ int main(void) {
         assert(output_raw[i] == expected_raw[i], assert_message);
     }
 
-    decancer_raw_wide_free(wide);
+    decancer_cured_raw_wide_free(wide);
     decancer_cured_free(cured);    
     return 0;
 }
