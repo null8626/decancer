@@ -88,7 +88,7 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native Match[] find(String other);
-  
+
   /**
    * Iterates throughout this string and returns an array of every similar-looking match. Unlike find, this method also takes note of overlapping matches and merges them together.
    *
@@ -115,7 +115,7 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native void censor(String other, char with);
-  
+
   /**
    * Censors every matches from an array of strings with a repetition of a character in-place.
    *

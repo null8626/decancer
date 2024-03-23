@@ -38,7 +38,7 @@ where
   if ranges.is_empty() {
     return Vec::new();
   }
-  
+
   ranges.sort_by(|a, b| a.start.cmp(&b.start));
 
   let mut j = 0;
@@ -47,7 +47,7 @@ where
     let current = unsafe { ranges.get_unchecked(i).clone() };
     let previous = unsafe { ranges.get_unchecked_mut(j) };
 
-    if current.start >= previous.start && current.start <= previous.end {      
+    if current.start >= previous.start && current.start <= previous.end {
       previous.end = max(current.end, previous.end);
     } else {
       j += 1;
