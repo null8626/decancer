@@ -94,7 +94,7 @@ server.on('message', async message => {
                 true,
                 'replace'
               )
-              
+
               this.#object.replaceMultiple(['very ', ' funny'], 'asdf')
               this.#assert(
                 this.#object.toString(),
@@ -110,7 +110,7 @@ server.on('message', async message => {
                 true,
                 'censor'
               )
-              
+
               this.#object.censorMultiple(['**** ', ' other'], '*')
               this.#assert(
                 this.#object.toString(),
@@ -135,9 +135,9 @@ server.on('message', async message => {
                 'funny',
                 'find:match[0].toString()'
               )
-              
+
               const matches = this.#object.findMultiple(['very ', ' funny'])
-              
+
               this.#assert(matches.length, 1, 'findMultiple:matches.length')
               this.#assert(matches[0].start, 0, 'findMultiple:matches[0].start')
               this.#assert(matches[0].end, 10, 'findMultiple:matches[0].end')
@@ -194,13 +194,13 @@ server.on('message', async message => {
       console.log('- [client] closing browser...')
 
       await browser.close()
-      
+
       // fallback just in case the server refuses to close
       setTimeout(() => {
         server.terminate()
         process.exit()
       }, 60000)
-      
+
       server.postMessage(null)
 
       break

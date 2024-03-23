@@ -119,16 +119,12 @@ impl CuredString {
       portion: String::from(unsafe { self.0.get_unchecked(mat) }),
     }
   }
-  
+
   #[napi]
   pub fn find(&self, other: String) -> Vec<Match> {
-    self
-      .0
-      .find(&other)
-      .map(|mat| self.new_match(mat))
-      .collect()
+    self.0.find(&other).map(|mat| self.new_match(mat)).collect()
   }
-  
+
   #[napi]
   pub fn find_multiple(&self, other: Vec<String>) -> Vec<Match> {
     self
@@ -154,7 +150,7 @@ impl CuredString {
       )),
     }
   }
-  
+
   #[napi]
   pub fn censor_multiple(&mut self, other: Vec<String>, with: String) -> Result<()> {
     match with.chars().next() {

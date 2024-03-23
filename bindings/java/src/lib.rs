@@ -1,7 +1,7 @@
 #![allow(clippy::missing_safety_doc)]
 
 use jni::{
-  objects::{JClass, JObject, JString, JValueGen, JObjectArray},
+  objects::{JClass, JObject, JObjectArray, JString, JValueGen},
   sys::{jboolean, jchar, jint, jlong, jobject, jstring},
   JNIEnv,
 };
@@ -57,16 +57,23 @@ macro_rules! get_string_array {
   ($env:ident, $input:ident, $return_value:expr) => {{
     let input_len = jni_unwrap!($env, $env.get_array_length(&$input), $return_value);
     let mut inputs: Vec<String> = Vec::with_capacity(input_len as _);
-    
+
     for i in 0..input_len {
       let obj = $env.get_object_array_element(&$input, i);
-      
-      inputs.push(jni_unwrap!($env, $env.get_string(&JString::from(jni_unwrap!($env, obj, $return_value))), $return_value).into());
+
+      inputs.push(
+        jni_unwrap!(
+          $env,
+          $env.get_string(&JString::from(jni_unwrap!($env, obj, $return_value))),
+          $return_value
+        )
+        .into(),
+      );
     }
-    
+
     inputs
   }};
-  
+
   ($env:ident, $input:ident) => {
     get_string_array!($env, $input, 0 as _)
   };
@@ -144,7 +151,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
 ) -> jobject {
   let inner = get_inner_field!(env, this);
   let inputs = get_string_array!(env, input);
-  
+
   let matches = (*inner).find_multiple(&inputs);
   let array = jni_unwrap!(
     env,
@@ -202,7 +209,9 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_censorMultiple<'local>(
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_censorMultiple<
+  'local,
+>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JObjectArray<'local>,
@@ -240,7 +249,9 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_repl
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replaceMultiple<'local>(
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replaceMultiple<
+  'local,
+>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JObjectArray<'local>,

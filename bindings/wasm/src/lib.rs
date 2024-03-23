@@ -1,6 +1,6 @@
 #![allow(non_snake_case, dead_code)]
 
-use std::{ops::Range, convert::AsRef, mem::transmute};
+use std::{convert::AsRef, mem::transmute, ops::Range};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -30,15 +30,11 @@ impl CuredString {
       portion: String::from(unsafe { self.0.get_unchecked(mat) }),
     }
   }
-  
+
   pub fn find(&self, other: &str) -> Vec<Match> {
-    self
-      .0
-      .find(other)
-      .map(|mat| self.new_match(mat))
-      .collect()
+    self.0.find(other).map(|mat| self.new_match(mat)).collect()
   }
-  
+
   pub fn findMultiple(&self, other: Vec<String>) -> Vec<Match> {
     self
       .0
@@ -51,7 +47,7 @@ impl CuredString {
   pub fn censor(&mut self, other: &str, with: char) {
     self.0.censor(other, with)
   }
-  
+
   pub fn censorMultiple(&mut self, other: Vec<String>, with: char) {
     self.0.censor_multiple(other, with)
   }
@@ -59,7 +55,7 @@ impl CuredString {
   pub fn replace(&mut self, other: &str, with: &str) {
     self.0.replace(other, with)
   }
-  
+
   pub fn replaceMultiple(&mut self, other: Vec<String>, with: &str) {
     self.0.replace_multiple(other, with)
   }
