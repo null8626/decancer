@@ -94,13 +94,29 @@ server.on('message', async message => {
                 true,
                 'replace'
               )
-
-              this.#object.censor('funny', '*')
+              
+              this.#object.replaceMultiple(['very ', ' funny'], 'asdf')
               this.#assert(
                 this.#object.toString(),
-                'very ***** other',
+                'asdf other',
+                true,
+                'replaceMultiple'
+              )
+
+              this.#object.censor('asdf', '*')
+              this.#assert(
+                this.#object.toString(),
+                '**** other',
                 true,
                 'censor'
+              )
+              
+              this.#object.censorMultiple(['**** ', ' asdf'], '*')
+              this.#assert(
+                this.#object.toString(),
+                '**********',
+                true,
+                'censorMultiple'
               )
             }
 
@@ -118,6 +134,17 @@ server.on('message', async message => {
                 match[0].toString(),
                 'funny',
                 'find:match[0].toString()'
+              )
+              
+              const matches = this.#object.findMultiple(['very ', ' funny'])
+              
+              this.#assert(match.length, 1, 'findMultiple:matches.length')
+              this.#assert(match[0].start, 0, 'findMultiple:matches[0].start')
+              this.#assert(match[0].end, 10, 'findMultiple:matches[0].end')
+              this.#assert(
+                match[0].toString(),
+                'very funny',
+                'findMultiple:matches[0].toString()'
               )
             }
 
