@@ -138,11 +138,11 @@ server.on('message', async message => {
               
               const matches = this.#object.findMultiple(['very ', ' funny'])
               
-              this.#assert(match.length, 1, 'findMultiple:matches.length')
-              this.#assert(match[0].start, 0, 'findMultiple:matches[0].start')
-              this.#assert(match[0].end, 10, 'findMultiple:matches[0].end')
+              this.#assert(matches.length, 1, 'findMultiple:matches.length')
+              this.#assert(matches[0].start, 0, 'findMultiple:matches[0].start')
+              this.#assert(matches[0].end, 10, 'findMultiple:matches[0].end')
               this.#assert(
-                match[0].toString(),
+                matches[0].toString(),
                 'very funny',
                 'findMultiple:matches[0].toString()'
               )
@@ -194,6 +194,7 @@ server.on('message', async message => {
       console.log('- [client] closing browser...')
 
       await browser.close()
+      setTimeout(() => server.terminate(), 150000)
       server.postMessage(null)
 
       break
