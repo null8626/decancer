@@ -1,5 +1,4 @@
-use crate::ptr::{NullTerminatedPointer, SizedPointer};
-use std::ffi::c_void;
+use crate::ptr::{Element, NullTerminatedPointer, SizedPointer};
 
 fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
   let mut output: Vec<u8> = Vec::new();
@@ -55,15 +54,11 @@ pub(crate) unsafe fn get(input_ptr: *mut u16, input_size: usize) -> Option<Vec<u
   }
 }
 
-#[repr(C)]
-struct ArrayElement {
-  string: *mut u16,
-  size: usize,
-}
-
-pub(crate) unsafe fn get_array(input_ptr: *mut c_void, input_length: usize) -> Option<Vec<String>> {
+pub(crate) unsafe fn get_array(
+  input_ptr: *mut Element<u16>,
+  input_length: usize,
+) -> Option<Vec<String>> {
   let mut output = Vec::with_capacity(input_length);
-  let input_ptr = input_ptr as *mut ArrayElement;
 
   for i in 0..input_length {
     output.push(unsafe {

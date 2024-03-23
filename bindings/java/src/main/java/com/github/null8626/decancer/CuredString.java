@@ -226,9 +226,9 @@ public class CuredString {
    * Destroys and frees the memory used by this object.
    *
    * <p>
+   * Repeated calls to this method is fine and does not guarantee a double-free.
    * Any subsequent String objects from toString() calls can still be used after this.
    *
-   * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native void destroy();

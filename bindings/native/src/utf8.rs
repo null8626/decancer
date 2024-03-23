@@ -1,5 +1,5 @@
-use crate::ptr::NullTerminatedPointer;
-use std::{ffi::c_void, slice, str};
+use crate::ptr::{Element, NullTerminatedPointer};
+use std::{slice, str};
 
 pub(crate) fn get(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
@@ -28,18 +28,11 @@ pub(crate) fn get(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static 
   }
 }
 
-#[repr(C)]
-struct ArrayElement {
-  string: *mut u8,
-  size: usize,
-}
-
 pub(crate) unsafe fn get_array(
-  input_ptr: *mut c_void,
+  input_ptr: *mut Element<u8>,
   input_length: usize,
 ) -> Option<Vec<&'static str>> {
   let mut output = Vec::with_capacity(input_length);
-  let input_ptr = input_ptr as *mut ArrayElement;
 
   for i in 0..input_length {
     output.push(unsafe {

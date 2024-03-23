@@ -182,11 +182,17 @@ And the binary files should be generated in the `target/release` directory.
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
 
 assert_eq!(cured, "very funny text");
-assert!(cured.contains("FuNny"));
+assert!(cured.contains("funny"));
 assert_eq!(cured.into_str(), String::from("very funny text"));
+
+cured.censor("funny", '*');
+assert_eq!(cured, "very ***** text");
+
+cured.censor_multiple(["very", "text"], '-');
+assert_eq!(cured, "---- ***** ----");
 ```
 
 </details>
@@ -200,8 +206,13 @@ const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 assert(cured.equals('very funny text'))
 assert(cured.contains('funny'))
 
-console.log(cured.toString())
-// => 'very funny text'
+console.log(cured.toString()) // very funny text
+
+cured.censor('funny', '*')
+console.log(cured.toString()) // very ***** text
+
+cured.censorMultiple(['very', 'text'], '-')
+console.log(cured.toString()) // ---- ***** ----
 ```
 
 </details>
@@ -260,12 +271,19 @@ import com.github.null8626.decancer.CuredString;
 
 public class Program {
   public static void main(String[] args) {
-    final CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
     
     assert cured.equals("very funny text");
     assert cured.contains("funny");
     
-    System.out.println(cured.toString());
+    System.out.println(cured.toString()); // very funny text
+    
+    cured.censor("funny", '*');
+    System.out.println(cured.toString()); // very ***** text
+    
+    String[] keywords = { "very", "text" };
+    cured.censorMultiple(keywords, '-');
+    System.out.println(cured.toString()); // ---- ***** ----
     
     cured.destroy();
   }
