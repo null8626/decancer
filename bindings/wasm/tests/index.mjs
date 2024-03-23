@@ -111,7 +111,7 @@ server.on('message', async message => {
                 'censor'
               )
               
-              this.#object.censorMultiple(['**** ', ' asdf'], '*')
+              this.#object.censorMultiple(['**** ', ' other'], '*')
               this.#assert(
                 this.#object.toString(),
                 '**********',
@@ -194,7 +194,13 @@ server.on('message', async message => {
       console.log('- [client] closing browser...')
 
       await browser.close()
-      setTimeout(() => server.terminate(), 150000)
+      
+      // fallback just in case the server refuses to close
+      setTimeout(() => {
+        server.terminate()
+        process.exit()
+      }, 60000)
+      
       server.postMessage(null)
 
       break

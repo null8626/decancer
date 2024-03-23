@@ -43,7 +43,7 @@ app.listen(
         })
 
         // this sometimes takes like a billion years to finish for some reason
-        setTimeout(notifyClose, 100000)
+        setTimeout(notifyClose, 30000)
         app.close().finally(notifyClose)
       })
     }
