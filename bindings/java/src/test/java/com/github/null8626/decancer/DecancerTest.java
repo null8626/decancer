@@ -12,48 +12,38 @@ public class DecancerTest {
   }
 
   @Test
-  public void censor() {
+  public void censor() throws Exception {
     CuredString string = new CuredString("wow heellllo wow hello wow!");
-    Exception exception = null;
 
     try {
       string.censor("hello", '*');
 
       Assertions.assertEquals(string.toString(), "wow ******** wow ***** wow!");
-    } catch (Exception err) {
-      exception = err;
-    } finally {
       string.destroy();
-
-      if (exception != null) {
-        throw exception;
-      }
+    } catch (Exception err) {
+      string.destroy();
+      throw err;
     }
   }
 
   @Test
-  public void censorMultiple() {
+  public void censorMultiple() throws Exception {
     CuredString string = new CuredString("helloh yeah");
-    Exception exception = null;
 
     try {
       String[] keywords = { "hello", "oh yeah" };
       string.censorMultiple(keywords, '*');
 
       Assertions.assertEquals(string.toString(), "***********");
-    } catch (Exception err) {
-      exception = err;
-    } finally {
       string.destroy();
-
-      if (exception != null) {
-        throw exception;
-      }
+    } catch (Exception err) {
+      string.destroy();
+      throw err;
     }
   }
 
   @Test
-  public void replace() {
+  public void replace() throws Exception {
     CuredString string = new CuredString("wow hello wow heellllo!");
     Exception exception = null;
 
@@ -61,35 +51,26 @@ public class DecancerTest {
       string.replace("hello", "world");
 
       Assertions.assertEquals(string.toString(), "wow world wow world!");
-    } catch (Exception err) {
-      exception = err;
-    } finally {
       string.destroy();
-
-      if (exception != null) {
-        throw exception;
-      }
+    } catch (Exception err) {
+      string.destroy();
+      throw err;
     }
   }
 
   @Test
-  public void replaceMultiple() {
+  public void replaceMultiple() throws Exception {
     CuredString string = new CuredString("helloh yeah");
-    Exception exception = null;
 
     try {
       String[] keywords = { "hello", "oh yeah" };
       string.replaceMultiple(keywords, "world");
 
       Assertions.assertEquals(string.toString(), "world");
-    } catch (Exception err) {
-      exception = err;
-    } finally {
       string.destroy();
-
-      if (exception != null) {
-        throw exception;
-      }
+    } catch (Exception err) {
+      string.destroy();
+      throw err;
     }
   }
 
