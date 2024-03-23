@@ -221,7 +221,7 @@ public class CuredString {
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native String toString();
-  
+
   /**
    * Destroys and frees the memory used by this object.
    *
