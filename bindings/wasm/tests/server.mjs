@@ -39,9 +39,11 @@ app.listen(
       parentPort.on('message', () => {
         console.log('- [server] closing...')
 
-        app.close().finally(() => parentPort.postMessage({
-          code: 'close'
-        }))
+        app.close().finally(() =>
+          parentPort.postMessage({
+            code: 'close'
+          })
+        )
       })
     }
   }
