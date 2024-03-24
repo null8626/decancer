@@ -554,7 +554,7 @@ jobs:
         working-directory: bindings/wasm/tests
         run: |
           npm i
-          node .
+          timeout 180 node .
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -641,14 +641,14 @@ jobs:
       - name: Copy README.md
         working-directory: bindings/node
         run: cp ../../core/README.md .
-      - name: Publish
-        working-directory: bindings/node
-        run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --access public
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #- name: Publish
+      #  working-directory: bindings/node
+      #  run: |
+      #    echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      #    npm publish --access public
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create Tag
         uses: rickstaa/action-create-tag@v1
         with:

@@ -194,13 +194,6 @@ server.on('message', async message => {
       console.log('- [client] closing browser...')
 
       await browser.close()
-
-      // fallback just in case the server refuses to close
-      setTimeout(() => {
-        server.terminate()
-        process.exit()
-      }, 60000)
-
       server.postMessage(null)
 
       break
