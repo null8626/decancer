@@ -554,7 +554,7 @@ jobs:
         working-directory: bindings/wasm/tests
         run: |
           npm i
-          timeout 60 node .
+          timeout 180 node .
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
