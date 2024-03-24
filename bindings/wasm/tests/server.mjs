@@ -38,14 +38,10 @@ app.listen(
 
       parentPort.on('message', () => {
         console.log('- [server] closing...')
-        const notifyClose = () =>
-          parentPort.postMessage({
-            code: 'close'
-          })
 
-        // this sometimes takes like a billion years to finish for some reason
-        setTimeout(notifyClose, 30000)
-        app.close().finally(notifyClose)
+        app.close().finally(() => parentPort.postMessage({
+          code: 'close'
+        }))
       })
     }
   }
