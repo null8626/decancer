@@ -36,7 +36,7 @@ impl IsolatingRunSequence {
     let mut bn_run_indices = Vec::new();
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
-      for i in &mut level_run.clone() {
+      for i in level_run.clone() {
         if processing_classes[i] == Class::BN {
           bn_run_indices.push(i);
           continue;
@@ -377,7 +377,7 @@ impl IsolatingRunSequence {
   ) -> impl Iterator<Item = usize> + '_ {
     let runs = &self.runs[level_run_index..];
 
-    (pos..runs[0].end).chain(runs[1..].iter().flat_map(Clone::clone))
+    (pos..runs[0].end).chain(runs[1..].into_iter().flat_map(Clone::clone))
   }
 
   fn iter_backwards_from(
@@ -390,7 +390,7 @@ impl IsolatingRunSequence {
 
     (current.start..pos)
       .rev()
-      .chain(prev_runs.iter().rev().flat_map(Clone::clone))
+      .chain(prev_runs.into_iter().rev().flat_map(Clone::clone))
   }
 }
 
@@ -703,7 +703,7 @@ impl Paragraph {
         // SAFETY: stack is already checked to be not empty
         unsafe { stack.pop().unwrap_unchecked() }
       } else {
-        Vec::new()
+        Vec::with_capacity(1)
       };
 
       sequence.push(run);

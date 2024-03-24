@@ -63,7 +63,7 @@ impl CuredString {
   {
     let mut ranges = Vec::new();
 
-    for o in other.into_iter() {
+    for o in other {
       for mat in self.find(o.as_ref()) {
         ranges.push(mat);
       }
