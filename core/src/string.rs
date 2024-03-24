@@ -94,7 +94,7 @@ impl CuredString {
         &with_str,
       );
 
-      char_diff += (with.len_utf8() * chars) as isize - mat.len() as isize;
+      char_diff += with_str.len() as isize - mat.len() as isize;
     }
   }
 
