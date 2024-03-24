@@ -5,7 +5,6 @@ use crate::{
 #[cfg(feature = "serde")]
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
-  cmp::PartialEq,
   fmt::{self, Debug, Display, Formatter},
   mem::transmute,
   ops::{Deref, Range},
