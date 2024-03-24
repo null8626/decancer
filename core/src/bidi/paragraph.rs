@@ -91,7 +91,7 @@ impl IsolatingRunSequence {
                     Class::EN
                   }
                   (Class::AN, Class::CS, Class::AN) => Class::AN,
-                  (_, _, _) => Class::ON,
+                  _ => Class::ON,
                 };
 
               if processing_classes[i] == Class::ON {
@@ -356,7 +356,7 @@ impl IsolatingRunSequence {
           | (Class::EN, Class::R)
           | (Class::EN, Class::AN)
           | (Class::EN, Class::EN) => Class::R,
-          (_, _) => e,
+          _ => e,
         };
 
         for j in &ni_run {

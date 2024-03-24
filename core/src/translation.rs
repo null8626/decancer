@@ -10,6 +10,7 @@ use std::{
   cmp::PartialEq,
   fmt::{self, Debug, Display},
   mem::transmute,
+  ops::AddAssign,
   slice, str,
 };
 
@@ -49,6 +50,16 @@ impl Translation {
       Self::Character(c) => Self::Character(unsafe { c.to_uppercase().next().unwrap_unchecked() }),
       Self::String(s) => Self::String(Cow::Owned(s.as_ref().to_uppercase())),
       Self::None => Self::None,
+    }
+  }
+}
+
+impl AddAssign<Translation> for String {
+  fn add_assign(&mut self, translation: Translation) {
+    match translation {
+      Translation::Character(ch) => self.push(ch),
+      Translation::String(s) => self.push_str(&s),
+      Translation::None => {}
     }
   }
 }

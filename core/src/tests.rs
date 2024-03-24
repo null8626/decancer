@@ -1,6 +1,6 @@
 use crate::{
   bidi::{IsolatingRunSequence, Paragraph},
-  Class, CuredString, Level, Matcher,
+  Class, CuredString, Level, Matcher, Options,
 };
 use proptest::prelude::*;
 use std::{mem::MaybeUninit, ops::Range};
@@ -283,14 +283,16 @@ fn isolating_run_sequences() {
   );
 }
 
+#[cfg(feature = "options")]
 fn test_reorder(input: &str, expected: &str) {
   assert_eq!(
-    crate::reorder(input, |c, output| output.push(c)).unwrap(),
+    crate::cure(input, Options::default().retain_hebrew().retain_arabic()).unwrap(),
     expected
   );
 }
 
 #[test]
+#[cfg(feature = "options")]
 fn reorder() {
   test_reorder("abc\ndef\nghi", "abc\ndef\nghi");
   test_reorder("ab1\nde2\ngh3", "ab1\nde2\ngh3");
