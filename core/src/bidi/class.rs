@@ -58,19 +58,19 @@ impl Class {
     None
   }
 
-  pub(crate) const fn is_neutral_or_isolate(&self) -> bool {
+  pub(crate) const fn is_neutral_or_isolate(self) -> bool {
     matches!(self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
   }
 
-  pub(crate) const fn is_rtl(&self) -> bool {
+  pub(crate) const fn is_rtl(self) -> bool {
     matches!(self, Self::RLE | Self::RLO | Self::RLI)
   }
 
-  pub(crate) const fn is_isolate(&self) -> bool {
+  pub(crate) const fn is_isolate(self) -> bool {
     matches!(self, Self::RLI | Self::LRI | Self::FSI)
   }
 
-  pub(crate) const fn override_status(&self) -> OverrideStatus {
+  pub(crate) const fn override_status(self) -> OverrideStatus {
     match self {
       Self::RLO => OverrideStatus::RTL,
       Self::LRO => OverrideStatus::LTR,
@@ -79,7 +79,7 @@ impl Class {
     }
   }
 
-  pub(crate) const fn removed_by_x9(&self) -> bool {
+  pub(crate) const fn removed_by_x9(self) -> bool {
     matches!(
       self,
       Self::RLE | Self::LRE | Self::RLO | Self::LRO | Self::PDF | Self::BN

@@ -417,6 +417,7 @@ impl Paragraph {
     util::sliced_mut(slicable, self.range.clone())
   }
 
+  #[allow(clippy::while_immutable_condition)]
   pub(crate) fn visual_runs(
     &self,
     text: &str,
