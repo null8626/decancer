@@ -32,7 +32,7 @@ impl Level {
     }
   }
 
-  pub(crate) fn lower(&mut self, amount: u8) -> Result<(), Error> {
+  pub(crate) fn lower(mut self, amount: u8) -> Result<(), Error> {
     self.0 = self
       .0
       .checked_sub(amount)
@@ -41,7 +41,7 @@ impl Level {
     Ok(())
   }
 
-  pub(crate) fn raise(&mut self, amount: u8) -> Result<(), Error> {
+  pub(crate) fn raise(mut self, amount: u8) -> Result<(), Error> {
     let number = self
       .0
       .checked_add(amount)
@@ -56,15 +56,15 @@ impl Level {
     }
   }
 
-  pub(crate) const fn is_ltr(&self) -> bool {
+  pub(crate) const fn is_ltr(self) -> bool {
     self.0 % 2 == 0
   }
 
-  pub(crate) const fn is_rtl(&self) -> bool {
+  pub(crate) const fn is_rtl(self) -> bool {
     self.0 % 2 == 1
   }
 
-  pub(crate) const fn class(&self) -> Class {
+  pub(crate) const fn class(self) -> Class {
     if self.is_ltr() {
       Class::L
     } else {
@@ -72,15 +72,15 @@ impl Level {
     }
   }
 
-  pub(crate) const fn new_explicit_next_ltr(&self) -> Result<Self, Error> {
+  pub(crate) const fn new_explicit_next_ltr(self) -> Result<Self, Error> {
     Self::new_explicit((self.0 + 2) & !1)
   }
 
-  pub(crate) const fn new_explicit_next_rtl(&self) -> Result<Self, Error> {
+  pub(crate) const fn new_explicit_next_rtl(self) -> Result<Self, Error> {
     Self::new_explicit((self.0 + 1) | 1)
   }
 
-  pub(crate) const fn new_lowest_ge_rtl(&self) -> Result<Self, Error> {
+  pub(crate) const fn new_lowest_ge_rtl(self) -> Result<Self, Error> {
     Self::new_implicit(self.0 | 1)
   }
 }
