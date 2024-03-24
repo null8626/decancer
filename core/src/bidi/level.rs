@@ -32,7 +32,7 @@ impl Level {
     }
   }
 
-  pub(crate) fn lower(mut self, amount: u8) -> Result<(), Error> {
+  pub(crate) fn lower(&mut self, amount: u8) -> Result<(), Error> {
     self.0 = self
       .0
       .checked_sub(amount)
@@ -41,7 +41,7 @@ impl Level {
     Ok(())
   }
 
-  pub(crate) fn raise(mut self, amount: u8) -> Result<(), Error> {
+  pub(crate) fn raise(&mut self, amount: u8) -> Result<(), Error> {
     let number = self
       .0
       .checked_add(amount)
