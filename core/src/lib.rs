@@ -300,10 +300,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   (refined_input, original_classes, paragraphs)
 }
 
-pub(crate) fn reorder<F>(input: &str, map: F) -> Result<String, Error>
-where
-  F: Fn(char, &mut String),
-{
+pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
   let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
 
   let mut levels = Vec::with_capacity(refined_input.len());
@@ -332,7 +329,7 @@ where
           (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
             levels[j].raise(1)?
           }
-          (_, _) => {}
+          _ => {}
         }
 
         if original_classes[j].removed_by_x9() {
@@ -346,7 +343,7 @@ where
     }
   }
 
-  for paragraph in paragraphs.iter() {
+  for paragraph in paragraphs {
     let (revised_levels, runs) =
       paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
 
@@ -355,25 +352,17 @@ where
 
       if revised_levels[run.start].is_rtl() {
         for c in text.chars().rev() {
-          map(c, &mut output);
+          output += cure_char_inner(c as _, options);
         }
       } else {
         for c in text.chars() {
-          map(c, &mut output);
+          output += cure_char_inner(c as _, options);
         }
       }
     }
   }
 
   Ok(output)
-}
-
-fn push_translation(translation: Translation, output: &mut String) {
-  match translation {
-    Translation::Character(ch) => output.push(ch),
-    Translation::String(s) => output.push_str(&s),
-    Translation::None => {}
-  }
 }
 
 /// Cures a string with the specified [`Options`].
@@ -387,26 +376,22 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
   Ok(CuredString({
     #[cfg(feature = "options")]
     if options.is(1) {
-      input.chars().fold(
-        String::with_capacity(input.len()),
-        |mut output, character| {
-          if !is_special_rtl(character as _) {
-            push_translation(cure_char(character, options), &mut output);
-          }
-
-          output
-        },
-      )
+      input
+        .chars()
+        .filter(|&character| !is_special_rtl(character as _))
+        .fold(
+          String::with_capacity(input.len()),
+          |mut output, character| {
+            output += cure_char(character, options);
+            output
+          },
+        )
     } else {
-      reorder(input, |c, output| {
-        push_translation(cure_char_inner(c as _, options), output)
-      })?
+      cure_reordered(input, options)?
     }
 
     #[cfg(not(feature = "options"))]
-    reorder(input, |c, output| {
-      push_translation(cure_char_inner(c as _, options), output)
-    })?
+    cure_reordered(input, options)?
   }))
 }
 
