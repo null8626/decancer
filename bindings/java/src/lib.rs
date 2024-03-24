@@ -1,12 +1,14 @@
-#![allow(clippy::missing_safety_doc)]
+#![allow(clippy::missing_safety_doc, clippy::unused_unit)]
 
 use jni::{
-  objects::{JClass, JObject, JObjectArray, JString, JValueGen},
+  objects::{JClass, JObject, JObjectArray, JString, JValue, JValueGen},
+  signature::{Primitive, ReturnType},
   sys::{jboolean, jchar, jint, jlong, jobject, jstring},
   JNIEnv,
 };
 use std::mem::transmute;
 
+const CUREDSTRING_CLASS: &str = "com/github/null8626/decancer/CuredString";
 const MATCH_CLASS: &str = "com/github/null8626/decancer/Match";
 
 macro_rules! jni_unwrap {
@@ -26,15 +28,32 @@ macro_rules! jni_unwrap {
   };
 }
 
-macro_rules! get_inner_field {
+macro_rules! get_inner_field_unchecked {
   ($env:ident, $this:ident, $return_value:expr) => {{
+    let descriptor = jni_unwrap!(
+      $env,
+      $env.get_field_id(CUREDSTRING_CLASS, "inner", "J"),
+      $return_value
+    );
     let inner = jni_unwrap!(
       $env,
       $env
-        .get_field(&$this, "inner", "J")
+        .get_field_unchecked(&$this, descriptor, ReturnType::Primitive(Primitive::Long))
         .and_then(|field| field.j()),
       $return_value
     ) as *mut decancer::CuredString;
+
+    inner
+  }};
+
+  ($env:ident, $this:ident) => {
+    get_inner_field_unchecked!($env, $this, 0 as _)
+  };
+}
+
+macro_rules! get_inner_field {
+  ($env:ident, $this:ident, $return_value:expr) => {{
+    let inner = get_inner_field_unchecked!($env, $this, $return_value);
 
     if inner.is_null() {
       let _ = $env.throw_new(
@@ -150,9 +169,8 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
   input: JObjectArray<'local>,
 ) -> jobject {
   let inner = get_inner_field!(env, this);
-  let inputs = get_string_array!(env, input);
 
-  let matches = (*inner).find_multiple(&inputs);
+  let matches = (*inner).find_multiple(get_string_array!(env, input));
   let array = jni_unwrap!(
     env,
     env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())
@@ -218,11 +236,10 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
   with: jchar,
 ) {
   let inner = get_inner_field!(env, this, ());
-  let inputs = get_string_array!(env, input, ());
 
   match char::from_u32(with as _) {
     Some(with) => {
-      (*inner).censor_multiple(&inputs, with);
+      (*inner).censor_multiple(get_string_array!(env, input, ()), with);
     }
 
     None => {
@@ -258,10 +275,9 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_repl
   with: JString<'local>,
 ) {
   let inner = get_inner_field!(env, this, ());
-  let inputs = get_string_array!(env, input, ());
   let with: String = jni_unwrap!(env, env.get_string(&with), ()).into();
 
-  (*inner).replace_multiple(&inputs, &with);
+  (*inner).replace_multiple(get_string_array!(env, input, ()), &with);
 }
 
 #[no_mangle]
@@ -328,5 +344,16 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_dest
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
 ) {
-  let _ = Box::from_raw(get_inner_field!(env, this, ()));
+  let inner = get_inner_field_unchecked!(env, this, ());
+
+  if !inner.is_null() {
+    let _ = Box::from_raw(inner);
+    let descriptor = jni_unwrap!(env, env.get_field_id(CUREDSTRING_CLASS, "inner", "J"), ());
+
+    jni_unwrap!(
+      env,
+      env.set_field_unchecked(this, descriptor, JValue::Long(0)),
+      ()
+    );
+  }
 }

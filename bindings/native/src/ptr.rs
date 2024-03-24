@@ -1,5 +1,11 @@
 use std::mem::size_of;
 
+#[repr(C)]
+pub(crate) struct Element<T> {
+  pub(crate) string: *mut T,
+  pub(crate) size: usize,
+}
+
 pub(crate) struct NullTerminatedPointer<T> {
   ptr: *mut T,
   pub(crate) size: usize,
