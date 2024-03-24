@@ -186,7 +186,6 @@ let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").un
 
 assert_eq!(cured, "very funny text");
 assert!(cured.contains("funny"));
-assert_eq!(cured.into_str(), String::from("very funny text"));
 
 cured.censor("funny", '*');
 assert_eq!(cured, "very ***** text");
