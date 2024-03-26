@@ -69,7 +69,8 @@ impl CuredString {
       }
     }
 
-    merge_ranges(ranges)
+    merge_ranges(&mut ranges);
+    ranges
   }
 
   fn censor_inner<I>(&mut self, original: &str, matches: I, with: char)

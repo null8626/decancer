@@ -31,12 +31,12 @@ pub(crate) fn sliced_mut<T: IndexMut<Range<usize>> + ?Sized>(
 
 // special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
 // except i've improved upon it :)
-pub(crate) fn merge_ranges<T>(mut ranges: Vec<Range<T>>) -> Vec<Range<T>>
+pub(crate) fn merge_ranges<T>(ranges: &mut Vec<Range<T>>)
 where
   T: Ord + Copy,
 {
   if ranges.is_empty() {
-    return Vec::new();
+    return;
   }
 
   ranges.sort_by(|a, b| a.start.cmp(&b.start));
@@ -56,7 +56,6 @@ where
   }
 
   ranges.truncate(j + 1);
-  ranges
 }
 
 macro_rules! unwrap_or_ret {
