@@ -293,12 +293,14 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_equa
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_stripNonAscii<'local>(
+pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_stripNonAscii<
+  'local,
+>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
 ) {
   let inner = get_inner_field!(env, this, ());
-  
+
   (*inner).strip_non_ascii();
 }
 

@@ -181,7 +181,7 @@ impl CuredString {
   pub fn strip_non_ascii(&mut self) {
     self.0.strip_non_ascii();
   }
-  
+
   #[napi]
   pub fn starts_with(&self, other: String) -> bool {
     self.0.starts_with(&other)
