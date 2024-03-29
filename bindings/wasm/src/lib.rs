@@ -59,7 +59,7 @@ impl CuredString {
   pub fn replaceMultiple(&mut self, other: Vec<String>, with: &str) {
     self.0.replace_multiple(other, with)
   }
-  
+
   pub fn stripNonAscii(&mut self) {
     self.0.strip_non_ascii()
   }
