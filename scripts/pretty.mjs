@@ -94,7 +94,7 @@ async function updateReadme() {
       .toString()
       .trim()
       .replace(
-        /\*\*[\d,]+ \(\d+\.\d{2}%\) different unicode codepoints\*\*/,
+        /\*\*[\d,\.]+ \(\d+[\.\,]\d{2}%\) different unicode codepoints\*\*/,
         `**${codepointsCount.toLocaleString()} (${(
           (codepointsCount / 0x10ffff) *
           100
