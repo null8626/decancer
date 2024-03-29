@@ -190,7 +190,6 @@ impl CuredString {
   }
 
   /// Strips all non-ascii characters from this string.
-  #[must_use]
   pub fn strip_non_ascii(&mut self) {
     // SAFETY: utf-8 is compatible with ascii
     unsafe {
