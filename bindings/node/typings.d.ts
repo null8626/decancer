@@ -11,6 +11,7 @@ export class CuredString {
   censorMultiple(other: string[], character: string): void
   replace(other: string, withWhat: string): void
   replaceMultiple(other: string[], withWhat: string): void
+  stripNonAscii(): void
   startsWith(other: string): boolean
   endsWith(other: string): boolean
   contains(other: string): boolean
