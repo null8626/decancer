@@ -422,7 +422,6 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
 ///
 /// assert_eq!(cured, "very funny text");
 /// assert!(cured.contains("FuNny"));
-/// assert_eq!(cured.into_str(), String::from("very funny text"));
 /// ```
 #[macro_export]
 macro_rules! cure {

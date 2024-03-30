@@ -377,7 +377,7 @@ impl IsolatingRunSequence {
   ) -> impl Iterator<Item = usize> + '_ {
     let runs = &self.runs[level_run_index..];
 
-    (pos..runs[0].end).chain(runs[1..].into_iter().flat_map(Clone::clone))
+    (pos..runs[0].end).chain(runs[1..].iter().flat_map(Clone::clone))
   }
 
   fn iter_backwards_from(
@@ -390,7 +390,7 @@ impl IsolatingRunSequence {
 
     (current.start..pos)
       .rev()
-      .chain(prev_runs.into_iter().rev().flat_map(Clone::clone))
+      .chain(prev_runs.iter().rev().flat_map(Clone::clone))
   }
 }
 
