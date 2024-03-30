@@ -18,13 +18,10 @@ use std::{
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  /// Coerces this cured string into a [`String`].
-  ///
-  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.
-  #[must_use]
-  pub const fn into_str(self) -> String {
-    // SAFETY: see definition of CuredString
-    unsafe { transmute(self) }
+  #[deprecated(since = "3.1.2", note = "use .into() instead")]
+  #[inline(always)]
+  pub fn into_str(self) -> String {
+    self.into()
   }
 
   /// Iterates throughout this string and yields every similar-looking match.
@@ -237,10 +234,14 @@ impl CuredString {
   }
 }
 
+/// Coerces this cured string into a [`String`].
+///
+/// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
 impl From<CuredString> for String {
   #[inline(always)]
   fn from(val: CuredString) -> Self {
-    val.into_str()
+    // SAFETY: see definition of CuredString
+    unsafe { transmute(val) }
   }
 }
 

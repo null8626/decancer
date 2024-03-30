@@ -443,7 +443,7 @@ macro_rules! format {
     unsafe {
       $crate::cure($string, $crate::Options::formatter())
         .unwrap_unchecked()
-        .into_str()
+        .into()
     }
   };
 }

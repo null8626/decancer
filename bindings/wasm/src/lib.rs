@@ -81,7 +81,7 @@ impl CuredString {
   }
 
   pub fn toString(&self) -> String {
-    self.0.clone().into_str()
+    self.0.clone().into()
   }
 }
 
