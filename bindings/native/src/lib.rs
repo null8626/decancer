@@ -417,11 +417,6 @@ comparison_fn! {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_strip_non_ascii(cured: *mut decancer::CuredString) {
-  (*cured).strip_non_ascii();
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn decancer_cured_raw(
   cured: *mut decancer::CuredString,
   output_size: *mut usize,
