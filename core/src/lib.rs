@@ -89,20 +89,6 @@ const fn is_special_rtl(code: u32) -> bool {
 }
 
 fn cure_char_inner(code: u32, options: Options) -> Translation {
-  macro_rules! capitalized_ret {
-    ($retain_capitalization:ident, $translation:ident) => {
-      #[cfg(feature = "options")]
-      return if $retain_capitalization {
-        $translation.into_uppercase()
-      } else {
-        $translation
-      };
-
-      #[cfg(not(feature = "options"))]
-      return $translation;
-    };
-  }
-
   // SAFETY: even if there is no lowercase mapping for some codepoints, it would just return itself.
   // therefore, the first iteration and/or codepoint always exists.
   let code_lowercased = unsafe {
@@ -135,17 +121,21 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
       CASE_SENSITIVE_CODEPOINTS_OFFSET as _,
       CASE_SENSITIVE_CODEPOINTS_COUNT as _,
     ) {
-      capitalized_ret!(retain_capitalization, translation);
+      #[cfg(feature = "options")]
+      return if retain_capitalization {
+        translation.into_uppercase()
+      } else {
+        translation
+      };
+
+      #[cfg(not(feature = "options"))]
+      return translation;
     }
   }
 
-  match options.translate(code_lowercased, 6, CODEPOINTS_COUNT as _) {
-    Some(translation) => {
-      capitalized_ret!(retain_capitalization, translation);
-    }
-
-    None => Translation::character(default_output),
-  }
+  options
+    .translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
+    .unwrap_or(Translation::character(default_output))
 }
 
 /// Cures a single character/unicode codepoint with the specified [`Options`].
