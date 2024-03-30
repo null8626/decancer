@@ -60,10 +60,6 @@ impl CuredString {
     self.0.replace_multiple(other, with)
   }
 
-  pub fn stripNonAscii(&mut self) {
-    self.0.strip_non_ascii()
-  }
-
   pub fn startsWith(&self, other: &str) -> bool {
     self.0.starts_with(other)
   }

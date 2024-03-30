@@ -172,13 +172,6 @@ public class CuredString {
   public native boolean equals(String other);
 
   /**
-   * Strips all non-ascii characters from this string.
-   *
-   * @throws NullPointerException If destroy() has been called prior to this.
-   */
-  public native void stripNonAscii();
-
-  /**
    * Checks if this object similarly starts with another string.
    *
    * <p>

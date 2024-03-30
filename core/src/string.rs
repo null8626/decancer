@@ -186,22 +186,6 @@ impl CuredString {
     self.replace_inner(self.clone().find_multiple(other), with)
   }
 
-  /// Strips all non-ascii characters from this string.
-  pub fn strip_non_ascii(&mut self) {
-    // SAFETY: utf-8 is compatible with ascii
-    unsafe {
-      self.0 = String::from_utf8_unchecked(
-        self
-          .0
-          .clone()
-          .into_bytes()
-          .into_iter()
-          .filter(|&b| b <= 0x7f)
-          .collect::<Vec<_>>(),
-      );
-    }
-  }
-
   /// Checks if this cured string similarly starts with another string.
   ///
   /// This comparison is case-insensitive.

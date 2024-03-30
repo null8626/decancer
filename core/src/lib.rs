@@ -113,8 +113,8 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   #[cfg(not(feature = "options"))]
   let default_output = code_lowercased;
 
-  if code_lowercased < 0x80 {
-    return Translation::character(code_lowercased);
+  if default_output < 0x80 {
+    return Translation::character(default_output);
   } else if is_case_sensitive {
     if let Some(translation) = options.translate(
       code,
