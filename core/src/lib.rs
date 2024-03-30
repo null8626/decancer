@@ -142,8 +142,8 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   match options.translate(code_lowercased, 6, CODEPOINTS_COUNT as _) {
     Some(translation) => {
       capitalized_ret!(retain_capitalization, translation);
-    },
-    
+    }
+
     None => Translation::character(default_output),
   }
 }
