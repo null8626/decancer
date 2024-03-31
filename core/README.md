@@ -12,7 +12,7 @@
 A tiny package that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of **Binary Search** to ensure speed!
-- By default, it's capable of filtering **216,150 (19.40%) different unicode codepoints** like:
+- By default, it's capable of filtering **216,170 (19.40%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
