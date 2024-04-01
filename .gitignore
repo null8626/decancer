@@ -21,4 +21,4 @@ core/proptest-regressions/
 
 /*.json
 /*.bin
-/*.txt
+**/*.txt
