@@ -116,7 +116,7 @@ for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 6) {
 
 if (process.argv[2]?.endsWith('.txt')) {
   const translationMap = {}
-  
+
   for (const { codepoint, translation } of codepoints.inner) {
     if (translationMap[translation]) {
       translationMap[translation].push(codepoint)
@@ -124,8 +124,16 @@ if (process.argv[2]?.endsWith('.txt')) {
       translationMap[translation] = [codepoint]
     }
   }
-  
-  writeFileSync(process.argv[2], Object.entries(translationMap).map(([translation, codepoints]) => `${translation}:\n${codepoints.map(c => String.fromCodePoint(c)).join('')}`).join('\n\n'))
+
+  writeFileSync(
+    process.argv[2],
+    Object.entries(translationMap)
+      .map(
+        ([translation, codepoints]) =>
+          `${translation}:\n${codepoints.map(c => String.fromCodePoint(c)).join('')}`
+      )
+      .join('\n\n')
+  )
 } else {
   writeFileSync(
     process.argv[2]?.endsWith('.json') ? process.argv[2] : 'output.json',
