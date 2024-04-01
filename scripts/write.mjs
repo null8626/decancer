@@ -146,8 +146,8 @@ for (const conf of codepoints) {
     console.warn(
       `- [warn] this codepoint is not allowed and therefore ignored: ${conf.codepoint}`
     )
-    continue 
-    } else if (
+    continue
+  } else if (
     expanded.find(([codepoint]) => codepoint === conf.codepoint)?.[1] ===
     conf.translation
   ) {
@@ -188,7 +188,7 @@ let i = 0
 
 while (i < expanded.length) {
   const [codepoint, translation] = expanded[i]
-  
+
   if (isCaseSensitive(codepoint)) {
     const lowercasedCodepoint = String.fromCodePoint(codepoint)
       .toLowerCase()
