@@ -142,7 +142,10 @@ for (const conf of codepoints) {
 
   if (conf.translation.length === 0) {
     conf.translation = '\0'
-  } else if (expanded.find(([codepoint]) => codepoint === conf.codepoint)?.[1] === conf.translation) {
+  } else if (
+    expanded.find(([codepoint]) => codepoint === conf.codepoint)?.[1] ===
+    conf.translation
+  ) {
     console.warn(`- [warn] this duplicate is ignored: ${conf.codepoint}`)
     continue
   }
