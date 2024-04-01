@@ -5,18 +5,24 @@ Don't forget to state on what should be changed and their reason.
 
 If you want to see/modify on the codepoints supported and/or their respective translation(s), feel free to do so! Here are the ways on how to do them;
 
+- **To convert the binary into a readable text file, do the following:**
+
+```console
+node scripts/read.mjs path/to/output.txt
+```
+
 - **To convert the binary into a readable and modifiable JSON, do the following:**
 
 ```console
-node scripts/read.mjs
+node scripts/read.mjs [path/to/output.json]
 ```
 
-And a file called `output.json` should be generated in the same directory.
+If the output file name is not supplied, it will default to `output.json`.
 
 - **And to validate, optimize, and convert the JSON back into a binary, do the following:**
 
 ```console
-node scripts/write.mjs path/to/file.json
+node scripts/write.mjs path/to/input.json
 ```
 
 - **The structure of the JSON is as follows:**
