@@ -11,12 +11,6 @@ If you want to see/modify on the codepoints supported and/or their respective tr
 node scripts/read.mjs
 ```
 
-- **Or if you want a simplified and unoptimized version without ranges and all of that nonsense, run:**
-
-```console
-node scripts/read.mjs --full
-```
-
 And a file called `output.json` should be generated in the same directory.
 
 - **And to validate, optimize, and convert the JSON back into a binary, do the following:**
@@ -33,8 +27,6 @@ The optional fields here are only optional when writing and encoding them back i
 interface Codepoint {
   codepoint: number
   translation: string
-  rangeUntil?: number | null
-  syncedTranslation?: boolean
 }
 
 interface JsonContents {

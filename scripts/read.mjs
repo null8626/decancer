@@ -19,28 +19,24 @@ class Codepoints {
       input.translation = ''
     }
 
-    if (process.argv[2] === '--full') {
-      if (input.rangeUntil === null) {
-        this.#inner.push({
-          codepoint: input.codepoint,
-          translation: input.translation
-        })
-      } else {
-        const ogTranslationCode = input.syncedTranslation
-          ? input.translation.charCodeAt()
-          : input.translation
-
-        for (let c = input.codepoint; c <= input.rangeUntil; c++)
-          this.#inner.push({
-            codepoint: c,
-            translation:
-              typeof ogTranslationCode === 'number'
-                ? String.fromCharCode(ogTranslationCode + (c - input.codepoint))
-                : ogTranslationCode
-          })
-      }
+    if (input.rangeUntil === null) {
+      this.#inner.push({
+        codepoint: input.codepoint,
+        translation: input.translation
+      })
     } else {
-      this.#inner.push(input)
+      const ogTranslationCode = input.syncedTranslation
+        ? input.translation.charCodeAt()
+        : input.translation
+
+      for (let c = input.codepoint; c <= input.rangeUntil; c++)
+        this.#inner.push({
+          codepoint: c,
+          translation:
+            typeof ogTranslationCode === 'number'
+              ? String.fromCharCode(ogTranslationCode + (c - input.codepoint))
+              : ogTranslationCode
+        })
     }
   }
 

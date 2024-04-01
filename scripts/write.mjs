@@ -141,46 +141,13 @@ for (const conf of codepoints) {
   )
 
   if (conf.translation.length === 0) {
-    assert(
-      !conf.syncedTranslation,
-      'syncedTranslation is not allowed in empty translations'
-    )
-
     conf.translation = '\0'
+  } else if (expanded.find(([codepoint]) => codepoint === conf.codepoint)?.[1] === conf.translation) {
+    console.warn(`- [warn] this duplicate is ignored: ${conf.codepoint}`)
+    continue
   }
 
-  if (typeof conf.rangeUntil === 'number') {
-    assert(
-      Number.isSafeInteger(conf.rangeUntil) &&
-        conf.rangeUntil > conf.codepoint &&
-        conf.rangeUntil < 0x110000 &&
-        conf.rangeUntil - conf.codepoint <= 0x7f,
-      'rangeUntil must be a valid number'
-    )
-    assert(
-      conf.rangeUntil > conf.codepoint,
-      `rangeUntil must be greater than codepoint. (rangeUntil: ${conf.rangeUntil}, codepoint: ${conf.codepoint})`
-    )
-
-    if (conf.syncedTranslation) {
-      assert(
-        conf.translation.length === 1,
-        `translation length for codepoints with syncedTranslation must be one character in length, got '${conf.translation}'`
-      )
-    }
-
-    const ogTranslationCode = conf.syncedTranslation
-      ? conf.translation.charCodeAt()
-      : conf.translation
-
-    for (let c = conf.codepoint; c <= conf.rangeUntil; c++)
-      expanded.push([
-        c,
-        typeof ogTranslationCode === 'number'
-          ? String.fromCharCode(ogTranslationCode + (c - conf.codepoint))
-          : ogTranslationCode
-      ])
-  } else expanded.push([conf.codepoint, conf.translation])
+  expanded.push([conf.codepoint, conf.translation])
 }
 
 console.log(
@@ -216,7 +183,7 @@ while (i < expanded.length) {
 
   if (!binarySearchExists(expected, codepoint)) {
     console.warn(
-      `- [warn] this codepoint is not allowed: ${codepoint} (ignored)`
+      `- [warn] this codepoint is not allowed and therefore ignored: ${codepoint}`
     )
     expanded.splice(i, 1)
     continue
@@ -272,9 +239,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
       if (
         ordered &&
         nextTranslation.length === 1 &&
-        (curr.syncedTranslation
-          ? translation.charCodeAt() + 1 === nextTranslation.charCodeAt()
-          : nextTranslation === translation)
+        nextTranslation === translation
       ) {
         curr.rangeUntil++
         continue
