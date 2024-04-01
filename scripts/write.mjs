@@ -142,7 +142,12 @@ for (const conf of codepoints) {
 
   if (conf.translation.length === 0) {
     conf.translation = '\0'
-  } else if (
+  } else if (!binarySearchExists(expected, conf.codepoint)) {
+    console.warn(
+      `- [warn] this codepoint is not allowed and therefore ignored: ${conf.codepoint}`
+    )
+    continue 
+    } else if (
     expanded.find(([codepoint]) => codepoint === conf.codepoint)?.[1] ===
     conf.translation
   ) {
@@ -183,15 +188,7 @@ let i = 0
 
 while (i < expanded.length) {
   const [codepoint, translation] = expanded[i]
-
-  if (!binarySearchExists(expected, codepoint)) {
-    console.warn(
-      `- [warn] this codepoint is not allowed and therefore ignored: ${codepoint}`
-    )
-    expanded.splice(i, 1)
-    continue
-  }
-
+  
   if (isCaseSensitive(codepoint)) {
     const lowercasedCodepoint = String.fromCodePoint(codepoint)
       .toLowerCase()
