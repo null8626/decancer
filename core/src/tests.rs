@@ -3,7 +3,7 @@ use crate::{
   Class, CuredString, Level, Matcher, Options,
 };
 use proptest::prelude::*;
-use std::{mem::MaybeUninit, ops::Range};
+use std::ops::Range;
 
 proptest! {
   #![proptest_config(ProptestConfig::with_cases(2000))]
@@ -195,7 +195,6 @@ fn test_irs(
 }
 
 #[test]
-#[allow(invalid_value)]
 fn isolating_run_sequences() {
   macro_rules! classes {
     ($($rest:tt),*) => {
@@ -227,13 +226,10 @@ fn isolating_run_sequences() {
     }
   }
 
-  // SAFETY: only the level property is read in the isolating_run_sequences method.
-  let mock_paragraph = unsafe {
-    Paragraph {
-      range: MaybeUninit::uninit().assume_init(),
-      level: Level::ltr(),
-      pure_ltr: false,
-    }
+  let mock_paragraph = Paragraph {
+    range: 0..1,
+    level: Level::ltr(),
+    pure_ltr: false,
   };
 
   test_irs_runs(
