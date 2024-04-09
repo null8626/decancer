@@ -58,6 +58,32 @@ where
   ranges.truncate(j + 1);
 }
 
+macro_rules! numbered_enum {
+  (
+    $(#[$enum_meta:meta])*
+    $enum_vis:vis enum $enum_name:ident: $enum_type:ty {
+      $($enum_prop:ident = $enum_prop_value:literal,)*
+    }
+  ) => {
+    $(#[$enum_meta])*
+    #[repr($enum_type)]
+    $enum_vis enum $enum_name {
+      $($enum_prop = $enum_prop_value,)*
+    }
+    
+    impl From<$enum_type> for $enum_name {
+      fn from(value: $enum_type) -> Self {
+        match value {
+          $($enum_prop_value => Self::$enum_prop,)*
+          _ => panic!(concat!("invalid ", stringify!($enum_name), " value: {}"), value),
+        }
+      }
+    }
+  }
+}
+
+pub(crate) use numbered_enum;
+
 macro_rules! unwrap_or_ret {
   ($option:expr,$fallback:expr) => {
     match $option {
