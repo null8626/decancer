@@ -327,7 +327,6 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_toSt
 }
 
 #[no_mangle]
-#[allow(clippy::unused_unit)]
 pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_destroy<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
