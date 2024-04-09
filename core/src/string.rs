@@ -276,7 +276,6 @@ impl Serialize for CuredString {
 
 #[cfg(feature = "serde")]
 #[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
-#[allow(clippy::redundant_closure)]
 impl<'de> Deserialize<'de> for CuredString {
   #[inline(always)]
   fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
