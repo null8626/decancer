@@ -604,10 +604,15 @@ jobs:
           message: 'chore: update files'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update .gitignore for GitHub pages
+        shell: bash
+        run: node scripts/ci_pages_gitignore.mjs
       - name: Deploy to GitHub Pages
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: JamesIves/github-pages-deploy-action@v4
         with:
+          clean: true
+          commit-message: 'chore: deploy to github pages'
           folder: '.'
   publish:
     name: Publish

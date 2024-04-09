@@ -122,7 +122,7 @@ let cache = {
 const onDecomps = {}
 
 console.log(
-  `- iterating through ${unicode.length.toLocaleString()} grouped unicode characters...`
+  `- iterating through ${unicode.length.toLocaleString('en-US')} grouped unicode characters...`
 )
 
 for (const data of unicodeIter(unicode)) {
@@ -215,7 +215,7 @@ void (await Promise.all([
 
     const beforeAddition = bidiExpanded.array.length
     console.log(
-      `- iterating through ${bidiDerived.length.toLocaleString()} grouped bidi derived classes...`
+      `- iterating through ${bidiDerived.length.toLocaleString('en-US')} grouped bidi derived classes...`
     )
 
     for (const bidi of bidiDerivedIter(bidiDerived)) {
@@ -230,12 +230,14 @@ void (await Promise.all([
     console.log(
       `- added an additional ${(
         bidiExpanded.array.length - beforeAddition
-      ).toLocaleString()} bidi classes from unicode's derived bidi classes list.`
+      ).toLocaleString(
+        'en-US'
+      )} bidi classes from unicode's derived bidi classes list.`
     )
 
     const beforeMerge = bidiExpanded.array.length
     console.log(
-      `- merging ${beforeMerge.toLocaleString()} bidi classes into one...`
+      `- merging ${beforeMerge.toLocaleString('en-US')} bidi classes into one...`
     )
 
     const bidiDictionary = []
@@ -258,7 +260,7 @@ void (await Promise.all([
     }
 
     console.log(
-      `- merged down from ${beforeMerge.toLocaleString()} to ${bidiDictionary.length.toLocaleString()} (${(
+      `- merged down from ${beforeMerge.toLocaleString('en-US')} to ${bidiDictionary.length.toLocaleString('en-US')} (${(
         (bidiDictionary.length / beforeMerge) *
         100
       ).toFixed(2)}%)`
@@ -311,9 +313,9 @@ void (await Promise.all([
     )
 
     console.log(
-      `- stored ${(
-        bidiBracketsBuffer.length / 5
-      ).toLocaleString()} bidi brackets.`
+      `- stored ${(bidiBracketsBuffer.length / 5).toLocaleString(
+        'en-US'
+      )} bidi brackets.`
     )
 
     const bidiDictionaryBuffer = Buffer.concat(

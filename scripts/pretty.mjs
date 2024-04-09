@@ -95,7 +95,7 @@ async function updateReadme() {
       .trim()
       .replace(
         /\*\*[\d,\.]+ \(\d+[\.\,]\d{2}%\) different unicode codepoints\*\*/,
-        `**${codepointsCount.toLocaleString()} (${(
+        `**${codepointsCount.toLocaleString('en-US')} (${(
           (codepointsCount / 0x10ffff) *
           100
         ).toFixed(2)}%) different unicode codepoints**`
