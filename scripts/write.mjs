@@ -127,18 +127,23 @@ console.log(
 let expanded = []
 
 for (const conf of codepoints) {
-  assert(
-    Number.isSafeInteger(conf.codepoint),
-    'codepoint must be a valid number'
-  )
-  assert(
-    typeof conf.translation === 'string' &&
-      [...conf.translation].every(
-        c => c.codePointAt() <= 0x7f && !isCaseSensitive(c.codePointAt())
-      ) &&
-      conf.translation.length <= 0x1f,
-    `translation must be a valid string: '${conf.translation}'`
-  )
+  if (!Number.isSafeInteger(conf.codepoint)) {
+    console.warn(
+      `- [warn] this codepoint is not a valid value and therefore ignored: ${conf.codepoint}`
+    )
+    continue
+  } else if (
+    typeof conf.translation !== 'string' ||
+    ![...conf.translation].every(
+      c => c.codePointAt() <= 0x7f && !isCaseSensitive(c.codePointAt())
+    ) ||
+    conf.translation.length > 0x1f
+  ) {
+    console.warn(
+      `- [warn] translation is not a valid value and therefore ignored: '${conf.translation}'`
+    )
+    continue
+  }
 
   if (conf.translation.length === 0) {
     conf.translation = '\0'
@@ -238,6 +243,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
     if (curr !== null) {
       if (
         ordered &&
+        !curr.syncedTranslation &&
         nextTranslation.length === 1 &&
         nextTranslation === translation
       ) {
@@ -280,7 +286,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
 }
 
 console.log(
-  `- condensed down from ${expanded.length.toLocaleString()} to ${grandTotal.array.length.toLocaleString()} (${(
+  `- condensed down from ${expanded.length.toLocaleString('en-US')} to ${grandTotal.array.length.toLocaleString('en-US')} (${(
     (grandTotal.array.length / expanded.length) *
     100
   ).toFixed(2)}%).`
