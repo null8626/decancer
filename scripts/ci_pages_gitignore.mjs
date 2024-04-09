@@ -1,5 +1,5 @@
 import { readdir, readFile, writeFile, stat } from 'node:fs/promises'
-import { basename, dirname, join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { exec } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
@@ -7,9 +7,6 @@ import { promisify } from 'node:util'
 const execute = promisify(exec)
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-
-const PATH_TO_INDEX_HTML = join(ROOT_DIR, 'index.html')
-const PATH_TO_WASM_BIN = join(ROOT_DIR, 'bindings/wasm/bin/')
 
 const notGitignored = (
   await execute('git ls-files --cached --others --exclude-standard')
@@ -24,13 +21,9 @@ const gitignore = (await readFile(join(ROOT_DIR, '.gitignore')))
 const rootFiles = await readdir(ROOT_DIR)
 
 function isNotExcluded(fullPath) {
-  const file = basename(fullPath)
-
   return (
-    fullPath === PATH_TO_INDEX_HTML ||
-    (fullPath.startsWith(PATH_TO_WASM_BIN) &&
-      (file === 'decancer.wasm' || file === 'decancer.min.js'))
-  )
+    fullPath === join(ROOT_DIR, 'index.html') ||
+    (fullPath.startsWith(join(ROOT_DIR, 'bindings/wasm/bin/')))
 }
 
 async function resolveDirectory(directoryName) {
