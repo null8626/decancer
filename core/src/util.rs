@@ -44,8 +44,8 @@ where
   let mut j = 0;
 
   for i in 1..ranges.len() {
-    let current = unsafe { ranges.get_unchecked(i).clone() };
-    let previous = unsafe { ranges.get_unchecked_mut(j) };
+    let current = ranges[i].clone();
+    let previous = &mut ranges[j];
 
     if current.start >= previous.start && current.start <= previous.end {
       previous.end = max(current.end, previous.end);

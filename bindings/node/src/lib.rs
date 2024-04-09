@@ -7,7 +7,7 @@ use napi::{
   bindgen_prelude::{Error, FromNapiValue},
   Env, JsNumber, JsString, JsUnknown, Result, Status, ValueType,
 };
-use std::{mem::transmute, ops::Range};
+use std::ops::Range;
 
 macro_rules! options {
   (
@@ -116,7 +116,7 @@ impl CuredString {
   fn new_match(&self, mat: Range<usize>) -> Match {
     Match {
       range: mat.clone(),
-      portion: String::from(unsafe { self.0.get_unchecked(mat) }),
+      portion: String::from(&self.0[mat]),
     }
   }
 
@@ -218,7 +218,7 @@ fn cure(input: String, maybe_options: JsUnknown) -> Result<CuredString> {
     <Option<Options> as FromNapiValue>::from_unknown(maybe_options).map(options)
   }?;
 
-  match decancer::cure(&input, unsafe { transmute(options) }) {
+  match decancer::cure(&input, options.into()) {
     Ok(output) => Ok(CuredString(output)),
     Err(err) => Err(Error::new(Status::InvalidArg, err)),
   }

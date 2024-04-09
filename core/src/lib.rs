@@ -89,14 +89,9 @@ const fn is_special_rtl(code: u32) -> bool {
 }
 
 fn cure_char_inner(code: u32, options: Options) -> Translation {
-  // SAFETY: even if there is no lowercase mapping for some codepoints, it would just return itself.
-  // therefore, the first iteration and/or codepoint always exists.
-  let code_lowercased = unsafe {
-    char::from_u32_unchecked(code)
-      .to_lowercase()
-      .next()
-      .unwrap_unchecked() as _
-  };
+  let code_lowercased = char::from_u32(code)
+    .and_then(|character| character.to_lowercase().next())
+    .unwrap() as _;
 
   let is_case_sensitive = code != code_lowercased;
 
@@ -281,8 +276,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
           _ => {}
         }
 
-        // SAFETY: the only modification to this codepoint is in the if-statement above.
-        refined_input.push(unsafe { char::from_u32_unchecked(codepoint) });
+        refined_input.push(char::from_u32(codepoint).unwrap());
 
         idx += character_len;
       }
@@ -438,11 +432,8 @@ macro_rules! cure {
 #[macro_export]
 macro_rules! format {
   ($string:expr) => {
-    // SAFETY: having disable_bidi enabled removes all possibilities of an Err
-    unsafe {
-      $crate::cure($string, $crate::Options::formatter())
-        .unwrap_unchecked()
-        .into()
-    }
+    $crate::cure($string, $crate::Options::formatter())
+      .unwrap()
+      .into()
   };
 }

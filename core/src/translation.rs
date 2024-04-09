@@ -47,7 +47,7 @@ impl Translation {
   #[cfg(feature = "options")]
   pub(crate) fn into_uppercase(self) -> Self {
     match self {
-      Self::Character(c) => Self::Character(unsafe { c.to_uppercase().next().unwrap_unchecked() }),
+      Self::Character(c) => Self::Character(c.to_uppercase().next().unwrap()),
       Self::String(s) => Self::String(Cow::Owned(s.as_ref().to_uppercase())),
       Self::None => Self::None,
     }

@@ -10,10 +10,8 @@ pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) 
 pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CODEPOINTS.offset(4) });
 
 pub(crate) fn is(self_char: char, other_char: char) -> bool {
-  // SAFETY: even if there is no lowercase mapping for some codepoints, it would just return itself.
-  // therefore, the first iteration and/or codepoint always exists.
-  let self_char = unsafe { self_char.to_lowercase().next().unwrap_unchecked() as u32 };
-  let other_char = unsafe { other_char.to_lowercase().next().unwrap_unchecked() as u32 };
+  let self_char = self_char.to_lowercase().next().unwrap() as u32;
+  let other_char = other_char.to_lowercase().next().unwrap() as u32;
 
   if self_char == other_char {
     return true;
@@ -93,8 +91,7 @@ impl<'a> Iterator for CachedPeek<'a> {
       return None;
     }
 
-    // SAFETY: the current index always points to an existing element
-    let current = unsafe { *self.cache.get_unchecked(self.index) };
+    let current = self.cache[self.index];
     let next_element = self.next_value();
 
     if next_element.is_none() {
@@ -124,26 +121,21 @@ impl<'a, 'b> Matcher<'a, 'b> {
       self_str = "";
     }
 
-    // SAFETY: self_str = "" would immediately cancel out the first iteration.
     Self {
       self_iterator: self_str.chars(),
       #[cfg(feature = "leetspeak")]
       self_str,
       self_index: 0,
-      other_iterator: CachedPeek::new(other_chars, unsafe { other_first.unwrap_unchecked() }),
+      other_iterator: CachedPeek::new(other_chars, other_first.unwrap()),
     }
   }
 
   #[cfg(feature = "leetspeak")]
   fn matches_leetspeak(&mut self, other_char: char) -> Option<usize> {
-    // SAFETY: already guaranteed to be within the string's bounds.
-    let haystack = unsafe { self.self_str.get_unchecked(self.self_index..) };
+    let haystack = &self.self_str[self.self_index..];
     let matched_len = leetspeak::find(haystack, other_char as _)?;
 
-    // SAFETY: this will never go out of bounds as well
-    //         the furthest it would go would be an empty string.
-    self.self_iterator =
-      unsafe { self.self_str.get_unchecked(self.self_index + matched_len..) }.chars();
+    self.self_iterator = self.self_str[self.self_index + matched_len..].chars();
 
     Some(matched_len)
   }
@@ -241,8 +233,7 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
               self.other_iterator.restart();
 
               current_separator = None;
-              // SAFETY: this state of the program wouldn't be accessible if the first iteration returns a None
-              current_other = unsafe { self.other_iterator.next().unwrap_unchecked() };
+              current_other = self.other_iterator.next().unwrap();
 
               let (skipped, matched_skip) = self.skip_until(current_other.0)?;
 
