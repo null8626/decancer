@@ -1,40 +1,38 @@
-use super::{BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
-use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
-use std::mem::transmute;
+use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
+use crate::util::{numbered_enum, read_u16_le, read_u32_le, CODEPOINT_MASK};
 
-use super::OverrideStatus;
-
-#[repr(u8)]
-#[allow(dead_code)]
-#[cfg_attr(test, derive(Debug))]
-#[derive(Copy, Clone, PartialEq)]
-pub(crate) enum Class {
-  B,
-  S,
-  WS,
-  ON,
-  ET,
-  ES,
-  CS,
-  EN,
-  L,
-  BN,
-  R,
-  AN,
-  AL,
-  LRE,
-  RLE,
-  PDF,
-  LRO,
-  RLO,
-  LRI,
-  RLI,
-  FSI,
-  PDI,
+numbered_enum! {
+  #[allow(dead_code)]
+  #[cfg_attr(test, derive(Debug))]
+  #[derive(Copy, Clone, PartialEq)]
+  pub(crate) enum Class: u8 {
+    B = 0,
+    S = 1,
+    WS = 2,
+    ON = 3,
+    ET = 4,
+    ES = 5,
+    CS = 6,
+    EN = 7,
+    L = 8,
+    BN = 9,
+    R = 10,
+    AN = 11,
+    AL = 12,
+    LRE = 13,
+    RLE = 14,
+    PDF = 15,
+    LRO = 16,
+    RLO = 17,
+    LRI = 18,
+    RLI = 19,
+    FSI = 20,
+    PDI = 21,
+  }
 }
 
 impl Class {
-  pub(crate) const fn new(code: u32) -> Option<Self> {
+  pub(crate) fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_DICTIONARY_COUNT as i32;
 
@@ -51,7 +49,7 @@ impl Class {
       } else if code > (other + read_u16_le(unsafe { BIDI.offset(offset + 4) }) as u32) {
         start = mid + 1;
       } else {
-        return Some(unsafe { transmute((kv >> 20) as u8) });
+        return Some(((kv >> 20) as u8).into());
       }
     }
 
