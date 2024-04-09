@@ -6,7 +6,6 @@ use crate::{
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
   fmt::{self, Debug, Display, Formatter},
-  mem::transmute,
   ops::{Deref, Range},
 };
 
@@ -18,12 +17,6 @@ use std::{
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
-  #[deprecated(since = "3.1.2", note = "use .into() instead")]
-  #[inline(always)]
-  pub fn into_str(self) -> String {
-    self.into()
-  }
-
   /// Iterates throughout this string and yields every similar-looking match.
   ///
   /// If you plan on using this method with an array of strings, use [`find_multiple`][CuredString::find_multiple].
@@ -78,9 +71,7 @@ impl CuredString {
 
     for mat in matches {
       // SAFETY: mat is always within the mat of self
-      let chars = unsafe { original.get_unchecked(mat.clone()) }
-        .chars()
-        .count();
+      let chars = original[mat.clone()].chars().count();
       let mut with_str = String::with_capacity(chars);
 
       for _ in 0..chars {
@@ -224,8 +215,7 @@ impl CuredString {
 impl From<CuredString> for String {
   #[inline(always)]
   fn from(val: CuredString) -> Self {
-    // SAFETY: see definition of CuredString
-    unsafe { transmute(val) }
+    val.0
   }
 }
 

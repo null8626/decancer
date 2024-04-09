@@ -1,6 +1,6 @@
-#![allow(non_snake_case, dead_code)]
+#![allow(non_snake_case)]
 
-use std::{convert::AsRef, mem::transmute, ops::Range};
+use std::{convert::AsRef, ops::Range};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -27,7 +27,7 @@ impl CuredString {
     Match {
       start: mat.start,
       end: mat.end,
-      portion: String::from(unsafe { self.0.get_unchecked(mat) }),
+      portion: String::from(&self.0[mat]),
     }
   }
 
@@ -83,7 +83,7 @@ impl CuredString {
 
 #[wasm_bindgen]
 pub fn cure(input: &str, options: u32) -> Result<CuredString, JsError> {
-  match decancer::cure(input, unsafe { transmute(options) }) {
+  match decancer::cure(input, options.into()) {
     Ok(output) => Ok(CuredString(output)),
     Err(err) => Err(JsError::new(<decancer::Error as AsRef<str>>::as_ref(&err))),
   }

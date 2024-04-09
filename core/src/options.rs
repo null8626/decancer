@@ -1,8 +1,6 @@
 use crate::{codepoints::Codepoint, Translation};
 use paste::paste;
 use std::cmp::Ordering;
-#[cfg(feature = "options")]
-use std::mem::transmute;
 
 /// A configuration struct where you can customize decancer's behavior.
 ///
@@ -126,11 +124,10 @@ impl Options {
   }
 
   #[cfg(feature = "options")]
-  #[allow(clippy::transmute_int_to_bool)]
   pub(crate) const fn refuse_cure(self, attributes: u8) -> bool {
     let locale = attributes >> 1;
 
-    (unsafe { transmute(attributes & 1) } && self.is(2)) || (locale > 2 && self.is(locale))
+    ((attributes & 1) != 0 && self.is(2)) || (locale > 2 && self.is(locale))
   }
 
   pub(crate) const fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
@@ -158,5 +155,14 @@ impl Options {
     }
 
     None
+  }
+}
+
+#[doc(hidden)]
+#[cfg(feature = "options")]
+impl From<u32> for Options {
+  #[inline(always)]
+  fn from(value: u32) -> Self {
+    Self(value)
   }
 }

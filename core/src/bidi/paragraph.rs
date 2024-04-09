@@ -575,24 +575,27 @@ impl Paragraph {
             last.level.new_explicit_next_ltr()
           };
 
-          if new_level.is_ok() && overflow_isolate_count == 0 && overflow_embedding_count == 0 {
-            // SAFETY: new_level was already proven to be Ok
-            let new_level = unsafe { new_level.unwrap_unchecked() };
+          match (new_level, overflow_isolate_count, overflow_embedding_count) {
+            (Ok(new_level), 0, 0) => {
+              stack.push(Status {
+                level: new_level,
+                status: original_classes[idx].override_status(),
+              });
 
-            stack.push(Status {
-              level: new_level,
-              status: original_classes[idx].override_status(),
-            });
-
-            if is_isolate {
-              valid_isolate_count += 1;
-            } else {
-              levels[idx] = new_level;
+              if is_isolate {
+                valid_isolate_count += 1;
+              } else {
+                levels[idx] = new_level;
+              }
             }
-          } else if is_isolate {
-            overflow_isolate_count += 1;
-          } else if overflow_isolate_count == 0 {
-            overflow_embedding_count += 1;
+
+            _ => {
+              if is_isolate {
+                overflow_isolate_count += 1;
+              } else if overflow_isolate_count == 0 {
+                overflow_embedding_count += 1;
+              }
+            }
           }
 
           if !is_isolate {
@@ -700,8 +703,7 @@ impl Paragraph {
         .unwrap_or(start_class);
 
       let mut sequence = if start_class == Class::PDI && stack.len() > 1 {
-        // SAFETY: stack is already checked to be not empty
-        unsafe { stack.pop().unwrap_unchecked() }
+        stack.pop().unwrap()
       } else {
         Vec::with_capacity(1)
       };

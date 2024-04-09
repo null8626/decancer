@@ -64,7 +64,7 @@ pub(crate) unsafe fn get_array(
     output.push(unsafe {
       let s = input_ptr.offset(i as _);
 
-      String::from_utf8_unchecked(get((*s).string, (*s).size)?)
+      String::from_utf8(get((*s).string, (*s).size)?).unwrap()
     });
   }
 

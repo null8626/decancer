@@ -145,13 +145,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
         &[
           JValueGen::Long(result.start as _),
           JValueGen::Long(result.end as _),
-          JValueGen::Object(
-            &jni_unwrap!(
-              env,
-              env.new_string(unsafe { (*inner).get_unchecked(result) })
-            )
-            .into()
-          ),
+          JValueGen::Object(&jni_unwrap!(env, env.new_string(unsafe { &(*inner)[result] })).into()),
         ]
       )
     );
@@ -185,13 +179,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
         &[
           JValueGen::Long(result.start as _),
           JValueGen::Long(result.end as _),
-          JValueGen::Object(
-            &jni_unwrap!(
-              env,
-              env.new_string(unsafe { (*inner).get_unchecked(result) })
-            )
-            .into()
-          ),
+          JValueGen::Object(&jni_unwrap!(env, env.new_string(unsafe { &(*inner)[result] })).into()),
         ]
       )
     );

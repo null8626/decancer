@@ -52,7 +52,7 @@ pub(crate) fn find(haystack: &str, character: u32) -> Option<usize> {
     _ => return None,
   };
 
-  let regex = unsafe { REGEXES.as_slice().get_unchecked(idx as usize).as_ref() };
+  let regex = &REGEXES[idx as usize];
 
-  regex?.find(haystack).map(|mat| mat.len())
+  regex.as_ref()?.find(haystack).map(|mat| mat.len())
 }

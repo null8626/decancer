@@ -378,7 +378,7 @@ pub unsafe extern "C" fn decancer_equals_wide(
   other_size: usize,
 ) -> bool {
   utf16::get(other_str, other_size)
-    .map(|vec| unsafe { (*cured) == str::from_utf8_unchecked(&vec) })
+    .map(|vec| unsafe { (*cured) == str::from_utf8(&vec).unwrap() })
     .unwrap_or_default()
 }
 
@@ -403,7 +403,7 @@ macro_rules! comparison_fn {
         other_size: usize,
       ) -> bool {
         utf16::get(other_str, other_size)
-          .map(|vec| unsafe { (*cured).$name(str::from_utf8_unchecked(&vec)) })
+          .map(|vec| unsafe { (*cured).$name(str::from_utf8(&vec).unwrap()) })
           .unwrap_or_default()
       }
     }
