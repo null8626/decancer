@@ -70,7 +70,6 @@ impl CuredString {
     let mut char_diff = 0isize;
 
     for mat in matches {
-      // SAFETY: mat is always within the mat of self
       let chars = original[mat.clone()].chars().count();
       let mut with_str = String::with_capacity(chars);
 
