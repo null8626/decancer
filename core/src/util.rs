@@ -70,7 +70,7 @@ macro_rules! numbered_enum {
     $enum_vis enum $enum_name {
       $($enum_prop = $enum_prop_value,)*
     }
-    
+
     impl From<$enum_type> for $enum_name {
       fn from(value: $enum_type) -> Self {
         match value {

@@ -1,5 +1,5 @@
-use crate::util::{read_u16_le, read_u32_le, numbered_enum, CODEPOINT_MASK};
 use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
+use crate::util::{numbered_enum, read_u16_le, read_u32_le, CODEPOINT_MASK};
 
 numbered_enum! {
   #[allow(dead_code)]
