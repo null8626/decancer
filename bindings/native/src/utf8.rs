@@ -21,9 +21,7 @@ pub(crate) fn get(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static 
     input_size = input_ptr.size;
   }
 
-  str::from_utf8(unsafe {slice::from_raw_parts(
-    input_ptr, input_size,
-  )}).ok()
+  str::from_utf8(unsafe { slice::from_raw_parts(input_ptr, input_size) }).ok()
 }
 
 pub(crate) unsafe fn get_array(
