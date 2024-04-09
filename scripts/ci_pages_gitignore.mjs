@@ -21,7 +21,7 @@ const gitignore = (await readFile(join(ROOT_DIR, '.gitignore')))
 const rootFiles = await readdir(ROOT_DIR)
 
 function isNotExcluded(fullPath) {
-  return (
+  return 
     fullPath === join(ROOT_DIR, 'index.html') ||
     (fullPath.startsWith(join(ROOT_DIR, 'bindings/wasm/bin/')))
 }
