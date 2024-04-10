@@ -433,8 +433,6 @@ macro_rules! cure {
 #[macro_export]
 macro_rules! format {
   ($string:expr) => {
-    $crate::cure($string, $crate::Options::formatter())
-      .unwrap()
-      .into::<String>()
+    String::from($crate::cure($string, $crate::Options::formatter()).unwrap())
   };
 }
