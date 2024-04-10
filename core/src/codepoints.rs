@@ -3,15 +3,15 @@ use crate::Options;
 use crate::{
   similar::SIMILAR_START,
   translation::Translation,
-  util::{read_u16_le, read_u32_le, CODEPOINT_MASK},
+  util::{Binary, CODEPOINT_MASK},
 };
 use std::cmp::Ordering;
 
-pub(crate) const CODEPOINTS: *const u8 = include_bytes!("../bin/codepoints.bin").as_ptr();
+pub(crate) const CODEPOINTS: Binary<'static> = Binary::new(include_bytes!("../bin/codepoints.bin"));
 
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 6) - 1;
-pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = read_u16_le(CODEPOINTS);
+pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);
 pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 6) - 1;
 
 const RANGE_MASK: u32 = 0x0800_0000;
@@ -46,13 +46,11 @@ impl Codepoint {
   }
 
   pub(crate) const fn at(offset: i32) -> Self {
-    unsafe {
-      Self(
-        read_u32_le(CODEPOINTS.offset(offset as _)),
-        *CODEPOINTS.offset((4 + offset) as _),
-        *CODEPOINTS.offset((5 + offset) as _),
-      )
-    }
+    Self(
+      CODEPOINTS.u32_at(offset as _),
+      CODEPOINTS.at((4 + offset) as _),
+      CODEPOINTS.at((5 + offset) as _),
+    )
   }
 
   pub(crate) const fn matches(
@@ -80,7 +78,7 @@ impl Codepoint {
     Some(Ordering::Equal)
   }
 
-  pub(crate) const fn translation(self, other: u32) -> Translation {
+  pub(crate) fn translation(self, other: u32) -> Translation {
     if self.is_string_translation() {
       Translation::string(self.0, self.1)
     } else {

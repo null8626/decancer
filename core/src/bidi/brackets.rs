@@ -1,5 +1,5 @@
 use super::{BIDI, BIDI_BRACKETS_COUNT};
-use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
+use crate::util::CODEPOINT_MASK;
 
 pub(crate) struct BracketPair {
   pub(crate) start: usize,
@@ -30,11 +30,10 @@ impl OpeningBracket {
 
     while start <= end {
       let mid = (start + end) / 2;
-      let offset = (4 + (mid * 5)) as isize;
+      let offset = (4 + (mid * 5)) as _;
 
-      let first = read_u32_le(unsafe { BIDI.offset(offset) });
-      let opening =
-        ((read_u16_le(unsafe { BIDI.offset(offset + 4) }) as u32) << 8) | ((first >> 20) & 0xff);
+      let first = BIDI.u32_at(offset);
+      let opening = ((BIDI.u16_at(offset + 4) as u32) << 8) | ((first >> 20) & 0xff);
 
       let diff = (first >> 28) & 7;
 

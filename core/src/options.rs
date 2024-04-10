@@ -130,7 +130,7 @@ impl Options {
     ((attributes & 1) != 0 && self.is(2)) || (locale > 2 && self.is(locale))
   }
 
-  pub(crate) const fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
+  pub(crate) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
     let mut start = 0;
 
     while start <= end {

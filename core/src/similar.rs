@@ -1,13 +1,10 @@
 #[cfg(feature = "leetspeak")]
 use crate::leetspeak;
-use crate::{
-  codepoints::CODEPOINTS,
-  util::{read_u16_le, unwrap_or_ret},
-};
+use crate::{codepoints::CODEPOINTS, util::unwrap_or_ret};
 use std::{iter::FusedIterator, ops::Range, str::Chars};
 
-pub(crate) const SIMILAR_START: u16 = read_u16_le(unsafe { CODEPOINTS.offset(2) });
-pub(crate) const SIMILAR_END: u16 = read_u16_le(unsafe { CODEPOINTS.offset(4) });
+pub(crate) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
+pub(crate) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
 
 pub(crate) fn is(self_char: char, other_char: char) -> bool {
   let self_char = self_char.to_lowercase().next().unwrap() as u32;
@@ -20,7 +17,7 @@ pub(crate) fn is(self_char: char, other_char: char) -> bool {
     let mut contains_b = false;
 
     for offset in SIMILAR_START..SIMILAR_END {
-      let cur = unsafe { *(CODEPOINTS.offset(offset as _)) };
+      let cur = CODEPOINTS.at(offset as _);
       let sim = cur & 0x7f;
 
       if sim == (self_char as u8) {

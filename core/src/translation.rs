@@ -9,9 +9,8 @@ use std::{
   borrow::Cow,
   cmp::PartialEq,
   fmt::{self, Debug, Display},
-  mem::transmute,
   ops::AddAssign,
-  slice, str,
+  str,
 };
 
 /// The translation for a single character/codepoint.
@@ -27,21 +26,19 @@ pub enum Translation {
 }
 
 impl Translation {
-  pub(crate) const fn string(integer: u32, second_byte: u8) -> Self {
-    unsafe {
-      let string = str::from_utf8_unchecked(slice::from_raw_parts(
-        CODEPOINTS.offset(
-          (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
-        ),
+  pub(crate) fn string(integer: u32, second_byte: u8) -> Self {
+    Self::String(Cow::Borrowed(
+      str::from_utf8(CODEPOINTS.sliced(
+        (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
         ((integer >> 23) & 0x1f) as _,
-      ));
-
-      Self::String(Cow::Borrowed(string))
-    }
+      ))
+      .unwrap(),
+    ))
   }
 
-  pub(crate) const fn character(code: u32) -> Self {
-    Self::Character(unsafe { transmute(code) })
+  #[inline(always)]
+  pub(crate) fn character(code: u32) -> Self {
+    Self::Character(char::from_u32(code).unwrap())
   }
 
   #[cfg(feature = "options")]

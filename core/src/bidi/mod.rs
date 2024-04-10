@@ -1,12 +1,12 @@
 mod class;
 
-use crate::util::read_u16_le;
+use crate::util::Binary;
 pub(crate) use class::Class;
 
-const BIDI: *const u8 = include_bytes!("../../bin/bidi.bin").as_ptr();
+const BIDI: Binary<'static> = Binary::new(include_bytes!("../../bin/bidi.bin"));
 
-const BIDI_DICTIONARY_OFFSET: u16 = read_u16_le(BIDI);
-const BIDI_DICTIONARY_COUNT: u16 = unsafe { read_u16_le(BIDI.offset(2)) };
+const BIDI_DICTIONARY_OFFSET: u16 = BIDI.u16_at(0);
+const BIDI_DICTIONARY_COUNT: u16 = BIDI.u16_at(2);
 const BIDI_BRACKETS_COUNT: u16 = ((BIDI_DICTIONARY_OFFSET - 4) / 5) - 1;
 
 mod brackets;
