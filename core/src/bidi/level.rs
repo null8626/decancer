@@ -1,4 +1,4 @@
-use super::class::{self, Class};
+use super::Class;
 use crate::Error;
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -66,9 +66,9 @@ impl Level {
 
   pub(crate) const fn class(self) -> Class {
     if self.is_ltr() {
-      class::L
+      Class::L
     } else {
-      class::R
+      Class::R
     }
   }
 
