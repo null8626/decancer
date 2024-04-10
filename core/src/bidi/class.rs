@@ -8,6 +8,7 @@ macro_rules! class_constants {
 }
 
 #[derive(Copy, Clone, PartialEq)]
+#[cfg_attr(test, derive(Debug))]
 pub(crate) struct Class(u8);
 
 class_constants! {
