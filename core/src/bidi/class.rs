@@ -1,34 +1,38 @@
 use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
-use crate::util::{numbered_enum, read_u16_le, read_u32_le, CODEPOINT_MASK};
+use crate::util::{read_u16_le, read_u32_le, CODEPOINT_MASK};
 
-numbered_enum! {
-  #[allow(dead_code)]
-  #[cfg_attr(test, derive(Debug))]
-  #[derive(Copy, Clone, PartialEq)]
-  pub(crate) enum Class: u8 {
-    B = 0,
-    S = 1,
-    WS = 2,
-    ON = 3,
-    ET = 4,
-    ES = 5,
-    CS = 6,
-    EN = 7,
-    L = 8,
-    BN = 9,
-    R = 10,
-    AN = 11,
-    AL = 12,
-    LRE = 13,
-    RLE = 14,
-    PDF = 15,
-    LRO = 16,
-    RLO = 17,
-    LRI = 18,
-    RLI = 19,
-    FSI = 20,
-    PDI = 21,
-  }
+macro_rules! class_constants {
+  ($($name:ident: $value:literal,)*) => {
+    $(pub(crate) const $name: Class = Class($value);)*
+  };
+}
+
+#[derive(Copy, Clone, PartialEq)]
+pub(crate) struct Class(u8);
+
+class_constants! {
+  B: 0,
+  S: 1,
+  WS: 2,
+  ON: 3,
+  ET: 4,
+  ES: 5,
+  CS: 6,
+  EN: 7,
+  L: 8,
+  BN: 9,
+  R: 10,
+  AN: 11,
+  AL: 12,
+  LRE: 13,
+  RLE: 14,
+  PDF: 15,
+  LRO: 16,
+  RLO: 17,
+  LRI: 18,
+  RLI: 19,
+  FSI: 20,
+  PDI: 21,
 }
 
 impl Class {
@@ -49,7 +53,7 @@ impl Class {
       } else if code > (other + read_u16_le(unsafe { BIDI.offset(offset + 4) }) as u32) {
         start = mid + 1;
       } else {
-        return Some(((kv >> 20) as u8).into());
+        return Some(Self((kv >> 20) as _));
       }
     }
 
@@ -57,30 +61,27 @@ impl Class {
   }
 
   pub(crate) const fn is_neutral_or_isolate(self) -> bool {
-    matches!(self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
+    matches!(self, B | S | WS | ON | PDI) || self.is_isolate()
   }
 
   pub(crate) const fn is_rtl(self) -> bool {
-    matches!(self, Self::RLE | Self::RLO | Self::RLI)
+    matches!(self, RLE | RLO | RLI)
   }
 
   pub(crate) const fn is_isolate(self) -> bool {
-    matches!(self, Self::RLI | Self::LRI | Self::FSI)
+    matches!(self, RLI | LRI | FSI)
   }
 
   pub(crate) const fn override_status(self) -> OverrideStatus {
     match self {
-      Self::RLO => OverrideStatus::RTL,
-      Self::LRO => OverrideStatus::LTR,
-      Self::RLI | Self::LRI | Self::FSI => OverrideStatus::Isolate,
+      RLO => OverrideStatus::RTL,
+      LRO => OverrideStatus::LTR,
+      RLI | LRI | FSI => OverrideStatus::Isolate,
       _ => OverrideStatus::Neutral,
     }
   }
 
   pub(crate) const fn removed_by_x9(self) -> bool {
-    matches!(
-      self,
-      Self::RLE | Self::LRE | Self::RLO | Self::LRO | Self::PDF | Self::BN
-    )
+    matches!(self, RLE | LRE | RLO | LRO | PDF | BN)
   }
 }

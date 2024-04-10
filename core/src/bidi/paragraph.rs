@@ -1,4 +1,7 @@
-use super::{BracketPair, Class, Level, OpeningBracket};
+use super::{
+  class::{self, Class},
+  BracketPair, Level, OpeningBracket,
+};
 use crate::{util, Error};
 use std::{
   cmp::{max, min},
@@ -37,7 +40,7 @@ impl IsolatingRunSequence {
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
       for i in level_run.clone() {
-        if processing_classes[i] == Class::BN {
+        if processing_classes[i] == class::BN {
           bn_run_indices.push(i);
           continue;
         }
@@ -45,33 +48,33 @@ impl IsolatingRunSequence {
         let w2_processing_class = processing_classes[i];
 
         match processing_classes[i] {
-          Class::EN => {
+          class::EN => {
             if last_strong_is_al {
-              processing_classes[i] = Class::AN;
+              processing_classes[i] = class::AN;
             }
           }
-          Class::AL => processing_classes[i] = Class::R,
+          class::AL => processing_classes[i] = class::R,
           _ => {}
         };
 
         match w2_processing_class {
-          Class::L | Class::R => last_strong_is_al = false,
-          Class::AL => last_strong_is_al = true,
+          class::L | class::R => last_strong_is_al = false,
+          class::AL => last_strong_is_al = true,
           _ => {}
         };
 
         let class_before_w456 = processing_classes[i];
 
         match processing_classes[i] {
-          Class::EN => {
+          class::EN => {
             for j in &et_run_indices {
-              processing_classes[*j] = Class::EN;
+              processing_classes[*j] = class::EN;
             }
 
             et_run_indices.clear();
           }
 
-          Class::ES | Class::CS => {
+          class::ES | class::CS => {
             if let Some(character) = text.get(i..).and_then(|x| x.chars().next()) {
               let char_len = character.len_utf8();
 
@@ -81,36 +84,36 @@ impl IsolatingRunSequence {
                 .find(|x| !x.removed_by_x9())
                 .unwrap_or(self.end_class);
 
-              if next_class == Class::EN && last_strong_is_al {
-                next_class = Class::AN;
+              if next_class == class::EN && last_strong_is_al {
+                next_class = class::AN;
               }
 
               processing_classes[i] =
                 match (prev_class_before_w4, processing_classes[i], next_class) {
-                  (Class::EN, Class::ES, Class::EN) | (Class::EN, Class::CS, Class::EN) => {
-                    Class::EN
+                  (class::EN, class::ES, class::EN) | (class::EN, class::CS, class::EN) => {
+                    class::EN
                   }
-                  (Class::AN, Class::CS, Class::AN) => Class::AN,
-                  _ => Class::ON,
+                  (class::AN, class::CS, class::AN) => class::AN,
+                  _ => class::ON,
                 };
 
-              if processing_classes[i] == Class::ON {
+              if processing_classes[i] == class::ON {
                 for idx in self.iter_backwards_from(i, run_index) {
                   let class = &mut processing_classes[idx];
-                  if *class != Class::BN {
+                  if *class != class::BN {
                     break;
                   }
 
-                  *class = Class::ON;
+                  *class = class::ON;
                 }
 
                 for idx in self.iter_forwards_from(i + char_len, run_index) {
                   let class = &mut processing_classes[idx];
-                  if *class != Class::BN {
+                  if *class != class::BN {
                     break;
                   }
 
-                  *class = Class::ON;
+                  *class = class::ON;
                 }
               }
             } else {
@@ -118,8 +121,8 @@ impl IsolatingRunSequence {
             }
           }
 
-          Class::ET => match prev_class_before_w5 {
-            Class::EN => processing_classes[i] = Class::EN,
+          class::ET => match prev_class_before_w5 {
+            class::EN => processing_classes[i] = class::EN,
             _ => {
               et_run_indices.extend(&bn_run_indices);
               et_run_indices.push(i);
@@ -131,9 +134,9 @@ impl IsolatingRunSequence {
         bn_run_indices.clear();
         prev_class_before_w5 = processing_classes[i];
 
-        if prev_class_before_w5 != Class::ET {
+        if prev_class_before_w5 != class::ET {
           for j in &et_run_indices {
-            processing_classes[*j] = Class::ON;
+            processing_classes[*j] = class::ON;
           }
 
           et_run_indices.clear();
@@ -144,18 +147,18 @@ impl IsolatingRunSequence {
     }
 
     for j in &et_run_indices {
-      processing_classes[*j] = Class::ON;
+      processing_classes[*j] = class::ON;
     }
 
     et_run_indices.clear();
 
-    let mut last_strong_is_l = self.start_class == Class::L;
+    let mut last_strong_is_l = self.start_class == class::L;
 
     for i in self.runs.iter().cloned().flatten() {
       match processing_classes[i] {
-        Class::EN if last_strong_is_l => processing_classes[i] = Class::L,
-        Class::L => last_strong_is_l = true,
-        Class::R | Class::AL => last_strong_is_l = false,
+        class::EN if last_strong_is_l => processing_classes[i] = class::L,
+        class::L => last_strong_is_l = true,
+        class::R | class::AL => last_strong_is_l = false,
         _ => {}
       };
     }
@@ -173,7 +176,7 @@ impl IsolatingRunSequence {
       for (i, ch) in util::sliced(text, level_run.clone()).char_indices() {
         let actual_index = level_run.start + i;
 
-        if original_classes[actual_index] != Class::ON {
+        if original_classes[actual_index] != class::ON {
           continue;
         }
 
@@ -215,7 +218,7 @@ impl IsolatingRunSequence {
   ) {
     let e = levels[self.runs[0].start].class();
 
-    let not_e = if e == Class::L { Class::R } else { Class::L };
+    let not_e = if e == class::L { class::R } else { class::L };
 
     for pair in self.identify_bracket_pairs(text, processing_classes) {
       let mut found_e = false;
@@ -239,8 +242,8 @@ impl IsolatingRunSequence {
           found_e = true;
         } else if class == not_e {
           found_not_e = true;
-        } else if matches!(class, Class::EN | Class::AN) {
-          if e == Class::L {
+        } else if matches!(class, class::EN | class::AN) {
+          if e == class::L {
             found_not_e = true;
           } else {
             found_e = true;
@@ -258,11 +261,11 @@ impl IsolatingRunSequence {
         let mut previous_strong = self
           .iter_backwards_from(pair.start, pair.start_run)
           .map(|i| processing_classes[i])
-          .find(|class| matches!(class, Class::L | Class::R | Class::EN | Class::AN))
+          .find(|&class| matches!(class, class::L | class::R | class::EN | class::AN))
           .unwrap_or(self.start_class);
 
-        if matches!(previous_strong, Class::EN | Class::AN) {
-          previous_strong = Class::R;
+        if matches!(previous_strong, class::EN | class::AN) {
+          previous_strong = class::R;
         }
 
         class_to_set = Some(previous_strong);
@@ -286,7 +289,7 @@ impl IsolatingRunSequence {
         for idx in self.iter_backwards_from(pair.start, pair.start_run) {
           let class = &mut processing_classes[idx];
 
-          if *class != Class::BN {
+          if *class != class::BN {
             break;
           }
 
@@ -296,7 +299,7 @@ impl IsolatingRunSequence {
         let nsm_start = pair.start + start_char_len;
 
         for idx in self.iter_forwards_from(nsm_start, pair.start_run) {
-          if processing_classes[idx] == Class::BN {
+          if processing_classes[idx] == class::BN {
             processing_classes[idx] = class_to_set;
           } else {
             break;
@@ -306,7 +309,7 @@ impl IsolatingRunSequence {
         let nsm_end = pair.end + end_char_len;
 
         for idx in self.iter_forwards_from(nsm_end, pair.end_run) {
-          if processing_classes[idx] == Class::BN {
+          if processing_classes[idx] == class::BN {
             processing_classes[idx] = class_to_set;
           } else {
             break;
@@ -321,7 +324,7 @@ impl IsolatingRunSequence {
     while let Some(mut i) = indices.next() {
       let mut ni_run = Vec::new();
 
-      if processing_classes[i].is_neutral_or_isolate() || processing_classes[i] == Class::BN {
+      if processing_classes[i].is_neutral_or_isolate() || processing_classes[i] == class::BN {
         ni_run.push(i);
         let mut next_class;
 
@@ -331,7 +334,7 @@ impl IsolatingRunSequence {
               i = j;
               next_class = processing_classes[j];
 
-              if next_class.is_neutral_or_isolate() || next_class == Class::BN {
+              if next_class.is_neutral_or_isolate() || next_class == class::BN {
                 ni_run.push(i);
               } else {
                 break;
@@ -346,16 +349,16 @@ impl IsolatingRunSequence {
         }
 
         let new_class = match (prev_class, next_class) {
-          (Class::L, Class::L) => Class::L,
-          (Class::R, Class::R)
-          | (Class::R, Class::AN)
-          | (Class::R, Class::EN)
-          | (Class::AN, Class::R)
-          | (Class::AN, Class::AN)
-          | (Class::AN, Class::EN)
-          | (Class::EN, Class::R)
-          | (Class::EN, Class::AN)
-          | (Class::EN, Class::EN) => Class::R,
+          (class::L, class::L) => class::L,
+          (class::R, class::R)
+          | (class::R, class::AN)
+          | (class::R, class::EN)
+          | (class::AN, class::R)
+          | (class::AN, class::AN)
+          | (class::AN, class::EN)
+          | (class::EN, class::R)
+          | (class::EN, class::AN)
+          | (class::EN, class::EN) => class::R,
           _ => e,
         };
 
@@ -431,7 +434,7 @@ impl Paragraph {
 
     for (i, c) in text.char_indices() {
       match original_classes[i] {
-        Class::B | Class::S => {
+        class::B | class::S => {
           reset_to = Some(i + c.len_utf8());
 
           if reset_from.is_none() {
@@ -439,13 +442,13 @@ impl Paragraph {
           }
         }
 
-        Class::WS | Class::FSI | Class::LRI | Class::RLI | Class::PDI => {
+        class::WS | class::FSI | class::LRI | class::RLI | class::PDI => {
           if reset_from.is_none() {
             reset_from = Some(i);
           }
         }
 
-        Class::RLE | Class::LRE | Class::RLO | Class::LRO | Class::PDF | Class::BN => {
+        class::RLE | class::LRE | class::RLO | class::LRO | class::PDF | class::BN => {
           if reset_from.is_none() {
             reset_from = Some(i);
           }
@@ -549,13 +552,13 @@ impl Paragraph {
       let current_class = original_classes[idx];
 
       match current_class {
-        Class::RLE
-        | Class::LRE
-        | Class::RLO
-        | Class::LRO
-        | Class::RLI
-        | Class::LRI
-        | Class::FSI => {
+        class::RLE
+        | class::LRE
+        | class::RLO
+        | class::LRO
+        | class::RLI
+        | class::LRI
+        | class::FSI => {
           let last = stack.last().unwrap();
           levels[idx] = last.level;
 
@@ -563,8 +566,8 @@ impl Paragraph {
 
           if is_isolate {
             match last.status {
-              OverrideStatus::RTL => processing_classes[idx] = Class::R,
-              OverrideStatus::LTR => processing_classes[idx] = Class::L,
+              OverrideStatus::RTL => processing_classes[idx] = class::R,
+              OverrideStatus::LTR => processing_classes[idx] = class::L,
               _ => {}
             }
           }
@@ -599,11 +602,11 @@ impl Paragraph {
           }
 
           if !is_isolate {
-            processing_classes[idx] = Class::BN;
+            processing_classes[idx] = class::BN;
           }
         }
 
-        Class::PDI => {
+        class::PDI => {
           if overflow_isolate_count > 0 {
             overflow_isolate_count -= 1;
           } else if valid_isolate_count > 0 {
@@ -625,13 +628,13 @@ impl Paragraph {
           levels[idx] = last.level;
 
           match last.status {
-            OverrideStatus::RTL => processing_classes[idx] = Class::R,
-            OverrideStatus::LTR => processing_classes[idx] = Class::L,
+            OverrideStatus::RTL => processing_classes[idx] = class::R,
+            OverrideStatus::LTR => processing_classes[idx] = class::L,
             _ => {}
           }
         }
 
-        Class::PDF => {
+        class::PDF => {
           if overflow_isolate_count <= 0 {
             if overflow_embedding_count > 0 {
               overflow_embedding_count -= 1;
@@ -641,19 +644,19 @@ impl Paragraph {
           }
 
           levels[idx] = stack.last().unwrap().level;
-          processing_classes[idx] = Class::BN;
+          processing_classes[idx] = class::BN;
         }
 
-        Class::B => {}
+        class::B => {}
 
         _ => {
           let last = stack.last().unwrap();
           levels[idx] = last.level;
 
-          if current_class != Class::BN {
+          if current_class != class::BN {
             match last.status {
-              OverrideStatus::RTL => processing_classes[idx] = Class::R,
-              OverrideStatus::LTR => processing_classes[idx] = Class::L,
+              OverrideStatus::RTL => processing_classes[idx] = class::R,
+              OverrideStatus::LTR => processing_classes[idx] = class::L,
               _ => {}
             }
           }
@@ -702,7 +705,7 @@ impl Paragraph {
         .find(|x| !x.removed_by_x9())
         .unwrap_or(start_class);
 
-      let mut sequence = if start_class == Class::PDI && stack.len() > 1 {
+      let mut sequence = if start_class == class::PDI && stack.len() > 1 {
         stack.pop().unwrap()
       } else {
         Vec::with_capacity(1)
@@ -722,8 +725,8 @@ impl Paragraph {
     sequences.into_iter().map(move |sequence| {
       let mut result = IsolatingRunSequence {
         runs: sequence,
-        start_class: Class::L,
-        end_class: Class::L,
+        start_class: class::L,
+        end_class: class::L,
       };
 
       let sequence_start = result.runs[0].start;
@@ -753,7 +756,7 @@ impl Paragraph {
         .copied()
         .rev()
         .find(|x| !x.removed_by_x9())
-        .unwrap_or(Class::BN);
+        .unwrap_or(class::BN);
 
       let succeeding_level = if last_non_removed.is_isolate() {
         self.level
