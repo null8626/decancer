@@ -604,7 +604,7 @@ jobs:
           message: 'chore: update files'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update .gitignore for GitHub pages
+      - name: Update .gitignore for GitHub Pages
         shell: bash
         run: node scripts/ci_pages_gitignore.mjs
       - name: Deploy to GitHub Pages
