@@ -14,10 +14,7 @@ mod tests;
 mod translation;
 mod util;
 
-use bidi::{
-  class::{self, Class},
-  Level, Paragraph,
-};
+use bidi::{Class, Level, Paragraph};
 pub use options::Options;
 pub use similar::Matcher;
 pub use string::CuredString;
@@ -146,7 +143,7 @@ pub fn cure_char<C: Into<u32>>(code: C, options: Options) -> Translation {
     Translation::None
   } else {
     match Class::new(code) {
-      Some(class::WS) => Translation::character(if code > 0x7f { 0x20 } else { code }),
+      Some(Class::WS) => Translation::character(if code > 0x7f { 0x20 } else { code }),
       None => Translation::None,
       _ => cure_char_inner(code, options),
     }
@@ -208,7 +205,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
 
     if !is_none(codepoint) {
       if let Some(class) = Class::new(codepoint) {
-        if class == class::WS && codepoint > 0x7f {
+        if class == Class::WS && codepoint > 0x7f {
           character_len = 1;
           codepoint = 0x20;
         }
@@ -216,7 +213,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
         original_classes.resize(original_classes.len() + character_len, class);
 
         match class {
-          class::B => {
+          Class::B => {
             let paragraph_end = idx + character_len;
 
             paragraphs.push(Paragraph {
@@ -231,18 +228,18 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
             paragraph_level = None;
           }
 
-          class::L | class::R | class::AL => {
-            if class != class::L {
+          Class::L | Class::R | Class::AL => {
+            if class != Class::L {
               pure_ltr = false;
             }
 
             match isolate_stack.last() {
               Some(&start_idx) => {
-                if original_classes[start_idx] == class::FSI {
-                  let new_class = if class == class::L {
-                    class::LRI
+                if original_classes[start_idx] == Class::FSI {
+                  let new_class = if class == Class::L {
+                    Class::LRI
                   } else {
-                    class::RLI
+                    Class::RLI
                   };
 
                   for j in 0..3 {
@@ -253,7 +250,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
 
               None => {
                 if paragraph_level.is_none() {
-                  paragraph_level.replace(if class == class::L {
+                  paragraph_level.replace(if class == Class::L {
                     Level::ltr()
                   } else {
                     Level::rtl()
@@ -263,16 +260,16 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
             }
           }
 
-          class::AN | class::LRE | class::RLE | class::LRO | class::RLO => {
+          Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
             pure_ltr = false;
           }
 
-          class::RLI | class::LRI | class::FSI => {
+          Class::RLI | Class::LRI | Class::FSI => {
             pure_ltr = false;
             isolate_stack.push(idx);
           }
 
-          class::PDI => {
+          Class::PDI => {
             isolate_stack.pop();
           }
 
@@ -322,8 +319,8 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
 
       for j in 0..levels.len() {
         match (levels[j].is_rtl(), processing_classes[j]) {
-          (false, class::AN) | (false, class::EN) => levels[j].raise(2)?,
-          (false, class::R) | (true, class::L) | (true, class::EN) | (true, class::AN) => {
+          (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
+          (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
             levels[j].raise(1)?
           }
           _ => {}

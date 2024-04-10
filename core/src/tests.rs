@@ -1,7 +1,6 @@
 use crate::{
   bidi::{IsolatingRunSequence, Paragraph},
-  class::{self, Class},
-  CuredString, Level, Matcher, Options,
+  Class, CuredString, Level, Matcher, Options,
 };
 use proptest::prelude::*;
 use std::ops::Range;
@@ -118,38 +117,38 @@ fn similar_leetspeak() {
 
 #[test]
 fn bidi_class() {
-  assert_eq!(Class::new(0x0000), Some(class::BN));
-  assert_eq!(Class::new(0x0040), Some(class::ON));
-  assert_eq!(Class::new(0x0041), Some(class::L));
-  assert_eq!(Class::new(0x0062), Some(class::L));
-  assert_eq!(Class::new(0x007f), Some(class::BN));
+  assert_eq!(Class::new(0x0000), Some(Class::BN));
+  assert_eq!(Class::new(0x0040), Some(Class::ON));
+  assert_eq!(Class::new(0x0041), Some(Class::L));
+  assert_eq!(Class::new(0x0062), Some(Class::L));
+  assert_eq!(Class::new(0x007f), Some(Class::BN));
 
-  assert_eq!(Class::new(0x05d0), Some(class::R));
-  assert_eq!(Class::new(0x05d1), Some(class::R));
+  assert_eq!(Class::new(0x05d0), Some(Class::R));
+  assert_eq!(Class::new(0x05d1), Some(Class::R));
 
-  assert_eq!(Class::new(0x0600), Some(class::AN));
-  assert_eq!(Class::new(0x0627), Some(class::AL));
+  assert_eq!(Class::new(0x0600), Some(Class::AN));
+  assert_eq!(Class::new(0x0627), Some(Class::AL));
 
-  assert_eq!(Class::new(0x07c0), Some(class::R));
-  assert_eq!(Class::new(0x0860), Some(class::AL));
-  assert_eq!(Class::new(0x08a0), Some(class::AL));
+  assert_eq!(Class::new(0x07c0), Some(Class::R));
+  assert_eq!(Class::new(0x0860), Some(Class::AL));
+  assert_eq!(Class::new(0x08a0), Some(Class::AL));
   assert_eq!(Class::new(0x089f), None);
   assert_eq!(Class::new(0x08ff), None);
 
-  assert_eq!(Class::new(0x20a0), Some(class::ET));
+  assert_eq!(Class::new(0x20a0), Some(Class::ET));
 
-  assert_eq!(Class::new(0xfb1d), Some(class::R));
-  assert_eq!(Class::new(0xfb4f), Some(class::R));
-  assert_eq!(Class::new(0xfb50), Some(class::AL));
-  assert_eq!(Class::new(0xfdf0), Some(class::AL));
-  assert_eq!(Class::new(0xfe70), Some(class::AL));
-  assert_eq!(Class::new(0xfeff), Some(class::BN));
+  assert_eq!(Class::new(0xfb1d), Some(Class::R));
+  assert_eq!(Class::new(0xfb4f), Some(Class::R));
+  assert_eq!(Class::new(0xfb50), Some(Class::AL));
+  assert_eq!(Class::new(0xfdf0), Some(Class::AL));
+  assert_eq!(Class::new(0xfe70), Some(Class::AL));
+  assert_eq!(Class::new(0xfeff), Some(Class::BN));
 
-  assert_eq!(Class::new(0x10800), Some(class::R));
-  assert_eq!(Class::new(0x1e800), Some(class::R));
-  assert_eq!(Class::new(0x1ee00), Some(class::AL));
+  assert_eq!(Class::new(0x10800), Some(Class::R));
+  assert_eq!(Class::new(0x1e800), Some(Class::R));
+  assert_eq!(Class::new(0x1ee00), Some(Class::AL));
 
-  assert_eq!(Class::new(0x30000), Some(class::L));
+  assert_eq!(Class::new(0x30000), Some(Class::L));
 }
 
 fn irs_sorted(
@@ -199,7 +198,7 @@ fn test_irs(
 fn isolating_run_sequences() {
   macro_rules! classes {
     ($($rest:tt),*) => {
-      &[$(class::$rest),*]
+      &[$(Class::$rest),*]
     }
   }
 
@@ -221,8 +220,8 @@ fn isolating_run_sequences() {
     )*) => {
       &[$(IsolatingRunSequence {
         runs: vec![$($start..$end),*],
-        start_class: class::$sos,
-        end_class: class::$eos,
+        start_class: Class::$sos,
+        end_class: Class::$eos,
       },)*]
     }
   }
