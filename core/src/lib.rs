@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 #![allow(clippy::upper_case_acronyms)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![forbid(unsafe_code)]
 
 mod bidi;
 mod codepoints;
@@ -434,6 +435,6 @@ macro_rules! format {
   ($string:expr) => {
     $crate::cure($string, $crate::Options::formatter())
       .unwrap()
-      .into()
+      .into::<String>()
   };
 }

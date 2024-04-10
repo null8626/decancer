@@ -5,12 +5,37 @@ use std::{
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
-pub(crate) const fn read_u32_le(ptr: *const u8) -> u32 {
-  unsafe { u32::from_le_bytes([*ptr, *ptr.offset(1), *ptr.offset(2), *ptr.offset(3)]) }
+#[derive(Copy, Clone)]
+pub(crate) struct Binary<'a> {
+  bytes: &'a [u8],
 }
 
-pub(crate) const fn read_u16_le(ptr: *const u8) -> u16 {
-  unsafe { u16::from_le_bytes([*ptr, *ptr.offset(1)]) }
+impl<'a> Binary<'a> {
+  pub(crate) const fn new(bytes: &'a [u8]) -> Self {
+    Self { bytes }
+  }
+
+  pub(crate) const fn at(self, offset: usize) -> u8 {
+    self.bytes[offset]
+  }
+
+  #[inline(always)]
+  pub(crate) fn sliced(self, offset: usize, size: usize) -> &'a [u8] {
+    &self.bytes[offset..offset + size]
+  }
+
+  pub(crate) const fn u16_at(self, offset: usize) -> u16 {
+    u16::from_le_bytes([self.at(offset), self.at(offset + 1)])
+  }
+
+  pub(crate) const fn u32_at(self, offset: usize) -> u32 {
+    u32::from_le_bytes([
+      self.at(offset),
+      self.at(offset + 1),
+      self.at(offset + 2),
+      self.at(offset + 3),
+    ])
+  }
 }
 
 #[inline(always)]

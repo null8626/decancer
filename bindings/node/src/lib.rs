@@ -1,4 +1,4 @@
-#![allow(clippy::inherent_to_string)]
+#![forbid(unsafe_code)]
 
 #[macro_use]
 extern crate napi_derive;
@@ -30,18 +30,18 @@ macro_rules! options {
       )*
     }
 
-    impl Into<u32> for Options {
-      fn into(self) -> u32 {
+    impl From<Options> for u32 {
+      fn from(value: Options) -> u32 {
         let mut options = 0;
 
         $(
-          if self.$key_name.unwrap_or_default() {
+          if value.$key_name.unwrap_or_default() {
             options |= (1 << $key_idx);
           }
         )*
 
         $(
-          if self.$override_name.unwrap_or_default() {
+          if value.$override_name.unwrap_or_default() {
             options = $override_value;
           }
         )*
@@ -129,7 +129,7 @@ impl CuredString {
   pub fn find_multiple(&self, other: Vec<String>) -> Vec<Match> {
     self
       .0
-      .find_multiple(&other)
+      .find_multiple(other)
       .into_iter()
       .map(|mat| self.new_match(mat))
       .collect()

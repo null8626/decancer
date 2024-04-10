@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![forbid(unsafe_code)]
 
 use std::{convert::AsRef, ops::Range};
 use wasm_bindgen::prelude::*;

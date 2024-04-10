@@ -1,5 +1,5 @@
 use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
-use crate::util::{numbered_enum, read_u16_le, read_u32_le, CODEPOINT_MASK};
+use crate::util::{numbered_enum, CODEPOINT_MASK};
 
 numbered_enum! {
   #[allow(dead_code)]
@@ -38,15 +38,14 @@ impl Class {
 
     while start <= end {
       let mid = (start + end) / 2;
-      let offset = ((BIDI_DICTIONARY_OFFSET as i32) + (mid * 6)) as isize;
-
-      let kv = read_u32_le(unsafe { BIDI.offset(offset) });
+      let offset = ((BIDI_DICTIONARY_OFFSET as i32) + (mid * 6)) as _;
+      let kv = BIDI.u32_at(offset);
 
       let other = kv & CODEPOINT_MASK;
 
       if code < other {
         end = mid - 1;
-      } else if code > (other + read_u16_le(unsafe { BIDI.offset(offset + 4) }) as u32) {
+      } else if code > (other + BIDI.u16_at(offset + 4) as u32) {
         start = mid + 1;
       } else {
         return Some(((kv >> 20) as u8).into());
