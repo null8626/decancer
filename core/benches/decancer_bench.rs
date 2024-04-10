@@ -2,14 +2,18 @@ use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
 use rand::random;
 
 fn cure(c: &mut Criterion) {
-  let input = String::from("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
-
-  c.bench_function("cure", |b| b.iter(|| decancer::cure(&input).unwrap()));
+  c.bench_function("cure", |b| {
+    b.iter(|| decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap())
+  });
 }
 
 fn cure_char(c: &mut Criterion) {
   c.bench_function("cure_char", |b| {
-    b.iter_batched(random::<char>, decancer::cure_char, BatchSize::SmallInput)
+    b.iter_batched(
+      random::<char>,
+      |character| decancer::cure_char!(character),
+      BatchSize::SmallInput,
+    )
   });
 }
 
