@@ -1,6 +1,7 @@
 use crate::{
   bidi::{IsolatingRunSequence, Paragraph},
-  class::{self, Class}, CuredString, Level, Matcher, Options,
+  class::{self, Class},
+  CuredString, Level, Matcher, Options,
 };
 use proptest::prelude::*;
 use std::ops::Range;
