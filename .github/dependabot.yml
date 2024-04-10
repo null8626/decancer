@@ -40,3 +40,11 @@ updates:
       day: "saturday"
       interval: "weekly"
       time: "06:20"
+  - package-ecosystem: "cargo"
+    directory: "/bindings/java"
+    commit-message:
+      prefix: "deps[java]: "
+    schedule:
+      day: "saturday"
+      interval: "weekly"
+      time: "06:25"
