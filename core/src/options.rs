@@ -96,10 +96,10 @@ impl Options {
 
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
-    
+
     /// Removes all non-ASCII characters from the result.
     22: ascii_only,
-    
+
     /// Removes all non-alphanumeric characters from the result.
     23: alphanumeric_only,
   }

@@ -231,7 +231,7 @@ public final class Options {
     this.inner |= (1 << 21);
     return this;
   }
-  
+
   /**
    * Removes all non-ASCII characters from the result.
    */

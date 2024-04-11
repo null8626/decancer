@@ -1,10 +1,10 @@
+#[cfg(feature = "options")]
+use crate::util::is_alphanumeric;
 use crate::{
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
   Matcher,
 };
-#[cfg(feature = "options")]
-use crate::util::is_alphanumeric;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::{
@@ -51,7 +51,7 @@ impl Translation {
       Self::None => Self::None,
     }
   }
-  
+
   #[cfg(feature = "options")]
   pub(crate) fn ensure_stripped_if(self, ascii_only: bool, alphanumeric_only: bool) -> Self {
     if ascii_only {
@@ -63,7 +63,7 @@ impl Translation {
         return Translation::None;
       }
     }
-    
+
     if alphanumeric_only {
       if match self {
         Self::Character(c) => !is_alphanumeric(c as _),
@@ -73,7 +73,7 @@ impl Translation {
         return Translation::None;
       }
     }
-    
+
     self
   }
 }

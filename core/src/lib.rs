@@ -57,7 +57,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
 
   #[cfg(feature = "options")]
   let ascii_only = options.is(22);
-  
+
   #[cfg(feature = "options")]
   let alphanumeric_only = options.is(23);
 
@@ -67,7 +67,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   } else {
     code_lowercased
   };
-  
+
   #[cfg(not(feature = "options"))]
   let default_output = code_lowercased;
 
@@ -76,7 +76,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
     if alphanumeric_only && !is_alphanumeric(default_output) {
       return Translation::None;
     }
-    
+
     return Translation::character(default_output);
   } else if is_case_sensitive {
     #[cfg_attr(not(feature = "options"), allow(unused_mut))]
@@ -92,12 +92,12 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
 
       #[cfg(feature = "options")]
       return translation.ensure_stripped_if(ascii_only, alphanumeric_only);
-      
+
       #[cfg(not(feature = "options"))]
       return translation;
     }
   }
-  
+
   #[cfg(feature = "options")]
   match options.translate(code_lowercased, 6, CODEPOINTS_COUNT as _) {
     Some(translation) => translation.ensure_stripped_if(ascii_only, alphanumeric_only),
@@ -109,7 +109,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
       }
     }
   }
-  
+
   #[cfg(not(feature = "options"))]
   options
     .translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
