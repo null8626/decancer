@@ -25,44 +25,9 @@ use codepoints::{
   CASE_SENSITIVE_CODEPOINTS_COUNT, CASE_SENSITIVE_CODEPOINTS_OFFSET, CODEPOINTS_COUNT,
 };
 
-macro_rules! error_enum {
-  (
-    $(#[$enum_attrs:meta])*
-    pub enum $enum_name:ident {
-      $(
-        #[doc = $prop_doc:literal]
-        $prop_name:ident,
-      )*
-    }
-  ) => {
-    $(#[$enum_attrs])*
-    pub enum $enum_name {
-      $(
-        #[doc = $prop_doc]
-        $prop_name,
-      )*
-    }
-
-    impl std::convert::AsRef<str> for $enum_name {
-      fn as_ref(&self) -> &str {
-        match self {
-          $(
-            Self::$prop_name => stringify!($prop_doc),
-          )*
-        }
-      }
-    }
-
-    impl std::fmt::Display for $enum_name {
-      #[inline(always)]
-      fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", <$enum_name as std::convert::AsRef<str>>::as_ref(self))
-      }
-    }
-
-    impl std::error::Error for $enum_name {}
-  }
-}
+use util::{error_enum, is_none};
+#[cfg(feature = "options")]
+use util::{is_alphanumeric, is_special_rtl};
 
 error_enum! {
   /// An error enum for unicode bidi errors caused by malformed string inputs.
@@ -80,15 +45,6 @@ error_enum! {
   }
 }
 
-const fn is_none(code: u32) -> bool {
-  matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
-}
-
-#[cfg(feature = "options")]
-const fn is_special_rtl(code: u32) -> bool {
-  matches!(code, 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069)
-}
-
 fn cure_char_inner(code: u32, options: Options) -> Translation {
   let code_lowercased = char::from_u32(code)
     .and_then(|character| character.to_lowercase().next())
@@ -100,38 +56,64 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   let retain_capitalization = options.is(0);
 
   #[cfg(feature = "options")]
+  let ascii_only = options.is(22);
+  
+  #[cfg(feature = "options")]
+  let alphanumeric_only = options.is(23);
+
+  #[cfg(feature = "options")]
   let default_output = if is_case_sensitive && retain_capitalization {
     code
   } else {
     code_lowercased
   };
-
+  
   #[cfg(not(feature = "options"))]
   let default_output = code_lowercased;
 
   if default_output < 0x80 {
+    #[cfg(feature = "options")]
+    if alphanumeric_only && !is_alphanumeric(default_output) {
+      return Translation::None;
+    }
+    
     return Translation::character(default_output);
   } else if is_case_sensitive {
-    if let Some(translation) = options.translate(
+    #[cfg_attr(not(feature = "options"), allow(unused_mut))]
+    if let Some(mut translation) = options.translate(
       code,
       CASE_SENSITIVE_CODEPOINTS_OFFSET as _,
       CASE_SENSITIVE_CODEPOINTS_COUNT as _,
     ) {
       #[cfg(feature = "options")]
-      return if retain_capitalization {
-        translation.into_uppercase()
-      } else {
-        translation
-      };
+      if retain_capitalization {
+        translation = translation.into_uppercase();
+      }
 
+      #[cfg(feature = "options")]
+      return translation.ensure_stripped_if(ascii_only, alphanumeric_only);
+      
       #[cfg(not(feature = "options"))]
       return translation;
     }
   }
-
+  
+  #[cfg(feature = "options")]
+  match options.translate(code_lowercased, 6, CODEPOINTS_COUNT as _) {
+    Some(translation) => translation.ensure_stripped_if(ascii_only, alphanumeric_only),
+    None => {
+      if ascii_only || alphanumeric_only {
+        Translation::None
+      } else {
+        Translation::character(default_output)
+      }
+    }
+  }
+  
+  #[cfg(not(feature = "options"))]
   options
     .translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
-    .unwrap_or(Translation::character(default_output))
+    .unwrap_or_else(|| Translation::character(default_output))
 }
 
 /// Cures a single character/unicode codepoint with the specified [`Options`].

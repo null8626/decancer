@@ -18,6 +18,7 @@ const RANGE_MASK: u32 = 0x0800_0000;
 const STRING_TRANSLATION_MASK: u32 = 0x1000_0000;
 
 #[derive(Copy, Clone)]
+#[cfg_attr(not(feature = "options"), allow(dead_code))]
 pub(crate) struct Codepoint(u32, u8, u8);
 
 impl Codepoint {

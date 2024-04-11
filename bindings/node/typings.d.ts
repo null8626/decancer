@@ -42,6 +42,8 @@ export type Options = {
   retainBraille?: boolean
   retainEmojis?: boolean
   pureHomoglyph?: boolean
+  asciiOnly?: boolean
+  alphanumericOnly?: boolean
 }
 
 export default function (input: string, options?: Options | number): CuredString

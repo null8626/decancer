@@ -76,10 +76,12 @@ options! {
     19: retain_korean,
     20: retain_braille,
     21: retain_emojis,
+    22: ascii_only,
+    23: alphanumeric_only,
   }
 
   overrides {
-    pure_homoglyph: ((1 << 22) - 1) ^ 0x200003,
+    pure_homoglyph: ((1 << 24) - 1) ^ 0xe00003,
   }
 }
 
