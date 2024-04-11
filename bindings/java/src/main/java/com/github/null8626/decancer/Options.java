@@ -19,13 +19,13 @@ public final class Options {
   /**
    * Predefined options with all options disabled. This is useful if you want to use decancer solely for formatting.
    */
-  public static Options FORMATTER = new Options((1 << 22) - 1);
+  public static Options FORMATTER = new Options((1 << 24) - 1);
 
   /**
    * Predefined options that prevents decancer from curing characters from major foreign writing systems.
    */
   public static Options PURE_HOMOGLYPH = new Options(
-    ((1 << 22) - 1) ^ 0x200003
+    ((1 << 24) - 1) ^ 0xe00003
   );
 
   /**
@@ -229,6 +229,22 @@ public final class Options {
    */
   public Options retainEmojis() {
     this.inner |= (1 << 21);
+    return this;
+  }
+
+  /**
+   * Removes all non-ASCII characters from the result.
+   */
+  public Options asciiOnly() {
+    this.inner |= (1 << 22);
+    return this;
+  }
+
+  /**
+   * Removes all non-alphanumeric characters from the result.
+   */
+  public Options alphanumericOnly() {
+    this.inner |= (1 << 23);
     return this;
   }
 }

@@ -5,6 +5,20 @@ use std::{
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
+pub(crate) const fn is_none(code: u32) -> bool {
+  matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
+}
+
+#[cfg(feature = "options")]
+pub(crate) const fn is_special_rtl(code: u32) -> bool {
+  matches!(code, 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069)
+}
+
+#[cfg(feature = "options")]
+pub(crate) const fn is_alphanumeric(code: u32) -> bool {
+  matches!(code, 48..=57 | 97..=122 | 65..=90 | 32)
+}
+
 #[derive(Copy, Clone)]
 pub(crate) struct Binary<'a> {
   bytes: &'a [u8],
@@ -82,6 +96,47 @@ where
 
   ranges.truncate(j + 1);
 }
+
+macro_rules! error_enum {
+  (
+    $(#[$enum_attrs:meta])*
+    pub enum $enum_name:ident {
+      $(
+        #[doc = $prop_doc:literal]
+        $prop_name:ident,
+      )*
+    }
+  ) => {
+    $(#[$enum_attrs])*
+    pub enum $enum_name {
+      $(
+        #[doc = $prop_doc]
+        $prop_name,
+      )*
+    }
+
+    impl std::convert::AsRef<str> for $enum_name {
+      fn as_ref(&self) -> &str {
+        match self {
+          $(
+            Self::$prop_name => stringify!($prop_doc),
+          )*
+        }
+      }
+    }
+
+    impl std::fmt::Display for $enum_name {
+      #[inline(always)]
+      fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", <$enum_name as std::convert::AsRef<str>>::as_ref(self))
+      }
+    }
+
+    impl std::error::Error for $enum_name {}
+  }
+}
+
+pub(crate) use error_enum;
 
 macro_rules! numbered_enum {
   (

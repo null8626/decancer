@@ -47,7 +47,7 @@ impl Options {
   /// Creates a new configuration where every option is enabled. This is useful if you want to use decancer solely for formatting.
   pub const fn formatter() -> Self {
     #[cfg(feature = "options")]
-    return Self((1 << 22) - 1);
+    return Self((1 << 24) - 1);
 
     #[cfg(not(feature = "options"))]
     return Self(0);
@@ -56,7 +56,7 @@ impl Options {
   /// Creates a new configuration that prevents decancer from curing characters from major foreign writing systems.
   pub const fn pure_homoglyph() -> Self {
     #[cfg(feature = "options")]
-    return Self(((1 << 22) - 1) ^ 0x200003);
+    return Self(((1 << 24) - 1) ^ 0xe00003);
 
     #[cfg(not(feature = "options"))]
     return Self(0);
@@ -96,6 +96,12 @@ impl Options {
 
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
+
+    /// Removes all non-ASCII characters from the result.
+    22: ascii_only,
+
+    /// Removes all non-alphanumeric characters from the result.
+    23: alphanumeric_only,
   }
 
   retain! {
