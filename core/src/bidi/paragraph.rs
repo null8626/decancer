@@ -385,9 +385,12 @@ impl IsolatingRunSequence {
     pos: usize,
     level_run_index: usize,
   ) -> impl Iterator<Item = usize> + '_ {
-    (self.runs[level_run_index].start..pos)
-      .rev()
-      .chain(self.runs[..level_run_index].iter().rev().flat_map(Clone::clone))
+    (self.runs[level_run_index].start..pos).rev().chain(
+      self.runs[..level_run_index]
+        .iter()
+        .rev()
+        .flat_map(Clone::clone),
+    )
   }
 }
 

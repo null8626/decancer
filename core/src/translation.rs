@@ -54,19 +54,23 @@ impl Translation {
 
   #[cfg(feature = "options")]
   pub(crate) fn ensure_stripped_if(self, ascii_only: bool, alphanumeric_only: bool) -> Self {
-    if ascii_only && match self {
+    if ascii_only
+      && match self {
         Self::Character(c) => (c as u32) > 0x7f,
         Self::String(ref s) => !s.is_ascii(),
         Self::None => true,
-      } {
+      }
+    {
       return Translation::None;
     }
 
-    if alphanumeric_only && match self {
+    if alphanumeric_only
+      && match self {
         Self::Character(c) => !is_alphanumeric(c as _),
         Self::String(ref s) => !s.bytes().all(|b| is_alphanumeric(b as _)),
         Self::None => true,
-      } {
+      }
+    {
       return Translation::None;
     }
 
