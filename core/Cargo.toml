@@ -10,7 +10,7 @@ license = "MIT"
 keywords = ["security", "unicode", "homoglyphs", "moderation", "confusables"]
 categories = ["parsing", "text-processing", "value-formatting"]
 exclude = ["rustfmt.toml"]
-rust-version = "1.64.0"
+rust-version = "1.65.0"
 
 [dependencies]
 paste = "1"
