@@ -28,11 +28,10 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
       - name: Setup
         id: setup
         run: node scripts/ci_setup.mjs
@@ -53,15 +52,14 @@ jobs:
       - setup
     if: ${{ needs.setup.outputs.release != 'null' || needs.setup.outputs.core_affected == 'true' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
       - name: Ensure no default features is working
         working-directory: core
         run: cargo c --no-default-features
@@ -125,11 +123,10 @@ jobs:
     name: Build native java bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -177,7 +174,7 @@ jobs:
     name: Test java bindings
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           distribution: oracle
@@ -297,11 +294,10 @@ jobs:
     name: Build native bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -349,7 +345,7 @@ jobs:
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -447,12 +443,11 @@ jobs:
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
           cache: yarn
       - name: Install Rust
         uses: actions-rs/toolchain@v1
@@ -470,11 +465,10 @@ jobs:
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
         run: yarn config set supportedArchitectures.cpu "ia32"
         shell: bash
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
           cache: yarn
           architecture: x86
       - name: Install dependencies
@@ -509,11 +503,10 @@ jobs:
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
           cache: yarn
       - name: Install dependencies
         working-directory: bindings/node
@@ -534,14 +527,13 @@ jobs:
       - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
       - name: Setup wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - name: Build wasm
@@ -570,14 +562,13 @@ jobs:
       - wasm
     if: ${{ always() }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
       - name: Prettier everything
         run: node scripts/pretty.mjs
       - name: Download wasm artifact
@@ -625,11 +616,10 @@ jobs:
       - commit
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          check-latest: true
+          node-version: latest
           cache: yarn
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -660,7 +650,7 @@ jobs:
           message: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
           tag: "v${{ needs.setup.outputs.release }}"
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           body: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
           draft: false
