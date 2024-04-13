@@ -162,7 +162,7 @@ $ ./gradlew build --warning-mode all
 
 ### Building from source
 
-Building from source requires [Rust v1.64 or later](https://rustup.rs/).
+Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
 ```console
 $ git clone https://github.com/null8626/decancer.git --depth 1
