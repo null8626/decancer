@@ -12,7 +12,7 @@ use std::cmp::Ordering;
 /// use decancer::Options;
 ///
 /// // by default, all options are disabled
-/// let _options = Options::default();;
+/// let _options = Options::default();
 /// ```
 #[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub struct Options(pub(crate) u32);
