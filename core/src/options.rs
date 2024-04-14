@@ -7,6 +7,13 @@ use std::cmp::Ordering;
 /// By default, decancer cures as much characters as possible and turns all of the output characters to lowercase.
 ///
 /// If you don't plan on using this struct and only using decancer's defaults, it's recommended to disable the default `options` feature flag to optimize away unnecessary option checks.
+///
+/// ```rs
+/// use decancer::Options;
+///
+/// // by default, all options are disabled
+/// let _options = Options::default();;
+/// ```
 #[derive(Copy, Clone, Eq, PartialEq, Default)]
 pub struct Options(pub(crate) u32);
 
