@@ -8,7 +8,7 @@ use std::cmp::Ordering;
 ///
 /// If you don't plan on using this struct and only using decancer's defaults, it's recommended to disable the default `options` feature flag to optimize away unnecessary option checks.
 ///
-/// ```rs
+/// ```rust
 /// use decancer::Options;
 ///
 /// // by default, all options are disabled
