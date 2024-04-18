@@ -59,7 +59,7 @@ const RETAINABLE_SCRIPTS = Object.entries({
   mongolian: 16,
   chinese: {
     shift: 17,
-    check: name => /[\b\s]?cjk\s/.test(name)
+    check: name => name.includes('cjk') || name.includes('kangxi')
   },
   japanese: {
     shift: 18,
