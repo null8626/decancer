@@ -144,7 +144,7 @@ impl CuredString {
         self.0.censor(&other, with_char);
 
         Ok(())
-      }
+      },
 
       None => Err(Error::new(
         Status::InvalidArg,
@@ -160,7 +160,7 @@ impl CuredString {
         self.0.censor_multiple(&other, with_char);
 
         Ok(())
-      }
+      },
 
       None => Err(Error::new(
         Status::InvalidArg,

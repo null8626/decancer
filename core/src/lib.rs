@@ -107,7 +107,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
       } else {
         Translation::character(default_output)
       }
-    }
+    },
   }
 
   #[cfg(not(feature = "options"))]
@@ -209,7 +209,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
             pure_ltr = true;
             isolate_stack.clear();
             paragraph_level = None;
-          }
+          },
 
           Class::L | Class::R | Class::AL => {
             if class != Class::L {
@@ -229,7 +229,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
                     original_classes[start_idx + j] = new_class;
                   }
                 }
-              }
+              },
 
               None => {
                 if paragraph_level.is_none() {
@@ -239,24 +239,24 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
                     Level::rtl()
                   });
                 }
-              }
+              },
             }
-          }
+          },
 
           Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
             pure_ltr = false;
-          }
+          },
 
           Class::RLI | Class::LRI | Class::FSI => {
             pure_ltr = false;
             isolate_stack.push(idx);
-          }
+          },
 
           Class::PDI => {
             isolate_stack.pop();
-          }
+          },
 
-          _ => {}
+          _ => {},
         }
 
         refined_input.push(char::from_u32(codepoint).unwrap());
@@ -305,8 +305,8 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
           (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
           (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
             levels[j].raise(1)?
-          }
-          _ => {}
+          },
+          _ => {},
         }
 
         if original_classes[j].removed_by_x9() {

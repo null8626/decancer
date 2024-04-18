@@ -19,7 +19,7 @@ macro_rules! jni_unwrap {
         let _ = $env.throw_new("java/lang/RuntimeException", error.to_string());
 
         return $return_value;
-      }
+      },
     }
   };
 
@@ -117,7 +117,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cure
       );
 
       0 as _
-    }
+    },
   }
 }
 
@@ -203,14 +203,14 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
   match char::from_u32(with as _) {
     Some(with) => {
       (*inner).censor(&input, with);
-    }
+    },
 
     None => {
       let _ = env.throw_new(
         "java/lang/IllegalArgumentException",
         "Replacement character is a surrogate.",
       );
-    }
+    },
   };
 }
 
@@ -228,14 +228,14 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
   match char::from_u32(with as _) {
     Some(with) => {
       (*inner).censor_multiple(get_string_array!(env, input, ()), with);
-    }
+    },
 
     None => {
       let _ = env.throw_new(
         "java/lang/IllegalArgumentException",
         "Replacement character is a surrogate.",
       );
-    }
+    },
   };
 }
 

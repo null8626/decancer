@@ -83,7 +83,7 @@ impl AddAssign<Translation> for String {
     match translation {
       Translation::Character(ch) => self.push(ch),
       Translation::String(s) => self.push_str(&s),
-      Translation::None => {}
+      Translation::None => {},
     }
   }
 }
@@ -107,7 +107,7 @@ where
           .next()
           .map(|next_char| chars.next().is_none() && similar::is(*ch as _, next_char))
           .unwrap_or_default()
-      }
+      },
 
       Self::String(s) => Matcher::is_equal(s, o),
       Self::None => o.is_empty(),

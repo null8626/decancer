@@ -44,7 +44,7 @@ pub unsafe extern "C" fn decancer_cure(
       (*error).message_size = INVALID_UTF8_MESSAGE.len() as _;
 
       return 0 as _;
-    }
+    },
   };
 
   match decancer::cure(input, transmute(options)) {
@@ -56,7 +56,7 @@ pub unsafe extern "C" fn decancer_cure(
       (*error).message_size = message.len() as _;
 
       0 as _
-    }
+    },
   }
 }
 
@@ -74,7 +74,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
       (*error).message_size = INVALID_UTF16_MESSAGE.len() as _;
 
       return 0 as _;
-    }
+    },
   };
 
   let input_str = str::from_utf8_unchecked(&input);
@@ -88,7 +88,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
       (*error).message_size = message.len() as _;
 
       0 as _
-    }
+    },
   }
 }
 
@@ -98,7 +98,7 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
     decancer::Translation::Character(c) => {
       (*output).kind = 0;
       (*output).slot_a = c as _;
-    }
+    },
 
     decancer::Translation::String(s) => {
       (*output).kind = 1;
@@ -108,20 +108,20 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
         Cow::Borrowed(_) => {
           (*output).slot_a = s.as_ptr() as _;
           (*output).slot_c = 0 as _;
-        }
+        },
 
         Cow::Owned(s) => {
           let s = Box::new(s);
 
           (*output).slot_a = s.deref().as_ptr() as _;
           (*output).slot_c = Box::into_raw(Box::new(s)) as *mut u8 as _;
-        }
+        },
       }
-    }
+    },
 
     decancer::Translation::None => {
       (*output).kind = 2;
-    }
+    },
   }
 }
 
@@ -193,7 +193,7 @@ pub unsafe extern "C" fn decancer_matcher_next(
     Some(mat) => {
       *output = mat;
       true
-    }
+    },
 
     None => false,
   }
@@ -210,7 +210,7 @@ pub unsafe extern "C" fn decancer_censor(
     (Some(other_str), Some(with_char)) => {
       (*cured).censor(other_str, with_char);
       true
-    }
+    },
 
     _ => false,
   }
@@ -227,7 +227,7 @@ pub unsafe extern "C" fn decancer_censor_wide(
     (Some(other_str), Some(with_char)) => {
       (*cured).censor(str::from_utf8_unchecked(&other_str), with_char);
       true
-    }
+    },
 
     _ => false,
   }
@@ -247,7 +247,7 @@ pub unsafe extern "C" fn decancer_censor_multiple(
     (Some(result), Some(with_char)) => {
       (*cured).censor_multiple(result, with_char);
       true
-    }
+    },
 
     _ => false,
   }
@@ -267,7 +267,7 @@ pub unsafe extern "C" fn decancer_censor_multiple_wide(
     (Some(result), Some(with_char)) => {
       (*cured).censor_multiple(result, with_char);
       true
-    }
+    },
 
     _ => false,
   }
@@ -288,7 +288,7 @@ pub unsafe extern "C" fn decancer_replace(
     (Some(other_str), Some(with_str)) => {
       (*cured).replace(other_str, with_str);
       true
-    }
+    },
 
     _ => false,
   }
@@ -312,7 +312,7 @@ pub unsafe extern "C" fn decancer_replace_wide(
         str::from_utf8_unchecked(&with_str),
       );
       true
-    }
+    },
 
     _ => false,
   }
@@ -333,7 +333,7 @@ pub unsafe extern "C" fn decancer_replace_multiple(
     (Some(result), Some(with_str)) => {
       (*cured).replace_multiple(result, with_str);
       true
-    }
+    },
 
     _ => false,
   }
@@ -354,7 +354,7 @@ pub unsafe extern "C" fn decancer_replace_multiple_wide(
     (Some(result), Some(with_str)) => {
       (*cured).replace_multiple(result, str::from_utf8_unchecked(&with_str));
       true
-    }
+    },
 
     _ => false,
   }
