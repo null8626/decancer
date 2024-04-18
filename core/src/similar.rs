@@ -69,7 +69,7 @@ impl<'a> CachedPeek<'a> {
         self.cache.push(value);
 
         Some(value)
-      }
+      },
     }
   }
 
@@ -237,11 +237,11 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
               start_index = self.self_index + skipped;
               self.self_index = start_index + matched_skip;
             }
-          }
+          },
 
           None => {
             current_separator.replace(next_self_char);
-          }
+          },
         }
       }
     }

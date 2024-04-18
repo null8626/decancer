@@ -49,15 +49,15 @@ impl IsolatingRunSequence {
             if last_strong_is_al {
               processing_classes[i] = Class::AN;
             }
-          }
+          },
           Class::AL => processing_classes[i] = Class::R,
-          _ => {}
+          _ => {},
         };
 
         match w2_processing_class {
           Class::L | Class::R => last_strong_is_al = false,
           Class::AL => last_strong_is_al = true,
-          _ => {}
+          _ => {},
         };
 
         let class_before_w456 = processing_classes[i];
@@ -69,7 +69,7 @@ impl IsolatingRunSequence {
             }
 
             et_run_indices.clear();
-          }
+          },
 
           Class::ES | Class::CS => {
             if let Some(character) = text.get(i..).and_then(|x| x.chars().next()) {
@@ -89,7 +89,7 @@ impl IsolatingRunSequence {
                 match (prev_class_before_w4, processing_classes[i], next_class) {
                   (Class::EN, Class::ES, Class::EN) | (Class::EN, Class::CS, Class::EN) => {
                     Class::EN
-                  }
+                  },
                   (Class::AN, Class::CS, Class::AN) => Class::AN,
                   _ => Class::ON,
                 };
@@ -116,16 +116,16 @@ impl IsolatingRunSequence {
             } else {
               processing_classes[i] = processing_classes[i - 1];
             }
-          }
+          },
 
           Class::ET => match prev_class_before_w5 {
             Class::EN => processing_classes[i] = Class::EN,
             _ => {
               et_run_indices.extend(&bn_run_indices);
               et_run_indices.push(i);
-            }
+            },
           },
-          _ => {}
+          _ => {},
         };
 
         bn_run_indices.clear();
@@ -156,7 +156,7 @@ impl IsolatingRunSequence {
         Class::EN if last_strong_is_l => processing_classes[i] = Class::L,
         Class::L => last_strong_is_l = true,
         Class::R | Class::AL => last_strong_is_l = false,
-        _ => {}
+        _ => {},
       };
     }
   }
@@ -336,12 +336,12 @@ impl IsolatingRunSequence {
               } else {
                 break;
               }
-            }
+            },
 
             None => {
               next_class = self.end_class;
               break;
-            }
+            },
           };
         }
 
@@ -437,13 +437,13 @@ impl Paragraph {
           if reset_from.is_none() {
             reset_from = Some(i);
           }
-        }
+        },
 
         Class::WS | Class::FSI | Class::LRI | Class::RLI | Class::PDI => {
           if reset_from.is_none() {
             reset_from = Some(i);
           }
-        }
+        },
 
         Class::RLE | Class::LRE | Class::RLO | Class::LRO | Class::PDF | Class::BN => {
           if reset_from.is_none() {
@@ -451,11 +451,11 @@ impl Paragraph {
           }
 
           levels[i] = prev_level;
-        }
+        },
 
         _ => {
           reset_from = None;
-        }
+        },
       }
 
       if let (Some(from), Some(to)) = (reset_from, reset_to) {
@@ -565,7 +565,7 @@ impl Paragraph {
             match last.status {
               OverrideStatus::RTL => processing_classes[idx] = Class::R,
               OverrideStatus::LTR => processing_classes[idx] = Class::L,
-              _ => {}
+              _ => {},
             }
           }
 
@@ -587,7 +587,7 @@ impl Paragraph {
               } else {
                 levels[idx] = new_level;
               }
-            }
+            },
 
             _ => {
               if is_isolate {
@@ -595,13 +595,13 @@ impl Paragraph {
               } else if overflow_isolate_count == 0 {
                 overflow_embedding_count += 1;
               }
-            }
+            },
           }
 
           if !is_isolate {
             processing_classes[idx] = Class::BN;
           }
-        }
+        },
 
         Class::PDI => {
           if overflow_isolate_count > 0 {
@@ -627,9 +627,9 @@ impl Paragraph {
           match last.status {
             OverrideStatus::RTL => processing_classes[idx] = Class::R,
             OverrideStatus::LTR => processing_classes[idx] = Class::L,
-            _ => {}
+            _ => {},
           }
-        }
+        },
 
         Class::PDF => {
           if overflow_isolate_count <= 0 {
@@ -642,9 +642,9 @@ impl Paragraph {
 
           levels[idx] = stack.last().unwrap().level;
           processing_classes[idx] = Class::BN;
-        }
+        },
 
-        Class::B => {}
+        Class::B => {},
 
         _ => {
           let last = stack.last().unwrap();
@@ -654,10 +654,10 @@ impl Paragraph {
             match last.status {
               OverrideStatus::RTL => processing_classes[idx] = Class::R,
               OverrideStatus::LTR => processing_classes[idx] = Class::L,
-              _ => {}
+              _ => {},
             }
           }
-        }
+        },
       }
 
       for j in 1..character.len_utf8() {
