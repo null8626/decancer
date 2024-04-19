@@ -31,7 +31,7 @@ impl Translation {
   pub(crate) fn string(integer: u32, second_byte: u8) -> Self {
     Self::String(Cow::Borrowed(
       str::from_utf8(CODEPOINTS.sliced(
-        (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
+        (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | u16::from(second_byte))) as _,
         ((integer >> 23) & 0x1f) as _,
       ))
       .unwrap(),
@@ -67,7 +67,7 @@ impl Translation {
     if alphanumeric_only
       && match self {
         Self::Character(c) => !is_alphanumeric(c as _),
-        Self::String(ref s) => !s.bytes().all(|b| is_alphanumeric(b as _)),
+        Self::String(ref s) => !s.bytes().all(|b| is_alphanumeric(u32::from(b))),
         Self::None => true,
       }
     {
