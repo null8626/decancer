@@ -592,6 +592,7 @@ jobs:
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
+          commit: -S
           message: 'chore: update files'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
