@@ -652,11 +652,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.CI_GPG_PASS }}
+          git_user_signingkey: true
+          git_tag_gpgsign: true
       - name: Create Tag
         uses: rickstaa/action-create-tag@v1
         with:
           message: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
           tag: "v${{ needs.setup.outputs.release }}"
+          gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.CI_GPG_PASS }}
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
