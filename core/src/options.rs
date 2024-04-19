@@ -54,7 +54,8 @@ macro_rules! retain {
 impl Options {
   /// Creates a new configuration where every option is enabled. This is useful if you want to use decancer solely for formatting.
   #[cfg_attr(not(feature = "options"), cold)]
-  #[must_use] pub const fn formatter() -> Self {
+  #[must_use]
+  pub const fn formatter() -> Self {
     #[cfg(feature = "options")]
     return Self((1 << 24) - 1);
 
@@ -64,7 +65,8 @@ impl Options {
 
   /// Creates a new configuration that prevents decancer from curing characters from major foreign writing systems.
   #[cfg_attr(not(feature = "options"), cold)]
-  #[must_use] pub const fn pure_homoglyph() -> Self {
+  #[must_use]
+  pub const fn pure_homoglyph() -> Self {
     #[cfg(feature = "options")]
     return Self(((1 << 24) - 1) ^ 0x00e0_0003);
 
