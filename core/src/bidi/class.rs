@@ -34,18 +34,18 @@ numbered_enum! {
 impl Class {
   pub(crate) fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
-    let mut end = i32::from(BIDI_DICTIONARY_COUNT);
+    let mut end = BIDI_DICTIONARY_COUNT as i32;
 
     while start <= end {
       let mid = (start + end) / 2;
-      let offset = (i32::from(BIDI_DICTIONARY_OFFSET) + (mid * 6)) as _;
+      let offset = ((BIDI_DICTIONARY_OFFSET as i32) + (mid * 6)) as _;
       let kv = BIDI.u32_at(offset);
 
       let other = kv & CODEPOINT_MASK;
 
       if code < other {
         end = mid - 1;
-      } else if code > (other + u32::from(BIDI.u16_at(offset + 4))) {
+      } else if code > (other + BIDI.u16_at(offset + 4) as u32) {
         start = mid + 1;
       } else {
         return Some(((kv >> 20) as u8).into());
