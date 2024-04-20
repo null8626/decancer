@@ -19,6 +19,7 @@ on:
       - 'core/bin/codepoints.bin'
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
+  pull_request: null
 permissions:
   contents: write
   pages: write
@@ -161,6 +162,7 @@ jobs:
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
         shell: bash
       - name: Upload artifact
+        if: ${{ secrets.CI_GPG_PRIVATE_KEY }}
         uses: actions/upload-artifact@v4
         with:
           name: java-${{ matrix.settings.target }}
@@ -191,12 +193,6 @@ jobs:
           ./gradlew test --warning-mode all
         working-directory: bindings/java
         shell: bash
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-test
-          path: bindings/java/build/reports/tests/test/**
-          if-no-files-found: error
   native:
     strategy:
       fail-fast: true
@@ -548,6 +544,7 @@ jobs:
           npm i
           timeout 180 node .
       - name: Upload artifact
+        if: ${{ secrets.CI_GPG_PRIVATE_KEY }}
         uses: actions/upload-artifact@v4
         with:
           name: wasm
@@ -560,7 +557,7 @@ jobs:
       - setup
       - java
       - wasm
-    if: ${{ always() }}
+    if: ${{ always() && secrets.CI_GPG_PRIVATE_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
