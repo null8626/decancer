@@ -1,7 +1,7 @@
 {
   "name": "decancer",
   "version": "3.1.2",
-  "description": "A tiny package that removes common unicode confusables/homoglyphs from strings.",
+  "description": "A library that removes common unicode confusables/homoglyphs from strings.",
   "author": "null8626",
   "keywords": [
     "security",
