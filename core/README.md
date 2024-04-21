@@ -182,7 +182,7 @@ And the binary files should be generated in the `target/release` directory.
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<").unwrap();
+let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<").unwrap();
 
 assert_eq!(cured, "very funny text with leetspeak");
 
@@ -206,7 +206,7 @@ assert_eq!(cured, "---- ***** ---- with leetspeak");
 
 ```js
 const assert = require('assert')
-const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<')
+const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<')
 
 assert(cured.equals('very funny text with leetspeak'))
 
@@ -284,7 +284,7 @@ import com.github.null8626.decancer.CuredString;
 
 public class Program {
   public static void main(String[] args) {
-    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<");
+    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<");
     
     assert cured.equals("very funny text with leetspeak");
     
