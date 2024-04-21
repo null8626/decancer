@@ -182,16 +182,21 @@ And the binary files should be generated in the `target/release` directory.
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<").unwrap();
 
-assert_eq!(cured, "very funny text");
+assert_eq!(cured, "very funny text with leetspeak");
+// WARNING: it's NOT recommended to coerce this output to a Rust string
+//          and process it manually from there, as decancer has its own
+//          custom comparison measures, including leetspeak matching!
+assert_ne!(String::from(cured), "very funny text with leetspeak");
+
 assert!(cured.contains("funny"));
 
 cured.censor("funny", '*');
-assert_eq!(cured, "very ***** text");
+assert_eq!(cured, "very ***** text with leetspeak");
 
 cured.censor_multiple(["very", "text"], '-');
-assert_eq!(cured, "---- ***** ----");
+assert_eq!(cured, "---- ***** ---- with leetspeak");
 ```
 
 </details>
@@ -200,18 +205,26 @@ assert_eq!(cured, "---- ***** ----");
 
 ```js
 const assert = require('assert')
-const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
+const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<')
 
-assert(cured.equals('very funny text'))
+assert(cured.equals('very funny text with leetspeak'))
+
+// WARNING: it's NOT recommended to coerce this output to a JavaScript string
+//          and process it manually from there, as decancer has its own
+//          custom comparison measures, including leetspeak matching!
+assert(cured.toString() !== 'very funny text with leetspeak')
+console.log(cured.toString())
+// => very funny text wwiiiiitthh l133t5p3/-\|<
+
 assert(cured.contains('funny'))
 
-console.log(cured.toString()) // very funny text
-
 cured.censor('funny', '*')
-console.log(cured.toString()) // very ***** text
+console.log(cured.toString())
+// => very ***** text wwiiiiitthh l133t5p3/-\|<
 
 cured.censorMultiple(['very', 'text'], '-')
-console.log(cured.toString()) // ---- ***** ----
+console.log(cured.toString())
+// => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
 ```
 
 </details>
@@ -270,19 +283,27 @@ import com.github.null8626.decancer.CuredString;
 
 public class Program {
   public static void main(String[] args) {
-    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<");
     
-    assert cured.equals("very funny text");
+    assert cured.equals("very funny text with leetspeak");
+    // WARNING: it's NOT recommended to coerce this output to a Java String
+    //          and process it manually from there, as decancer has its own
+    //          custom comparison measures, including leetspeak matching!
+    assert !cured.toString().equals("very funny text with leetspeak");
+    
     assert cured.contains("funny");
     
-    System.out.println(cured.toString()); // very funny text
+    System.out.println(cured.toString());
+    // => very funny text wwiiiiitthh l133t5p3/-\|<
     
     cured.censor("funny", '*');
-    System.out.println(cured.toString()); // very ***** text
+    System.out.println(cured.toString());
+    // => very ***** text wwiiiiitthh l133t5p3/-\|<
     
     String[] keywords = { "very", "text" };
     cured.censorMultiple(keywords, '-');
-    System.out.println(cured.toString()); // ---- ***** ----
+    System.out.println(cured.toString());
+    // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
     
     cured.destroy();
   }
