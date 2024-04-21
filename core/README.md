@@ -495,7 +495,7 @@ Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23) | ✓ | | |
 64-bit macOS (10.12+, Sierra+) | ✓ | ✓ | ✓ |
 64-bit iOS | ✓ | | |
 64-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
-64-bit FreeBSD | ✓ | ✓ | |
+64-bit FreeBSD | ✓ | ✓ | ✓ |
 64-bit illumos | ✓ | | |
 64-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | ✓ |
 64-bit Linux with MUSL | ✓ | ✓ | ✓ |
