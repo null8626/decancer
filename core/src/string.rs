@@ -208,7 +208,7 @@ impl CuredString {
   }
 }
 
-/// Coerces this cured string into a [`String`].
+/// Coerces this cured string to a [`String`].
 ///
 /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
 impl From<CuredString> for String {

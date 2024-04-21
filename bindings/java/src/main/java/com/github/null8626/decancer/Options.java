@@ -17,16 +17,14 @@ public final class Options {
   protected int inner;
 
   /**
-   * Predefined options with all options disabled. This is useful if you want to use decancer solely for formatting.
+   * Predefined configuration with all options enabled.
    */
-  public static Options FORMATTER = new Options((1 << 24) - 1);
+  public static Options ALL = new Options(0xffffff);
 
   /**
-   * Predefined options that prevents decancer from curing characters from major foreign writing systems.
+   * Predefined configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
    */
-  public static Options PURE_HOMOGLYPH = new Options(
-    ((1 << 24) - 1) ^ 0xe00003
-  );
+  public static Options PURE_HOMOGLYPH = new Options(0xe00003);
 
   /**
    * Creates a new Options object with decancer's default options.

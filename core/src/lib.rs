@@ -153,22 +153,6 @@ macro_rules! cure_char {
   };
 }
 
-/// Formats a single character/unicode codepoint by only removing [pure homoglyphs][Options::pure_homoglyph] while still [retaining capitalization][Options::retain_capitalization].
-///
-/// This macro expands to:
-///
-/// ```rust,ignore
-/// decancer::cure_char(code, decancer::Options::formatter());
-/// ```
-///
-/// For more information, see [`Options::formatter`].
-#[macro_export]
-macro_rules! format_char {
-  ($code:expr) => {
-    $crate::cure_char($code, $crate::Options::formatter())
-  };
-}
-
 fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   let mut refined_input = String::with_capacity(input.len());
 
@@ -404,17 +388,5 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
 macro_rules! cure {
   ($string:expr) => {
     $crate::cure($string, $crate::Options::default())
-  };
-}
-
-/// Formats a string by only removing [pure homoglyphs][Options::pure_homoglyph] while still [retaining capitalization][Options::retain_capitalization].
-///
-/// This macro immediately returns a [`String`] type.
-///
-/// For more information, see [`Options::formatter`].
-#[macro_export]
-macro_rules! format {
-  ($string:expr) => {
-    String::from($crate::cure($string, $crate::Options::formatter()).unwrap())
   };
 }
