@@ -71,7 +71,7 @@ impl Options {
   #[cfg_attr(not(feature = "options"), cold)]
   pub const fn pure_homoglyph() -> Self {
     #[cfg(feature = "options")]
-    return Self(0xe00003);
+    return Self(0x1ffffc);
 
     #[cfg(not(feature = "options"))]
     return Self(0);
