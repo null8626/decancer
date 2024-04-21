@@ -24,7 +24,7 @@ public final class Options {
   /**
    * Predefined configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
    */
-  public static Options PURE_HOMOGLYPH = new Options(0xe00003);
+  public static Options PURE_HOMOGLYPH = new Options(0x1ffffc);
 
   /**
    * Creates a new Options object with decancer's default options.

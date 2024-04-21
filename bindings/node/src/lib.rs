@@ -74,7 +74,7 @@ options! {
 
   overrides {
     all: 0xffffff,
-    pure_homoglyph: 0xe00003,
+    pure_homoglyph: 0x1ffffc,
   }
 }
 

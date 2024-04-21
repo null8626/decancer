@@ -45,7 +45,7 @@ extern "C"
 #define DECANCER_OPTION_ASCII_ONLY (1 << 22)
 #define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 23)
 #define DECANCER_OPTION_ALL 0xffffff
-#define DECANCER_OPTION_PURE_HOMOGLYPH 0xe00003
+#define DECANCER_OPTION_PURE_HOMOGLYPH 0x1ffffc
 
     typedef struct
     {
