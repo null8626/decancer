@@ -525,7 +525,6 @@ jobs:
             cd ./bindings/node
             yarn install
             yarn build
-            ls
             strip -x *.node
             mv ./decancer.freebsd-x64.node ../..
             rm -rf node_modules
