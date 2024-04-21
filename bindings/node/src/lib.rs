@@ -22,29 +22,21 @@ macro_rules! options {
     #[napi(object)]
     #[derive(Default)]
     pub struct Options {
-      $(
-        pub $key_name: Option<bool>,
-      )*
-      $(
-        pub $override_name: Option<bool>,
-      )*
+      $(pub $key_name: Option<bool>,)*
+      $(pub $override_name: Option<bool>,)*
     }
 
     impl From<Options> for u32 {
       fn from(value: Options) -> u32 {
         let mut options = 0;
 
-        $(
-          if value.$key_name.unwrap_or_default() {
-            options |= (1 << $key_idx);
-          }
-        )*
+        $(if value.$key_name.unwrap_or_default() {
+          options |= (1 << $key_idx);
+        })*
 
-        $(
-          if value.$override_name.unwrap_or_default() {
-            options = $override_value;
-          }
-        )*
+        $(if value.$override_name.unwrap_or_default() {
+          options = $override_value;
+        })*
 
         options
       }

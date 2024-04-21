@@ -328,6 +328,7 @@ jobs:
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --move
         shell: bash
       - name: Upload artifact
+        if: $${ needs.setup.outputs.release != 'null' || matrix.settings.target == 'x86_64-pc-windows-msvc' }}
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.settings.target }}
@@ -486,10 +487,56 @@ jobs:
         run: mv ./bindings/node/decancer.*.node .
         shell: bash
       - name: Upload artifact
+        if: $${ needs.setup.outputs.release != 'null' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
         uses: actions/upload-artifact@v4
         with:
           name: node-${{ matrix.settings.target }}
           path: decancer.*.node
+          if-no-files-found: error
+  node-freebsd:
+    runs-on: macos-latest
+    needs:
+      - setup
+      - core
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
+    name: Build node bindings on FreeBSD
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        id: build
+        uses: cross-platform-actions/action@v0.23.0
+        timeout-minutes: 30
+        env:
+          DEBUG: 'napi:*'
+          RUSTUP_IO_THREADS: 1
+        with:
+          operating_system: freebsd
+          version: '13.2'
+          memory: 8G
+          cpu_count: 3
+          environment_variables: 'DEBUG RUSTUP_IO_THREADS'
+          shell: bash
+          run: |
+            sudo pkg install -y -f curl node libnghttp2 npm
+            sudo npm install -g yarn --ignore-scripts
+            curl https://sh.rustup.rs -sSf --output rustup.sh
+            sh rustup.sh -y --profile minimal --default-toolchain stable
+            source "$HOME/.cargo/env"
+            cd ./bindings/node
+            yarn install
+            yarn build
+            ls
+            strip -x *.node
+            mv ./decancer.freebsd-x64.node ../..
+            rm -rf node_modules
+            rm -rf target
+            rm -rf .yarn/cache
+      - name: Upload artifact
+        if: ${{ needs.setup.outputs.release != 'null' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-freebsd-x64
+          path: decancer.freebsd-x64.node
           if-no-files-found: error
   node-test:
     name: Test node bindings
@@ -616,6 +663,7 @@ jobs:
     needs:
       - setup
       - node-test
+      - node-freebsd
       - native-test
       - java
       - commit
