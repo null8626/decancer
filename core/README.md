@@ -185,6 +185,7 @@ For more information, please read the [documentation](https://docs.rs/decancer).
 let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<").unwrap();
 
 assert_eq!(cured, "very funny text with leetspeak");
+
 // WARNING: it's NOT recommended to coerce this output to a Rust string
 //          and process it manually from there, as decancer has its own
 //          custom comparison measures, including leetspeak matching!
@@ -286,15 +287,15 @@ public class Program {
     CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wwiiiiitthh l133t5p3/-\|<");
     
     assert cured.equals("very funny text with leetspeak");
+    
     // WARNING: it's NOT recommended to coerce this output to a Java String
     //          and process it manually from there, as decancer has its own
     //          custom comparison measures, including leetspeak matching!
     assert !cured.toString().equals("very funny text with leetspeak");
-    
-    assert cured.contains("funny");
-    
     System.out.println(cured.toString());
     // => very funny text wwiiiiitthh l133t5p3/-\|<
+    
+    assert cured.contains("funny");
     
     cured.censor("funny", '*');
     System.out.println(cured.toString());
