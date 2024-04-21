@@ -30,7 +30,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
 ## Installation
 
 <details>
-<summary><b>Rust (v1.64 or later)</b></summary>
+<summary><b>Rust (v1.65 or later)</b></summary>
 
 In your `Cargo.toml`:
 
