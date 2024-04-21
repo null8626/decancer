@@ -61,7 +61,7 @@ impl Options {
     #[cfg(not(feature = "options"))]
     return Self(0);
   }
-  
+
   #[deprecated(since = "3.2.0", note = "use Options::all() instead")]
   pub const fn formatter() -> Self {
     Self::all()
