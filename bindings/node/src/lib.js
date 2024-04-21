@@ -62,8 +62,7 @@ try {
   )
 
   module.exports = Object.assign(binding.cure, {
-    options: binding.options,
-    format: binding.format
+    options: binding.options
   })
 } catch (err) {
   console.error(

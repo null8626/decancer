@@ -73,7 +73,8 @@ options! {
   }
 
   overrides {
-    pure_homoglyph: ((1 << 24) - 1) ^ 0xe00003,
+    all: 0xffffff,
+    pure_homoglyph: 0xe00003,
   }
 }
 
@@ -216,9 +217,4 @@ fn cure(input: String, maybe_options: JsUnknown) -> Result<CuredString> {
     Ok(output) => Ok(CuredString(output)),
     Err(err) => Err(Error::new(Status::InvalidArg, err)),
   }
-}
-
-#[napi]
-fn format(input: String) -> String {
-  decancer::format!(&input)
 }

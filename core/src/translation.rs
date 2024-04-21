@@ -88,7 +88,7 @@ impl AddAssign<Translation> for String {
   }
 }
 
-/// Checks if this [`Translation`] is similar into another string.
+/// Checks if this [`Translation`] is similar with another string.
 ///
 /// This comparison is *case-insensitive*.
 impl<S> PartialEq<S> for Translation

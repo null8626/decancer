@@ -211,7 +211,7 @@ public class CuredString {
   public native boolean contains(String other);
 
   /**
-   * Coerces this object into a String.
+   * Coerces this object to a String.
    *
    * <p>
    * NOTE: It's highly NOT recommended to use Java's comparison methods after calling this. The string output is NOT meant to be displayed visually.

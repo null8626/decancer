@@ -89,8 +89,3 @@ pub fn cure(input: &str, options: u32) -> Result<CuredString, JsError> {
     Err(err) => Err(JsError::new(<decancer::Error as AsRef<str>>::as_ref(&err))),
   }
 }
-
-#[wasm_bindgen]
-pub fn format(input: &str) -> String {
-  decancer::format!(input)
-}

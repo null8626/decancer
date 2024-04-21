@@ -19,6 +19,7 @@ export class CuredString {
 }
 
 export type Options = {
+  all?: boolean
   retainCapitalization?: boolean
   disableBidi?: boolean
   retainDiacritics?: boolean
@@ -49,4 +50,3 @@ export type Options = {
 export default function (input: string, options?: Options | number): CuredString
 
 export function options(options?: Options): number
-export function format(input: string): string
