@@ -162,7 +162,7 @@ jobs:
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
         shell: bash
       - name: Upload artifact
-        if: ${{ secrets.CI_GPG_PRIVATE_KEY }}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v4
         with:
           name: java-${{ matrix.settings.target }}
@@ -591,7 +591,7 @@ jobs:
           npm i
           timeout 180 node .
       - name: Upload artifact
-        if: ${{ secrets.CI_GPG_PRIVATE_KEY }}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v4
         with:
           name: wasm
@@ -604,7 +604,7 @@ jobs:
       - setup
       - java
       - wasm
-    if: ${{ always() && secrets.CI_GPG_PRIVATE_KEY }}
+    if: ${{ always() && github.event_name != 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
