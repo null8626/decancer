@@ -9,7 +9,7 @@
 [jitpack-io-url]: https://jitpack.io/#null8626/decancer
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
 
-A tiny package that removes common unicode confusables/homoglyphs from strings.
+A library that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of [**Binary Search**](https://en.wikipedia.org/wiki/Binary_search_algorithm) to ensure speed!
 - By default, it's capable of filtering **221,522 (19.88%) different unicode codepoints** like:
