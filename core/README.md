@@ -18,7 +18,7 @@ A tiny package that removes common unicode confusables/homoglyphs from strings.
   - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
   - Most [homoglyphs](https://en.wikipedia.org/wiki/Homoglyph)
   - Several emojis
-- Unlike other packages, this package is **[unicode bidi-aware](https://en.wikipedia.org/wiki/Bidirectional_text)** in a way that it also interprets right-to-left characters in the same way as it were to be rendered by an application!
+- Unlike other packages, this package is **[unicode bidi-aware](https://en.wikipedia.org/wiki/Bidirectional_text)** where it also interprets right-to-left characters in the same way as it were to be rendered by an application!
 - Its behavior is also highly customizable to your liking!
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
