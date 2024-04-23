@@ -39,7 +39,7 @@ async function resolveDirectory(directoryName) {
         if (fstat.isDirectory()) {
           output.push(...(await resolveDirectory(path)))
         } else if (notGitignored.includes(path) && !isNotExcluded(path)) {
-          output.push(path)
+          output.push(path.replace(ROOT_DIR, '').replace(/^[\\\/]/, ''))
         }
       })
   ))
