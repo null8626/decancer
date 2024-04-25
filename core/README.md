@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![ko-fi][ko-fi-image]][ko-fi-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -28,6 +28,10 @@ A library that removes common unicode confusables/homoglyphs from strings.
   - C/C++
   - Java
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
+
+If you want to support me manually looking at thousands of unicode characters, consider donating!
+
+[![ko-fi][ko-fi-image]][ko-fi-url]
 
 ## Installation
 
