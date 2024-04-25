@@ -650,17 +650,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup GitHub Pages
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/configure-pages@v5
       - name: Prepare GitHub Pages directories
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         run: |
           node ./scripts/ci_pages_remove.mjs
           rm -rf ./scripts
         shell: bash
-      - name: Upload artifact
+      - name: Upload GitHub Pages artifact
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
       - name: Deploy to GitHub Pages
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         id: deployment
         uses: actions/deploy-pages@v4
   publish:
