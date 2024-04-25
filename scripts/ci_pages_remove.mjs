@@ -65,13 +65,9 @@ async function resolveDirectory(directoryName) {
         const fstat = await stat(path)
         const isDirectory = fstat.isDirectory()
 
-        if (isDirectory) {
-          if (lookInside(path)) {
-            return await resolveDirectory(path)
-          }
-        }
-
-        if (isExcluded(path)) {
+        if (isDirectory && lookInside(path)) {
+          return await resolveDirectory(path)
+        } else if (isExcluded(path)) {
           await rm(path, { recursive: isDirectory, force: true })
         }
       })
