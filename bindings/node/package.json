@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "description": "A library that removes common unicode confusables/homoglyphs from strings.",
   "author": "null8626",
   "keywords": [
@@ -50,8 +50,10 @@
         "armv7-unknown-linux-gnueabihf",
         "x86_64-unknown-linux-musl",
         "i686-pc-windows-msvc",
-        "armv7-linux-androideabi"
+        "armv7-linux-androideabi",
+        "x86_64-unknown-freebsd"
       ]
     }
-  }
+  },
+  "funding": "https://ko-fi.com/null8626"
 }
