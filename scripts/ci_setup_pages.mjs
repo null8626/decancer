@@ -15,7 +15,7 @@ const editedMinifiedJsContents = (await readFile(MINIFIED_JS))
   .toString()
   .replace(
     /https\:\/\/cdn\.jsdelivr\.net\/gh\/null8626\/decancer@v[\d\.]+\/bindings\/wasm\/bin\/decancer\.wasm/,
-    'https://null8626.github.io/decancer/bindings/wasm/bin/decancer.min.js'
+    'https://null8626.github.io/decancer/bindings/wasm/bin/decancer.wasm'
   )
 await writeFile(MINIFIED_JS, editedMinifiedJsContents)
 
