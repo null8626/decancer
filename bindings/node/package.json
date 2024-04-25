@@ -51,7 +51,7 @@
         "x86_64-unknown-linux-musl",
         "i686-pc-windows-msvc",
         "armv7-linux-androideabi",
-        "freebsd-x64"
+        "x86_64-unknown-freebsd"
       ]
     }
   },
