@@ -1,14 +1,20 @@
-import { readdir, stat, rm } from 'node:fs/promises'
+import { readFile, writeFile, readdir, stat, rm } from 'node:fs/promises'
 import { dirname, join, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+const MINIFIED_JS = join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js')
 const EXCLUDED = [
   'index.html',
   ['bindings', 'wasm', 'bin'],
   ['scripts'],
   ['.git']
 ]
+
+const editedMinifiedJsContents = (await readFile(MINIFIED_JS))
+  .toString()
+  .replace(/decancer@v[\.\d]+/, 'decancer@main')
+await writeFile(MINIFIED_JS, editedMinifiedJsContents)
 
 function lookInside(fullPath) {
   for (const ne of EXCLUDED) {
