@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -8,6 +8,7 @@
 [jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
 [jitpack-io-url]: https://jitpack.io/#null8626/decancer
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
+[ko-fi-brief-image]: https://img.shields.io/badge/donations-ko--fi-red?color=ff5e5b&style=flat-square
 [ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
 [ko-fi-url]: https://ko-fi.com/null8626
 
@@ -28,10 +29,6 @@ A library that removes common unicode confusables/homoglyphs from strings.
   - C/C++
   - Java
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
-
-If you want to support me manually looking at thousands of unicode characters, consider donating!
-
-[![ko-fi][ko-fi-image]][ko-fi-url]
 
 ## Installation
 
@@ -492,41 +489,11 @@ int main(void) {
 
 </details>
 
-## Compatibility
+## Donations
 
+If you want to support my eyes for manually looking at thousands of unicode characters, consider donating! ❤
 
-Decancer is supported in the following platforms:
-
-Platform name | C/C++/Rust | Java | JavaScript
----- | ---- | ---- | ----
-ARM64 macOS (11.0+, Big Sur+) | ✓ | ✓ | ✓ |
-ARM64 iOS | ✓ | | |
-Apple iOS Simulator on ARM6 | ✓ | | |
-ARM64 Android | ✓ | | ✓ |
-ARM64 Windows MSVC | ✓ | ✓ | ✓ |
-ARM64 Linux (kernel 4.1, glibc 2.17+) | ✓ | ✓ | ✓ |
-ARM64 Linux with MUSL | ✓ | ✓ | ✓ |
-ARMv6 Linux (kernel 3.2, glibc 2.17) | ✓ | ✓ | |
-ARMv5TE Linux (kernel 4.4, glibc 2.23) | ✓ | ✓ | |
-ARMv7-A Android | ✓ | | ✓ |
-ARMv7-A Linux (kernel 4.15, glibc 2.27) | ✓ | ✓ | |
-ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17) | ✓ | ✓ | ✓ |
-32-bit Linux w/o SSE (kernel 3.2, glibc 2.17) | ✓ | | |
-32-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
-32-bit FreeBSD | ✓ | ✓ | |
-32-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | |
-PPC64LE Linux (kernel 3.10, glibc 2.17) | ✓ | | |
-RISC-V Linux (kernel 4.20, glibc 2.29) | ✓ | ✓ | |
-S390x Linux (kernel 3.2, glibc 2.17) | ✓ | | |
-SPARC Solaris 11, illumos | ✓ | | |
-Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23) | ✓ | | |
-64-bit macOS (10.12+, Sierra+) | ✓ | ✓ | ✓ |
-64-bit iOS | ✓ | | |
-64-bit MSVC (Windows 7+) | ✓ | ✓ | ✓ |
-64-bit FreeBSD | ✓ | ✓ | ✓ |
-64-bit illumos | ✓ | | |
-64-bit Linux (kernel 3.2+, glibc 2.17+) | ✓ | ✓ | ✓ |
-64-bit Linux with MUSL | ✓ | ✓ | ✓ |
+[![ko-fi][ko-fi-image]][ko-fi-url]
 
 ## Contributing
 
