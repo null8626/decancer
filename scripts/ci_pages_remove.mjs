@@ -3,8 +3,7 @@ import { dirname, join, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-
-const NOT_EXCLUDED = [
+const EXCLUDED = [
   'index.html',
   ['bindings', 'wasm', 'bin'],
   ['scripts'],
@@ -12,7 +11,7 @@ const NOT_EXCLUDED = [
 ]
 
 function lookInside(fullPath) {
-  for (const ne of NOT_EXCLUDED) {
+  for (const ne of EXCLUDED) {
     if (typeof ne === 'string') {
       if (fullPath === join(ROOT_DIR, ne)) {
         return false
@@ -43,7 +42,7 @@ function lookInside(fullPath) {
 }
 
 function isExcluded(fullPath) {
-  for (const ne of NOT_EXCLUDED) {
+  for (const ne of EXCLUDED) {
     if (typeof ne === 'string') {
       if (fullPath === join(ROOT_DIR, ne)) {
         return false
