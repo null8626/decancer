@@ -603,6 +603,9 @@ jobs:
       - setup
       - java
       - wasm
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     if: ${{ always() && github.event_name != 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
@@ -646,16 +649,20 @@ jobs:
           message: 'chore: update files'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Update .gitignore for GitHub Pages
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Prepare GitHub Pages directories
+        run: |
+          node ./scripts/ci_pages_remove.mjs
+          rm -rf ./scripts
         shell: bash
-        run: node scripts/ci_pages_gitignore.mjs
-      - name: Deploy to GitHub Pages
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          clean: true
-          commit-message: 'chore: deploy to github pages'
-          folder: '.'
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
   publish:
     name: Publish
     runs-on: ubuntu-latest
