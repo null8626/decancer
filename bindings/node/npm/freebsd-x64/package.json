@@ -1,15 +1,15 @@
 {
-  "name": "@vierofernando/decancer-win32-arm64-msvc",
+  "name": "@vierofernando/decancer-freebsd-x64",
   "version": "3.2.0",
   "os": [
-    "win32"
+    "freebsd"
   ],
   "cpu": [
-    "arm64"
+    "x64"
   ],
-  "main": "decancer.win32-arm64-msvc.node",
+  "main": "decancer.freebsd-x64.node",
   "files": [
-    "decancer.win32-arm64-msvc.node"
+    "decancer.freebsd-x64.node"
   ],
   "license": "MIT",
   "engines": {
@@ -17,7 +17,7 @@
   },
   "author": "null8626",
   "homepage": "https://github.com/null8626/decancer#readme",
-  "description": "A library that removes common unicode confusables/homoglyphs from strings. (Binary port for win32-arm64-msvc)",
+  "description": "A library that removes common unicode confusables/homoglyphs from strings. (Binary port for freebsd-x64)",
   "bugs": {
     "url": "https://github.com/null8626/decancer/issues"
   },
