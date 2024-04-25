@@ -669,7 +669,7 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Prepare GitHub Pages directories
         run: |
-          node ./scripts/ci_pages_remove.mjs
+          node ./scripts/ci_setup_pages.mjs
           rm -rf ./scripts
         shell: bash
       - name: Upload GitHub Pages artifact
