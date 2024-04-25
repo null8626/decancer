@@ -29,8 +29,7 @@ A library that removes common unicode confusables/homoglyphs from strings.
   - Java
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
-If you want to support me manually looking at thousands of unicode characters, consider donating!
-
+If you want to support my eyes manually looking at thousands of unicode characters, consider donating!
 [![ko-fi][ko-fi-image]][ko-fi-url]
 
 ## Installation
