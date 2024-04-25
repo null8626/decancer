@@ -11,7 +11,9 @@ const EXCLUDED = [
   ['.git']
 ]
 
-const editedMinifiedJsContents = (await readFile(MINIFIED_JS)).toString().replace(/decancer@v[\.\d]+/, 'decancer@main')
+const editedMinifiedJsContents = (await readFile(MINIFIED_JS))
+  .toString()
+  .replace(/decancer@v[\.\d]+/, 'decancer@main')
 await writeFile(MINIFIED_JS, editedMinifiedJsContents)
 
 function lookInside(fullPath) {
