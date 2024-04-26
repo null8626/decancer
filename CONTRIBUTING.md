@@ -51,12 +51,12 @@ interface JsonContents {
 
   - The `string[][]` two-dimensional array **must NOT be empty** and its length **must NOT exceed `127`.**
   - The `string[]` arrays **must NOT be empty** and their lengths **must NOT exceed `255`.**
-  - Each `string` **must ONLY be only one character in length.**
-  - Each `string` **must ONLY be in the ASCII range.**
+  - Each `string` **must ONLY be one character long.**
+  - Each `string` **must be ASCII.**
 
 ## Other scripts
 
-Other useful scripts have been added as a utility for the maintenance of `decancer`.
+Other useful scripts have been added as a utility for maintaining `decancer`.
 
 ### Pretty source code files
 
