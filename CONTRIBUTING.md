@@ -43,11 +43,9 @@ interface JsonContents {
 
 - **Information regarding the `Codepoint` structure:**
 
-  - The `JsonContents#codepoints` array **must NOT be empty.** _(duh)_
+  - The `JsonContents#codepoints` array **must NOT be empty.**
   - `Codepoint#codepoint` is the unicode codepoint. It must be around `\u80` to `\ue00ff` and must NOT be a [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates).
   - `Codepoint#translation` is the translation string: its length must not exceed `15`, it must be in lowercase, and it must be in ASCII.
-  - `Codepoint#rangeUntil` is an optional number that indicates where the range of this codepoint should end. If it's `null`, then the codepoint is not a range. For example: Say a codepoint with the codepoints of `\xE0` to `\xE5` all translates to `a`, then the `codepoint` field would be `0x00EO` and the `rangeUntil` field would be `0x00E5`. **Please note that the range size MUST be around `1` to `127`.**
-  - `Codepoint#syncedTranslation` is a flag whether this range's translation would change accordingly with the codepoint index. For example: `\xE0` translates to `a`, `\xE1` translates to `b`, `\xE2` translates to `c`, and so on (the translation property's length must be `1`).
 
 - **Information regarding the `JsonContents#similar` field:**
 
