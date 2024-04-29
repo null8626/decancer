@@ -129,13 +129,7 @@ $ chmod +x ./gradlew
 $ ./gradlew build --warning-mode all
 ```
 
-Tip: if you want to only support a limited number of platforms, you can shrink the size of the resulting jar file by only including binaries you need.
-
-```console
-$ unzip -l ./bin/bindings.zip
-... list of binary files ...
-$ zip -d ./bin/bindings.zip [binaryFile(s)]
-```
+Tip: You can shrink the size of the resulting jar file by removing binaries in the `bin` directory for the platforms you don't want to support.
 
 </details>
 <details>
