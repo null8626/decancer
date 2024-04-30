@@ -13,7 +13,7 @@ use std::{
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[must_use]
-#[derive(Clone, Eq)]
+#[derive(Clone, Eq, Hash)]
 pub struct CuredString(pub(crate) String);
 
 impl CuredString {
@@ -41,17 +41,29 @@ impl CuredString {
   /// This comparison is case-insensitive.
   ///
   /// ```rust
-  /// let cured = decancer::cure!("helloh yeah").unwrap();
+  /// let cured = decancer::cure!("ｈꡩ𝔏┕⊕𝚑ᅠΎ⫕ᣲ𑀜").unwrap();
   /// let matches = cured.find_multiple(["hello", "oh yeah"]);
   ///
   /// assert_eq!(matches, [0..11]);
+  /// ```
+  ///
+  /// Usage with the [`censor`](https://docs.rs/censor) crate:
+  ///
+  /// ```rust
+  /// let censor = censor::Standard + censor::Sex;
+  ///
+  /// let cured = decancer::cure!("𝑺ꡘ꡶イ↥⢗ㄒ❘⋶ᔚ").unwrap();
+  /// let matches = cured.find_multiple(censor.set());
+  ///
+  /// assert_eq!(matches, [0..10]);  
   /// ```
   pub fn find_multiple<S, O>(&self, other: O) -> Vec<Range<usize>>
   where
     S: AsRef<str>,
     O: IntoIterator<Item = S>,
   {
-    let mut ranges = Vec::new();
+    let other = other.into_iter();
+    let mut ranges = Vec::with_capacity(other.size_hint().0);
 
     for o in other {
       for mat in self.find(o.as_ref()) {
@@ -109,10 +121,21 @@ impl CuredString {
   /// This comparison is case-insensitive.
   ///
   /// ```rust
-  /// let mut cured = decancer::cure!("helloh yeah").unwrap();
+  /// let mut cured = decancer::cure!("ꀡৎレレ⌽ⴙᅠ𝓎ȩ㆟ҥ").unwrap();
   /// cured.censor_multiple(["hello", "oh yeah"], '*');
   ///
   /// assert_eq!(cured, "***********");
+  /// ```
+  ///
+  /// Usage with the [`censor`](https://docs.rs/censor) crate:
+  ///
+  /// ```rust
+  /// let censor = censor::Standard + censor::Sex;
+  ///
+  /// let mut cured = decancer::cure!("𝑺ꡘ꡶イ↥⢗ㄒ❘⋶ᔚ").unwrap();
+  /// cured.censor_multiple(censor.set(), '*');
+  ///
+  /// assert_eq!(cured, "**********");
   /// ```
   pub fn censor_multiple<S, O>(&mut self, other: O, with: char)
   where
@@ -162,10 +185,21 @@ impl CuredString {
   /// This comparison is case-insensitive.
   ///
   /// ```rust
-  /// let mut cured = decancer::cure!("helloh yeah").unwrap();
+  /// let mut cured = decancer::cure!("ꀡৎレレ⌽ⴙᅠ𝓎ȩ㆟ҥ").unwrap();
   /// cured.replace_multiple(["hello", "oh yeah"], "world");
   ///
   /// assert_eq!(cured, "world");
+  /// ```
+  ///
+  /// Usage with the [`censor`](https://docs.rs/censor) crate:
+  ///
+  /// ```rust
+  /// let censor = censor::Standard + censor::Sex;
+  ///
+  /// let mut cured = decancer::cure!("𝑺ꡘ꡶イ↥⢗ㄒ❘⋶ᔚ").unwrap();
+  /// cured.replace_multiple(censor.set(), "no :)");
+  ///
+  /// assert_eq!(cured, "no :)");
   /// ```
   #[inline(always)]
   pub fn replace_multiple<S, O>(&mut self, other: O, with: &str)

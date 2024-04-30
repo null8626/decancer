@@ -14,7 +14,7 @@ use std::cmp::Ordering;
 /// // by default, all options are disabled
 /// let _options = Options::default();
 /// ```
-#[derive(Copy, Clone, Eq, PartialEq, Default)]
+#[derive(Copy, Clone, Eq, PartialEq, Default, Hash)]
 pub struct Options(pub(crate) u32);
 
 macro_rules! options {
