@@ -17,12 +17,12 @@ pub(crate) const fn is_alphanumeric(code: u32) -> bool {
 }
 
 #[derive(Copy, Clone)]
-pub(crate) struct Binary<'a> {
-  bytes: &'a [u8],
+pub(crate) struct Binary {
+  bytes: &'static [u8],
 }
 
-impl<'a> Binary<'a> {
-  pub(crate) const fn new(bytes: &'a [u8]) -> Self {
+impl Binary {
+  pub(crate) const fn new(bytes: &'static [u8]) -> Self {
     Self { bytes }
   }
 
@@ -31,7 +31,7 @@ impl<'a> Binary<'a> {
   }
 
   #[inline(always)]
-  pub(crate) fn sliced(self, offset: usize, size: usize) -> &'a [u8] {
+  pub(crate) fn sliced(self, offset: usize, size: usize) -> &'static [u8] {
     &self.bytes[offset..offset + size]
   }
 

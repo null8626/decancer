@@ -7,7 +7,7 @@ use crate::{
 };
 use std::cmp::Ordering;
 
-pub(crate) const CODEPOINTS: Binary<'static> = Binary::new(include_bytes!("../bin/codepoints.bin"));
+pub(crate) const CODEPOINTS: Binary = Binary::new(include_bytes!("../bin/codepoints.bin"));
 
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 6) - 1;

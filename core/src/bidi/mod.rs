@@ -3,7 +3,7 @@ mod class;
 use crate::util::Binary;
 pub(crate) use class::Class;
 
-const BIDI: Binary<'static> = Binary::new(include_bytes!("../../bin/bidi.bin"));
+const BIDI: Binary = Binary::new(include_bytes!("../../bin/bidi.bin"));
 
 const BIDI_DICTIONARY_OFFSET: u16 = BIDI.u16_at(0);
 const BIDI_DICTIONARY_COUNT: u16 = BIDI.u16_at(2);
