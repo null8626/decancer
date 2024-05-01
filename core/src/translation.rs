@@ -51,7 +51,7 @@ impl Translation {
       Self::None => Self::None,
     }
   }
-  
+
   #[cfg(feature = "options")]
   fn is_ascii(&self) -> bool {
     match self {
@@ -60,7 +60,7 @@ impl Translation {
       Self::None => true,
     }
   }
-  
+
   #[cfg(feature = "options")]
   fn is_alphanumeric(&self) -> bool {
     match self {
