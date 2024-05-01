@@ -92,7 +92,7 @@ impl From<Translation> for Cow<'static, str> {
 
 impl Add<Translation> for String {
   type Output = String;
-  
+
   #[inline(always)]
   fn add(mut self, translation: Translation) -> Self::Output {
     self += translation;
