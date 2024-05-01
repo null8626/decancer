@@ -66,9 +66,7 @@ impl CuredString {
     let mut ranges = Vec::with_capacity(other.size_hint().0);
 
     for o in other {
-      for mat in self.find(o.as_ref()) {
-        ranges.push(mat);
-      }
+      ranges.extend(self.find(o.as_ref()));
     }
 
     merge_ranges(&mut ranges);
