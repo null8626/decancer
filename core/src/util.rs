@@ -1,7 +1,4 @@
-use std::{
-  cmp::max,
-  ops::{Index, IndexMut, Range},
-};
+use std::ops::{Index, IndexMut, Range};
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
@@ -87,7 +84,9 @@ where
     let previous = &mut ranges[j];
 
     if current.start >= previous.start && current.start <= previous.end {
-      previous.end = max(current.end, previous.end);
+      if current.end > previous.end {
+        previous.end = current.end;
+      }
     } else {
       j += 1;
       ranges[j] = current;
