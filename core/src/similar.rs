@@ -230,7 +230,7 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
               self.other_iterator.restart();
 
               current_separator = None;
-              current_other = self.other_iterator.next().unwrap();
+              current_other = self.other_iterator.next()?;
 
               let (skipped, matched_skip) = self.skip_until(current_other.0)?;
 
