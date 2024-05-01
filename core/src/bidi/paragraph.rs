@@ -253,7 +253,7 @@ impl IsolatingRunSequence {
       }
 
       if found_e {
-        class_to_set = Some(e);
+        class_to_set.replace(e);
       } else if found_not_e {
         let mut previous_strong = self
           .iter_backwards_from(pair.start, pair.start_run)
@@ -265,7 +265,7 @@ impl IsolatingRunSequence {
           previous_strong = Class::R;
         }
 
-        class_to_set = Some(previous_strong);
+        class_to_set.replace(previous_strong);
       }
 
       if let Some(class_to_set) = class_to_set {
@@ -432,22 +432,22 @@ impl Paragraph {
     for (i, c) in text.char_indices() {
       match original_classes[i] {
         Class::B | Class::S => {
-          reset_to = Some(i + c.len_utf8());
+          reset_to.replace(i + c.len_utf8());
 
           if reset_from.is_none() {
-            reset_from = Some(i);
+            reset_from.replace(i);
           }
         },
 
         Class::WS | Class::FSI | Class::LRI | Class::RLI | Class::PDI => {
           if reset_from.is_none() {
-            reset_from = Some(i);
+            reset_from.replace(i);
           }
         },
 
         Class::RLE | Class::LRE | Class::RLO | Class::LRO | Class::PDF | Class::BN => {
           if reset_from.is_none() {
-            reset_from = Some(i);
+            reset_from.replace(i);
           }
 
           levels[i] = prev_level;

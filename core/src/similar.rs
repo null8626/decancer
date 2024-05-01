@@ -132,7 +132,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     let haystack = &self.self_str[self.self_index..];
     let matched_len = leetspeak::find(haystack, other_char as _)?;
 
-    self.self_iterator = self.self_str[self.self_index + matched_len..].chars();
+    self.self_iterator = haystack[matched_len..].chars();
 
     Some(matched_len)
   }

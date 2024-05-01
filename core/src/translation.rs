@@ -11,7 +11,7 @@ use std::{
   borrow::Cow,
   cmp::PartialEq,
   fmt::{self, Debug, Display},
-  ops::AddAssign,
+  ops::{Add, AddAssign},
   str,
 };
 
@@ -77,6 +77,26 @@ impl Translation {
     } else {
       self
     }
+  }
+}
+
+impl From<Translation> for Cow<'static, str> {
+  fn from(translation: Translation) -> Self {
+    match translation {
+      Translation::Character(c) => Self::Owned(String::from(c)),
+      Translation::String(s) => s,
+      Translation::None => Self::Borrowed(""),
+    }
+  }
+}
+
+impl Add<Translation> for String {
+  type Output = String;
+
+  #[inline(always)]
+  fn add(mut self, translation: Translation) -> Self::Output {
+    self += translation;
+    self
   }
 }
 
