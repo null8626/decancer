@@ -17,7 +17,7 @@ use std::{
 
 /// The translation for a single character/codepoint.
 #[must_use]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Hash)]
 pub enum Translation {
   /// A single unicode character.
   Character(char),
@@ -53,28 +53,30 @@ impl Translation {
   }
 
   #[cfg(feature = "options")]
+  fn is_ascii(&self) -> bool {
+    match self {
+      Self::Character(c) => (*c as u32) > 0x7f,
+      Self::String(ref s) => !s.is_ascii(),
+      Self::None => true,
+    }
+  }
+
+  #[cfg(feature = "options")]
+  fn is_alphanumeric(&self) -> bool {
+    match self {
+      Self::Character(c) => !is_alphanumeric(*c as _),
+      Self::String(ref s) => !s.bytes().all(|b| is_alphanumeric(b as _)),
+      Self::None => true,
+    }
+  }
+
+  #[cfg(feature = "options")]
   pub(crate) fn ensure_stripped_if(self, ascii_only: bool, alphanumeric_only: bool) -> Self {
-    if ascii_only
-      && match self {
-        Self::Character(c) => (c as u32) > 0x7f,
-        Self::String(ref s) => !s.is_ascii(),
-        Self::None => true,
-      }
-    {
-      return Translation::None;
+    if (ascii_only && self.is_ascii()) || (alphanumeric_only && self.is_alphanumeric()) {
+      Self::None
+    } else {
+      self
     }
-
-    if alphanumeric_only
-      && match self {
-        Self::Character(c) => !is_alphanumeric(c as _),
-        Self::String(ref s) => !s.bytes().all(|b| is_alphanumeric(b as _)),
-        Self::None => true,
-      }
-    {
-      return Translation::None;
-    }
-
-    self
   }
 }
 
