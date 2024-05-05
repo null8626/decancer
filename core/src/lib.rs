@@ -268,7 +268,7 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
   let mut processing_classes = original_classes.clone();
   let mut output = String::with_capacity(refined_input.len());
 
-  for paragraph in paragraphs.iter() {
+  for paragraph in &paragraphs {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
 
     if paragraph.level.0 != 0 || !paragraph.pure_ltr {
@@ -286,9 +286,9 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
 
       for j in 0..levels.len() {
         match (levels[j].is_rtl(), processing_classes[j]) {
-          (false, Class::AN) | (false, Class::EN) => levels[j].raise(2)?,
-          (false, Class::R) | (true, Class::L) | (true, Class::EN) | (true, Class::AN) => {
-            levels[j].raise(1)?
+          (false, Class::AN | Class::EN) => levels[j].raise(2)?,
+          (false, Class::R) | (true, Class::L | Class::EN | Class::AN) => {
+            levels[j].raise(1)?;
           },
           _ => {},
         }

@@ -85,7 +85,7 @@ impl IsolatingRunSequence {
 
               processing_classes[i] =
                 match (prev_class_before_w4, processing_classes[i], next_class) {
-                  (Class::EN, Class::ES, Class::EN) | (Class::EN, Class::CS, Class::EN) => {
+                  (Class::EN, Class::ES | Class::CS, Class::EN) => {
                     Class::EN
                   },
                   (Class::AN, Class::CS, Class::AN) => Class::AN,
@@ -177,7 +177,7 @@ impl IsolatingRunSequence {
               break;
             }
 
-            stack.push((matched.opening, actual_index, run_index))
+            stack.push((matched.opening, actual_index, run_index));
           } else if let Some((stack_index, element)) = stack
             .iter()
             .enumerate()
@@ -341,15 +341,9 @@ impl IsolatingRunSequence {
 
         let new_class = match (prev_class, next_class) {
           (Class::L, Class::L) => Class::L,
-          (Class::R, Class::R)
-          | (Class::R, Class::AN)
-          | (Class::R, Class::EN)
-          | (Class::AN, Class::R)
-          | (Class::AN, Class::AN)
-          | (Class::AN, Class::EN)
-          | (Class::EN, Class::R)
-          | (Class::EN, Class::AN)
-          | (Class::EN, Class::EN) => Class::R,
+          (Class::R | Class::AN | Class::EN, Class::R) |
+(Class::R | Class::AN | Class::EN, Class::AN) |
+(Class::R | Class::AN | Class::EN, Class::EN) => Class::R,
           _ => e,
         };
 

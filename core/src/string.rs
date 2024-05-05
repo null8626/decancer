@@ -113,7 +113,7 @@ impl CuredString {
   pub fn censor(&mut self, other: &str, with: char) {
     let original = self.clone();
 
-    self.censor_inner(&original, original.find(other), with)
+    self.censor_inner(&original, original.find(other), with);
   }
 
   /// Censors every matches from an array of strings with a repetition of a character in-place.
@@ -144,7 +144,7 @@ impl CuredString {
   {
     let original = self.clone();
 
-    self.censor_inner(&original, original.find_multiple(other), with)
+    self.censor_inner(&original, original.find_multiple(other), with);
   }
 
   fn replace_inner<I>(&mut self, matches: I, with: &str)
@@ -177,7 +177,7 @@ impl CuredString {
   /// ```
   #[inline(always)]
   pub fn replace(&mut self, other: &str, with: &str) {
-    self.replace_inner(self.clone().find(other), with)
+    self.replace_inner(self.clone().find(other), with);
   }
 
   /// Replaces every matches from an array of strings with another string in-place.
@@ -207,7 +207,7 @@ impl CuredString {
     S: AsRef<str>,
     O: IntoIterator<Item = S>,
   {
-    self.replace_inner(self.clone().find_multiple(other), with)
+    self.replace_inner(self.clone().find_multiple(other), with);
   }
 
   /// Checks if this cured string similarly starts with another string.
