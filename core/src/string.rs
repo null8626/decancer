@@ -77,11 +77,14 @@ impl CuredString {
   where
     I: IntoIterator<Item = Range<usize>>,
   {
+    let mut with_str = String::new();
     let mut char_diff = 0isize;
 
     for mat in matches {
       let chars = original[mat.clone()].chars().count();
-      let mut with_str = String::with_capacity(chars);
+
+      with_str.clear();
+      with_str.reserve_exact(chars);
 
       for _ in 0..chars {
         with_str.push(with);

@@ -64,11 +64,9 @@ impl IsolatingRunSequence {
 
         match processing_classes[i] {
           Class::EN => {
-            for j in &et_run_indices {
-              processing_classes[*j] = Class::EN;
+            while let Some(j) = et_run_indices.pop() {
+              processing_classes[j] = Class::EN;
             }
-
-            et_run_indices.clear();
           },
 
           Class::ES | Class::CS => {
@@ -132,22 +130,18 @@ impl IsolatingRunSequence {
         prev_class_before_w5 = processing_classes[i];
 
         if prev_class_before_w5 != Class::ET {
-          for j in &et_run_indices {
-            processing_classes[*j] = Class::ON;
+          while let Some(j) = et_run_indices.pop() {
+            processing_classes[j] = Class::ON;
           }
-
-          et_run_indices.clear();
         }
 
         prev_class_before_w4 = class_before_w456;
       }
     }
 
-    for j in &et_run_indices {
-      processing_classes[*j] = Class::ON;
+    while let Some(j) = et_run_indices.pop() {
+      processing_classes[j] = Class::ON;
     }
-
-    et_run_indices.clear();
 
     let mut last_strong_is_l = self.start_class == Class::L;
 
@@ -359,11 +353,9 @@ impl IsolatingRunSequence {
           _ => e,
         };
 
-        for j in &ni_run {
-          processing_classes[*j] = new_class;
+        while let Some(j) = ni_run.pop() {
+          processing_classes[j] = new_class;
         }
-
-        ni_run.clear();
       }
 
       prev_class = processing_classes[i];

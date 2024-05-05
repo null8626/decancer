@@ -13,26 +13,22 @@ pub(crate) fn is(self_char: char, other_char: char) -> bool {
   if self_char == other_char {
     return true;
   } else if self_char <= 0x7f && other_char <= 0x7f {
-    let mut contains_a = false;
-    let mut contains_b = false;
+    let mut id = 0;
 
     for offset in SIMILAR_START..SIMILAR_END {
       let cur = CODEPOINTS.at(offset as _);
       let sim = cur & 0x7f;
 
       if sim == (self_char as u8) {
-        contains_a = true;
+        id |= 1;
+      } else if sim == (other_char as u8) {
+        id |= 2;
       }
 
-      if sim == (other_char as u8) {
-        contains_b = true;
-      }
-
-      if contains_a && contains_b {
+      if id == 3 {
         return true;
       } else if cur >= 0x80 {
-        contains_a = false;
-        contains_b = false;
+        id = 0;
       }
     }
   }
@@ -198,19 +194,20 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
     let mut current_separator: Option<char> = None;
 
     while let Some(next_self_char) = self.self_iterator.next() {
-      if let Some(next_other) = current_other.1 {
-        if let Some(matched_skip) = self.matches(next_self_char, next_other) {
-          self.self_index += matched_skip;
-          last_match_end = self.self_index;
-          current_separator = None;
+      if let Some(matched_skip) = current_other
+        .1
+        .and_then(|next_other| self.matches(next_self_char, next_other))
+      {
+        self.self_index += matched_skip;
+        last_match_end = self.self_index;
+        current_separator = None;
 
-          current_other = unwrap_or_ret!(
-            self.other_iterator.next(),
-            Some(start_index..last_match_end)
-          );
+        current_other = unwrap_or_ret!(
+          self.other_iterator.next(),
+          Some(start_index..last_match_end)
+        );
 
-          continue;
-        }
+        continue;
       }
 
       if let Some(matched_skip) = self.matches(next_self_char, current_other.0) {
