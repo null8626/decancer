@@ -85,9 +85,7 @@ impl IsolatingRunSequence {
 
               processing_classes[i] =
                 match (prev_class_before_w4, processing_classes[i], next_class) {
-                  (Class::EN, Class::ES | Class::CS, Class::EN) => {
-                    Class::EN
-                  },
+                  (Class::EN, Class::ES | Class::CS, Class::EN) => Class::EN,
                   (Class::AN, Class::CS, Class::AN) => Class::AN,
                   _ => Class::ON,
                 };

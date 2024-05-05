@@ -171,7 +171,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
       if let Some(matched_skip) = self.matches(next_self_char, other_char) {
         return Some((skipped, matched_skip));
       }
-      
+
       skipped += next_self_char.len_utf8();
     }
   }
