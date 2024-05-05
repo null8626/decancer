@@ -87,7 +87,7 @@ static bool test_utf8(uint8_t *string, size_t size, const char *error_prefix, de
     char assert_message[60];
     for (uint32_t i = 0; i < sizeof(expected_raw); i++)
     {
-        sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
+        snprintf(assert_message, sizeof(assert_message), "mismatched utf-8 contents at index %u", i);
         assert(output_raw[i] == expected_raw[i], assert_message, error_prefix);
     }
 
@@ -120,7 +120,7 @@ static bool test_utf16(uint16_t *string, size_t size, const char *error_prefix, 
 
     for (uint32_t i = 0; i < sizeof(expected_utf16_raw) / sizeof(uint16_t); i++)
     {
-        sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
+        snprintf(assert_message, sizeof(assert_message), "mismatched utf-16 contents at index %u", i);
         assert(utf16_output_ptr[i] == expected_utf16_raw[i], assert_message, error_prefix);
     }
 
