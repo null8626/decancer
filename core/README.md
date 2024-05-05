@@ -137,6 +137,7 @@ Tip: You can shrink the size of the resulting jar file by removing binaries in t
 
 ### Download
 
+- [Header file](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.h)
 - [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-apple-darwin.zip)
 - [Download for ARM64 iOS](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-apple-ios.zip)
 - [Download for Apple iOS Simulator on ARM6](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-apple-ios-sim.zip)
