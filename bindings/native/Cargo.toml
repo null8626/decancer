@@ -8,6 +8,14 @@ publish = false
 name = "decancer"
 crate-type = ["cdylib"]
 
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+cast-lossless = "allow"
+cast-possible-truncation = "allow"
+cast-possible-wrap = "allow"
+single-match-else = "allow"
+
 [dependencies]
 decancer = { path = "../../core", default-features = false }
 paste = "1"
