@@ -12,7 +12,6 @@ use std::{
 /// A small wrapper around the [`String`] data type for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
-#[must_use]
 #[derive(Clone, Eq, Hash)]
 pub struct CuredString(pub(crate) String);
 
@@ -214,7 +213,6 @@ impl CuredString {
   /// Checks if this cured string similarly starts with another string.
   ///
   /// This comparison is case-insensitive.
-  #[must_use]
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = self.find(other);
     let mat = unwrap_or_ret!(iter.next(), false);
@@ -225,7 +223,6 @@ impl CuredString {
   /// Checks if this cured string similarly ends with another string.
   ///
   /// This comparison is case-insensitive.
-  #[must_use]
   pub fn ends_with(&self, other: &str) -> bool {
     let last = unwrap_or_ret!(self.find(other).last(), false);
 
@@ -235,7 +232,6 @@ impl CuredString {
   /// Checks if this cured string similarly contains another string.
   ///
   /// This comparison is case-insensitive.
-  #[must_use]
   pub fn contains(&self, other: &str) -> bool {
     let mut iter = self.find(other);
 
@@ -267,7 +263,6 @@ impl<S> PartialEq<S> for CuredString
 where
   S: AsRef<str> + ?Sized,
 {
-  #[must_use]
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
     Matcher::is_equal(self, other.as_ref())
