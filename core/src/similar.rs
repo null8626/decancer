@@ -96,7 +96,6 @@ impl<'a> Iterator for CachedPeek<'a> {
 }
 
 /// A matcher iterator around a string that yields a non-inclusive [`Range`] whenever it detects a similar match.
-#[must_use]
 pub struct Matcher<'a, 'b> {
   self_iterator: Chars<'a>,
   #[cfg(feature = "leetspeak")]
@@ -134,7 +133,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   }
 
   #[cfg_attr(not(feature = "leetspeak"), inline(always))]
-  fn matches_character(&self, self_char: char, other_char: char) -> Option<usize> {
+  fn matches_character(self_char: char, other_char: char) -> Option<usize> {
     if is(self_char, other_char) {
       Some(other_char.len_utf8())
     } else {
@@ -147,7 +146,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     {
       self
         .matches_leetspeak(other_char)
-        .or_else(|| self.matches_character(self_char, other_char))
+        .or_else(|| Self::matches_character(self_char, other_char))
     }
 
     #[cfg(not(feature = "leetspeak"))]
@@ -171,9 +170,9 @@ impl<'a, 'b> Matcher<'a, 'b> {
 
       if let Some(matched_skip) = self.matches(next_self_char, other_char) {
         return Some((skipped, matched_skip));
-      } else {
-        skipped += next_self_char.len_utf8();
       }
+
+      skipped += next_self_char.len_utf8();
     }
   }
 }

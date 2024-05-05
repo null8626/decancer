@@ -37,14 +37,11 @@ pub unsafe extern "C" fn decancer_cure(
   options: u32,
   error: *mut Error,
 ) -> *mut decancer::CuredString {
-  let input = match utf8::get(input_str, input_size) {
-    Some(result) => result,
-    None => {
-      (*error).message = INVALID_UTF8_MESSAGE.as_ptr() as _;
-      (*error).message_size = INVALID_UTF8_MESSAGE.len() as _;
+  let Some(input) = utf8::get(input_str, input_size) else {
+    (*error).message = INVALID_UTF8_MESSAGE.as_ptr() as _;
+    (*error).message_size = INVALID_UTF8_MESSAGE.len() as _;
 
-      return 0 as _;
-    },
+    return 0 as _;
   };
 
   match decancer::cure(input, transmute(options)) {
@@ -67,14 +64,11 @@ pub unsafe extern "C" fn decancer_cure_wide(
   options: u32,
   error: *mut Error,
 ) -> *mut decancer::CuredString {
-  let input = match utf16::get(input_str, input_size) {
-    Some(result) => result,
-    None => {
-      (*error).message = INVALID_UTF16_MESSAGE.as_ptr() as _;
-      (*error).message_size = INVALID_UTF16_MESSAGE.len() as _;
+  let Some(input) = utf16::get(input_str, input_size) else {
+    (*error).message = INVALID_UTF16_MESSAGE.as_ptr() as _;
+    (*error).message_size = INVALID_UTF16_MESSAGE.len() as _;
 
-      return 0 as _;
-    },
+    return 0 as _;
   };
 
   let input_str = str::from_utf8_unchecked(&input);
@@ -114,7 +108,7 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
           let s = Box::new(s);
 
           (*output).slot_a = s.deref().as_ptr() as _;
-          (*output).slot_c = Box::into_raw(Box::new(s)) as *mut u8 as _;
+          (*output).slot_c = Box::into_raw(Box::new(s)).cast::<u8>() as _;
         },
       }
     },
@@ -157,8 +151,8 @@ pub unsafe extern "C" fn decancer_find_multiple(
   other_str: *mut u8,
   other_size: usize,
 ) -> *mut Vec<Range<usize>> {
-  match utf8::get_array(other_str as _, other_size) {
-    Some(result) => Box::into_raw(Box::new(transmute((*cured).find_multiple(result)))),
+  match utf8::get_array(other_str.cast(), other_size) {
+    Some(result) => Box::into_raw(Box::new((*cured).find_multiple(result))),
     None => 0 as _,
   }
 }
@@ -169,8 +163,8 @@ pub unsafe extern "C" fn decancer_find_multiple_wide(
   other_str: *mut u8,
   other_size: usize,
 ) -> *mut Vec<Range<usize>> {
-  match utf16::get_array(other_str as _, other_size) {
-    Some(result) => Box::into_raw(Box::new(transmute((*cured).find_multiple(result)))),
+  match utf16::get_array(other_str.cast(), other_size) {
+    Some(result) => Box::into_raw(Box::new((*cured).find_multiple(result))),
     None => 0 as _,
   }
 }
@@ -241,7 +235,7 @@ pub unsafe extern "C" fn decancer_censor_multiple(
   with_char: u32,
 ) -> bool {
   match (
-    utf8::get_array(other_str as _, other_size),
+    utf8::get_array(other_str.cast(), other_size),
     char::from_u32(with_char),
   ) {
     (Some(result), Some(with_char)) => {
@@ -261,7 +255,7 @@ pub unsafe extern "C" fn decancer_censor_multiple_wide(
   with_char: u32,
 ) -> bool {
   match (
-    utf16::get_array(other_str as _, other_size),
+    utf16::get_array(other_str.cast(), other_size),
     char::from_u32(with_char),
   ) {
     (Some(result), Some(with_char)) => {
@@ -327,7 +321,7 @@ pub unsafe extern "C" fn decancer_replace_multiple(
   with_size: usize,
 ) -> bool {
   match (
-    utf8::get_array(other_str as _, other_size),
+    utf8::get_array(other_str.cast(), other_size),
     utf8::get(with_str, with_size),
   ) {
     (Some(result), Some(with_str)) => {
@@ -348,7 +342,7 @@ pub unsafe extern "C" fn decancer_replace_multiple_wide(
   with_size: usize,
 ) -> bool {
   match (
-    utf16::get_array(other_str as _, other_size),
+    utf16::get_array(other_str.cast(), other_size),
     utf16::get(with_str, with_size),
   ) {
     (Some(result), Some(with_str)) => {
@@ -366,9 +360,7 @@ pub unsafe extern "C" fn decancer_equals(
   other_str: *mut u8,
   other_size: usize,
 ) -> bool {
-  utf8::get(other_str, other_size)
-    .map(|s| (*cured) == s)
-    .unwrap_or_default()
+  utf8::get(other_str, other_size).is_some_and(|s| (*cured) == s)
 }
 
 #[no_mangle]
@@ -378,8 +370,7 @@ pub unsafe extern "C" fn decancer_equals_wide(
   other_size: usize,
 ) -> bool {
   utf16::get(other_str, other_size)
-    .map(|vec| unsafe { (*cured) == str::from_utf8(&vec).unwrap() })
-    .unwrap_or_default()
+    .is_some_and(|vec| unsafe { (*cured) == str::from_utf8(&vec).unwrap() })
 }
 
 macro_rules! comparison_fn {

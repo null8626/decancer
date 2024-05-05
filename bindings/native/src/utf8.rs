@@ -6,7 +6,7 @@ pub(crate) fn get(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static 
     let mut input_ptr = NullTerminatedPointer::new(input_ptr);
 
     while let Some(value) = input_ptr.next() {
-      if (value >= 0xA0 && value <= 0xBF)
+      if (0xA0..=0xBF).contains(&value)
         || value >= 0xF8
         || (value >= 0xC0
           && ((input_ptr.next()? >> 6) != 0x02
@@ -32,7 +32,7 @@ pub(crate) unsafe fn get_array(
 
   for i in 0..input_length {
     output.push(unsafe {
-      let s = input_ptr.offset(i as _);
+      let s = input_ptr.add(i);
 
       get((*s).string, (*s).size)?
     });

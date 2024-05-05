@@ -17,7 +17,7 @@ fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
       output.push(c as _);
     } else if c <= 0x7ff {
       output.extend([((c >> 6) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
-    } else if c < 0xd800 || c >= 0xe000 {
+    } else if !(0xd800..0xe000).contains(&c) {
       output.extend([
         ((c >> 12) as u8) | 0xe0,
         (((c >> 6) & 0x3f) as u8) | 0x80,
@@ -26,7 +26,7 @@ fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
     } else {
       let n = iter.next()?;
 
-      if n >= 0xdc00 && n < 0xe000 {
+      if (0xdc00..0xe000).contains(&n) {
         let c = 0x10000 + (((c - 0xd800) as u32) << 10) + ((n as u32) - 0xdc00);
 
         output.extend([
@@ -62,7 +62,7 @@ pub(crate) unsafe fn get_array(
 
   for i in 0..input_length {
     output.push(unsafe {
-      let s = input_ptr.offset(i as _);
+      let s = input_ptr.add(i);
 
       String::from_utf8(get((*s).string, (*s).size)?).unwrap()
     });

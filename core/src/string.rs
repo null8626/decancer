@@ -12,7 +12,6 @@ use std::{
 /// A small wrapper around the [`String`] data type for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
-#[must_use]
 #[derive(Clone, Eq, Hash)]
 pub struct CuredString(pub(crate) String);
 
@@ -114,7 +113,7 @@ impl CuredString {
   pub fn censor(&mut self, other: &str, with: char) {
     let original = self.clone();
 
-    self.censor_inner(&original, original.find(other), with)
+    self.censor_inner(&original, original.find(other), with);
   }
 
   /// Censors every matches from an array of strings with a repetition of a character in-place.
@@ -145,7 +144,7 @@ impl CuredString {
   {
     let original = self.clone();
 
-    self.censor_inner(&original, original.find_multiple(other), with)
+    self.censor_inner(&original, original.find_multiple(other), with);
   }
 
   fn replace_inner<I>(&mut self, matches: I, with: &str)
@@ -178,7 +177,7 @@ impl CuredString {
   /// ```
   #[inline(always)]
   pub fn replace(&mut self, other: &str, with: &str) {
-    self.replace_inner(self.clone().find(other), with)
+    self.replace_inner(self.clone().find(other), with);
   }
 
   /// Replaces every matches from an array of strings with another string in-place.
@@ -208,13 +207,12 @@ impl CuredString {
     S: AsRef<str>,
     O: IntoIterator<Item = S>,
   {
-    self.replace_inner(self.clone().find_multiple(other), with)
+    self.replace_inner(self.clone().find_multiple(other), with);
   }
 
   /// Checks if this cured string similarly starts with another string.
   ///
   /// This comparison is case-insensitive.
-  #[must_use]
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = self.find(other);
     let mat = unwrap_or_ret!(iter.next(), false);
@@ -225,7 +223,6 @@ impl CuredString {
   /// Checks if this cured string similarly ends with another string.
   ///
   /// This comparison is case-insensitive.
-  #[must_use]
   pub fn ends_with(&self, other: &str) -> bool {
     let last = unwrap_or_ret!(self.find(other).last(), false);
 
@@ -235,7 +232,6 @@ impl CuredString {
   /// Checks if this cured string similarly contains another string.
   ///
   /// This comparison is case-insensitive.
-  #[must_use]
   pub fn contains(&self, other: &str) -> bool {
     let mut iter = self.find(other);
 
@@ -267,7 +263,6 @@ impl<S> PartialEq<S> for CuredString
 where
   S: AsRef<str> + ?Sized,
 {
-  #[must_use]
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
     Matcher::is_equal(self, other.as_ref())

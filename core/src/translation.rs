@@ -16,7 +16,6 @@ use std::{
 };
 
 /// The translation for a single character/codepoint.
-#[must_use]
 #[derive(Clone, Debug, PartialEq, Hash)]
 pub enum Translation {
   /// A single unicode character.
@@ -117,7 +116,6 @@ impl<S> PartialEq<S> for Translation
 where
   S: AsRef<str> + ?Sized,
 {
-  #[must_use]
   fn eq(&self, o: &S) -> bool {
     let o = o.as_ref();
 
