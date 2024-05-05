@@ -82,7 +82,7 @@ impl CuredString {
 
     for mat in matches {
       let chars = original[mat.clone()].chars().count();
-      
+
       with_str.clear();
       with_str.reserve_exact(chars);
 

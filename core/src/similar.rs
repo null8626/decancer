@@ -194,7 +194,10 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
     let mut current_separator: Option<char> = None;
 
     while let Some(next_self_char) = self.self_iterator.next() {
-      if let Some(matched_skip) = current_other.1.and_then(|next_other| self.matches(next_self_char, next_other)) {
+      if let Some(matched_skip) = current_other
+        .1
+        .and_then(|next_other| self.matches(next_self_char, next_other))
+      {
         self.self_index += matched_skip;
         last_match_end = self.self_index;
         current_separator = None;
