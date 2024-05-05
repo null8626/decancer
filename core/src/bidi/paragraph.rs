@@ -341,9 +341,7 @@ impl IsolatingRunSequence {
 
         let new_class = match (prev_class, next_class) {
           (Class::L, Class::L) => Class::L,
-          (Class::R | Class::AN | Class::EN, Class::R) |
-(Class::R | Class::AN | Class::EN, Class::AN) |
-(Class::R | Class::AN | Class::EN, Class::EN) => Class::R,
+          (Class::R | Class::AN | Class::EN, Class::R | Class::AN | Class::EN) => Class::R,
           _ => e,
         };
 
