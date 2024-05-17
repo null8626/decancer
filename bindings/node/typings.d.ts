@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 export class Match {
   readonly start: number
   readonly end: number
@@ -18,7 +20,7 @@ export class CuredString {
   toString(): string
 }
 
-export type Options = {
+export interface Options {
   all?: boolean
   retainCapitalization?: boolean
   disableBidi?: boolean

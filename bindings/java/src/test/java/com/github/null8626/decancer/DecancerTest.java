@@ -1,3 +1,5 @@
+package com.github.null8626.decancer;
+
 import com.github.null8626.decancer.CuredString;
 import com.github.null8626.decancer.Match;
 import org.junit.jupiter.api.*;
