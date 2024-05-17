@@ -1,7 +1,7 @@
 use crate::ptr::{Element, NullTerminatedPointer};
 use std::{slice, str};
 
-pub(crate) fn get(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static str> {
+pub(crate) fn get(input_ptr: *const u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
     let mut input_ptr = NullTerminatedPointer::new(input_ptr);
 
@@ -25,7 +25,7 @@ pub(crate) fn get(input_ptr: *mut u8, mut input_size: usize) -> Option<&'static 
 }
 
 pub(crate) unsafe fn get_array(
-  input_ptr: *mut Element<u8>,
+  input_ptr: *const Element<u8>,
   input_length: usize,
 ) -> Option<Vec<&'static str>> {
   let mut output = Vec::with_capacity(input_length);

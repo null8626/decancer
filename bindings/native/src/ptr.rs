@@ -1,18 +1,16 @@
-use std::mem::size_of;
-
 #[repr(C)]
 pub(crate) struct Element<T> {
-  pub(crate) string: *mut T,
+  pub(crate) string: *const T,
   pub(crate) size: usize,
 }
 
 pub(crate) struct NullTerminatedPointer<T> {
-  ptr: *mut T,
+  ptr: *const T,
   pub(crate) size: usize,
 }
 
 impl<T> NullTerminatedPointer<T> {
-  pub(crate) const fn new(ptr: *mut T) -> Self {
+  pub(crate) const fn new(ptr: *const T) -> Self {
     Self { ptr, size: 0 }
   }
 }
@@ -31,7 +29,7 @@ where
     if value == Default::default() {
       None
     } else {
-      self.size += size_of::<T>();
+      self.size += 1;
 
       Some(value)
     }
@@ -39,12 +37,12 @@ where
 }
 
 pub(crate) struct SizedPointer<T> {
-  ptr: *mut T,
+  ptr: *const T,
   size: usize,
 }
 
 impl<T> SizedPointer<T> {
-  pub(crate) const fn new(ptr: *mut T, size: usize) -> Self {
+  pub(crate) const fn new(ptr: *const T, size: usize) -> Self {
     Self { ptr, size }
   }
 }
@@ -63,7 +61,7 @@ where
     let value = unsafe { *self.ptr };
 
     self.ptr = unsafe { self.ptr.offset(1) };
-    self.size -= size_of::<T>();
+    self.size -= 1;
 
     Some(value)
   }

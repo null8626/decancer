@@ -42,7 +42,7 @@ fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
   }
 }
 
-pub(crate) unsafe fn get(input_ptr: *mut u16, input_size: usize) -> Option<Vec<u8>> {
+pub(crate) unsafe fn get(input_ptr: *const u16, input_size: usize) -> Option<Vec<u8>> {
   if input_size == 0 {
     let mut input_ptr = NullTerminatedPointer::new(input_ptr);
 
@@ -55,7 +55,7 @@ pub(crate) unsafe fn get(input_ptr: *mut u16, input_size: usize) -> Option<Vec<u
 }
 
 pub(crate) unsafe fn get_array(
-  input_ptr: *mut Element<u16>,
+  input_ptr: *const Element<u16>,
   input_length: usize,
 ) -> Option<Vec<String>> {
   let mut output = Vec::with_capacity(input_length);

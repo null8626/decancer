@@ -1,3 +1,5 @@
+package com.github.null8626.decancer;
+
 import com.github.null8626.decancer.CuredString;
 import com.github.null8626.decancer.Match;
 import org.junit.jupiter.api.*;
@@ -45,7 +47,6 @@ public class DecancerTest {
   @Test
   public void replace() throws Exception {
     CuredString string = new CuredString("wow hello wow heellllo!");
-    Exception exception = null;
 
     try {
       string.replace("hello", "world");

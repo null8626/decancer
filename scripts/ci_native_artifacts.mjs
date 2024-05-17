@@ -31,6 +31,10 @@ for (const artifact of artifacts) {
       ext === 'so' ||
       ext === 'dylib'
     ) {
+      if (ext === 'lib' && !artifact.endsWith('.dll.lib')) {
+        continue
+      }
+
       let name = artifact.replace('.dll.lib', '.lib')
 
       if (IS_JAVA) {
