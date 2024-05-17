@@ -1,7 +1,8 @@
 # Contributing guide
 
-If you want to contribute to the source code, feel free to do so! ❤️<br>
-Don't forget to state on what should be changed and their reason.
+If you want to contribute to the source code, feel free to do so! ❤️
+
+Don't forget to state what should be changed and their respective reasons.
 
 If you want to see/modify on the codepoints supported and/or their respective translation(s), feel free to do so! Here are the ways on how to do them;
 
@@ -67,17 +68,17 @@ Prerequisites:
 - [Rust](https://www.rust-lang.org)
 
 ```console
-$ node scripts/pretty.mjs
+node scripts/pretty.mjs
 ```
 
 ### Bump version number
 
 ```console
-$ node scripts/version.mjs 1.2.3
+node scripts/version.mjs 1.2.3
 ```
 
 ### Update cache if a new unicode version is released
 
 ```console
-$ node scripts/update_unicode.mjs
+node scripts/update_unicode.mjs
 ```

@@ -45,7 +45,6 @@ public class DecancerTest {
   @Test
   public void replace() throws Exception {
     CuredString string = new CuredString("wow hello wow heellllo!");
-    Exception exception = null;
 
     try {
       string.replace("hello", "world");

@@ -15,6 +15,8 @@ import cz.adamh.utils.NativeUtils;
  */
 public class CuredString {
 
+  private long inner;
+
   private static boolean isJUnit() {
     for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
       if (element.getClassName().startsWith("org.junit.")) {
@@ -49,6 +51,8 @@ public class CuredString {
           break;
         case MACOS:
           fileExtension = "dylib";
+        default:
+          break;
       }
 
       if (CuredString.isJUnit()) {
@@ -71,8 +75,6 @@ public class CuredString {
       );
     }
   }
-
-  private long inner;
 
   private static native long cure(String input, int options);
 

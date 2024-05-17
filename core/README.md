@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] ![[codacy][codacy-url]][codacy-image] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
@@ -8,6 +8,8 @@
 [jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
 [jitpack-io-url]: https://jitpack.io/#null8626/decancer
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
+[codacy-image]: https://app.codacy.com/project/badge/Grade/d740b1aa867d42f2b37eb992ad73784a
+[codacy-url]: https://app.codacy.com/gh/null8626/decancer/dashboard
 [ko-fi-brief-image]: https://img.shields.io/badge/donations-ko--fi-red?color=ff5e5b&style=flat-square
 [ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
 [ko-fi-url]: https://ko-fi.com/null8626
@@ -48,7 +50,7 @@ decancer = "3.2.0"
 In your shell:
 
 ```console
-$ npm install decancer
+npm install decancer
 ```
 
 In your code (CommonJS):
@@ -122,11 +124,11 @@ In your `pom.xml`:
 ### Building from source
 
 ```console
-$ git clone https://github.com/null8626/decancer.git --depth 1
-$ cd ./decancer/bindings/java
-$ unzip ./bin/bindings.zip -d ./bin
-$ chmod +x ./gradlew
-$ ./gradlew build --warning-mode all
+git clone https://github.com/null8626/decancer.git --depth 1
+cd ./decancer/bindings/java
+unzip ./bin/bindings.zip -d ./bin
+chmod +x ./gradlew
+./gradlew build --warning-mode all
 ```
 
 Tip: You can shrink the size of the resulting jar file by removing binaries in the `bin` directory for the platforms you don't want to support.
@@ -172,9 +174,9 @@ Tip: You can shrink the size of the resulting jar file by removing binaries in t
 Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
 ```console
-$ git clone https://github.com/null8626/decancer.git --depth 1
-$ cd decancer/bindings/native
-$ cargo build --release
+git clone https://github.com/null8626/decancer.git --depth 1
+cd decancer/bindings/native
+cargo build --release
 ```
 
 And the binary files should be generated in the `target/release` directory.
