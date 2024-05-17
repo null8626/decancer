@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { readFile, writeFile, readdir, stat, rm } from 'node:fs/promises'
 import { dirname, join, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'

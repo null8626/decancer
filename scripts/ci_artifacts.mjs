@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { readdir, rename, mkdir } from 'node:fs/promises'
 import { exec } from 'node:child_process'
 import { dirname, join } from 'node:path'

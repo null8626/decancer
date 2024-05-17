@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import {
   binarySearchExists,
   containsInclusive,

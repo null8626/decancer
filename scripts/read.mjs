@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
