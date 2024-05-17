@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { containsInclusive, request, strongAssert, SortedSet } from './util.mjs'
 import { writeFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'

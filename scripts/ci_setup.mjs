@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { appendFileSync } from 'node:fs'
 import { EOL } from 'node:os'
 

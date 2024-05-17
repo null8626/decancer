@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { readFile, writeFile } from 'node:fs/promises'
 import { exec, execSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'

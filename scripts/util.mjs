@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 export async function request(url) {
   console.log(`- requesting to ${url}...`)
 
