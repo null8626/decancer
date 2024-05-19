@@ -2,17 +2,17 @@ use std::mem::size_of;
 
 #[repr(C)]
 pub(crate) struct Element<T> {
-  pub(crate) string: *mut T,
+  pub(crate) string: *const T,
   pub(crate) size: usize,
 }
 
 pub(crate) struct NullTerminatedPointer<T> {
-  ptr: *mut T,
+  ptr: *const T,
   pub(crate) size: usize,
 }
 
 impl<T> NullTerminatedPointer<T> {
-  pub(crate) const fn new(ptr: *mut T) -> Self {
+  pub(crate) const fn new(ptr: *const T) -> Self {
     Self { ptr, size: 0 }
   }
 }
@@ -39,12 +39,12 @@ where
 }
 
 pub(crate) struct SizedPointer<T> {
-  ptr: *mut T,
+  ptr: *const T,
   size: usize,
 }
 
 impl<T> SizedPointer<T> {
-  pub(crate) const fn new(ptr: *mut T, size: usize) -> Self {
+  pub(crate) const fn new(ptr: *const T, size: usize) -> Self {
     Self { ptr, size }
   }
 }

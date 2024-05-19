@@ -11,6 +11,7 @@ use std::{
   mem::{size_of, transmute},
   ops::{Deref, Range},
   str,
+  ptr::copy_nonoverlapping
 };
 
 #[repr(C)]
@@ -32,7 +33,7 @@ const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure(
-  input_str: *mut u8,
+  input_str: *const u8,
   input_size: usize,
   options: u32,
   error: *mut Error,
@@ -59,7 +60,7 @@ pub unsafe extern "C" fn decancer_cure(
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure_wide(
-  input_str: *mut u16,
+  input_str: *const u16,
   input_size: usize,
   options: u32,
   error: *mut Error,
@@ -122,7 +123,7 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
 #[no_mangle]
 pub unsafe extern "C" fn decancer_find(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
   match utf8::get(other_str, other_size) {
@@ -134,7 +135,7 @@ pub unsafe extern "C" fn decancer_find(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_find_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u16,
+  other_str: *const u16,
   other_size: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
   match utf16::get(other_str, other_size) {
@@ -148,7 +149,7 @@ pub unsafe extern "C" fn decancer_find_wide(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_find_multiple(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
 ) -> *mut Vec<Range<usize>> {
   match utf8::get_array(other_str.cast(), other_size) {
@@ -160,7 +161,7 @@ pub unsafe extern "C" fn decancer_find_multiple(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_find_multiple_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
 ) -> *mut Vec<Range<usize>> {
   match utf16::get_array(other_str.cast(), other_size) {
@@ -173,9 +174,9 @@ pub unsafe extern "C" fn decancer_find_multiple_wide(
 pub unsafe extern "C" fn decancer_matches_raw(
   matches: *mut Vec<Range<usize>>,
   output_size: *mut usize,
-) -> usize {
+) -> *const Range<usize> {
   *output_size = (*matches).len();
-  (*matches).as_ptr() as _
+  (*matches).as_ptr()
 }
 
 #[no_mangle]
@@ -196,7 +197,7 @@ pub unsafe extern "C" fn decancer_matcher_next(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_censor(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
   with_char: u32,
 ) -> bool {
@@ -213,7 +214,7 @@ pub unsafe extern "C" fn decancer_censor(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_censor_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u16,
+  other_str: *const u16,
   other_size: usize,
   with_char: u32,
 ) -> bool {
@@ -230,7 +231,7 @@ pub unsafe extern "C" fn decancer_censor_wide(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_censor_multiple(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
   with_char: u32,
 ) -> bool {
@@ -250,7 +251,7 @@ pub unsafe extern "C" fn decancer_censor_multiple(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_censor_multiple_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
   with_char: u32,
 ) -> bool {
@@ -270,9 +271,9 @@ pub unsafe extern "C" fn decancer_censor_multiple_wide(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_replace(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
-  with_str: *mut u8,
+  with_str: *const u8,
   with_size: usize,
 ) -> bool {
   match (
@@ -291,9 +292,9 @@ pub unsafe extern "C" fn decancer_replace(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_replace_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u16,
+  other_str: *const u16,
   other_size: usize,
-  with_str: *mut u16,
+  with_str: *const u16,
   with_size: usize,
 ) -> bool {
   match (
@@ -315,9 +316,9 @@ pub unsafe extern "C" fn decancer_replace_wide(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_replace_multiple(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
-  with_str: *mut u8,
+  with_str: *const u8,
   with_size: usize,
 ) -> bool {
   match (
@@ -336,9 +337,9 @@ pub unsafe extern "C" fn decancer_replace_multiple(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_replace_multiple_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u16,
+  other_str: *const u16,
   other_size: usize,
-  with_str: *mut u16,
+  with_str: *const u16,
   with_size: usize,
 ) -> bool {
   match (
@@ -357,7 +358,7 @@ pub unsafe extern "C" fn decancer_replace_multiple_wide(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_equals(
   cured: *mut decancer::CuredString,
-  other_str: *mut u8,
+  other_str: *const u8,
   other_size: usize,
 ) -> bool {
   utf8::get(other_str, other_size).is_some_and(|s| (*cured) == s)
@@ -366,7 +367,7 @@ pub unsafe extern "C" fn decancer_equals(
 #[no_mangle]
 pub unsafe extern "C" fn decancer_equals_wide(
   cured: *mut decancer::CuredString,
-  other_str: *mut u16,
+  other_str: *const u16,
   other_size: usize,
 ) -> bool {
   utf16::get(other_str, other_size)
@@ -379,7 +380,7 @@ macro_rules! comparison_fn {
       #[no_mangle]
       pub unsafe extern "C" fn [<decancer_ $name>](
         cured: *mut decancer::CuredString,
-        other_str: *mut u8,
+        other_str: *const u8,
         other_size: usize,
       ) -> bool {
         utf8::get(other_str, other_size)
@@ -390,7 +391,7 @@ macro_rules! comparison_fn {
       #[no_mangle]
       pub unsafe extern "C" fn [<decancer_ $name _wide>](
         cured: *mut decancer::CuredString,
-        other_str: *mut u16,
+        other_str: *const u16,
         other_size: usize,
       ) -> bool {
         utf16::get(other_str, other_size)
@@ -411,10 +412,10 @@ comparison_fn! {
 pub unsafe extern "C" fn decancer_cured_raw(
   cured: *mut decancer::CuredString,
   output_size: *mut usize,
-) -> usize {
+) -> *const u8 {
   *output_size = (*cured).len();
 
-  (*cured).as_ptr() as _
+  (*cured).as_ptr()
 }
 
 #[no_mangle]
@@ -429,6 +430,20 @@ pub unsafe extern "C" fn decancer_cured_raw_wide(
   *output_size = vec.len() * size_of::<u16>();
 
   Box::into_raw(vec)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn __decancer_cured_clone(cured: *mut decancer::CuredString) -> *mut decancer::CuredString {
+  Box::into_raw(Box::new((*cured).clone()))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn __decancer_translation_clone(translation_in: *const Translation, translation_out: *mut Translation) {
+  copy_nonoverlapping(translation_in, translation_out, size_of::<Translation>());
+  
+  if (*translation_in).slot_c != 0 {
+    (*translation_out).slot_c = Box::into_raw(Box::new((*((*translation_in).slot_c as *mut String)).clone())).cast::<u8>() as _;
+  }
 }
 
 #[no_mangle]

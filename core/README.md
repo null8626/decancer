@@ -28,7 +28,8 @@ A library that removes common unicode confusables/homoglyphs from strings.
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
-  - C/C++
+  - C
+  - C++
   - Java
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 
@@ -135,7 +136,7 @@ Tip: You can shrink the size of the resulting jar file by removing binaries in t
 
 </details>
 <details>
-<summary><b>C/C++</b></summary>
+<summary><b>C</b></summary>
 
 ### Download
 
@@ -180,6 +181,29 @@ cargo build --release
 ```
 
 And the binary files should be generated in the `target/release` directory.
+
+</details>
+<details>
+<summary><b>C++</b></summary>
+
+### Download
+
+- [Header file](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.hpp)
+
+### Building from source
+
+Building from source requires [Rust v1.65 or later](https://rustup.rs/) and [CMake v3.8.2 or later](https://cmake.org/).
+
+```console
+git clone https://github.com/null8626/decancer.git --depth 1
+cd decancer/bindings/native
+cargo build --release
+cmake -B build .
+```
+
+If you're using Microsoft's Visual C++ compiler, run `msbuild build/decancer.sln -noLogo -p:Configuration=Release`. Otherwise, `cd` into `build` and run `make`.
+
+And the binary files should be generated in the current directory.
 
 </details>
 
@@ -322,7 +346,7 @@ public class Program {
 
 </details>
 <details>
-<summary><b>C/C++</b></summary>
+<summary><b>C</b></summary>
 
 UTF-8 example:
 
@@ -489,6 +513,48 @@ int main(void) {
 
     decancer_cured_raw_wide_free(wide);
     decancer_cured_free(cured);    
+    return 0;
+}
+```
+
+</details>
+<details>
+<summary><b>C++</b></summary>
+
+UTF-8 example:
+
+```cpp
+#include <decancer.hpp>
+
+#include <cassert>
+#include <string>
+
+int main(void) {
+    decancer::cured_string cured{u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"};
+
+    assert(cured == "very funny text");
+    assert(cured.contains("funny"));
+    
+    auto cpp_string = static_cast<std::string>(cured);
+    return 0;
+}
+```
+
+UTF-16 example:
+
+```cpp
+#include <decancer.hpp>
+
+#include <cassert>
+#include <string>
+
+int main(void) {
+    decancer::cured_string cured{L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"};
+
+    assert(cured == L"very funny text");
+    assert(cured.contains(L"funny"));
+    
+    auto cpp_wide_string = static_cast<std::wstring>(cured);
     return 0;
 }
 ```

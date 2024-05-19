@@ -6,7 +6,7 @@ publish = false
 
 [lib]
 name = "decancer"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "staticlib"]
 
 [lints.clippy]
 all = { level = "warn", priority = -1 }
