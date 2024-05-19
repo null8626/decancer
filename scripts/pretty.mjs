@@ -130,23 +130,12 @@ async function cargo(cwd) {
   console.log(`- [cargo -> ${cwd}] completed`)
 }
 
-async function clangFormat() {
-  console.log('- [clang-format] running...')
-
-  await execute('clang-format -i decancer.h test.c', {
-    cwd: join(BINDINGS_DIR, 'native')
-  })
-
-  console.log('- [clang-format] completed')
-}
-
 void (await Promise.all([
   cargo(join(CORE_DIR)),
   cargo(join(BINDINGS_DIR, 'java')),
   cargo(join(BINDINGS_DIR, 'node')),
   cargo(join(BINDINGS_DIR, 'wasm')),
   cargo(join(BINDINGS_DIR, 'native')),
-  clangFormat(),
   prettier(),
   updateReadme()
 ]))

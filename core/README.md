@@ -374,12 +374,12 @@ static void assert(const bool expr, const char *message)
 static void print_error(decancer_error_t *error)
 {
     char message[90];
-    uint8_t message_size;
+    uint8_t message_length;
     
-    memcpy(message, error->message, error->message_size);
+    memcpy(message, error->message, error->message_length);
    
     // rust strings are NOT null-terminated
-    message[error->message_size] = '\0';
+    message[error->message_length] = '\0';
     
     fprintf(stderr, "error: %s", message);
 }
@@ -458,12 +458,12 @@ static void assert(const bool expr, const char *message)
 static void print_error(decancer_error_t *error)
 {
     char message[90];
-    uint8_t message_size;
+    uint8_t message_length;
     
-    memcpy(message, error->message, error->message_size);
+    memcpy(message, error->message, error->message_length);
    
     // rust strings are NOT null-terminated
-    message[error->message_size] = '\0';
+    message[error->message_length] = '\0';
     
     fprintf(stderr, "error: %s", message);
 }
