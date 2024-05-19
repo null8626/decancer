@@ -488,7 +488,7 @@ int main(void) {
   size_t utf16_output_length;
   wide = decancer_cured_raw_wide(cured, &output_ptr, &utf16_output_length);
 
-  assert(utf16_output_length == 15), "raw output length");
+  assert(utf16_output_length == 15, "raw output length");
 
   // UTF-16 bytes for "very funny text"
   const uint16_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
