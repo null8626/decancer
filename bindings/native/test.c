@@ -43,11 +43,11 @@ static void assert(const bool expr, const char *message, const char *prefix)
 static void print_error(decancer_error_t *error, const char *prefix)
 {
     char message[90];
-    uint8_t message_size;
+    uint8_t message_length;
 
-    memcpy(message, error->message, error->message_size);
+    memcpy(message, error->message, error->message_length);
 
-    message[error->message_size] = '\0';
+    message[error->message_length] = '\0';
 
     fprintf(stderr, "%serror: %s", prefix, message);
 }
