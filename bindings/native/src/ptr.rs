@@ -1,5 +1,3 @@
-use std::mem::size_of;
-
 #[repr(C)]
 pub(crate) struct Element<T> {
   pub(crate) string: *const T,
@@ -31,7 +29,7 @@ where
     if value == Default::default() {
       None
     } else {
-      self.size += size_of::<T>();
+      self.size += 1;
 
       Some(value)
     }
@@ -63,7 +61,7 @@ where
     let value = unsafe { *self.ptr };
 
     self.ptr = unsafe { self.ptr.offset(1) };
-    self.size -= size_of::<T>();
+    self.size -= 1;
 
     Some(value)
   }

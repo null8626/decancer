@@ -427,7 +427,7 @@ pub unsafe extern "C" fn decancer_cured_raw_wide(
   let vec = Box::new((*cured).encode_utf16().collect::<Vec<_>>());
 
   *output_ptr = vec.as_ptr() as _;
-  *output_size = vec.len() * size_of::<u16>();
+  *output_size = vec.len();
 
   Box::into_raw(vec)
 }

@@ -68,10 +68,10 @@ static bool test_utf8(uint8_t* string, size_t size, const char* error_prefix, de
   assert(match.start == 5, "match.start is not 5", error_prefix);
   assert(match.end == 10, "match.end is not 10", error_prefix);
 
-  size_t output_size;
-  const uint8_t* output_raw = decancer_cured_raw(cured, &output_size);
+  size_t output_length;
+  const uint8_t* output_raw = decancer_cured_raw(cured, &output_length);
 
-  assert(output_size == 15, "raw output size", error_prefix);
+  assert(output_length == 15, "raw output length", error_prefix);
 
   const uint8_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                   0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
@@ -98,10 +98,10 @@ static bool test_utf16(uint16_t* string, size_t size, const char* error_prefix, 
   assert(decancer_contains(cured, (uint8_t* )("funny"), 5), "contains", error_prefix);
 
   uint16_t* utf16_output_ptr;
-  size_t utf16_output_size;
-  wide = decancer_cured_raw_wide(cured, &utf16_output_ptr, &utf16_output_size);
+  size_t utf16_output_length;
+  wide = decancer_cured_raw_wide(cured, &utf16_output_ptr, &utf16_output_length);
 
-  assert(utf16_output_size == (15*  sizeof(uint16_t)), "raw output size", error_prefix);
+  assert(utf16_output_length == 15, "raw output length", error_prefix);
 
   const uint16_t expected_utf16_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
                                          0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
@@ -150,7 +150,7 @@ int main(void) {
   uint16_t utf16_string[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
                              0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
 
-  if (!test_utf16(utf16_string, sizeof(utf16_string) - sizeof(uint16_t), "utf-16 ", &error) ||
+  if (!test_utf16(utf16_string, (sizeof(utf16_string) - sizeof(uint16_t)) / sizeof(uint16_t), "utf-16 ", &error) ||
     !test_utf16(utf16_string, 0, "utf-16 null-terminated ", &error)) {
     return 1;
   }

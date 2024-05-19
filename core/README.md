@@ -104,20 +104,20 @@ In your `pom.xml`:
 ```xml
 <repositories>
   <repository>
-    <id>central</id>
-    <url>https://repo.maven.apache.org/maven2</url>
+  <id>central</id>
+  <url>https://repo.maven.apache.org/maven2</url>
   </repository>
   <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
+  <id>jitpack.io</id>
+  <url>https://jitpack.io</url>
   </repository>
 </repositories>
 
 <dependencies>
   <dependency>
-    <groupId>com.github.null8626</groupId>
-    <artifactId>decancer</artifactId>
-    <version>v3.2.0</version>
+  <groupId>com.github.null8626</groupId>
+  <artifactId>decancer</artifactId>
+  <version>v3.2.0</version>
   </dependency>
 </dependencies>
 ```
@@ -220,8 +220,8 @@ let mut cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWi
 assert_eq!(cured, "very funny text with leetspeak");
 
 // WARNING: it's NOT recommended to coerce this output to a Rust string
-//          and process it manually from there, as decancer has its own
-//          custom comparison measures, including leetspeak matching!
+//      and process it manually from there, as decancer has its own
+//      custom comparison measures, including leetspeak matching!
 assert_ne!(cured.as_str(), "very funny text with leetspeak");
 
 assert!(cured.contains("funny"));
@@ -244,8 +244,8 @@ const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l
 assert(cured.equals('very funny text with leetspeak'))
 
 // WARNING: it's NOT recommended to coerce this output to a JavaScript string
-//          and process it manually from there, as decancer has its own
-//          custom comparison measures, including leetspeak matching!
+//      and process it manually from there, as decancer has its own
+//      custom comparison measures, including leetspeak matching!
 assert(cured.toString() !== 'very funny text with leetspeak')
 console.log(cured.toString())
 // => very funny text wwiiiiitthh l133t5p3/-\|<
@@ -269,39 +269,39 @@ console.log(cured.toString())
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <title>Decancerer!!! (tm)</title>
-    <style>
-      textarea {
-        font-size: 30px;
-      }
+  <meta charset="utf-8" />
+  <title>Decancerer!!! (tm)</title>
+  <style>
+    textarea {
+    font-size: 30px;
+    }
 
-      #cure {
-        font-size: 20px;
-        padding: 5px 30px;
-      }
-    </style>
+    #cure {
+    font-size: 20px;
+    padding: 5px 30px;
+    }
+  </style>
   </head>
   <body>
-    <h3>Input cancerous text here:</h3>
-    <textarea rows="10" cols="30"></textarea>
-    <br />
-    <button id="cure" onclick="cure()">cure!</button>
-    <script type="module">
-      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.0/bindings/wasm/bin/decancer.min.js'
+  <h3>Input cancerous text here:</h3>
+  <textarea rows="10" cols="30"></textarea>
+  <br />
+  <button id="cure" onclick="cure()">cure!</button>
+  <script type="module">
+    import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.0/bindings/wasm/bin/decancer.min.js'
 
-      const decancer = await init()
+    const decancer = await init()
 
-      window.cure = function () {
-        const textarea = document.querySelector('textarea')
+    window.cure = function () {
+    const textarea = document.querySelector('textarea')
 
-        if (!textarea.value.length) {
-          return alert("There's no text!!!")
-        }
+    if (!textarea.value.length) {
+      return alert("There's no text!!!")
+    }
 
-        textarea.value = decancer(textarea.value).toString()
-      }
-    </script>
+    textarea.value = decancer(textarea.value).toString()
+    }
+  </script>
   </body>
 </html>
 ```
@@ -317,29 +317,29 @@ import com.github.null8626.decancer.CuredString;
 
 public class Program {
   public static void main(String[] args) {
-    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<");
-    
-    assert cured.equals("very funny text with leetspeak");
-    
-    // WARNING: it's NOT recommended to coerce this output to a Java String
-    //          and process it manually from there, as decancer has its own
-    //          custom comparison measures, including leetspeak matching!
-    assert !cured.toString().equals("very funny text with leetspeak");
-    System.out.println(cured.toString());
-    // => very funny text wwiiiiitthh l133t5p3/-\|<
-    
-    assert cured.contains("funny");
-    
-    cured.censor("funny", '*');
-    System.out.println(cured.toString());
-    // => very ***** text wwiiiiitthh l133t5p3/-\|<
-    
-    String[] keywords = { "very", "text" };
-    cured.censorMultiple(keywords, '-');
-    System.out.println(cured.toString());
-    // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
-    
-    cured.destroy();
+  CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<");
+  
+  assert cured.equals("very funny text with leetspeak");
+  
+  // WARNING: it's NOT recommended to coerce this output to a Java String
+  //      and process it manually from there, as decancer has its own
+  //      custom comparison measures, including leetspeak matching!
+  assert !cured.toString().equals("very funny text with leetspeak");
+  System.out.println(cured.toString());
+  // => very funny text wwiiiiitthh l133t5p3/-\|<
+  
+  assert cured.contains("funny");
+  
+  cured.censor("funny", '*');
+  System.out.println(cured.toString());
+  // => very ***** text wwiiiiitthh l133t5p3/-\|<
+  
+  String[] keywords = { "very", "text" };
+  cured.censorMultiple(keywords, '-');
+  System.out.println(cured.toString());
+  // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
+  
+  cured.destroy();
   }
 }
 ```
@@ -360,68 +360,63 @@ UTF-8 example:
 // global variable for assertion purposes only
 decancer_cured_t cured;
 
-static void assert(const bool expr, const char *message)
-{
-    if (!expr)
-    {
-        fprintf(stderr, "assertion failed (%s)\n", message);
-        decancer_cured_free(cured);
-        
-        exit(1);
-    }
+static void assert(const bool expr, const char* message) {
+  if (!expr) {
+    fprintf(stderr, "assertion failed (%s)\n", message);
+    decancer_cured_free(cured);
+    
+    exit(1);
+  }
 }
 
-static void print_error(decancer_error_t *error)
-{
-    char message[90];
-    uint8_t message_length;
-    
-    memcpy(message, error->message, error->message_length);
+static void print_error(decancer_error_t* error) {
+  char message[90];
+  uint8_t message_length;
+  
+  memcpy(message, error->message, error->message_length);
    
-    // rust strings are NOT null-terminated
-    message[error->message_length] = '\0';
-    
-    fprintf(stderr, "error: %s", message);
+  // rust strings are NOT null-terminated
+  message[error->message_length] = '\0';
+  
+  fprintf(stderr, "error: %s", message);
 }
 
 int main(void) {
-    decancer_error_t error;
+  decancer_error_t error;
 
-    // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-    uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-                        0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-                        0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+  // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+  uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
 
-    cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+  cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
 
-    if (cured == NULL)
-    {
-        print_error(&error);
-        return 1;
-    }
+  if (cured == NULL) {
+    print_error(&error);
+    return 1;
+  }
 
-    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
-    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
+  assert(decancer_equals(cured, (uint8_t*)("very funny text"), 15), "equals");
+  assert(decancer_contains(cured, (uint8_t*)("funny"), 5), "contains");
 
-    // coerce output as a raw UTF-8 pointer and retrieve its size (in bytes)
-    size_t output_size;
-    const uint8_t *output_raw = decancer_cured_raw(cured, &output_size);
+  // coerce output as a raw UTF-8 pointer and retrieve its length
+  size_t output_length;
+  const uint8_t* output_raw = decancer_cured_raw(cured, &output_length);
 
-    assert(output_size == 15, "raw output size");
+  assert(output_length == 15, "raw output length");
 
-    // UTF-8 bytes for "very funny text"
-    const uint8_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
-                                    0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
+  // UTF-8 bytes for "very funny text"
+  const uint8_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
+                                  0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
 
-    char assert_message[38];
-    for (uint32_t i = 0; i < sizeof(expected_raw); i++)
-    {
-        sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
-        assert(output_raw[i] == expected_raw[i], assert_message);
-    }
+  char assert_message[38];
+  for (uint32_t i = 0; i < sizeof(expected_raw); i++) {
+    sprintf(assert_message, "mismatched utf-8 contents at index %u", i);
+    assert(output_raw[i] == expected_raw[i], assert_message);
+  }
 
-    decancer_cured_free(cured);    
-    return 0;
+  decancer_cured_free(cured);  
+  return 0;
 }
 ```
 
@@ -438,82 +433,76 @@ UTF-16 example:
 decancer_cured_t cured;
 decancer_cured_raw_wide_t wide = NULL;
 
-static void assert(const bool expr, const char *message)
-{
-    if (!expr)
-    {
-        fprintf(stderr, "assertion failed (%s)\n", message);
-        
-        if (wide != NULL)
-        {
-            decancer_cured_raw_wide_free(wide);
-        }
-        
-        decancer_cured_free(cured);
-        
-        exit(1);
+static void assert(const bool expr, const char* message) {
+  if (!expr) {
+    fprintf(stderr, "assertion failed (%s)\n", message);
+    
+    if (wide != NULL) {
+      decancer_cured_raw_wide_free(wide);
     }
+    
+    decancer_cured_free(cured);
+    
+    exit(1);
+  }
 }
 
-static void print_error(decancer_error_t *error)
-{
-    char message[90];
-    uint8_t message_length;
-    
-    memcpy(message, error->message, error->message_length);
+static void print_error(decancer_error_t* error) {
+  char message[90];
+  uint8_t message_length;
+  
+  memcpy(message, error->message, error->message_length);
    
-    // rust strings are NOT null-terminated
-    message[error->message_length] = '\0';
-    
-    fprintf(stderr, "error: %s", message);
+  // rust strings are NOT null-terminated
+  message[error->message_length] = '\0';
+  
+  fprintf(stderr, "error: %s", message);
 }
 
 int main(void) {
-    decancer_error_t error;
+  decancer_error_t error;
 
-    // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-    uint16_t string[] = {
-        0x0076, 0xff25, 0x24e1,
-        0xd835, 0xdd02, 0x0020,
-        0xd835, 0xdd3d, 0xd835,
-        0xdd4c, 0x0147, 0x2115,
-        0xff59, 0x0020, 0x0163,
-        0x4e47, 0xd835, 0xdd4f,
-        0xd835, 0xdce3
-    };
+  // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+  uint16_t string[] = {
+    0x0076, 0xff25, 0x24e1,
+    0xd835, 0xdd02, 0x0020,
+    0xd835, 0xdd3d, 0xd835,
+    0xdd4c, 0x0147, 0x2115,
+    0xff59, 0x0020, 0x0163,
+    0x4e47, 0xd835, 0xdd4f,
+    0xd835, 0xdce3
+  };
 
-    cured = decancer_cure_wide(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+  cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
 
-    if (cured == NULL)
-    {
-        print_error(&error);
-        return 1;
-    }
+  if (cured == NULL) {
+    print_error(&error);
+    return 1;
+  }
 
-    assert(decancer_equals(cured, (uint8_t *)("very funny text"), 15), "equals");
-    assert(decancer_contains(cured, (uint8_t *)("funny"), 5), "contains");
+  assert(decancer_equals(cured, (uint8_t*)("very funny text"), 15), "equals");
+  assert(decancer_contains(cured, (uint8_t*)("funny"), 5), "contains");
 
-    // coerce output as a raw UTF-16 pointer and retrieve its size (in bytes)
-    uint16_t *output_ptr;
-    size_t utf16_output_size;
-    wide = decancer_cured_raw_wide(cured, &output_ptr, &utf16_output_size);
+  // coerce output as a raw UTF-16 pointer and retrieve its length
+  uint16_t* output_ptr;
+  size_t utf16_output_length;
+  wide = decancer_cured_raw_wide(cured, &output_ptr, &utf16_output_length);
 
-    assert(utf16_output_size == (15 * sizeof(uint16_t)), "raw output size");
+  assert(utf16_output_length == 15), "raw output length");
 
-    // UTF-16 bytes for "very funny text"
-    const uint16_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
-                                     0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
+  // UTF-16 bytes for "very funny text"
+  const uint16_t expected_raw[] = {0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e,
+                                   0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74};
 
-    char assert_message[39];
-    for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(uint16_t); i++)
-    {
-        sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
-        assert(output_raw[i] == expected_raw[i], assert_message);
-    }
+  char assert_message[39];
+  for (uint32_t i = 0; i < sizeof(expected_raw) / sizeof(uint16_t); i++) {
+    sprintf(assert_message, "mismatched utf-16 contents at index %u", i);
+    assert(output_raw[i] == expected_raw[i], assert_message);
+  }
 
-    decancer_cured_raw_wide_free(wide);
-    decancer_cured_free(cured);    
-    return 0;
+  decancer_cured_raw_wide_free(wide);
+  decancer_cured_free(cured);  
+  return 0;
 }
 ```
 
@@ -530,13 +519,13 @@ UTF-8 example:
 #include <string>
 
 int main(void) {
-    decancer::cured_string cured{u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"};
+  decancer::cured_string cured{u8"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"};
 
-    assert(cured == "very funny text");
-    assert(cured.contains("funny"));
-    
-    auto cpp_string = static_cast<std::string>(cured);
-    return 0;
+  assert(cured == "very funny text");
+  assert(cured.contains("funny"));
+  
+  auto cpp_string = static_cast<std::string>(cured);
+  return 0;
 }
 ```
 
@@ -549,13 +538,13 @@ UTF-16 example:
 #include <string>
 
 int main(void) {
-    decancer::cured_string cured{L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"};
+  decancer::cured_string cured{L"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"};
 
-    assert(cured == L"very funny text");
-    assert(cured.contains(L"funny"));
-    
-    auto cpp_wide_string = static_cast<std::wstring>(cured);
-    return 0;
+  assert(cured == L"very funny text");
+  assert(cured.contains(L"funny"));
+  
+  auto cpp_wide_string = static_cast<std::wstring>(cured);
+  return 0;
 }
 ```
 

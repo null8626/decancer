@@ -102,9 +102,9 @@ extern "C" {
   DECANCER_EXPORT void decancer_cure_char(uint32_t input, const DECANCER_EXPORT_NAME(options_t) options,
                                           DECANCER_EXPORT_NAME(translation_t)* translation);
 
-  DECANCER_EXPORT const uint8_t* decancer_cured_raw(DECANCER_EXPORT_NAME(cured_t) cured, size_t* output_size);
+  DECANCER_EXPORT const uint8_t* decancer_cured_raw(DECANCER_EXPORT_NAME(cured_t) cured, size_t* output_length);
   DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_raw_wide_t) decancer_cured_raw_wide(DECANCER_EXPORT_NAME(cured_t) cured, uint16_t** output_ptr,
-                                       size_t* output_size);
+                                       size_t* output_length);
 
   DECANCER_EXPORT const DECANCER_EXPORT_NAME(match_t)* decancer_matches_raw(DECANCER_EXPORT_NAME(matches_t) matches, size_t* output_length);
 
