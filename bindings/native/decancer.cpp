@@ -249,19 +249,19 @@ cured_string::operator std::wstring() const noexcept {
   return output;
 }
 
-bool cured_string::operator=(const char* text) const noexcept {
+bool cured_string::operator==(const char* text) const noexcept {
   return decancer_equals(m_ptr, DECANCER_STRING(text), strlen(text));
 }
 
-bool cured_string::operator=(const std::string& text) const noexcept {
+bool cured_string::operator==(const std::string& text) const noexcept {
   return decancer_equals(m_ptr, DECANCER_STRING(text.data()), text.size());
 }
 
-bool cured_string::operator=(const wchar_t* text) const noexcept {
+bool cured_string::operator==(const wchar_t* text) const noexcept {
   return decancer_equals_wide(m_ptr, DECANCER_WSTRING(text), wcslen(text));
 }
 
-bool cured_string::operator=(const std::wstring& text) const noexcept {
+bool cured_string::operator==(const std::wstring& text) const noexcept {
   return decancer_equals_wide(m_ptr, DECANCER_WSTRING(text.data()), text.size());
 }
 
