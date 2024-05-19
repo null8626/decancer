@@ -10,8 +10,8 @@ use std::{
   convert::AsRef,
   mem::{size_of, transmute},
   ops::{Deref, Range},
+  ptr::copy_nonoverlapping,
   str,
-  ptr::copy_nonoverlapping
 };
 
 #[repr(C)]
@@ -433,16 +433,24 @@ pub unsafe extern "C" fn decancer_cured_raw_wide(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn __decancer_cured_clone(cured: *mut decancer::CuredString) -> *mut decancer::CuredString {
+pub unsafe extern "C" fn __decancer_cured_clone(
+  cured: *mut decancer::CuredString,
+) -> *mut decancer::CuredString {
   Box::into_raw(Box::new((*cured).clone()))
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn __decancer_translation_clone(translation_in: *const Translation, translation_out: *mut Translation) {
+pub unsafe extern "C" fn __decancer_translation_clone(
+  translation_in: *const Translation,
+  translation_out: *mut Translation,
+) {
   copy_nonoverlapping(translation_in, translation_out, size_of::<Translation>());
-  
+
   if (*translation_in).slot_c != 0 {
-    (*translation_out).slot_c = Box::into_raw(Box::new((*((*translation_in).slot_c as *mut String)).clone())).cast::<u8>() as _;
+    (*translation_out).slot_c = Box::into_raw(Box::new(
+      (*((*translation_in).slot_c as *mut String)).clone(),
+    ))
+    .cast::<u8>() as _;
   }
 }
 
