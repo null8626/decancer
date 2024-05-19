@@ -100,10 +100,10 @@ namespace decancer {
     explicit operator std::string() const noexcept;
     explicit operator std::wstring() const noexcept;
     
-    bool operator=(const char* text) const noexcept;
-    bool operator=(const std::string& text) const noexcept;
-    bool operator=(const wchar_t* text) const noexcept;
-    bool operator=(const std::wstring& text) const noexcept;
+    bool operator==(const char* text) const noexcept;
+    bool operator==(const std::string& text) const noexcept;
+    bool operator==(const wchar_t* text) const noexcept;
+    bool operator==(const std::wstring& text) const noexcept;
     
     ~cured_string() noexcept;
   };
