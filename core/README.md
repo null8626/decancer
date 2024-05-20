@@ -186,14 +186,7 @@ And the binary files should be generated in the `target/release` directory.
 <details>
 <summary><b>C++ (C++17 or later)</b></summary>
 
-### Download
-
-- [C++ header file](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.hpp)
-- [C dependency header file](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.h)
-
-### Building from source
-
-Building from source requires [Rust v1.65 or later](https://rustup.rs/) and [CMake v3.8.2 or later](https://cmake.org/).
+Building requires [Rust v1.65 or later](https://rustup.rs/) and [CMake v3.8.2 or later](https://cmake.org/).
 
 ```sh
 git clone https://github.com/null8626/decancer.git --depth 1
@@ -202,7 +195,7 @@ cmake -B build .
 cmake --build build --config Release
 ```
 
-And the binary files should be generated in the current directory.
+And the binary files should be generated in the current directory. You can retrieve the main C++ header file [here](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.hpp) alongside its C dependency header file [here](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.h).
 
 </details>
 
