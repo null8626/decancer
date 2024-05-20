@@ -10,10 +10,6 @@
 #define DECANCER_EXPORT
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef __DECANCER_CXX__
 #define DECANCER_TRANSLATION_KIND_CHARACTER 0
 #define DECANCER_TRANSLATION_KIND_STRING 1
@@ -94,7 +90,20 @@ extern "C" {
   typedef void* DECANCER_EXPORT_NAME(matches_t);
   typedef void* DECANCER_EXPORT_NAME(cured_t);
 
+#ifdef __cplusplus
+#if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
+}; // namespace decancer
+#endif
+
+extern "C" {
+#endif
+
 #ifndef __DECANCER_CXX__
+#ifdef __DECANCER_CXX_BUILDING__
+#undef DECANCER_EXPORT_NAME
+#define DECANCER_EXPORT_NAME(name) decancer::name
+#endif
+
   DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure(const uint8_t* input_str, const size_t input_size,
                                                               const DECANCER_EXPORT_NAME(options_t) options, DECANCER_EXPORT_NAME(error_t)* error);
   DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure_wide(const uint16_t* input_str, const size_t input_size,
@@ -163,6 +172,10 @@ extern "C" {
 #undef DECANCER_EXPORT_NAME
 
 #ifdef __cplusplus
-}
+} // extern "C"
+
+#if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
+namespace decancer {
+#endif
 #endif
 #endif
