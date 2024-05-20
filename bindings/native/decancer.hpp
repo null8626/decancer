@@ -18,6 +18,19 @@
   ret_type name(const wchar_t* text, const size_t length) const noexcept; \
   ret_type name(const std::wstring& text) const noexcept
 
+#define DECANCER_CENSOR_METHOD(name, ...)                  \
+  void name(__VA_ARGS__, const char replacement) const;    \
+  void name(__VA_ARGS__, const wchar_t replacement) const; \
+  void name(__VA_ARGS__, const uint32_t replacement) const
+
+#define DECANCER_REPLACE_MULTIPLE_METHOD(...)                                                   \
+  void replace_multiple(const std::initializer_list<const char*>& keywords, __VA_ARGS__) const; \
+  void replace_multiple(const std::initializer_list<std::string>& keywords, __VA_ARGS__) const
+
+#define DECANCER_REPLACE_MULTIPLE_WIDE_METHOD(...)                                                 \
+  void replace_multiple(const std::initializer_list<const wchar_t*>& keywords, __VA_ARGS__) const; \
+  void replace_multiple(const std::initializer_list<std::wstring>& keywords, __VA_ARGS__) const
+
 namespace decancer {
 
 #ifdef __DECANCER_CXX_BUILDING__
@@ -37,21 +50,29 @@ namespace decancer {
 #endif
 
   class cured_string;
+  class native_error;
 
   class error: public std::runtime_error {
+    inline error(const char* message): std::runtime_error(message) {}
+    
+    friend class cured_string;
+    friend class native_error;
+  };
+
+  class native_error: public error {
     char* m_ptr;
     const size_t m_size;
     
-    inline error(char* ptr, const size_t size): std::runtime_error(""), m_ptr(ptr), m_size(size) {}
+    inline native_error(char* ptr, const size_t size): error(""), m_ptr(ptr), m_size(size) {}
   public:
-    error() = delete;
-    error(const error& other);
+    native_error() = delete;
+    native_error(const native_error& other);
     
     inline const char* what() const noexcept override {
       return m_ptr;
     }
     
-    inline ~error() noexcept {
+    inline ~native_error() noexcept {
       delete[] m_ptr;
     }
     
@@ -92,10 +113,37 @@ namespace decancer {
     DECANCER_CURED_METHOD(bool, contains);
     DECANCER_CURED_METHOD(std::vector<match_t>, find);
     
+    DECANCER_CENSOR_METHOD(censor, const char* find);
+    DECANCER_CENSOR_METHOD(censor, const char* find, const size_t find_length);
+    DECANCER_CENSOR_METHOD(censor, const std::string& find);
+    DECANCER_CENSOR_METHOD(censor, const wchar_t* find);
+    DECANCER_CENSOR_METHOD(censor, const wchar_t* find, const size_t find_length);
+    DECANCER_CENSOR_METHOD(censor, const std::wstring& find);
+    
     std::vector<match_t> find_multiple(const std::initializer_list<const char*>& keywords) const noexcept;
     std::vector<match_t> find_multiple(const std::initializer_list<std::string>& keywords) const noexcept;
     std::vector<match_t> find_multiple(const std::initializer_list<const wchar_t*>& keywords) const noexcept;
     std::vector<match_t> find_multiple(const std::initializer_list<std::wstring>& keywords) const noexcept;
+    
+    DECANCER_CENSOR_METHOD(censor_multiple, const std::initializer_list<const char*>& keywords);
+    DECANCER_CENSOR_METHOD(censor_multiple, const std::initializer_list<std::string>& keywords);
+    DECANCER_CENSOR_METHOD(censor_multiple, const std::initializer_list<const wchar_t*>& keywords);
+    DECANCER_CENSOR_METHOD(censor_multiple, const std::initializer_list<std::wstring>& keywords);
+    
+    void replace(const char* find, const char* replacement) const;
+    void replace(const char* find, const size_t find_length, const char* replacement, const size_t replacement_length) const;
+    void replace(const std::string& find, const std::string& replacement) const;
+    void replace(const wchar_t* find, const wchar_t* replacement) const;
+    void replace(const wchar_t* find, const size_t find_length, const wchar_t* replacement, const size_t replacement_length) const;
+    void replace(const std::wstring& find, const std::wstring& replacement) const;
+    
+    DECANCER_REPLACE_MULTIPLE_METHOD(const char* replacement);
+    DECANCER_REPLACE_MULTIPLE_METHOD(const char* replacement, const size_t replacement_length);
+    DECANCER_REPLACE_MULTIPLE_METHOD(const std::string& replacement);
+    
+    DECANCER_REPLACE_MULTIPLE_WIDE_METHOD(const wchar_t* replacement);
+    DECANCER_REPLACE_MULTIPLE_WIDE_METHOD(const wchar_t* replacement, const size_t replacement_length);
+    DECANCER_REPLACE_MULTIPLE_WIDE_METHOD(const std::wstring& replacement);
     
     explicit operator std::string() const noexcept;
     explicit operator std::wstring() const noexcept;
@@ -111,3 +159,6 @@ namespace decancer {
 
 #undef DECANCER_CURED_CTOR
 #undef DECANCER_CURED_METHOD
+#undef DECANCER_CENSOR_METHOD
+#undef DECANCER_REPLACE_MULTIPLE_METHOD
+#undef DECANCER_REPLACE_MULTIPLE_WIDE_METHOD

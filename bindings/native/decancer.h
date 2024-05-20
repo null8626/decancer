@@ -82,13 +82,14 @@
     const uint16_t* string;
     size_t length;
   } DECANCER_EXPORT_NAME(keyword_wide_t);
-#endif
 
-  typedef uint32_t DECANCER_EXPORT_NAME(options_t);
   typedef void* DECANCER_EXPORT_NAME(cured_raw_wide_t);
   typedef void* DECANCER_EXPORT_NAME(matcher_t);
   typedef void* DECANCER_EXPORT_NAME(matches_t);
   typedef void* DECANCER_EXPORT_NAME(cured_t);
+#endif
+  
+  typedef uint32_t DECANCER_EXPORT_NAME(options_t);
 
 #ifdef __cplusplus
 #if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
