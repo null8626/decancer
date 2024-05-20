@@ -219,8 +219,8 @@ let mut cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWi
 assert_eq!(cured, "very funny text with leetspeak");
 
 // WARNING: it's NOT recommended to coerce this output to a Rust string
-//      and process it manually from there, as decancer has its own
-//      custom comparison measures, including leetspeak matching!
+//          and process it manually from there, as decancer has its own
+//          custom comparison measures, including leetspeak matching!
 assert_ne!(cured.as_str(), "very funny text with leetspeak");
 
 assert!(cured.contains("funny"));
@@ -243,8 +243,8 @@ const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l
 assert(cured.equals('very funny text with leetspeak'))
 
 // WARNING: it's NOT recommended to coerce this output to a JavaScript string
-//      and process it manually from there, as decancer has its own
-//      custom comparison measures, including leetspeak matching!
+//          and process it manually from there, as decancer has its own
+//          custom comparison measures, including leetspeak matching!
 assert(cured.toString() !== 'very funny text with leetspeak')
 console.log(cured.toString())
 // => very funny text wwiiiiitthh l133t5p3/-\|<
@@ -268,39 +268,39 @@ console.log(cured.toString())
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <meta charset="utf-8" />
-  <title>Decancerer!!! (tm)</title>
-  <style>
-    textarea {
-    font-size: 30px;
-    }
-
-    #cure {
-    font-size: 20px;
-    padding: 5px 30px;
-    }
-  </style>
+    <meta charset="utf-8" />
+    <title>Decancerer!!! (tm)</title>
+    <style>
+      textarea {
+        font-size: 30px;
+      }
+    
+      #cure {
+        font-size: 20px;
+        padding: 5px 30px;
+      }
+    </style>
   </head>
   <body>
-  <h3>Input cancerous text here:</h3>
-  <textarea rows="10" cols="30"></textarea>
-  <br />
-  <button id="cure" onclick="cure()">cure!</button>
-  <script type="module">
-    import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.0/bindings/wasm/bin/decancer.min.js'
-
-    const decancer = await init()
-
-    window.cure = function () {
-    const textarea = document.querySelector('textarea')
-
-    if (!textarea.value.length) {
-      return alert("There's no text!!!")
-    }
-
-    textarea.value = decancer(textarea.value).toString()
-    }
-  </script>
+    <h3>Input cancerous text here:</h3>
+    <textarea rows="10" cols="30"></textarea>
+    <br />
+    <button id="cure" onclick="cure()">cure!</button>
+    <script type="module">
+      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.0/bindings/wasm/bin/decancer.min.js'
+    
+      const decancer = await init()
+    
+      window.cure = function () {
+        const textarea = document.querySelector('textarea')
+        
+        if (!textarea.value.length) {
+          return alert("There's no text!!!")
+        }
+        
+        textarea.value = decancer(textarea.value).toString()
+      }
+    </script>
   </body>
 </html>
 ```
@@ -316,29 +316,29 @@ import com.github.null8626.decancer.CuredString;
 
 public class Program {
   public static void main(String[] args) {
-  CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<");
-  
-  assert cured.equals("very funny text with leetspeak");
-  
-  // WARNING: it's NOT recommended to coerce this output to a Java String
-  //      and process it manually from there, as decancer has its own
-  //      custom comparison measures, including leetspeak matching!
-  assert !cured.toString().equals("very funny text with leetspeak");
-  System.out.println(cured.toString());
-  // => very funny text wwiiiiitthh l133t5p3/-\|<
-  
-  assert cured.contains("funny");
-  
-  cured.censor("funny", '*');
-  System.out.println(cured.toString());
-  // => very ***** text wwiiiiitthh l133t5p3/-\|<
-  
-  String[] keywords = { "very", "text" };
-  cured.censorMultiple(keywords, '-');
-  System.out.println(cured.toString());
-  // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
-  
-  cured.destroy();
+    CuredString cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<");
+    
+    assert cured.equals("very funny text with leetspeak");
+    
+    // WARNING: it's NOT recommended to coerce this output to a Java String
+    //          and process it manually from there, as decancer has its own
+    //          custom comparison measures, including leetspeak matching!
+    assert !cured.toString().equals("very funny text with leetspeak");
+    System.out.println(cured.toString());
+    // => very funny text wwiiiiitthh l133t5p3/-\|<
+    
+    assert cured.contains("funny");
+    
+    cured.censor("funny", '*');
+    System.out.println(cured.toString());
+    // => very ***** text wwiiiiitthh l133t5p3/-\|<
+    
+    String[] keywords = { "very", "text" };
+    cured.censorMultiple(keywords, '-');
+    System.out.println(cured.toString());
+    // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
+    
+    cured.destroy();
   }
 }
 ```
