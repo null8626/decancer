@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <variant>
+#include <cstring>
 #include <vector>
 #include <string>
 
@@ -38,8 +39,16 @@ namespace decancer {
 #pragma comment(lib, "userenv")
 #pragma comment(lib, "ntdll")
 #pragma comment(lib, "ws2_32")
+#define DECANCER_CXX_EXPORT __declspec(dllexport)
+#else
+#define DECANCER_CXX_EXPORT
 #endif
 #else
+#ifdef _WIN32
+#define DECANCER_CXX_EXPORT __declspec(dllimport)
+#else
+#define DECANCER_CXX_EXPORT
+#endif
 #define __DECANCER_CXX__
 #endif
 
@@ -66,7 +75,11 @@ namespace decancer {
     inline native_error(char* ptr, const size_t size): error(""), m_ptr(ptr), m_size(size) {}
   public:
     native_error() = delete;
-    native_error(const native_error& other);
+    
+    inline native_error(const native_error& other): error(""), m_size(other.m_size) {
+      m_ptr = new char[other.m_size];
+      memcpy(m_ptr, other.m_ptr, other.m_size);
+    }
     
     inline const char* what() const noexcept override {
       return m_ptr;
@@ -81,7 +94,7 @@ namespace decancer {
   
   using translation_variant = std::variant<uint32_t, std::string>;
   
-  class translation {
+  class DECANCER_CXX_EXPORT translation {
     translation_t m_translation;
     
   public:
@@ -94,7 +107,7 @@ namespace decancer {
     ~translation();
   };
 
-  class cured_string {
+  class DECANCER_CXX_EXPORT cured_string {
     cured_t m_ptr;
   
   public:
@@ -158,6 +171,7 @@ namespace decancer {
 };
 
 #undef DECANCER_CTOR
+#undef DECANCER_CXX_EXPORT
 #undef DECANCER_SIMPLE_METHOD
 #undef DECANCER_CENSOR_METHOD
 #undef DECANCER_REPLACE_MULTIPLE_METHOD

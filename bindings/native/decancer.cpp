@@ -235,11 +235,6 @@ static std::vector<match_t> collect_from_matches(matches_t matches) {
   return output;
 }
 
-native_error::native_error(const native_error& other): error(""), m_size(other.m_size) {
-  m_ptr = new char[other.m_size];
-  memcpy(m_ptr, other.m_ptr, other.m_size);
-}
-
 translation::translation(const translation& other) {
   __decancer_translation_clone(&other.m_translation, &m_translation);
 }
