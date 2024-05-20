@@ -124,6 +124,17 @@ In your `pom.xml`:
 
 ### Building from source
 
+Windows:
+
+```bat
+git clone https://github.com/null8626/decancer.git --depth 1
+cd ./decancer/bindings/java
+powershell -NoLogo -NoProfile -NonInteractive -File .\extract_bindings.ps1
+gradle build --warning-mode all
+```
+
+OSX/Linux:
+
 ```sh
 git clone https://github.com/null8626/decancer.git --depth 1
 cd ./decancer/bindings/java
