@@ -184,7 +184,7 @@ And the binary files should be generated in the `target/release` directory.
 
 </details>
 <details>
-<summary><b>C++</b></summary>
+<summary><b>C++ (C++17 or later)</b></summary>
 
 ### Download
 
