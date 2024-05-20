@@ -206,7 +206,7 @@ cmake -B build .
 cmake --build build --config Release
 ```
 
-And the binary files should be generated in the current directory. You can retrieve the main C++ header file [here](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.hpp) alongside its C dependency header file [here](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.h).
+And the binary files should be generated in the `build/Release` directory. You can retrieve the main C++ header file [here](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.hpp) alongside its C dependency header file [here](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.h).
 
 </details>
 
