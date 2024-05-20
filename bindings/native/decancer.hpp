@@ -6,11 +6,11 @@
 #include <vector>
 #include <string>
 
-#define DECANCER_CURED_CTOR(...)                  \
+#define DECANCER_CTOR(...)                        \
   cured_string(__VA_ARGS__);                      \
   cured_string(__VA_ARGS__, const options_t opt)
 
-#define DECANCER_CURED_METHOD(ret_type, name)                             \
+#define DECANCER_SIMPLE_METHOD(ret_type, name)                            \
   ret_type name(const char* text) const noexcept;                         \
   ret_type name(const char* text, const size_t length) const noexcept;    \
   ret_type name(const std::string& text) const noexcept;                  \
@@ -100,18 +100,18 @@ namespace decancer {
   public:
     cured_string(const cured_string& other);
   
-    DECANCER_CURED_CTOR(const char* text);
-    DECANCER_CURED_CTOR(const char* text, const size_t length);
-    DECANCER_CURED_CTOR(const std::string& text);
+    DECANCER_CTOR(const char* text);
+    DECANCER_CTOR(const char* text, const size_t length);
+    DECANCER_CTOR(const std::string& text);
     
-    DECANCER_CURED_CTOR(const wchar_t* text);
-    DECANCER_CURED_CTOR(const wchar_t* text, const size_t length);
-    DECANCER_CURED_CTOR(const std::wstring& text);
+    DECANCER_CTOR(const wchar_t* text);
+    DECANCER_CTOR(const wchar_t* text, const size_t length);
+    DECANCER_CTOR(const std::wstring& text);
     
-    DECANCER_CURED_METHOD(bool, starts_with);
-    DECANCER_CURED_METHOD(bool, ends_with);
-    DECANCER_CURED_METHOD(bool, contains);
-    DECANCER_CURED_METHOD(std::vector<match_t>, find);
+    DECANCER_SIMPLE_METHOD(bool, starts_with);
+    DECANCER_SIMPLE_METHOD(bool, ends_with);
+    DECANCER_SIMPLE_METHOD(bool, contains);
+    DECANCER_SIMPLE_METHOD(std::vector<match_t>, find);
     
     DECANCER_CENSOR_METHOD(censor, const char* find);
     DECANCER_CENSOR_METHOD(censor, const char* find, const size_t find_length);
@@ -157,8 +157,8 @@ namespace decancer {
   };
 };
 
-#undef DECANCER_CURED_CTOR
-#undef DECANCER_CURED_METHOD
+#undef DECANCER_CTOR
+#undef DECANCER_SIMPLE_METHOD
 #undef DECANCER_CENSOR_METHOD
 #undef DECANCER_REPLACE_MULTIPLE_METHOD
 #undef DECANCER_REPLACE_MULTIPLE_WIDE_METHOD
