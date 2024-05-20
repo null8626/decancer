@@ -75,12 +75,12 @@
 
   typedef struct {
     const uint8_t* string;
-    size_t size;
+    size_t length;
   } DECANCER_EXPORT_NAME(keyword_t);
 
   typedef struct {
     const uint16_t* string;
-    size_t size;
+    size_t length;
   } DECANCER_EXPORT_NAME(keyword_wide_t);
 #endif
 

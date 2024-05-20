@@ -50,7 +50,7 @@ decancer = "3.2.0"
 
 In your shell:
 
-```console
+```sh
 npm install decancer
 ```
 
@@ -124,7 +124,7 @@ In your `pom.xml`:
 
 ### Building from source
 
-```console
+```sh
 git clone https://github.com/null8626/decancer.git --depth 1
 cd ./decancer/bindings/java
 unzip ./bin/bindings.zip -d ./bin
@@ -174,7 +174,7 @@ Tip: You can shrink the size of the resulting jar file by removing binaries in t
 
 Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
-```console
+```sh
 git clone https://github.com/null8626/decancer.git --depth 1
 cd decancer/bindings/native
 cargo build --release
@@ -195,7 +195,7 @@ And the binary files should be generated in the `target/release` directory.
 
 Building from source requires [Rust v1.65 or later](https://rustup.rs/) and [CMake v3.8.2 or later](https://cmake.org/).
 
-```console
+```sh
 git clone https://github.com/null8626/decancer.git --depth 1
 cd decancer/bindings/native
 cmake -B build .

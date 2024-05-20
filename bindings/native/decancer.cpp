@@ -170,7 +170,7 @@ std::vector<match_t> cured_string::find_multiple(const std::initializer_list<con
     const char* s = keywords_ptr[i];
     
     keywords_in[i].string = DECANCER_STRING(s);
-    keywords_in[i].size = strlen(s);
+    keywords_in[i].length = strlen(s);
   }
   
   auto matches = decancer_find_multiple(m_ptr, keywords_in, keywords.size());
@@ -187,7 +187,7 @@ std::vector<match_t> cured_string::find_multiple(const std::initializer_list<std
     const std::string* s = &keywords_ptr[i];
     
     keywords_in[i].string = DECANCER_STRING(s->data());
-    keywords_in[i].size = s->size();
+    keywords_in[i].length = s->size();
   }
   
   auto matches = decancer_find_multiple(m_ptr, keywords_in, keywords.size());
@@ -204,7 +204,7 @@ std::vector<match_t> cured_string::find_multiple(const std::initializer_list<con
     const wchar_t* s = keywords_ptr[i];
     
     keywords_in[i].string = DECANCER_WSTRING(s);
-    keywords_in[i].size = wcslen(s);
+    keywords_in[i].length = wcslen(s);
   }
   
   auto matches = decancer_find_multiple_wide(m_ptr, keywords_in, keywords.size());
@@ -221,7 +221,7 @@ std::vector<match_t> cured_string::find_multiple(const std::initializer_list<std
     const std::wstring* s = &keywords_ptr[i];
     
     keywords_in[i].string = DECANCER_WSTRING(s->data());
-    keywords_in[i].size = s->size();
+    keywords_in[i].length = s->size();
   }
   
   auto matches = decancer_find_multiple_wide(m_ptr, keywords_in, keywords.size());
