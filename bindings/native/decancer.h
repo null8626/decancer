@@ -52,26 +52,9 @@
 
 #ifndef __DECANCER_CXX__
   typedef struct {
-    uint8_t kind;
-    union {
-      uint32_t character;
-      struct {
-        const uint8_t* contents;
-        size_t length;
-        void* __heap;
-      } string;
-    } contents;
-  } DECANCER_EXPORT_NAME(translation_t);
-
-  typedef struct {
     const char* message;
     uint8_t message_length;
   } DECANCER_EXPORT_NAME(error_t);
-
-  typedef struct {
-    size_t start;
-    size_t end;
-  } DECANCER_EXPORT_NAME(match_t);
 
   typedef struct {
     const uint8_t* string;
@@ -86,8 +69,26 @@
   typedef void* DECANCER_EXPORT_NAME(cured_raw_wide_t);
   typedef void* DECANCER_EXPORT_NAME(matcher_t);
   typedef void* DECANCER_EXPORT_NAME(matches_t);
-  typedef void* DECANCER_EXPORT_NAME(cured_t);
 #endif
+
+  typedef struct {
+    uint8_t kind;
+    union {
+      uint32_t character;
+      struct {
+        const uint8_t* contents;
+        size_t length;
+        void* __heap;
+      } string;
+    } contents;
+  } DECANCER_EXPORT_NAME(translation_t);
+  
+  typedef void* DECANCER_EXPORT_NAME(cured_t);
+  
+  typedef struct {
+    size_t start;
+    size_t end;
+  } DECANCER_EXPORT_NAME(match_t);
   
   typedef uint32_t DECANCER_EXPORT_NAME(options_t);
 

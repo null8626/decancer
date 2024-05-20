@@ -13,7 +13,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(decancer SHARED decancer.cpp)
 
 set_target_properties(decancer PROPERTIES
-  OUTPUT_NAME           decancer
+  OUTPUT_NAME           decancer_cxx
   CXX_STANDARD          17
   CXX_STANDARD_REQUIRED ON
 )
