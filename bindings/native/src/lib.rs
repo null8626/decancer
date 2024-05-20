@@ -201,7 +201,10 @@ pub unsafe extern "C" fn decancer_censor(
   other_length: usize,
   with_char: u32,
 ) -> bool {
-  match (utf8::get(other_str, other_length), char::from_u32(with_char)) {
+  match (
+    utf8::get(other_str, other_length),
+    char::from_u32(with_char),
+  ) {
     (Some(other_str), Some(with_char)) => {
       (*cured).censor(other_str, with_char);
       true
@@ -218,7 +221,10 @@ pub unsafe extern "C" fn decancer_censor_wide(
   other_length: usize,
   with_char: u32,
 ) -> bool {
-  match (utf16::get(other_str, other_length), char::from_u32(with_char)) {
+  match (
+    utf16::get(other_str, other_length),
+    char::from_u32(with_char),
+  ) {
     (Some(other_str), Some(with_char)) => {
       (*cured).censor(str::from_utf8_unchecked(&other_str), with_char);
       true
