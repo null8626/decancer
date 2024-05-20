@@ -335,6 +335,11 @@ DECANCER_FIND_MULTIPLE_METHOD_IMPL(find_multiple, std::string)
 DECANCER_FIND_MULTIPLE_METHOD_IMPL(find_multiple_wide, const wchar_t*)
 DECANCER_FIND_MULTIPLE_METHOD_IMPL(find_multiple_wide, std::wstring)
 
+DECANCER_EQUALS_METHOD_IMPL(text, strlen(text), const char* text)
+DECANCER_EQUALS_METHOD_IMPL(text.data(), text.size(), const std::string& text)
+DECANCER_EQUALS_WIDE_METHOD_IMPL(text, wcslen(text), const wchar_t* text)
+DECANCER_EQUALS_WIDE_METHOD_IMPL(text.data(), text.size(), const std::wstring& text)
+
 cured_string::operator std::string() const noexcept {
   size_t size;
   const uint8_t* ptr = decancer_cured_raw(m_ptr, &size);
@@ -353,11 +358,6 @@ cured_string::operator std::wstring() const noexcept {
   
   return output;
 }
-
-DECANCER_EQUALS_METHOD_IMPL(text, strlen(text), const char* text)
-DECANCER_EQUALS_METHOD_IMPL(text.data(), text.size(), const std::string& text)
-DECANCER_EQUALS_WIDE_METHOD_IMPL(text, wcslen(text), const wchar_t* text)
-DECANCER_EQUALS_WIDE_METHOD_IMPL(text.data(), text.size(), const std::wstring& text)
 
 cured_string::~cured_string() noexcept {
   if (m_ptr != nullptr) {
