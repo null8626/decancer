@@ -7,33 +7,21 @@ using namespace decancer;
 #define DECANCER_WSTRING(text)             reinterpret_cast<const uint16_t*>(text)
 #define DECANCER_INTO_ERROR(error_struct)  native_error(generate_error_message(&error_struct), error_struct.message_length + 1)
 
-#define DECANCER_CURED_CTOR_IMPL(text_argument, length_argument, ...)                                                         \
-  cured_string::cured_string(__VA_ARGS__) {                                                                                   \
-    error_t err;                                                                                                              \
-    if ((m_ptr = decancer_cure(DECANCER_STRING(text_argument), length_argument, DECANCER_OPTION_DEFAULT, &err)) == nullptr) { \
-      throw DECANCER_INTO_ERROR(err);                                                                                         \
-    }                                                                                                                         \
-  }                                                                                                                           \
-  cured_string::cured_string(__VA_ARGS__, const options_t opt) {                                                              \
-    error_t err;                                                                                                              \
-    if ((m_ptr = decancer_cure(DECANCER_STRING(text_argument), length_argument, opt, &err)) == nullptr) {                     \
-      throw DECANCER_INTO_ERROR(err);                                                                                         \
-    }                                                                                                                         \
+#define DECANCER_CTOR_IMPL(method_name, options, text_argument, length_argument, ...)                 \
+  cured_string::cured_string(__VA_ARGS__) {                                                           \
+    error_t err;                                                                                      \
+    if ((m_ptr = decancer_##method_name(text_argument, length_argument, options, &err)) == nullptr) { \
+      throw DECANCER_INTO_ERROR(err);                                                                 \
+    }                                                                                                 \
   }
 
-#define DECANCER_CURED_WIDE_CTOR_IMPL(text_argument, length_argument, ...)                                                          \
-  cured_string::cured_string(__VA_ARGS__) {                                                                                         \
-    error_t err;                                                                                                                    \
-    if ((m_ptr = decancer_cure_wide(DECANCER_WSTRING(text_argument), length_argument, DECANCER_OPTION_DEFAULT, &err)) == nullptr) { \
-      throw DECANCER_INTO_ERROR(err);                                                                                               \
-    }                                                                                                                               \
-  }                                                                                                                                 \
-  cured_string::cured_string(__VA_ARGS__, const options_t opt) {                                                                    \
-    error_t err;                                                                                                                    \
-    if ((m_ptr = decancer_cure_wide(DECANCER_WSTRING(text_argument), length_argument, opt, &err)) == nullptr) {                     \
-      throw DECANCER_INTO_ERROR(err);                                                                                               \
-    }                                                                                                                               \
-  }
+#define DECANCER_GENERATE_CTOR_IMPL(text_argument, length_argument, ...)                                                      \
+  DECANCER_CTOR_IMPL(cure, DECANCER_OPTION_DEFAULT, DECANCER_STRING(text_argument), length_argument, __VA_ARGS__)             \
+  DECANCER_CTOR_IMPL(cure, options, DECANCER_STRING(text_argument), length_argument, __VA_ARGS__, const options_t options)
+
+#define DECANCER_GENERATE_WIDE_CTOR_IMPL(text_argument, length_argument, ...)                                                       \
+  DECANCER_CTOR_IMPL(cure_wide, DECANCER_OPTION_DEFAULT, DECANCER_WSTRING(text_argument), length_argument, __VA_ARGS__)             \
+  DECANCER_CTOR_IMPL(cure_wide, options, DECANCER_WSTRING(text_argument), length_argument, __VA_ARGS__, const options_t options)
 
 #define DECANCER_COMPARISON_METHOD_IMPL(method_name, string_argument, length_argument, ...)   \
   bool cured_string::method_name(__VA_ARGS__) const noexcept {                                \
@@ -283,13 +271,13 @@ translation::~translation() noexcept {
 
 cured_string::cured_string(const cured_string& other): m_ptr(__decancer_cured_clone(other.m_ptr)) {}
 
-DECANCER_CURED_CTOR_IMPL(text, strlen(text), const char* text)
-DECANCER_CURED_CTOR_IMPL(text, length, const char* text, const size_t length)
-DECANCER_CURED_CTOR_IMPL(text.data(), text.size(), const std::string& text)
+DECANCER_GENERATE_CTOR_IMPL(text, strlen(text), const char* text)
+DECANCER_GENERATE_CTOR_IMPL(text, length, const char* text, const size_t length)
+DECANCER_GENERATE_CTOR_IMPL(text.data(), text.size(), const std::string& text)
 
-DECANCER_CURED_WIDE_CTOR_IMPL(text, wcslen(text), const wchar_t* text)
-DECANCER_CURED_WIDE_CTOR_IMPL(text, length, const wchar_t* text, const size_t length)
-DECANCER_CURED_WIDE_CTOR_IMPL(text.data(), text.size(), const std::wstring& text)
+DECANCER_GENERATE_WIDE_CTOR_IMPL(text, wcslen(text), const wchar_t* text)
+DECANCER_GENERATE_WIDE_CTOR_IMPL(text, length, const wchar_t* text, const size_t length)
+DECANCER_GENERATE_WIDE_CTOR_IMPL(text.data(), text.size(), const std::wstring& text)
 
 DECANCER_GENERATE_COMPARISON_METHODS_IMPL(starts_with)
 DECANCER_GENERATE_COMPARISON_METHODS_IMPL(ends_with)
