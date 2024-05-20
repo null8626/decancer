@@ -128,7 +128,7 @@ Windows:
 
 ```bat
 git clone https://github.com/null8626/decancer.git --depth 1
-cd ./decancer/bindings/java
+cd .\decancer\bindings\java
 powershell -NoLogo -NoProfile -NonInteractive -File .\extract_bindings.ps1
 gradle build --warning-mode all
 ```
