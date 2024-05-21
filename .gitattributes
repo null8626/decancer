@@ -4,6 +4,9 @@
 **/*.jar binary
 **/*.zip binary
 **/*.c linguist-vendored=true eol=lf
+**/*.h linguist-vendored=true eol=lf
+**/*.cpp linguist-vendored=true eol=lf
+**/*.hpp linguist-vendored=true eol=lf
 **/*.ts linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf
