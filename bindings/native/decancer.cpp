@@ -82,7 +82,7 @@ using namespace decancer;
     if (!result) {                                                                                                                   \
       throw error{"Invalid string input or censor replacement character."};                                                          \
     }                                                                                                                                \
-  }                                                                                                                                  \
+  }
 
 #define DECANCER_REPLACE_METHOD_IMPL(first_string_argument, first_length_argument, second_string_argument, second_length_argument, ...)                              \
   void cured_string::replace(__VA_ARGS__) const {                                                                                                                    \
@@ -134,7 +134,7 @@ using namespace decancer;
     delete[] keywords_in;                                                                                              \
                                                                                                                        \
     return collect_from_matches(matches);                                                                              \
-  }  
+  }
 
 #define DECANCER_EQUALS_METHOD_IMPL(string_argument, length_argument, ...)                            \
   bool cured_string::operator==(__VA_ARGS__) const noexcept {                                         \
@@ -150,74 +150,74 @@ static char* generate_error_message(error_t* err) {
   char* ptr = new char[err->message_length + 1];
   memcpy(ptr, err->message, err->message_length);
   ptr[err->message_length] = 0;
-  
+
   return ptr;
 }
 
 static keyword_t* keywords_from_list(const std::initializer_list<const char*>& keywords) {
   auto keywords_in = new keyword_t[keywords.size()];
   const auto keywords_ptr = keywords.begin();
-  
+
   for (size_t i = 0; i < keywords.size(); i++) {
     const char* s = keywords_ptr[i];
-    
+
     keywords_in[i].string = DECANCER_STRING(s);
     keywords_in[i].length = strlen(s);
   }
-  
+
   return keywords_in;
 }
 
 static keyword_t* keywords_from_list(const std::initializer_list<std::string>& keywords) {
   auto keywords_in = new keyword_t[keywords.size()];
   const auto keywords_ptr = keywords.begin();
-  
+
   for (size_t i = 0; i < keywords.size(); i++) {
     const std::string* s = &keywords_ptr[i];
-    
+
     keywords_in[i].string = DECANCER_STRING(s->data());
     keywords_in[i].length = s->size();
   }
-  
+
   return keywords_in;
 }
 
 static keyword_wide_t* keywords_from_list(const std::initializer_list<const wchar_t*>& keywords) {
   auto keywords_in = new keyword_wide_t[keywords.size()];
   const auto keywords_ptr = keywords.begin();
-  
+
   for (size_t i = 0; i < keywords.size(); i++) {
     const wchar_t* s = keywords_ptr[i];
-    
+
     keywords_in[i].string = DECANCER_WSTRING(s);
     keywords_in[i].length = wcslen(s);
   }
-  
+
   return keywords_in;
 }
 
 static keyword_wide_t* keywords_from_list(const std::initializer_list<std::wstring>& keywords) {
   auto keywords_in = new keyword_wide_t[keywords.size()];
   const auto keywords_ptr = keywords.begin();
-  
+
   for (size_t i = 0; i < keywords.size(); i++) {
     const std::wstring* s = &keywords_ptr[i];
-    
+
     keywords_in[i].string = DECANCER_WSTRING(s->data());
     keywords_in[i].length = s->size();
   }
-  
+
   return keywords_in;
 }
 
 static std::vector<match_t> collect_from_matcher(matcher_t matcher) {
   std::vector<match_t> output{};
   match_t portion;
-  
+
   while (decancer_matcher_next(matcher, &portion)) {
     output.push_back(portion);
   }
-  
+
   return output;
 }
 
@@ -226,11 +226,11 @@ static std::vector<match_t> collect_from_matches(matches_t matches) {
   size_t size;
   const auto ptr = decancer_matches_raw(matches, &size);
   output.reserve(size);
-  
+
   for (size_t i = 0; i < size; i++) {
     output.push_back(ptr[i]);
   }
-  
+
   decancer_matches_free(matches);
   return output;
 }
@@ -241,32 +241,32 @@ translation::translation(const translation& other) {
 
 translation::translation(const uint32_t code) {
   memset(&m_translation, 0, sizeof(translation_t));
-  
+
   decancer_cure_char(code, DECANCER_OPTION_DEFAULT, &m_translation);
 }
 
 translation::translation(const uint32_t code, const options_t opt) {
   memset(&m_translation, 0, sizeof(translation_t));
-  
+
   decancer_cure_char(code, opt, &m_translation);
 }
 
 translation_variant translation::variant() const noexcept {
   switch (m_translation.kind) {
-    case DECANCER_TRANSLATION_KIND_CHARACTER: {
-      return translation_variant{m_translation.contents.character};
-    }
-    
-    case DECANCER_TRANSLATION_KIND_STRING: {
-      return translation_variant{std::string(
-        reinterpret_cast<const char*>(m_translation.contents.string.contents),
-        m_translation.contents.string.length
-      )};
-    }
-    
-    default: {
-      return translation_variant{std::string{}};
-    }
+  case DECANCER_TRANSLATION_KIND_CHARACTER: {
+    return translation_variant{m_translation.contents.character};
+  }
+
+  case DECANCER_TRANSLATION_KIND_STRING: {
+    return translation_variant{std::string(
+      reinterpret_cast<const char*>(m_translation.contents.string.contents),
+      m_translation.contents.string.length
+    )};
+  }
+
+  default: {
+    return translation_variant{std::string{}};
+  }
   }
 }
 
@@ -274,7 +274,8 @@ translation::~translation() noexcept {
   decancer_translation_free(&m_translation);
 }
 
-cured_string::cured_string(const cured_string& other): m_ptr(__decancer_cured_clone(other.m_ptr)) {}
+cured_string::cured_string(const cured_string& other)
+  : m_ptr(__decancer_cured_clone(other.m_ptr)) {}
 
 DECANCER_GENERATE_CTOR_IMPL(text, strlen(text), const char* text)
 DECANCER_GENERATE_CTOR_IMPL(text, length, const char* text, const size_t length)
@@ -338,19 +339,19 @@ DECANCER_EQUALS_WIDE_METHOD_IMPL(text.data(), text.size(), const std::wstring& t
 cured_string::operator std::string() const noexcept {
   size_t size;
   const uint8_t* ptr = decancer_cured_raw(m_ptr, &size);
-  
+
   return std::string(reinterpret_cast<const char*>(ptr), size);
 }
 
 cured_string::operator std::wstring() const noexcept {
   size_t size;
   uint16_t* ptr;
-  
+
   auto handle = decancer_cured_raw_wide(m_ptr, &ptr, &size);
 
   std::wstring output(reinterpret_cast<wchar_t*>(ptr), size);
   decancer_cured_raw_wide_free(handle);
-  
+
   return output;
 }
 
