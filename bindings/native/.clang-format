@@ -98,11 +98,11 @@ ReferenceAlignment: Left
 RemoveParentheses: MultipleParentheses
 RemoveSemicolon: true
 RequiresClausePosition: OwnLine
-# SeparateDefinitionBlocks: Always
+SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 0
 SkipMacroDefinitionBody: true
 SortIncludes: Never
-SortUsingDeclarations: Lexicographic
+# SortUsingDeclarations: Lexicographic
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
