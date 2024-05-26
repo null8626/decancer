@@ -214,7 +214,7 @@ impl IsolatingRunSequence {
       let mut found_not_e = false;
       let mut class_to_set = None;
 
-      let start_char_len = util::sliced(text, pair.start..pair.end)
+      let start_char_len = util::sliced(text, pair.start..)
         .chars()
         .next()
         .unwrap()
@@ -261,7 +261,7 @@ impl IsolatingRunSequence {
       }
 
       if let Some(class_to_set) = class_to_set {
-        let end_char_len = util::sliced(text, pair.end..text.len())
+        let end_char_len = util::sliced(text, pair.end..)
           .chars()
           .next()
           .unwrap()
@@ -617,7 +617,7 @@ impl Paragraph {
           if overflow_isolate_count <= 0 {
             if overflow_embedding_count > 0 {
               overflow_embedding_count -= 1;
-            } else if stack.last().unwrap().status != OverrideStatus::Isolate && stack.len() >= 2 {
+            } else if stack.len() >= 2 && stack.last().unwrap().status != OverrideStatus::Isolate {
               stack.pop();
             }
           }

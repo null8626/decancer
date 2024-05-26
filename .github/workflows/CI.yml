@@ -614,7 +614,9 @@ jobs:
           node-version: latest
       - name: Prettier everything
         run: |
-          sudo apt-get update
+          wget https://apt.llvm.org/llvm.sh
+          chmod u+x llvm.sh
+          sudo ./llvm.sh 18
           node scripts/pretty.mjs
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
