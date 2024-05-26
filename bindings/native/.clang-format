@@ -52,7 +52,7 @@ BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Leave
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Custom
-BreakBeforeConceptDeclarations: Always
+# BreakBeforeConceptDeclarations: Always
 BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true
 BreakStringLiterals: false
@@ -98,7 +98,7 @@ ReferenceAlignment: Left
 RemoveParentheses: MultipleParentheses
 RemoveSemicolon: true
 RequiresClausePosition: OwnLine
-SeparateDefinitionBlocks: Always
+# SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 0
 SkipMacroDefinitionBody: true
 SortIncludes: Never
