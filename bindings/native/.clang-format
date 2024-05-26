@@ -12,8 +12,8 @@ AlignConsecutiveShortCaseStatements:
   Enabled: false
 AlignEscapedNewlines: Right
 AlignOperands: Align
-AlignTrailingComments:
-  Kind: Always
+# AlignTrailingComments:
+#   Kind: Always
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
