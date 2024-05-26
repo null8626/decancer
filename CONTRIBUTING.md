@@ -63,9 +63,8 @@ Other useful scripts have been added as a utility for maintaining `decancer`.
 
 Prerequisites:
 
-- [Clang](https://clang.llvm.org)
-- [Git](https://git-scm.com/)
-- [Rust](https://www.rust-lang.org)
+- [clang-format v18 or later](https://clang.llvm.org)
+- [Rust v1.65 or later](https://www.rust-lang.org)
 
 ```console
 node scripts/pretty.mjs

@@ -614,7 +614,7 @@ jobs:
           node-version: latest
       - name: Prettier everything
         run: |
-          clang-format --version
+          sudo apt-get update
           node scripts/pretty.mjs
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}

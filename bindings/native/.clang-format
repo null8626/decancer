@@ -12,8 +12,8 @@ AlignConsecutiveShortCaseStatements:
   Enabled: false
 AlignEscapedNewlines: Right
 AlignOperands: Align
-# AlignTrailingComments:
-#   Kind: Always
+AlignTrailingComments:
+  Kind: Always
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
@@ -52,7 +52,7 @@ BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Leave
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Custom
-# BreakBeforeConceptDeclarations: Always
+BreakBeforeConceptDeclarations: Always
 BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true
 BreakStringLiterals: false
@@ -102,7 +102,7 @@ SeparateDefinitionBlocks: Always
 ShortNamespaceLines: 0
 SkipMacroDefinitionBody: true
 SortIncludes: Never
-# SortUsingDeclarations: Lexicographic
+SortUsingDeclarations: Lexicographic
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
