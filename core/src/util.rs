@@ -50,10 +50,7 @@ impl Binary {
 }
 
 #[inline(always)]
-pub(crate) fn sliced<R, T: Index<R> + ?Sized>(
-  slicable: &T,
-  range: R,
-) -> &<T as Index<R>>::Output {
+pub(crate) fn sliced<R, T: Index<R> + ?Sized>(slicable: &T, range: R) -> &<T as Index<R>>::Output {
   slicable.index(range)
 }
 

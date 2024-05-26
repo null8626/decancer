@@ -134,12 +134,15 @@ async function cargo(cwd) {
 
 async function clangFormat() {
   const clangFormatExecutable = OPTIONS['clang-format'] ?? 'clang-format'
-  
+
   console.log(`- [${clangFormatExecutable}] running...`)
 
-  await execute(`${clangFormatExecutable} -i decancer.cpp decancer.hpp decancer.h test.c test.cpp`, {
-    cwd: join(BINDINGS_DIR, 'native')
-  })
+  await execute(
+    `${clangFormatExecutable} -i decancer.cpp decancer.hpp decancer.h test.c test.cpp`,
+    {
+      cwd: join(BINDINGS_DIR, 'native')
+    }
+  )
 
   console.log(`- [${clangFormatExecutable}] completed`)
 }
