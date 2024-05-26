@@ -151,7 +151,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
 
     #[cfg(not(feature = "leetspeak"))]
     {
-      self.matches_character(self_char, other_char)
+      Self::matches_character(self_char, other_char)
     }
   }
 
