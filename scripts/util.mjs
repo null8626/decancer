@@ -2,6 +2,10 @@
 
 'use strict'
 
+export function options(argv) {
+  return Object.fromEntries(argv.map(x => x.match(/^\-\-([\w\-]+)=(.*)/)?.slice(1)).filter(x => x))
+}
+
 export async function request(url) {
   console.log(`- requesting to ${url}...`)
 

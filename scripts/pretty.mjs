@@ -9,6 +9,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { deserialize } from 'node:v8'
+import { options } from './util.mjs'
 
 const CODEPOINT_MASK = 0xfffff
 // 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..=0x10ffff
@@ -17,6 +18,7 @@ const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CORE_DIR = join(ROOT_DIR, 'core')
 const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
+const OPTIONS = options(process.argv.slice(2))
 
 if (!existsSync(join(ROOT_DIR, '.cache.bin'))) {
   execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
@@ -131,13 +133,15 @@ async function cargo(cwd) {
 }
 
 async function clangFormat() {
-  console.log('- [clang-format] running...')
+  const clangFormatExecutable = OPTIONS['clang-format'] ?? 'clang-format'
+  
+  console.log(`- [${clangFormatExecutable}] running...`)
 
-  await execute('clang-format -i decancer.cpp decancer.hpp decancer.h test.c test.cpp', {
+  await execute(`${clangFormatExecutable} -i decancer.cpp decancer.hpp decancer.h test.c test.cpp`, {
     cwd: join(BINDINGS_DIR, 'native')
   })
 
-  console.log('- [clang-format] completed')
+  console.log(`- [${clangFormatExecutable}] completed`)
 }
 
 void (await Promise.all([

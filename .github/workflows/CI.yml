@@ -617,8 +617,7 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod u+x llvm.sh
           sudo ./llvm.sh 18 all
-          clang-format --version
-          node scripts/pretty.mjs
+          node scripts/pretty.mjs --clang-format=clang-format-18
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/download-artifact@v4
