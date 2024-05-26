@@ -50,18 +50,15 @@ impl Binary {
 }
 
 #[inline(always)]
-pub(crate) fn sliced<T: Index<Range<usize>> + ?Sized>(
-  slicable: &T,
-  range: Range<usize>,
-) -> &<T as Index<Range<usize>>>::Output {
+pub(crate) fn sliced<R, T: Index<R> + ?Sized>(slicable: &T, range: R) -> &<T as Index<R>>::Output {
   slicable.index(range)
 }
 
 #[inline(always)]
-pub(crate) fn sliced_mut<T: IndexMut<Range<usize>> + ?Sized>(
+pub(crate) fn sliced_mut<R, T: IndexMut<R> + ?Sized>(
   slicable: &mut T,
-  range: Range<usize>,
-) -> &mut <T as Index<Range<usize>>>::Output {
+  range: R,
+) -> &mut <T as Index<R>>::Output {
   slicable.index_mut(range)
 }
 
