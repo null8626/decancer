@@ -64,6 +64,7 @@ namespace decancer {
   class error: public std::runtime_error {
     inline error(const char* message)
       : std::runtime_error(message) {}
+    inline error(): std::runtime_error("") {}
 
     friend class cured_string;
     friend class native_error;
@@ -74,15 +75,19 @@ namespace decancer {
     const size_t m_size;
 
     inline native_error(char* ptr, const size_t size)
-      : error(""), m_ptr(ptr), m_size(size) {}
+      : m_ptr(ptr), m_size(size) {}
 
   public:
     native_error() = delete;
 
-    inline native_error(const native_error& other)
+    inline native_error(native_error& other)
       : error(""), m_size(other.m_size) {
       m_ptr = new char[other.m_size];
       memcpy(m_ptr, other.m_ptr, other.m_size);
+    }
+    
+    inline native_error(native_error&& other): m_ptr(other.m_ptr), m_size(other.m_size) {
+      other.m_ptr = nullptr;
     }
 
     inline const char* what() const noexcept override {
@@ -90,7 +95,9 @@ namespace decancer {
     }
 
     inline ~native_error() noexcept {
-      delete[] m_ptr;
+      if (m_ptr != nullptr) {
+        delete[] m_ptr;
+      }
     }
 
     friend class cured_string;
@@ -104,7 +111,8 @@ namespace decancer {
   public:
     translation(const uint32_t code);
     translation(const uint32_t code, const options_t opt);
-    translation(const translation& other);
+    translation(translation& other);
+    translation(translation&& other);
 
     translation_variant variant() const noexcept;
 
@@ -115,7 +123,11 @@ namespace decancer {
     cured_t m_ptr;
 
   public:
-    cured_string(const cured_string& other);
+    cured_string(cured_string& other);
+
+    inline cured_string(cured_string&& other): m_ptr(other.m_ptr) {
+      other.m_ptr = nullptr;
+    }
 
     DECANCER_CTOR(const char* text);
     DECANCER_CTOR(const char* text, const size_t length);

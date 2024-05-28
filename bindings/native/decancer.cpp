@@ -235,8 +235,13 @@ static std::vector<match_t> collect_from_matches(matches_t matches) {
   return output;
 }
 
-translation::translation(const translation& other) {
+translation::translation(translation& other) {
   __decancer_translation_clone(&other.m_translation, &m_translation);
+}
+
+translation::translation(translation&& other) {
+  memcpy(&m_translation, &other.m_translation, sizeof(translation_t));
+  memset(&other.m_translation, 0, sizeof(translation_t));
 }
 
 translation::translation(const uint32_t code) {
@@ -274,7 +279,7 @@ translation::~translation() noexcept {
   decancer_translation_free(&m_translation);
 }
 
-cured_string::cured_string(const cured_string& other)
+cured_string::cured_string(cured_string& other)
   : m_ptr(__decancer_cured_clone(other.m_ptr)) {}
 
 DECANCER_GENERATE_CTOR_IMPL(text, strlen(text), const char* text)
