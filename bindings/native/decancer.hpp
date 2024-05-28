@@ -64,7 +64,9 @@ namespace decancer {
   class error: public std::runtime_error {
     inline error(const char* message)
       : std::runtime_error(message) {}
-    inline error(): std::runtime_error("") {}
+
+    inline error()
+      : std::runtime_error("") {}
 
     friend class cured_string;
     friend class native_error;
@@ -85,8 +87,9 @@ namespace decancer {
       m_ptr = new char[other.m_size];
       memcpy(m_ptr, other.m_ptr, other.m_size);
     }
-    
-    inline native_error(native_error&& other): m_ptr(other.m_ptr), m_size(other.m_size) {
+
+    inline native_error(native_error&& other)
+      : m_ptr(other.m_ptr), m_size(other.m_size) {
       other.m_ptr = nullptr;
     }
 
@@ -125,7 +128,8 @@ namespace decancer {
   public:
     cured_string(cured_string& other);
 
-    inline cured_string(cured_string&& other): m_ptr(other.m_ptr) {
+    inline cured_string(cured_string&& other)
+      : m_ptr(other.m_ptr) {
       other.m_ptr = nullptr;
     }
 
