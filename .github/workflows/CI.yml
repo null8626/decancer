@@ -19,6 +19,8 @@ on:
       - 'core/bin/codepoints.bin'
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
+      - 'bindings/native/decancer.cpp'
+      - 'bindings/native/decancer.hpp'
   pull_request: null
 permissions:
   contents: write

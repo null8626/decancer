@@ -239,6 +239,11 @@ translation::translation(const translation& other) {
   __decancer_translation_clone(&other.m_translation, &m_translation);
 }
 
+translation::translation(translation&& other) {
+  memcpy(&m_translation, &other.m_translation, sizeof(translation_t));
+  memset(&other.m_translation, 0, sizeof(translation_t));
+}
+
 translation::translation(const uint32_t code) {
   memset(&m_translation, 0, sizeof(translation_t));
 
@@ -249,6 +254,18 @@ translation::translation(const uint32_t code, const options_t opt) {
   memset(&m_translation, 0, sizeof(translation_t));
 
   decancer_cure_char(code, opt, &m_translation);
+}
+
+translation& translation::operator=(const translation& other) & {
+  decancer_translation_free(&m_translation);
+  __decancer_translation_clone(&other.m_translation, &m_translation);
+  return *this;
+}
+
+translation& translation::operator=(translation&& other) & {
+  memcpy(&m_translation, &other.m_translation, sizeof(translation_t));
+  memset(&other.m_translation, 0, sizeof(translation_t));
+  return *this;
 }
 
 translation_variant translation::variant() const noexcept {
@@ -276,6 +293,15 @@ translation::~translation() noexcept {
 
 cured_string::cured_string(const cured_string& other)
   : m_ptr(__decancer_cured_clone(other.m_ptr)) {}
+
+cured_string& cured_string::operator=(const cured_string& other) & {
+  if (m_ptr != nullptr) {
+    decancer_cured_free(m_ptr);
+  }
+  
+  m_ptr = __decancer_cured_clone(other.m_ptr);
+  return *this;
+}
 
 DECANCER_GENERATE_CTOR_IMPL(text, strlen(text), const char* text)
 DECANCER_GENERATE_CTOR_IMPL(text, length, const char* text, const size_t length)

@@ -65,16 +65,19 @@ namespace decancer {
     inline error(const char* message)
       : std::runtime_error(message) {}
 
+    inline error()
+      : std::runtime_error("") {}
+
     friend class cured_string;
     friend class native_error;
   };
 
   class native_error: public error {
     char* m_ptr;
-    const size_t m_size;
+    size_t m_size;
 
     inline native_error(char* ptr, const size_t size)
-      : error(""), m_ptr(ptr), m_size(size) {}
+      : m_ptr(ptr), m_size(size) {}
 
   public:
     native_error() = delete;
@@ -85,12 +88,39 @@ namespace decancer {
       memcpy(m_ptr, other.m_ptr, other.m_size);
     }
 
+    inline native_error(native_error&& other)
+      : m_ptr(other.m_ptr), m_size(other.m_size) {
+      other.m_ptr = nullptr;
+    }
+    
+    native_error& operator=(const native_error& other) & {
+      if (m_ptr != nullptr) {
+        delete[] m_ptr;
+      }
+      
+      m_ptr = new char[other.m_size];
+      
+      memcpy(m_ptr, other.m_ptr, other.m_size);
+      m_size = other.m_size;
+      
+      return *this;
+    }
+    
+    inline native_error& operator=(native_error&& other) & {
+      m_ptr = other.m_ptr;
+      m_size = other.m_size;
+      other.m_ptr = nullptr;
+      return *this;
+    }
+
     inline const char* what() const noexcept override {
       return m_ptr;
     }
 
     inline ~native_error() noexcept {
-      delete[] m_ptr;
+      if (m_ptr != nullptr) {
+        delete[] m_ptr;
+      }
     }
 
     friend class cured_string;
@@ -105,6 +135,10 @@ namespace decancer {
     translation(const uint32_t code);
     translation(const uint32_t code, const options_t opt);
     translation(const translation& other);
+    translation(translation&& other);
+    
+    translation& operator=(const translation& other) &;
+    translation& operator=(translation&& other) &;
 
     translation_variant variant() const noexcept;
 
@@ -116,6 +150,19 @@ namespace decancer {
 
   public:
     cured_string(const cured_string& other);
+    
+    inline cured_string(cured_string&& other)
+      : m_ptr(other.m_ptr) {
+      other.m_ptr = nullptr;
+    }
+    
+    cured_string& operator=(const cured_string& other) &;
+    
+    inline cured_string& operator=(cured_string&& other) & {
+      m_ptr = other.m_ptr;
+      other.m_ptr = nullptr;
+      return *this;
+    }
 
     DECANCER_CTOR(const char* text);
     DECANCER_CTOR(const char* text, const size_t length);
