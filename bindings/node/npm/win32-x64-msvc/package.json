@@ -30,5 +30,8 @@
     "sanitizer",
     "confusables"
   ],
-  "funding": "https://ko-fi.com/null8626"
+  "funding": [
+    "https://github.com/sponsors/null8626",
+    "https://ko-fi.com/null8626"
+  ]
 }

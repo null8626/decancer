@@ -92,20 +92,20 @@ namespace decancer {
       : m_ptr(other.m_ptr), m_size(other.m_size) {
       other.m_ptr = nullptr;
     }
-    
+
     native_error& operator=(const native_error& other) & {
       if (m_ptr != nullptr) {
         delete[] m_ptr;
       }
-      
+
       m_ptr = new char[other.m_size];
-      
+
       memcpy(m_ptr, other.m_ptr, other.m_size);
       m_size = other.m_size;
-      
+
       return *this;
     }
-    
+
     inline native_error& operator=(native_error&& other) & {
       m_ptr = other.m_ptr;
       m_size = other.m_size;
@@ -136,7 +136,7 @@ namespace decancer {
     translation(const uint32_t code, const options_t opt);
     translation(const translation& other);
     translation(translation&& other);
-    
+
     translation& operator=(const translation& other) &;
     translation& operator=(translation&& other) &;
 
@@ -150,14 +150,14 @@ namespace decancer {
 
   public:
     cured_string(const cured_string& other);
-    
+
     inline cured_string(cured_string&& other)
       : m_ptr(other.m_ptr) {
       other.m_ptr = nullptr;
     }
-    
+
     cured_string& operator=(const cured_string& other) &;
-    
+
     inline cured_string& operator=(cured_string&& other) & {
       m_ptr = other.m_ptr;
       other.m_ptr = nullptr;
