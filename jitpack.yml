@@ -1,6 +1,0 @@
-before_install:
-  - unzip ./bindings/java/bin/bindings.zip -d ./bindings/java/bin
-install:
-  - cd ./bindings/java
-  - chmod +x ./gradlew
-  - ./gradlew build publishToMavenLocal -x test --warning-mode all

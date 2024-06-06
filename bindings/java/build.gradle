@@ -35,6 +35,7 @@ publishing {
       pom {
         name = 'decancer'
         description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
+        url = 'https://github.com/null8626/decancer'
         
         licenses {
           license {
@@ -51,6 +52,12 @@ publishing {
         }
       }
     }
+  }
+}
+
+javadoc {
+  if (JavaVersion.current().isJava9Compatible()) {
+    options.addBooleanOption('html5', true)
   }
 }
 
