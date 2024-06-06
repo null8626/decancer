@@ -26,10 +26,12 @@ public class CuredString {
 
       if (className.startsWith("org.junit")) {
         foundJUnit = true;
-      } else if (!className.startsWith("com.github.null8626.decancer") &&
-                 !className.contains("org.gradle") &&
-                 !className.startsWith("jdk.") &&
-                 !className.startsWith("java.")) {
+      } else if (
+        !className.startsWith("com.github.null8626.decancer") &&
+        !className.contains("org.gradle") &&
+        !className.startsWith("jdk.") &&
+        !className.startsWith("java.")
+      ) {
         local = false;
       }
     }
