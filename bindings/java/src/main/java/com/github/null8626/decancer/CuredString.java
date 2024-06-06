@@ -17,28 +17,6 @@ public class CuredString {
 
   private long inner;
 
-  private static boolean isJUnit() {
-    boolean foundJUnit = false;
-    boolean local = true;
-
-    for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-      final String className = element.getClassName();
-
-      if (className.startsWith("org.junit")) {
-        foundJUnit = true;
-      } else if (
-        !className.startsWith("com.github.null8626.decancer") &&
-        !className.contains("org.gradle") &&
-        !className.startsWith("jdk.") &&
-        !className.startsWith("java.")
-      ) {
-        local = false;
-      }
-    }
-
-    return foundJUnit && local;
-  }
-
   static {
     String osName = System.getProperty("os.name");
     String archName = System.getProperty("os.arch");
@@ -67,7 +45,7 @@ public class CuredString {
           break;
       }
 
-      if (CuredString.isJUnit()) {
+      if (System.getProperty("DECANCER_INSIDE_JAR", "1").equals("0")) {
         System.loadLibrary("decancer-" + rustTarget);
       } else {
         NativeUtils.loadLibraryFromJar(
