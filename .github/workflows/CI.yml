@@ -192,7 +192,7 @@ jobs:
       - name: Test
         run: |
           chmod +x ./gradlew
-          ./gradlew test --warning-mode all
+          ./gradlew test --warning-mode all -DDECANCER_INSIDE_JAR=0
         working-directory: bindings/java
         shell: bash
   native:
