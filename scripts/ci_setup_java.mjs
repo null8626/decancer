@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const EXCLUDED = [
   'jitpack.yml',
+  'LICENSE',
   ['bindings', 'java', 'src', 'main'],
   ['bindings', 'java', 'src', 'test'],
   ['bindings', 'java', 'bin'],
