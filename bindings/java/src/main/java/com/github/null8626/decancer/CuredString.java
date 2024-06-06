@@ -18,13 +18,20 @@ public class CuredString {
   private long inner;
 
   private static boolean isJUnit() {
+    boolean foundJUnit = false;
+    boolean local = true;
+    
     for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-      if (element.getClassName().startsWith("org.junit.")) {
-        return true;
+      final String className = element.getClassName();
+      
+      if (className.startsWith("org.junit")) {
+        foundJUnit = true;
+      } else if (!className.startsWith("com.github.null8626.decancer") && !className.startsWith("jdk.") && !className.startsWith("java.")) {
+        local = false;
       }
     }
 
-    return false;
+    return foundJUnit && local;
   }
 
   static {
