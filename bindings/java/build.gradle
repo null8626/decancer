@@ -64,6 +64,7 @@ javadoc {
 test {
   useJUnitPlatform()
   
+  systemProperty 'DECANCER_INSIDE_JAR', '0'
   systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
 }
 
