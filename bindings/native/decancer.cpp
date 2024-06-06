@@ -298,7 +298,7 @@ cured_string& cured_string::operator=(const cured_string& other) & {
   if (m_ptr != nullptr) {
     decancer_cured_free(m_ptr);
   }
-  
+
   m_ptr = __decancer_cured_clone(other.m_ptr);
   return *this;
 }
