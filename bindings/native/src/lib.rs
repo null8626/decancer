@@ -48,10 +48,12 @@ pub unsafe extern "C" fn decancer_cure(
   match decancer::cure(input, transmute(options)) {
     Ok(res) => Box::into_raw(Box::new(res)),
     Err(err) => {
-      let message = <decancer::Error as AsRef<str>>::as_ref(&err);
-
-      (*error).message = message.as_ptr() as _;
-      (*error).message_length = message.len() as _;
+      if !error.is_null() {
+        let message = <decancer::Error as AsRef<str>>::as_ref(&err);
+        
+        (*error).message = message.as_ptr() as _;
+        (*error).message_length = message.len() as _;
+      }
 
       0 as _
     },
@@ -77,10 +79,12 @@ pub unsafe extern "C" fn decancer_cure_wide(
   match decancer::cure(input_str, transmute(options)) {
     Ok(res) => Box::into_raw(Box::new(res)),
     Err(err) => {
-      let message = <decancer::Error as AsRef<str>>::as_ref(&err);
-
-      (*error).message = message.as_ptr() as _;
-      (*error).message_length = message.len() as _;
+      if !error.is_null() {
+        let message = <decancer::Error as AsRef<str>>::as_ref(&err);
+        
+        (*error).message = message.as_ptr() as _;
+        (*error).message_length = message.len() as _;
+      }
 
       0 as _
     },
@@ -417,9 +421,9 @@ comparison_fn! {
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cured_raw(
   cured: *mut decancer::CuredString,
-  output_length: *mut usize,
+  output_size: *mut usize,
 ) -> *const u8 {
-  *output_length = (*cured).len();
+  *output_size = (*cured).len();
 
   (*cured).as_ptr()
 }
@@ -428,12 +432,12 @@ pub unsafe extern "C" fn decancer_cured_raw(
 pub unsafe extern "C" fn decancer_cured_raw_wide(
   cured: *mut decancer::CuredString,
   output_ptr: *mut usize,
-  output_length: *mut usize,
+  output_size: *mut usize,
 ) -> *mut Vec<u16> {
   let vec = Box::new((*cured).encode_utf16().collect::<Vec<_>>());
 
   *output_ptr = vec.as_ptr() as _;
-  *output_length = vec.len();
+  *output_size = vec.len();
 
   Box::into_raw(vec)
 }
