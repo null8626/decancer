@@ -125,7 +125,7 @@ extern "C" {
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure(const uint8_t* input_str, const size_t input_size, const DECANCER_EXPORT_NAME(options_t) options, DECANCER_EXPORT_NAME(error_t)* error);
-  
+
   /**
    * @brief Cures a UTF-16 string.
    * For its UTF-8 counterpart, see decancer_cure.
@@ -141,7 +141,7 @@ extern "C" {
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure_wide(const uint16_t* input_str, const size_t input_size, const DECANCER_EXPORT_NAME(options_t) options, DECANCER_EXPORT_NAME(error_t)* error);
-  
+
   /**
    * @brief Cures a single unicode codepoint.
    *
@@ -167,7 +167,7 @@ extern "C" {
    * @note The returned pointer remains valid until cured gets passed onto decancer_cured_free.
    */
   DECANCER_EXPORT const uint8_t* decancer_cured_raw(DECANCER_EXPORT_NAME(cured_t) cured, size_t* output_size);
-  
+
   /**
    * @brief Retrieves the raw UTF-16 bytes from a cured string object.
    * For its UTF-8 counterpart, see decancer_cured_raw.
@@ -208,7 +208,7 @@ extern "C" {
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_t) decancer_find(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Finds every similar-looking match of a UTF-16 string in the cured string.
    * For its UTF-8 counterpart, see decancer_find.
@@ -224,7 +224,7 @@ extern "C" {
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_t) decancer_find_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Finds every similar-looking match from a list of UTF-8 keywords in the cured string.
    * Unlike decancer_find, this function also takes note of overlapping matches and merges them together.
@@ -241,7 +241,7 @@ extern "C" {
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matches_t) decancer_find_multiple(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_t)* other, const size_t other_length);
-  
+
   /**
    * @brief Finds every similar-looking match from a list of UTF-16 keywords in the cured string.
    * Unlike decancer_find_wide, this function also takes note of overlapping matches and merges them together.
@@ -257,7 +257,7 @@ extern "C" {
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matches_t) decancer_find_multiple_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_wide_t)* other, const size_t other_length);
-  
+
   /**
    * @brief Iterates to the next element of the matcher iterator.
    *
@@ -281,7 +281,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_censor(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size, const uint32_t with_char);
-  
+
   /**
    * @brief Censors every similar-looking match of the specified UTF-16 string.
    * For its UTF-8 counterpart, see decancer_censor.
@@ -296,7 +296,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_censor_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_size, const uint32_t with_char);
-  
+
   /**
    * @brief Replaces every similar-looking match of the specified UTF-8 string with another UTF-8 string.
    * For its UTF-16 counterpart, see decancer_replace_wide.
@@ -312,7 +312,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_replace(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size, const uint8_t* with_str, const size_t with_size);
-  
+
   /**
    * @brief Replaces every similar-looking match of the specified UTF-16 string with another UTF-16 string.
    * For its UTF-8 counterpart, see decancer_replace.
@@ -328,7 +328,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_replace_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_size, const uint16_t* with_str, const size_t with_size);
-  
+
   /**
    * @brief Censors every similar-looking match of the specified list of UTF-8 keywords.
    * Unlike decancer_censor, this function also takes note of overlapping matches.
@@ -344,7 +344,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_censor_multiple(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_t)* other, const size_t other_length, const uint32_t with_char);
-  
+
   /**
    * @brief Censors every similar-looking match of the specified list of UTF-16 keywords.
    * Unlike decancer_censor_wide, this function also takes note of overlapping matches.
@@ -360,7 +360,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_censor_multiple_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_wide_t)* other, const size_t other_length, const uint32_t with_char);
-  
+
   /**
    * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 string.
    * Unlike decancer_replace, this function also takes note of overlapping matches.
@@ -377,7 +377,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_replace_multiple(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_t)* other, const size_t other_length, const uint8_t* with_str, const size_t with_size);
-  
+
   /**
    * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 string.
    * Unlike decancer_replace, this function also takes note of overlapping matches.
@@ -394,7 +394,7 @@ extern "C" {
    * @return bool true on success, or false on failure due to invalid encoding.
    */
   DECANCER_EXPORT bool decancer_replace_multiple_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_wide_t)* other, const size_t other_length, const uint16_t* with_str, const size_t with_size);
-  
+
   /**
    * @brief Checks if the cured string similarly contains the specified UTF-8 string.
    * For its UTF-16 counterpart, see decancer_contains_wide.
@@ -406,7 +406,7 @@ extern "C" {
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_contains(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string similarly contains the specified UTF-16 string.
    * For its UTF-8 counterpart, see decancer_contains.
@@ -418,7 +418,7 @@ extern "C" {
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_contains_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string similarly starts with the specified UTF-8 string.
    * For its UTF-16 counterpart, see decancer_starts_with_wide.
@@ -430,7 +430,7 @@ extern "C" {
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_starts_with(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string similarly starts with the specified UTF-16 string.
    * For its UTF-8 counterpart, see decancer_starts_with.
@@ -442,7 +442,7 @@ extern "C" {
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_starts_with_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string similarly ends with the specified UTF-8 string.
    * For its UTF-16 counterpart, see decancer_ends_with_wide.
@@ -454,7 +454,7 @@ extern "C" {
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_ends_with(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string similarly ends with the specified UTF-16 string.
    * For its UTF-8 counterpart, see decancer_ends_with.
@@ -466,7 +466,7 @@ extern "C" {
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_ends_with_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string is similar with the specified UTF-8 string.
    * For its UTF-16 counterpart, see decancer_equals_wide.
@@ -478,7 +478,7 @@ extern "C" {
    * @return bool true if the cured string is similar with the specified string, false otherwise.
    */
   DECANCER_EXPORT bool decancer_equals(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
-  
+
   /**
    * @brief Checks if the cured string is similar with the specified UTF-16 string.
    * For its UTF-8 counterpart, see decancer_equals.
@@ -495,22 +495,22 @@ extern "C" {
    * @brief Frees the rust object created by decancer_cured_raw_wide.
    */
   DECANCER_EXPORT void decancer_cured_raw_wide_free(DECANCER_EXPORT_NAME(cured_raw_wide_t) wide);
-  
+
   /**
    * @brief Frees the matcher iterator object created by decancer_find and decancer_find_wide.
    */
   DECANCER_EXPORT void decancer_matcher_free(DECANCER_EXPORT_NAME(matcher_t) matcher);
-  
+
   /**
    * @brief Frees the matches object created by decancer_find_multiple and decancer_find_multiple_wide.
    */
   DECANCER_EXPORT void decancer_matches_free(DECANCER_EXPORT_NAME(matches_t) matches);
-  
+
   /**
    * @brief Frees the translation struct used in decancer_cure_char.
    */
   DECANCER_EXPORT void decancer_translation_free(DECANCER_EXPORT_NAME(translation_t)* translation);
-  
+
   /**
    * @brief Frees the cured string object created by decancer_cure and decancer_cure_wide.
    */

@@ -50,7 +50,7 @@ pub unsafe extern "C" fn decancer_cure(
     Err(err) => {
       if !error.is_null() {
         let message = <decancer::Error as AsRef<str>>::as_ref(&err);
-        
+
         (*error).message = message.as_ptr() as _;
         (*error).message_length = message.len() as _;
       }
@@ -81,7 +81,7 @@ pub unsafe extern "C" fn decancer_cure_wide(
     Err(err) => {
       if !error.is_null() {
         let message = <decancer::Error as AsRef<str>>::as_ref(&err);
-        
+
         (*error).message = message.as_ptr() as _;
         (*error).message_length = message.len() as _;
       }
