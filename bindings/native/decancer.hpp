@@ -154,17 +154,11 @@ namespace decancer {
 
   public:
     /**
-     * @brief Cures a unicode codepoint with decancer's default options.
+     * @brief Cures a unicode codepoint.
      * @param code The unicode codepoint to cure.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    translation(const uint32_t code);
-
-    /**
-     * @brief Cures a unicode codepoint with custom options.
-     * @param code The unicode codepoint to cure.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    translation(const uint32_t code, const options_t opt);
+    translation(const uint32_t code, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
      * @brief Creates a translation object by copying another translation object.
@@ -241,86 +235,48 @@ namespace decancer {
     }
 
     /**
-     * @brief Cures a raw null-terminated UTF-8 encoded string with decancer's default options.
+     * @brief Cures a raw null-terminated UTF-8 encoded string.
      * @param text The raw null-terminated UTF-8 encoded string.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const char* text);
+    cured_string(const char* text, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
-     * @brief Cures a raw null-terminated UTF-8 encoded string with custom options.
-     * @param text The raw null-terminated UTF-8 encoded string.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    cured_string(const char* text, const options_t opt);
-
-    /**
-     * @brief Cures a raw UTF-8 encoded string with decancer's default options.
+     * @brief Cures a raw UTF-8 encoded string.
      * @param text The raw UTF-8 encoded string.
      * @param size UTF-8 size of the other string, in bytes.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const char* text, const size_t size);
+    cured_string(const char* text, const size_t size, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
-     * @brief Cures a raw UTF-8 encoded string with custom options.
-     * @param text The raw UTF-8 encoded string.
-     * @param size UTF-8 size of the other string, in bytes.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    cured_string(const char* text, const size_t size, const options_t opt);
-
-    /**
-     * @brief Cures a UTF-8 encoded string with decancer's default options.
+     * @brief Cures a UTF-8 encoded string.
      * @param text The UTF-8 encoded string.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const std::string& text);
+    cured_string(const std::string& text, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
-     * @brief Cures a UTF-8 encoded string with custom options.
-     * @param text The UTF-8 encoded string.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    cured_string(const std::string& text, const options_t opt);
-
-    /**
-     * @brief Cures a raw null-terminated UTF-16 encoded string with decancer's default options.
+     * @brief Cures a raw null-terminated UTF-16 encoded string.
      * @param text The raw null-terminated UTF-16 encoded string.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const wchar_t* text);
+    cured_string(const wchar_t* text, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
-     * @brief Cures a raw null-terminated UTF-16 encoded string with custom options.
-     * @param text The raw null-terminated UTF-16 encoded string.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    cured_string(const wchar_t* text, const options_t opt);
-
-    /**
-     * @brief Cures a raw UTF-16 encoded string with decancer's default options.
+     * @brief Cures a raw UTF-16 encoded string.
      * @param text The raw UTF-16 encoded string.
      * @param size UTF-16 size of the other string, in bytes.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const wchar_t* text, const size_t size);
+    cured_string(const wchar_t* text, const size_t size, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
-     * @brief Cures a raw UTF-16 encoded string with custom options.
-     * @param text The raw UTF-16 encoded string.
-     * @param size UTF-16 size of the other string, in bytes.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    cured_string(const wchar_t* text, const size_t size, const options_t opt);
-
-    /**
-     * @brief Cures a UTF-16 encoded string with decancer's default options.
+     * @brief Cures a UTF-16 encoded string.
      * @param text The UTF-16 encoded string.
+     * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const std::wstring& text);
-
-    /**
-     * @brief Cures a UTF-16 encoded string with custom options.
-     * @param text The UTF-16 encoded string.
-     * @param opt Options to customize decancer's curing behavior.
-     */
-    cured_string(const std::wstring& text, const options_t opt);
+    cured_string(const std::wstring& text, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
      * @brief Checks if this cured string similarly starts with another raw null-terminated UTF-8 encoded string.
