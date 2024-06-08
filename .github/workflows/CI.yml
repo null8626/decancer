@@ -15,7 +15,7 @@ on:
       - '**/*.mjs'
       - '**/*.java'
       - '**/*.json'
-      - 'core/README.md'
+      - 'README.md'
       - 'core/bin/codepoints.bin'
       - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
@@ -620,6 +620,12 @@ jobs:
           chmod u+x llvm.sh
           sudo ./llvm.sh 18 all
           node scripts/pretty.mjs --clang-format=clang-format-18
+        shell: bash
+      - name: Update README files for bindings
+        run: |
+          node scripts/ci_readme.mjs ./core/README.md DECANCER_RUST
+          node scripts/ci_readme.mjs ./bindings/node/README.md DECANCER_JS
+        shell: bash
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/download-artifact@v4
