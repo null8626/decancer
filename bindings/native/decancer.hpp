@@ -331,13 +331,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -366,13 +363,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -402,13 +396,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -438,13 +429,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -472,13 +460,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -507,13 +492,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -542,13 +524,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -577,13 +556,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -613,13 +589,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -649,13 +622,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -683,13 +653,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -718,13 +685,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -753,13 +717,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -788,13 +749,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -824,13 +782,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -860,13 +815,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -894,13 +846,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -929,13 +878,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -964,13 +910,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -999,13 +942,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1035,13 +975,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1069,13 +1006,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1105,14 +1039,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1131,7 +1061,6 @@ namespace decancer {
      *   assert(first_match.start == 5, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1153,14 +1082,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1179,7 +1104,6 @@ namespace decancer {
      *   assert(first_match.start == 5, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1202,14 +1126,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1229,7 +1149,6 @@ namespace decancer {
      *   assert(first_match.start == 5, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1251,14 +1170,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1276,7 +1191,6 @@ namespace decancer {
      *   wassert(first_match.start == 5, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1298,14 +1212,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1323,7 +1233,6 @@ namespace decancer {
      *   wassert(first_match.start == 5, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1346,14 +1255,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1372,7 +1277,6 @@ namespace decancer {
      *   wassert(first_match.start == 5, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1395,14 +1299,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1421,7 +1321,6 @@ namespace decancer {
      *   assert(first_match.start == 0, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1444,14 +1343,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1472,7 +1367,6 @@ namespace decancer {
      *   assert(first_match.start == 0, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1495,14 +1389,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1520,7 +1410,6 @@ namespace decancer {
      *   wassert(first_match.start == 0, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1543,14 +1432,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1570,7 +1455,6 @@ namespace decancer {
      *   wassert(first_match.start == 0, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1592,13 +1476,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1632,13 +1513,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1673,13 +1551,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1714,13 +1589,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1753,13 +1625,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1793,13 +1662,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1833,13 +1699,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1873,13 +1736,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1914,13 +1774,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1955,13 +1812,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1994,13 +1848,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2034,13 +1885,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2075,13 +1923,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2116,13 +1961,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2157,13 +1999,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2200,13 +2039,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2243,13 +2079,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2283,13 +2116,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2323,13 +2153,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2365,13 +2192,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2406,13 +2230,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2446,13 +2267,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2488,13 +2306,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2530,13 +2345,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2569,13 +2381,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2610,13 +2419,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2652,13 +2458,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2693,13 +2496,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2736,13 +2536,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2778,13 +2575,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2822,13 +2616,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2864,13 +2655,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2908,13 +2696,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2948,13 +2733,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2990,13 +2772,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3031,13 +2810,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3074,13 +2850,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3115,13 +2888,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3156,10 +2926,6 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
@@ -3189,10 +2955,6 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
      *
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,

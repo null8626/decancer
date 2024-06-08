@@ -96,8 +96,18 @@ namespace decancer {
 
   typedef void* DECANCER_EXPORT_NAME(cured_t);
 
+  /**
+   * @brief Represents a match in UTF-8 indices.
+   */
   typedef struct {
+    /**
+     * @brief Start of the match in UTF-8 indices.
+     */
     size_t start;
+
+    /**
+     * @brief End of the match in UTF-8 indices (non-inclusive).
+     */
     size_t end;
   } DECANCER_EXPORT_NAME(match_t);
 
