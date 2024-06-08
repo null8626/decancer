@@ -721,9 +721,6 @@ jobs:
       - name: Move artifacts
         working-directory: bindings/node
         run: yarn artifacts
-      - name: Copy README.md
-        working-directory: bindings/node
-        run: cp ../../core/README.md .
       - name: Publish
         working-directory: bindings/node
         run: |
