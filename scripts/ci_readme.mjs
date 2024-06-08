@@ -1,12 +1,19 @@
+/* eslint-disable */
+
+'use strict'
+
 import { readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
 const modifiedWarning = '<!-- WARNING: this markdown file is computer generated.\n     please modify the README.md file in the root directory instead. -->\n\n'
 const preprocessedLines = []
-const readmeDestination = process.argv[3]
-const inputDefinitions = process.argv.slice(4)
+const inputDefinitions = process.argv.slice(3)
 let currentDefinition = null
 
-for (const line of readFileSync(process.argv[2]).toString().trim().split(/\r?\n/g)) {
+for (const line of readFileSync(join(ROOT_DIR, 'README.md')).toString().trim().split(/\r?\n/g)) {
   if (line.startsWith('<!---[') && line.endsWith(']--->')) {
     for (let instruction of line.slice(6, -5).trim().split(/\s*\,\s*/)) {
       instruction = instruction.trim()
@@ -22,4 +29,4 @@ for (const line of readFileSync(process.argv[2]).toString().trim().split(/\r?\n/
   }
 }
 
-writeFileSync(process.argv[3], modifiedWarning + preprocessedLines.join('\n').replaceAll(/\n{3,}/g, '\n'))
+writeFileSync(process.argv[2], modifiedWarning + preprocessedLines.join('\n').replaceAll(/\n{3,}/g, '\n'))
