@@ -158,20 +158,20 @@ namespace decancer {
      * @param code The unicode codepoint to cure.
      */
     translation(const uint32_t code);
-
+    
     /**
      * @brief Cures a unicode codepoint with custom options.
      * @param code The unicode codepoint to cure.
      * @param opt Options to customize decancer's curing behavior.
      */
     translation(const uint32_t code, const options_t opt);
-
+    
     /**
      * @brief Creates a translation object by copying another translation object.
      * @param other The other translation object to copy from.
      */
     translation(const translation& other);
-
+    
     /**
      * @brief Creates a translation object by moving another translation object.
      * @param other The other translation object to move from.
@@ -183,7 +183,7 @@ namespace decancer {
      * @param other The other translation object to copy from.
      */
     translation& operator=(const translation& other) &;
-
+    
     /**
      * @brief Moves another translation object.
      * @param other The other translation object to copy from.
@@ -245,21 +245,21 @@ namespace decancer {
      * @param text The raw null-terminated UTF-8 encoded string.
      */
     cured_string(const char* text);
-
+    
     /**
      * @brief Cures a raw null-terminated UTF-8 encoded string with custom options.
      * @param text The raw null-terminated UTF-8 encoded string.
      * @param opt Options to customize decancer's curing behavior.
      */
     cured_string(const char* text, const options_t opt);
-
+    
     /**
      * @brief Cures a raw UTF-8 encoded string with decancer's default options.
      * @param text The raw UTF-8 encoded string.
      * @param size UTF-8 size of the other string, in bytes.
      */
     cured_string(const char* text, const size_t size);
-
+    
     /**
      * @brief Cures a raw UTF-8 encoded string with custom options.
      * @param text The raw UTF-8 encoded string.
@@ -267,40 +267,40 @@ namespace decancer {
      * @param opt Options to customize decancer's curing behavior.
      */
     cured_string(const char* text, const size_t size, const options_t opt);
-
+    
     /**
      * @brief Cures a UTF-8 encoded string with decancer's default options.
      * @param text The UTF-8 encoded string.
      */
     cured_string(const std::string& text);
-
+    
     /**
      * @brief Cures a UTF-8 encoded string with custom options.
      * @param text The UTF-8 encoded string.
      * @param opt Options to customize decancer's curing behavior.
      */
     cured_string(const std::string& text, const options_t opt);
-
+    
     /**
      * @brief Cures a raw null-terminated UTF-16 encoded string with decancer's default options.
      * @param text The raw null-terminated UTF-16 encoded string.
      */
     cured_string(const wchar_t* text);
-
+    
     /**
      * @brief Cures a raw null-terminated UTF-16 encoded string with custom options.
      * @param text The raw null-terminated UTF-16 encoded string.
      * @param opt Options to customize decancer's curing behavior.
      */
     cured_string(const wchar_t* text, const options_t opt);
-
+    
     /**
      * @brief Cures a raw UTF-16 encoded string with decancer's default options.
      * @param text The raw UTF-16 encoded string.
      * @param size UTF-16 size of the other string, in bytes.
      */
     cured_string(const wchar_t* text, const size_t size);
-
+    
     /**
      * @brief Cures a raw UTF-16 encoded string with custom options.
      * @param text The raw UTF-16 encoded string.
@@ -308,13 +308,13 @@ namespace decancer {
      * @param opt Options to customize decancer's curing behavior.
      */
     cured_string(const wchar_t* text, const size_t size, const options_t opt);
-
+    
     /**
      * @brief Cures a UTF-16 encoded string with decancer's default options.
      * @param text The UTF-16 encoded string.
      */
     cured_string(const std::wstring& text);
-
+    
     /**
      * @brief Cures a UTF-16 encoded string with custom options.
      * @param text The UTF-16 encoded string.
@@ -330,23 +330,20 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8.starts_with("very"), "starts_with");
      *   return 0;
      * }
@@ -366,22 +363,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8.starts_with("very", 4), "starts_with");
      *   return 0;
      * }
@@ -402,23 +396,20 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string other_string{"very"};
-     *
+     *   
      *   assert(cured_utf8.starts_with(other_string), "starts_with");
      *   return 0;
      * }
@@ -438,21 +429,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16.starts_with(L"very"), "starts_with");
      *   return 0;
      * }
@@ -472,21 +460,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16.starts_with(L"very", 8), "starts_with");
      *   return 0;
      * }
@@ -507,22 +492,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *   std::wstring other_string{L"very"};
-     *
+     *   
      *   wassert(cured_utf16.starts_with(other_string), "starts_with");
      *   return 0;
      * }
@@ -541,23 +523,20 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8.ends_with("text"), "ends_with");
      *   return 0;
      * }
@@ -577,22 +556,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8.ends_with("text", 4), "ends_with");
      *   return 0;
      * }
@@ -613,23 +589,20 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string other_string{"text"};
-     *
+     *   
      *   assert(cured_utf8.ends_with(other_string), "ends_with");
      *   return 0;
      * }
@@ -649,21 +622,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16.ends_with(L"text"), "ends_with");
      *   return 0;
      * }
@@ -683,21 +653,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16.ends_with(L"text", 8), "ends_with");
      *   return 0;
      * }
@@ -718,22 +685,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *   std::wstring other_string{L"text"};
-     *
+     *   
      *   wassert(cured_utf16.ends_with(other_string), "ends_with");
      *   return 0;
      * }
@@ -752,23 +716,20 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8.contains("funny"), "contains");
      *   return 0;
      * }
@@ -788,22 +749,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8.contains("funny", 5), "contains");
      *   return 0;
      * }
@@ -824,23 +782,20 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string other_string{"funny"};
-     *
+     *   
      *   assert(cured_utf8.contains(other_string), "contains");
      *   return 0;
      * }
@@ -860,21 +815,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16.contains(L"funny"), "contains");
      *   return 0;
      * }
@@ -894,21 +846,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16.contains(L"funny", 10), "contains");
      *   return 0;
      * }
@@ -929,22 +878,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *   std::wstring other_string{L"funny"};
-     *
+     *   
      *   wassert(cured_utf16.contains(other_string), "contains");
      *   return 0;
      * }
@@ -963,23 +909,20 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
-     *
+     *   
      *   assert(cured_utf8 == "very funny text", "operator=");
      *   return 0;
      * }
@@ -999,23 +942,20 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string other_string{"very funny text"};
-     *
+     *   
      *   assert(cured_utf8 == other_string, "operator=");
      *   return 0;
      * }
@@ -1035,21 +975,18 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
-     *
+     *   
      *   wassert(cured_utf16 == L"very funny text", "operator=");
      *   return 0;
      * }
@@ -1069,22 +1006,19 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *   std::wstring other_string{L"very funny text"};
-     *
+     *   
      *   wassert(cured_utf16 == other_string, "operator=");
      *   return 0;
      * }
@@ -1094,7 +1028,7 @@ namespace decancer {
      * @return bool Whether this cured string is similar with the specified string.
      */
     bool operator==(const std::wstring& text) const noexcept;
-
+    
     /**
      * @brief Finds every similar-looking match of a UTF-8 encoded string in the cured string.
      * If you want to use a list of keywords, see find_multiple.
@@ -1105,14 +1039,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1131,7 +1061,6 @@ namespace decancer {
      *   assert(first_match.start == 5, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1153,14 +1082,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1179,7 +1104,6 @@ namespace decancer {
      *   assert(first_match.start == 5, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1202,14 +1126,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1229,7 +1149,6 @@ namespace decancer {
      *   assert(first_match.start == 5, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1251,14 +1170,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1276,7 +1191,6 @@ namespace decancer {
      *   wassert(first_match.start == 5, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1287,7 +1201,7 @@ namespace decancer {
      * @note Each match is based on UTF-8 character indices.
      */
     std::vector<match_t> find(const wchar_t* text) const noexcept;
-
+    
     /**
      * @brief Finds every similar-looking match of a UTF-16 encoded string in the cured string.
      * If you want to use a list of keywords, see find_multiple.
@@ -1298,14 +1212,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1323,7 +1233,6 @@ namespace decancer {
      *   wassert(first_match.start == 5, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1335,7 +1244,7 @@ namespace decancer {
      * @note Each match is based on UTF-8 character indices.
      */
     std::vector<match_t> find(const wchar_t* text, const size_t size) const noexcept;
-
+    
     /**
      * @brief Finds every similar-looking match of a UTF-16 encoded string in the cured string.
      * If you want to use a list of keywords, see find_multiple.
@@ -1346,14 +1255,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1372,7 +1277,6 @@ namespace decancer {
      *   wassert(first_match.start == 5, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1395,14 +1299,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1421,7 +1321,6 @@ namespace decancer {
      *   assert(first_match.start == 0, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1444,14 +1343,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
-     *     goto END;                                                  \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -1472,7 +1367,6 @@ namespace decancer {
      *   assert(first_match.start == 0, "match start");
      *   assert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1495,14 +1389,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1520,7 +1410,6 @@ namespace decancer {
      *   wassert(first_match.start == 0, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1531,7 +1420,7 @@ namespace decancer {
      * @note Each match is based on UTF-8 character indices.
      */
     std::vector<match_t> find_multiple(const std::initializer_list<const wchar_t*>& keywords) const noexcept;
-
+    
     /**
      * @brief Finds every similar-looking match from a list of UTF-16 keywords in the cured string.
      * Unlike find, this method also takes note of overlapping matches and merges them together.
@@ -1543,14 +1432,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
-     *     goto END;                                                       \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -1570,7 +1455,6 @@ namespace decancer {
      *   wassert(first_match.start == 0, "match start");
      *   wassert(first_match.end == 10, "match end");
      *
-     * END:
      *   return 0;
      * }
      * ```
@@ -1591,26 +1475,23 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *
      *   cured_utf8.censor("funny", '-');
      *   assert(cured_utf8 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1621,7 +1502,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const char* text, const char replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1631,26 +1512,23 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *
      *   cured_utf8.censor("funny", 5, '-');
      *   assert(cured_utf8 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1662,7 +1540,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const char* text, const size_t size, const char replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1672,27 +1550,24 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string other_string{"funny"};
      *
      *   cured_utf8.censor(other_string, '-');
      *   assert(cured_utf8 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1703,7 +1578,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const std::string& text, const char replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1713,25 +1588,22 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
      *   cured_utf16.censor(L"funny", '-');
      *   wassert(cured_utf16 == L"very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1742,7 +1614,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const wchar_t* text, const char replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1752,25 +1624,22 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
      *   cured_utf16.censor(L"funny", 10, '-');
      *   wassert(cured_utf16 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1782,7 +1651,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const wchar_t* text, const size_t size, const char replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1792,26 +1661,23 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *   std::wstring other_string{L"funny"};
      *
      *   cured_utf16.censor(other_string, '-');
      *   wassert(cured_utf16 == L"very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1832,26 +1698,23 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *
      *   cured_utf8.censor("funny", 0x2dUL);
      *   assert(cured_utf8 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1862,7 +1725,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const char* text, const uint32_t replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1872,26 +1735,23 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *
      *   cured_utf8.censor("funny", 5, 0x2dUL);
      *   assert(cured_utf8 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1903,7 +1763,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const char* text, const size_t size, const uint32_t replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1913,27 +1773,24 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
-     *
+     * 
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string other_string{"funny"};
      *
      *   cured_utf8.censor(other_string, 0x2dUL);
      *   assert(cured_utf8 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1944,7 +1801,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const std::string& text, const uint32_t replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1954,25 +1811,22 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
      *   cured_utf16.censor(L"funny", 0x2dUL);
      *   wassert(cured_utf16 == L"very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -1983,7 +1837,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const wchar_t* text, const uint32_t replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -1993,25 +1847,22 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
      *   cured_utf16.censor(L"funny", 10, 0x2dUL);
      *   wassert(cured_utf16 == "very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -2023,7 +1874,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
     void censor(const wchar_t* text, const size_t size, const uint32_t replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
      * If you want to use a list of keywords, see censor_multiple.
@@ -2033,26 +1884,23 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
+     * 
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
-     *
+     * 
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
      *                                           0x2115, 0xff59, 0x0020, 0x0163, 0x4e47, 0xd835, 0xdd4f, 0xd835, 0xdce3, 0x0000};
-     *
+     *   
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *   std::wstring other_string{L"funny"};
      *
      *   cured_utf16.censor(other_string, 0x2dUL);
      *   wassert(cured_utf16 == L"very ----- text", "censor");
-     *
+     * 
      *   return 0;
      * }
      * ```
@@ -2075,13 +1923,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2104,7 +1949,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void censor_multiple(const std::initializer_list<const char*>& keywords, const char replacement) const;
-
+    
     /**
      * @brief Censors every similar-looking match of the specified list of UTF-8 keywords.
      * Unlike censor, this method also takes note of overlapping matches.
@@ -2116,13 +1961,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2157,13 +1999,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2200,13 +2039,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2243,13 +2079,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2283,13 +2116,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2323,13 +2153,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2365,13 +2192,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2406,13 +2230,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2435,7 +2256,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void replace(const char* find, const char* replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified UTF-8 encoded string with another UTF-8 encoded string.
      * If you want to replace a list of keywords, see replace_multiple.
@@ -2446,13 +2267,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2477,7 +2295,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void replace(const char* find, const size_t find_size, const char* replacement, const size_t replacement_size) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified UTF-8 encoded string with another UTF-8 encoded string.
      * If you want to replace a list of keywords, see replace_multiple.
@@ -2488,13 +2306,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2519,7 +2334,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void replace(const std::string& find, const std::string& replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified UTF-16 encoded string with another UTF-16 encoded string.
      * If you want to replace a list of keywords, see replace_multiple.
@@ -2530,13 +2345,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2558,7 +2370,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void replace(const wchar_t* find, const wchar_t* replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified UTF-16 encoded string with another UTF-16 encoded string.
      * If you want to replace a list of keywords, see replace_multiple.
@@ -2569,13 +2381,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2599,7 +2408,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void replace(const wchar_t* find, const size_t find_size, const wchar_t* replacement, const size_t replacement_size) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified UTF-16 encoded string with another UTF-16 encoded string.
      * If you want to replace a list of keywords, see replace_multiple.
@@ -2610,13 +2419,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2640,7 +2446,7 @@ namespace decancer {
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
     void replace(const std::wstring& find, const std::wstring& replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2652,13 +2458,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2681,7 +2484,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<const char*>& keywords, const char* replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2693,13 +2496,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2724,7 +2524,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<std::string>& keywords, const char* replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2736,13 +2536,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2766,7 +2563,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<const char*>& keywords, const char* replacement, const size_t replacement_size) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2778,13 +2575,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2822,13 +2616,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2852,7 +2643,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<const char*>& keywords, const std::string& replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2864,13 +2655,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define assert(expr, notes)                                    \
      *   if (!(expr)) {                                               \
      *     std::cerr << "assertion failure at " notes << std::endl;   \
+     *     return 1;                                                  \
      *   }
      *
      * int main() {
@@ -2908,13 +2696,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2936,7 +2721,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<const wchar_t*>& keywords, const wchar_t* replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2948,13 +2733,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -2978,7 +2760,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<std::wstring>& keywords, const wchar_t* replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -2990,13 +2772,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3019,7 +2798,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<const wchar_t*>& keywords, const wchar_t* replacement, const size_t replacement_size) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -3031,13 +2810,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3074,13 +2850,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3103,7 +2876,7 @@ namespace decancer {
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
     void replace_multiple(const std::initializer_list<const wchar_t*>& keywords, const std::wstring& replacement) const;
-
+    
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
      * Unlike replace, this method also takes note of overlapping matches.
@@ -3115,13 +2888,10 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * #define wassert(expr, notes)                                        \
      *   if (!(expr)) {                                                    \
      *     std::cerr << "wide assertion failure at " notes << std::endl;   \
+     *     return 1;                                                       \
      *   }
      *
      * int main() {
@@ -3156,15 +2926,11 @@ namespace decancer {
      * #include <decancer.hpp>
      * #include <iostream>
      *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
-     *
      * int main() {
      *   const char very_funny_text[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d, 0x94,
      *                                   0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99, 0x20, 0xc5,
      *                                   0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3, 0x00};
-     *
+     *   
      *   decancer::cured_string cured_utf8{very_funny_text};
      *   std::string cured_utf8_string = static_cast<std::wstring>(cured_utf16);
      *
@@ -3180,7 +2946,7 @@ namespace decancer {
      * custom comparison measures, including leetspeak matching!
      */
     explicit operator std::string() const noexcept;
-
+    
     /**
      * @brief Explicitly converts this cured string to a UTF-16 encoded string.
      *
@@ -3189,10 +2955,6 @@ namespace decancer {
      * ```cpp
      * #include <decancer.hpp>
      * #include <iostream>
-     *
-     * #ifdef _MSC_VER
-     * #pragma warning(disable: 4838)
-     * #endif
      *
      * int main() {
      *   const wchar_t wide_very_funny_text[] = {0x0076, 0xff25, 0x24e1, 0xd835, 0xdd02, 0x0020, 0xd835, 0xdd3d, 0xd835, 0xdd4c, 0x0147,
