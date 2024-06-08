@@ -16,6 +16,7 @@
 .yarnrc.yml
 bindings/java/.gradle/
 bindings/java/build/
+bindings/native/docs/
 bindings/native/build/
 bindings/wasm/pkg/
 core/proptest-regressions/

@@ -50,12 +50,10 @@ using namespace decancer;
 
 #define DECANCER_GENERATE_CENSOR_METHOD_IMPL(string_argument, length_argument, ...)                                                                                      \
   DECANCER_CENSOR_METHOD_IMPL(censor, char, "Invalid string input.", DECANCER_STRING(string_argument), length_argument, __VA_ARGS__)                                     \
-  DECANCER_CENSOR_METHOD_IMPL(censor, wchar_t, "Invalid string input or censor replacement character.", DECANCER_STRING(string_argument), length_argument, __VA_ARGS__)  \
   DECANCER_CENSOR_METHOD_IMPL(censor, uint32_t, "Invalid string input or censor replacement character.", DECANCER_STRING(string_argument), length_argument, __VA_ARGS__)
 
 #define DECANCER_GENERATE_CENSOR_WIDE_METHOD_IMPL(string_argument, length_argument, ...)                                                                                       \
   DECANCER_CENSOR_METHOD_IMPL(censor_wide, char, "Invalid string input.", DECANCER_WSTRING(string_argument), length_argument, __VA_ARGS__)                                     \
-  DECANCER_CENSOR_METHOD_IMPL(censor_wide, wchar_t, "Invalid string input or censor replacement character.", DECANCER_WSTRING(string_argument), length_argument, __VA_ARGS__)  \
   DECANCER_CENSOR_METHOD_IMPL(censor_wide, uint32_t, "Invalid string input or censor replacement character.", DECANCER_WSTRING(string_argument), length_argument, __VA_ARGS__)
 
 #define DECANCER_CENSOR_MULTIPLE_METHOD_IMPL(method_name, type_name)                                                                 \
@@ -65,14 +63,6 @@ using namespace decancer;
     delete[] keywords_in;                                                                                                            \
     if (!result) {                                                                                                                   \
       throw error{"Invalid string input."};                                                                                          \
-    }                                                                                                                                \
-  }                                                                                                                                  \
-  void cured_string::censor_multiple(const std::initializer_list<type_name>& keywords, const wchar_t replacement) const {            \
-    auto keywords_in = keywords_from_list(keywords);                                                                                 \
-    const auto result = decancer_##method_name(m_ptr, keywords_in, keywords.size(), static_cast<uint32_t>(replacement));             \
-    delete[] keywords_in;                                                                                                            \
-    if (!result) {                                                                                                                   \
-      throw error{"Invalid string input or censor replacement character."};                                                          \
     }                                                                                                                                \
   }                                                                                                                                  \
   void cured_string::censor_multiple(const std::initializer_list<type_name>& keywords, const uint32_t replacement) const {           \

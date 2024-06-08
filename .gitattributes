@@ -19,4 +19,5 @@
 **/*.toml eol=lf
 **/*.properties eol=lf
 **/*.json eol=lf
+bindings/native/Doxyfile eol=lf
 bindings/java/gradlew eol=lf

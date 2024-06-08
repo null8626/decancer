@@ -44,6 +44,15 @@
 #define DECANCER_OPTION_ALL 0xffffff
 #define DECANCER_OPTION_PURE_HOMOGLYPH 0x1ffffc
 
+#if defined(__DECANCER_DOCUMENTING_CXX__) && !defined(__DECANCER_CXX__)
+#define __DECANCER_TROLLED_DOXYGEN__
+#define __DECANCER_CXX__
+
+// clang-format off
+namespace decancer {
+// clang-format on
+#endif
+
 #if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
 #define DECANCER_EXPORT_NAME(name) name
 #else
@@ -94,13 +103,13 @@ typedef struct {
 
 typedef uint32_t DECANCER_EXPORT_NAME(options_t);
 
-#ifdef __cplusplus
 #if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
 // clang-format off
 }; // namespace decancer
 // clang-format on
 #endif
 
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -493,26 +502,31 @@ extern "C" {
 
   /**
    * @brief Frees the rust object created by decancer_cured_raw_wide.
+   * @param wide The rust object created by decancer_cured_raw_wide.
    */
   DECANCER_EXPORT void decancer_cured_raw_wide_free(DECANCER_EXPORT_NAME(cured_raw_wide_t) wide);
 
   /**
    * @brief Frees the matcher iterator object created by decancer_find and decancer_find_wide.
+   * @param matcher The matcher iterator object created by decancer_find and decancer_find_wide.
    */
   DECANCER_EXPORT void decancer_matcher_free(DECANCER_EXPORT_NAME(matcher_t) matcher);
 
   /**
    * @brief Frees the matches object created by decancer_find_multiple and decancer_find_multiple_wide.
+   * @param matches The matches object created by decancer_find_multiple and decancer_find_multiple_wide.
    */
   DECANCER_EXPORT void decancer_matches_free(DECANCER_EXPORT_NAME(matches_t) matches);
 
   /**
    * @brief Frees the translation struct used in decancer_cure_char.
+   * @param translation A pointer to a translation struct used for decancer_cure_char.
    */
   DECANCER_EXPORT void decancer_translation_free(DECANCER_EXPORT_NAME(translation_t)* translation);
 
   /**
    * @brief Frees the cured string object created by decancer_cure and decancer_cure_wide.
+   * @param cured The cured string object created by decancer_cure and decancer_cure_wide.
    */
   DECANCER_EXPORT void decancer_cured_free(DECANCER_EXPORT_NAME(cured_t) cured);
 
@@ -528,7 +542,7 @@ extern "C" {
 #ifdef __cplusplus
 } // extern "C"
 
-#if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
+#if (defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)) && !defined(__DECANCER_TROLLED_DOXYGEN__)
 namespace decancer {
 #endif
 #endif
