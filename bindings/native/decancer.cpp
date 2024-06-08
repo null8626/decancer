@@ -7,21 +7,19 @@ using namespace decancer;
 #define DECANCER_WSTRING(text)             reinterpret_cast<const uint16_t*>(text)
 #define DECANCER_INTO_ERROR(error_struct)  native_error(generate_error_message(&error_struct), error_struct.message_length + 1)
 
-#define DECANCER_CTOR_IMPL(method_name, options, text_argument, length_argument, ...)                 \
-  cured_string::cured_string(__VA_ARGS__) {                                                           \
+#define DECANCER_CTOR_IMPL(method_name, text_argument, length_argument, ...)                          \
+  cured_string::cured_string(__VA_ARGS__, const options_t options) {                                  \
     error_t err;                                                                                      \
     if ((m_ptr = decancer_##method_name(text_argument, length_argument, options, &err)) == nullptr) { \
       throw DECANCER_INTO_ERROR(err);                                                                 \
     }                                                                                                 \
   }
 
-#define DECANCER_GENERATE_CTOR_IMPL(text_argument, length_argument, ...)                                                      \
-  DECANCER_CTOR_IMPL(cure, DECANCER_OPTION_DEFAULT, DECANCER_STRING(text_argument), length_argument, __VA_ARGS__)             \
-  DECANCER_CTOR_IMPL(cure, options, DECANCER_STRING(text_argument), length_argument, __VA_ARGS__, const options_t options)
+#define DECANCER_GENERATE_CTOR_IMPL(text_argument, length_argument, ...)                              \
+  DECANCER_CTOR_IMPL(cure, DECANCER_STRING(text_argument), length_argument, __VA_ARGS__)
 
-#define DECANCER_GENERATE_WIDE_CTOR_IMPL(text_argument, length_argument, ...)                                                       \
-  DECANCER_CTOR_IMPL(cure_wide, DECANCER_OPTION_DEFAULT, DECANCER_WSTRING(text_argument), length_argument, __VA_ARGS__)             \
-  DECANCER_CTOR_IMPL(cure_wide, options, DECANCER_WSTRING(text_argument), length_argument, __VA_ARGS__, const options_t options)
+#define DECANCER_GENERATE_WIDE_CTOR_IMPL(text_argument, length_argument, ...)                         \
+  DECANCER_CTOR_IMPL(cure_wide, DECANCER_WSTRING(text_argument), length_argument, __VA_ARGS__)
 
 #define DECANCER_COMPARISON_METHOD_IMPL(method_name, string_argument, length_argument, ...)   \
   bool cured_string::method_name(__VA_ARGS__) const noexcept {                                \
@@ -232,12 +230,6 @@ translation::translation(const translation& other) {
 translation::translation(translation&& other) {
   memcpy(&m_translation, &other.m_translation, sizeof(translation_t));
   memset(&other.m_translation, 0, sizeof(translation_t));
-}
-
-translation::translation(const uint32_t code) {
-  memset(&m_translation, 0, sizeof(translation_t));
-
-  decancer_cure_char(code, DECANCER_OPTION_DEFAULT, &m_translation);
 }
 
 translation::translation(const uint32_t code, const options_t opt) {
