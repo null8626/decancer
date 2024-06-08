@@ -60,61 +60,61 @@ namespace decancer {
 #endif
 
 #ifndef __DECANCER_CXX__
-typedef struct {
-  const char* message;
-  uint8_t message_length;
-} DECANCER_EXPORT_NAME(error_t);
+  typedef struct {
+    const char* message;
+    uint8_t message_length;
+  } DECANCER_EXPORT_NAME(error_t);
 
-typedef struct {
-  const uint8_t* string;
-  size_t length;
-} DECANCER_EXPORT_NAME(keyword_t);
+  typedef struct {
+    const uint8_t* string;
+    size_t length;
+  } DECANCER_EXPORT_NAME(keyword_t);
 
-typedef struct {
-  const uint16_t* string;
-  size_t length;
-} DECANCER_EXPORT_NAME(keyword_wide_t);
+  typedef struct {
+    const uint16_t* string;
+    size_t length;
+  } DECANCER_EXPORT_NAME(keyword_wide_t);
 
-typedef void* DECANCER_EXPORT_NAME(cured_raw_wide_t);
-typedef void* DECANCER_EXPORT_NAME(matcher_t);
-typedef void* DECANCER_EXPORT_NAME(matches_t);
+  typedef void* DECANCER_EXPORT_NAME(cured_raw_wide_t);
+  typedef void* DECANCER_EXPORT_NAME(matcher_t);
+  typedef void* DECANCER_EXPORT_NAME(matches_t);
 #endif
 
-typedef struct {
-  uint8_t kind;
+  typedef struct {
+    uint8_t kind;
 
-  union {
-    uint32_t character;
+    union {
+      uint32_t character;
 
-    struct {
-      const uint8_t* contents;
-      size_t length;
-      void* __heap;
-    } string;
-  } contents;
-} DECANCER_EXPORT_NAME(translation_t);
+      struct {
+        const uint8_t* contents;
+        size_t length;
+        void* __heap;
+      } string;
+    } contents;
+  } DECANCER_EXPORT_NAME(translation_t);
 
-typedef void* DECANCER_EXPORT_NAME(cured_t);
+  typedef void* DECANCER_EXPORT_NAME(cured_t);
 
-/**
- * @brief Represents a match in UTF-8 indices.
- */
-typedef struct {
   /**
-   * @brief Start of the match in UTF-8 indices.
+   * @brief Represents a match in UTF-8 indices.
    */
-  size_t start;
-  
-  /**
-   * @brief End of the match in UTF-8 indices (non-inclusive).
-   */
-  size_t end;
-} DECANCER_EXPORT_NAME(match_t);
+  typedef struct {
+    /**
+     * @brief Start of the match in UTF-8 indices.
+     */
+    size_t start;
 
-typedef uint32_t DECANCER_EXPORT_NAME(options_t);
+    /**
+     * @brief End of the match in UTF-8 indices (non-inclusive).
+     */
+    size_t end;
+  } DECANCER_EXPORT_NAME(match_t);
+
+  typedef uint32_t DECANCER_EXPORT_NAME(options_t);
 
 #if defined(__DECANCER_CXX__) || defined(__DECANCER_CXX_BUILDING__)
-// clang-format off
+  // clang-format off
 }; // namespace decancer
 // clang-format on
 #endif
