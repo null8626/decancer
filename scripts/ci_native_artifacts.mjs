@@ -26,7 +26,7 @@ for (const artifact of artifacts) {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 
     if (
-      (!IS_JAVA && ext === 'lib') ||
+      (!IS_JAVA && (ext === 'lib' || ext === 'a')) ||
       ext === 'dll' ||
       ext === 'so' ||
       ext === 'dylib'

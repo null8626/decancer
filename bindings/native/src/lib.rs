@@ -99,7 +99,7 @@ pub unsafe extern "C" fn decancer_translation_init(output: *mut Translation) {
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *mut Translation) {
   decancer_translation_free(output);
-  
+
   match decancer::cure_char(input, transmute(options)) {
     decancer::Translation::Character(c) => {
       (*output).kind = 0;
@@ -432,14 +432,14 @@ pub unsafe extern "C" fn decancer_cured_raw(
   output_size: *mut usize,
 ) -> *const u8 {
   let ptr = (*cured).as_ptr();
-  
+
   if mat.is_null() {
     *output_size = (*cured).len();
 
     ptr
   } else {
     *output_size = (*mat).len();
-    
+
     ptr.offset((*mat).start as _)
   }
 }
@@ -456,7 +456,7 @@ pub unsafe extern "C" fn decancer_cured_raw_wide(
   } else {
     (*cured).get_unchecked((*mat).clone())
   };
-  
+
   let vec = Box::new(s.encode_utf16().collect::<Vec<_>>());
 
   *output_ptr = vec.as_ptr() as _;

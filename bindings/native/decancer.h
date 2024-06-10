@@ -6,6 +6,7 @@
 #define __DECANCER_H__
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #if defined(_WIN32) && !defined(__DECANCER_CXX__) && !defined(__DECANCER_CXX_BUILDING__) && !defined(__DECANCER_TEST__)
@@ -214,7 +215,7 @@ namespace decancer {
      * @brief Null-terminated ASCII encoded error message.
      */
     const char* message;
-    
+
     /**
      * @brief The length of the error message.
      */
@@ -233,7 +234,7 @@ namespace decancer {
      * @brief UTF-8 encoded string.
      */
     const uint8_t* string;
-    
+
     /**
      * @brief UTF-8 size of the string, in bytes.
      */
@@ -252,7 +253,7 @@ namespace decancer {
      * @brief UTF-16 encoded string.
      */
     const uint16_t* string;
-    
+
     /**
      * @brief UTF-16 size of the string, in bytes.
      */
@@ -267,7 +268,7 @@ namespace decancer {
    * @note You are responsible in freeing this object later by calling decancer_cured_raw_wide_free.
    */
   typedef void* DECANCER_EXPORT_NAME(cured_raw_wide_t);
-  
+
   /**
    * @brief Represents a matcher iterator object returned from decancer_find and decancer_find_wide.
    *
@@ -277,7 +278,7 @@ namespace decancer {
    * @note You are responsible in freeing this object later by calling decancer_matcher_free.
    */
   typedef void* DECANCER_EXPORT_NAME(matcher_t);
-  
+
   /**
    * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_wide.
    *
@@ -325,12 +326,12 @@ namespace decancer {
          * @brief Raw UTF-8 encoded string.
          */
         const uint8_t* contents;
-        
+
         /**
          * @brief UTF-8 size of the string, in bytes.
          */
         size_t size;
-        
+
         /**
          * @brief A pointer to a heap memory block, unused.
          * @note If this value is not NULL and kind is DECANCER_TRANSLATION_KIND_STRING, then you must pass this struct to decancer_translation_free later.
@@ -427,26 +428,26 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
    *
    * int main(void) {
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
-   *   
+   *
    *   decancer_cured_free(cured);
    *   return 0;
    * }
@@ -471,14 +472,14 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
    *
    * int main(void) {
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t string[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -491,12 +492,12 @@ extern "C" {
    *   };
    *
    *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
-   *   
+   *
    *   decancer_cured_free(cured);
    *   return 0;
    * }
@@ -521,18 +522,18 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes)                           \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
    *   }
-   * 
+   *
    * int main(void) {
    *   int ret = 0;
    *   decancer_translation_t translation;
@@ -548,11 +549,11 @@ extern "C" {
    *   decancer_assert(translation.kind == DECANCER_TRANSLATION_KIND_STRING, "translation not a string");
    *   decancer_assert(translation.contents.string.size == 2, "string translation size");
    *   decancer_assert(translation.contents.string.contents[0] == 'a' && translation.contents.string.contents[1] == 'e', "string translation contents");
-   *   
+   *
    *   decancer_cure_char(0, DECANCER_OPTION_DEFAULT, &translation);
-   *   
+   *
    *   decancer_assert(translation.kind == DECANCER_TRANSLATION_KIND_NONE, "translation not an empty string");
-   *   
+   *
    * END:
    *   decancer_translation_free(&translation);
    *   return ret;
@@ -577,11 +578,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes)                           \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -592,14 +593,14 @@ extern "C" {
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -634,7 +635,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -644,12 +645,12 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t string[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -662,16 +663,16 @@ extern "C" {
    *   };
    *
    *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
-   *   
+   *
    *   size_t raw_contents_length;
    *   uint16_t* raw_contents;
    *   decancer_cured_raw_wide_t raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
-   *   
+   *
    *   decancer_assert(raw_contents_length == 15, "size of very funny text");
    *   decancer_assert(!memcmp(raw_contents, L"very funny text", raw_contents_length * sizeof(uint16_t)), "contents of very funny text");
    *
@@ -701,7 +702,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -732,9 +733,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -742,11 +743,11 @@ extern "C" {
    *
    *   matches = decancer_find_multiple(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_t));
    *   decancer_assert(matches != NULL, "decancer_find_multiple", CURED_END);
-   *   
+   *
    *   raw_matches = decancer_matches_raw(matches, &raw_matches_length);
    *
    *   decancer_assert(raw_matches_length == 2, "raw_matches_length", MATCHES_END);
-   *   
+   *
    *   decancer_assert(raw_matches[0].start == 0, "start of very", MATCHES_END);
    *   decancer_assert(raw_matches[0].end == 4, "end of very", MATCHES_END);
    *
@@ -784,11 +785,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -809,9 +810,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -860,11 +861,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -894,7 +895,7 @@ extern "C" {
    *   };
    *
    *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -946,7 +947,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -977,9 +978,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -987,11 +988,11 @@ extern "C" {
    *
    *   matches = decancer_find_multiple(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_t));
    *   decancer_assert(matches != NULL, "decancer_find_multiple", CURED_END);
-   *   
+   *
    *   raw_matches = decancer_matches_raw(matches, &raw_matches_length);
    *
    *   decancer_assert(raw_matches_length == 2, "raw_matches_length", MATCHES_END);
-   *   
+   *
    *   decancer_assert(raw_matches[0].start == 0, "start of very", MATCHES_END);
    *   decancer_assert(raw_matches[0].end == 4, "end of very", MATCHES_END);
    *
@@ -1036,7 +1037,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -1076,7 +1077,7 @@ extern "C" {
    *   };
    *
    *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1084,11 +1085,11 @@ extern "C" {
    *
    *   matches = decancer_find_multiple_wide(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_wide_t));
    *   decancer_assert(matches != NULL, "decancer_find_multiple_wide", CURED_END);
-   *   
+   *
    *   raw_matches = decancer_matches_raw(matches, &raw_matches_length);
    *
    *   decancer_assert(raw_matches_length == 2, "raw_matches_length", MATCHES_END);
-   *   
+   *
    *   decancer_assert(raw_matches[0].start == 0, "start of very", MATCHES_END);
    *   decancer_assert(raw_matches[0].end == 4, "end of very", MATCHES_END);
    *
@@ -1134,11 +1135,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1159,9 +1160,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1202,11 +1203,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes)                           \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1225,9 +1226,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1263,11 +1264,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1295,7 +1296,7 @@ extern "C" {
    *   };
    *
    *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1306,7 +1307,7 @@ extern "C" {
    *
    *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
    *   decancer_assert(!memcmp(raw_contents, L"very ***** text", raw_contents_length * sizeof(uint16_t)), "censor result", RAW_CONTENTS_END);
-   * 
+   *
    * RAW_CONTENTS_END:
    *   decancer_cured_raw_wide_free(raw_contents_handle);
    * CURED_END:
@@ -1333,11 +1334,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes)                           \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1356,9 +1357,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1394,11 +1395,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1426,7 +1427,7 @@ extern "C" {
    *   };
    *
    *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1436,7 +1437,7 @@ extern "C" {
    *
    *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
    *   decancer_assert(!memcmp(raw_contents, L"not funny text", raw_contents_length * sizeof(uint16_t)), "replace result", RAW_CONTENTS_END);
-   * 
+   *
    * RAW_CONTENTS_END:
    *   decancer_cured_raw_wide_free(raw_contents_handle);
    * CURED_END:
@@ -1465,11 +1466,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes)                           \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1493,9 +1494,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1532,11 +1533,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1569,7 +1570,7 @@ extern "C" {
    *   };
    *
    *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1580,7 +1581,7 @@ extern "C" {
    *
    *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
    *   decancer_assert(!memcmp(raw_contents, L"**** ***** text", raw_contents_length * sizeof(uint16_t)), "censor multiple result", RAW_CONTENTS_END);
-   * 
+   *
    * RAW_CONTENTS_END:
    *   decancer_cured_raw_wide_free(raw_contents_handle);
    * CURED_END:
@@ -1608,11 +1609,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes)                           \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1636,9 +1637,9 @@ extern "C" {
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1675,11 +1676,11 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
-   * 
+   *
    * #define decancer_assert(expr, notes, label)                    \
    *   if (!(expr)) {                                               \
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
@@ -1712,7 +1713,7 @@ extern "C" {
    *   };
    *
    *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
@@ -1722,7 +1723,7 @@ extern "C" {
    *
    *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
    *   decancer_assert(!memcmp(raw_contents, L"sussy sussy text", raw_contents_length * sizeof(uint16_t)), "replace multiple result", RAW_CONTENTS_END);
-   * 
+   *
    * RAW_CONTENTS_END:
    *   decancer_cured_raw_wide_free(raw_contents_handle);
    * CURED_END:
@@ -1750,7 +1751,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -1760,26 +1761,26 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_contains(cured, "funny", 5), "decancer_contains");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1801,7 +1802,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -1811,12 +1812,12 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t string[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -1829,14 +1830,14 @@ extern "C" {
    *   };
    *
    *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_contains_wide(cured, L"funny", 5), "decancer_contains_wide");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1858,7 +1859,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -1868,26 +1869,26 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_starts_with(cured, "very", 4), "decancer_starts_with");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1909,7 +1910,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -1919,12 +1920,12 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t string[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -1937,14 +1938,14 @@ extern "C" {
    *   };
    *
    *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_starts_with_wide(cured, L"very", 4), "decancer_starts_with_wide");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1966,7 +1967,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -1976,26 +1977,26 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_ends_with(cured, "text", 4), "decancer_ends_with");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -2017,7 +2018,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -2027,12 +2028,12 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t string[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -2045,14 +2046,14 @@ extern "C" {
    *   };
    *
    *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_ends_with_wide(cured, L"text", 4), "decancer_ends_with_wide");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -2074,7 +2075,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -2084,26 +2085,26 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
    *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   * 
+   *
    *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_equals(cured, "very funny text", 15), "decancer_equals");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -2125,7 +2126,7 @@ extern "C" {
    * Example:
    * ```c
    * #include <decancer.h>
-   * 
+   *
    * #include <string.h>
    * #include <stdlib.h>
    * #include <stdio.h>
@@ -2135,12 +2136,12 @@ extern "C" {
    *     fprintf(stderr, "assertion failure at " notes "\n");       \
    *     ret = 1;                                                   \
    *     goto END;                                                  \
-   *   }   
+   *   }
    *
    * int main(void) {
    *   int ret = 0;
    *   decancer_error_t error;
-   * 
+   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t string[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -2153,14 +2154,14 @@ extern "C" {
    *   };
    *
    *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
-   * 
+   *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
    *   decancer_assert(decancer_equals_wide(cured, L"very funny text", 15), "decancer_equals_wide");
-   *   
+   *
    * END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -2178,7 +2179,7 @@ extern "C" {
 
   /**
    * @brief Frees the rust object created by decancer_cured_raw_wide.
-   
+
    * @param wide The rust object created by decancer_cured_raw_wide.
    * @see decancer_cured_raw_wide
    */
@@ -2186,7 +2187,7 @@ extern "C" {
 
   /**
    * @brief Frees the matcher iterator object created by decancer_find and decancer_find_wide.
-   
+
    * @param matcher The matcher iterator object created by decancer_find and decancer_find_wide.
    * @see decancer_find
    * @see decancer_find_wide
@@ -2196,7 +2197,7 @@ extern "C" {
 
   /**
    * @brief Frees the matches object created by decancer_find_multiple and decancer_find_multiple_wide.
-   
+
    * @param matches The matches object created by decancer_find_multiple and decancer_find_multiple_wide.
    * @see decancer_find_multiple
    * @see decancer_find_multiple_wide
@@ -2206,17 +2207,17 @@ extern "C" {
 
   /**
    * @brief Initiates a newly created translation struct for use.
-   
+
    * @param translation A pointer to a translation struct bound for decancer_cure_char.
    * @see decancer_cure_char
    * @see decancer_translation_free
    * @note This function MUST be called before any calls to decancer_cure_char.
    */
   DECANCER_EXPORT void decancer_translation_init(DECANCER_EXPORT_NAME(translation_t)* translation);
-  
+
   /**
    * @brief Frees the translation struct used in decancer_cure_char.
-   
+
    * @param translation A pointer to a translation struct.
    * @see decancer_cure_char
    * @see decancer_translation_init
