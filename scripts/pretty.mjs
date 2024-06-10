@@ -138,7 +138,7 @@ async function clangFormat() {
   console.log(`- [${clangFormatExecutable}] running...`)
 
   await execute(
-    `${clangFormatExecutable} -i decancer.cpp decancer.hpp decancer.h test.c test.cpp`,
+    `${clangFormatExecutable} -i decancer.cpp decancer.hpp decancer.h test.cpp`,
     {
       cwd: join(BINDINGS_DIR, 'native')
     }
