@@ -17,7 +17,6 @@ on:
       - '**/*.json'
       - 'README.md'
       - 'core/bin/codepoints.bin'
-      - 'bindings/native/test.c'
       - 'bindings/native/decancer.h'
       - 'bindings/native/decancer.cpp'
       - 'bindings/native/decancer.hpp'
@@ -330,7 +329,7 @@ jobs:
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --move
         shell: bash
       - name: Upload artifact
-        if: ${{ needs.setup.outputs.release != 'null' || matrix.settings.target == 'x86_64-pc-windows-msvc' }}
+        if: ${{ needs.setup.outputs.release != 'null' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
         uses: actions/upload-artifact@v4
         with:
           name: native-${{ matrix.settings.target }}
@@ -342,20 +341,22 @@ jobs:
       - setup
       - native
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: actions/setup-node@v4
+        if: ${{ !matrix.settings.docker }}
+        with:
+          node-version: latest
+          cache: yarn
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: native-x86_64-pc-windows-msvc
+          name: native-x86_64-unknown-linux-gnu
           path: bindings/native
       - name: Compile and run tests
-        working-directory: bindings/native
-        run: |
-          cl.exe /MD /nologo test.c decancer.lib
-          .\test.exe
+        working-directory: bindings/native/tests
+        run: node test.mjs
   node:
     strategy:
       fail-fast: true

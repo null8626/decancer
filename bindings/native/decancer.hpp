@@ -42,7 +42,7 @@ namespace decancer {
 #endif
 
   class cured_string;
-  class native_error;
+  class cure_error;
 
   /**
    * @brief Represents any error thrown from decancer.
@@ -55,49 +55,49 @@ namespace decancer {
       : std::runtime_error("") {}
 
     friend class cured_string;
-    friend class native_error;
+    friend class cure_error;
   };
 
   /**
    * @brief Represents an error caused by decancer not being able to cure a string.
    */
-  class native_error: public error {
+  class cure_error: public error {
     char* m_ptr;
     size_t m_size;
 
-    inline native_error(char* ptr, const size_t size)
+    inline cure_error(char* ptr, const size_t size)
       : m_ptr(ptr), m_size(size) {}
 
   public:
     /**
      * @brief No outsiders are allowed to use this class, internal use only :)
      */
-    native_error() = delete;
+    cure_error() = delete;
 
     /**
-     * @brief Creates a native error object by copying another native error object.
-     * @param other The other native error object to copy from.
+     * @brief Creates a cure error object by copying another cure error object.
+     * @param other The other cure error object to copy from.
      */
-    inline native_error(const native_error& other)
+    inline cure_error(const cure_error& other)
       : error(""), m_size(other.m_size) {
       m_ptr = new char[other.m_size];
       memcpy(m_ptr, other.m_ptr, other.m_size);
     }
 
     /**
-     * @brief Creates a native error object by moving another native error object.
-     * @param other The other native error object to move from.
+     * @brief Creates a cure error object by moving another cure error object.
+     * @param other The other cure error object to move from.
      */
-    inline native_error(native_error&& other)
+    inline cure_error(cure_error&& other)
       : m_ptr(other.m_ptr), m_size(other.m_size) {
       other.m_ptr = nullptr;
     }
 
     /**
-     * @brief Copies another native error object.
-     * @param other The other native error object to copy from.
+     * @brief Copies another cure error object.
+     * @param other The other cure error object to copy from.
      */
-    native_error& operator=(const native_error& other) & {
+    cure_error& operator=(const cure_error& other) & {
       if (m_ptr != nullptr) {
         delete[] m_ptr;
       }
@@ -111,10 +111,10 @@ namespace decancer {
     }
 
     /**
-     * @brief Moves another native error object.
-     * @param other The other native error object to move from.
+     * @brief Moves another cure error object.
+     * @param other The other cure error object to move from.
      */
-    inline native_error& operator=(native_error&& other) & {
+    inline cure_error& operator=(cure_error&& other) & {
       m_ptr = other.m_ptr;
       m_size = other.m_size;
       other.m_ptr = nullptr;
@@ -122,17 +122,17 @@ namespace decancer {
     }
 
     /**
-     * @brief Returns the raw null-terminated error message.
-     * @return const char* The raw null-terminated error message.
+     * @brief Returns the raw null-terminated ASCII encoded error message.
+     * @return const char* The raw null-terminated ASCII encoded error message.
      */
     inline const char* what() const noexcept override {
       return m_ptr;
     }
 
     /**
-     * @brief Frees the native error object.
+     * @brief Frees the cure error object.
      */
-    inline ~native_error() noexcept {
+    inline ~cure_error() noexcept {
       if (m_ptr != nullptr) {
         delete[] m_ptr;
       }
@@ -266,10 +266,10 @@ namespace decancer {
     /**
      * @brief Cures a raw UTF-16 encoded string.
      * @param text The raw UTF-16 encoded string.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @param opt Options to customize decancer's curing behavior. Defaults to DECANCER_OPTION_DEFAULT.
      */
-    cured_string(const wchar_t* text, const size_t size, const options_t opt = DECANCER_OPTION_DEFAULT);
+    cured_string(const wchar_t* text, const size_t length, const options_t opt = DECANCER_OPTION_DEFAULT);
 
     /**
      * @brief Cures a UTF-16 encoded string.
@@ -428,16 +428,16 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   wassert(cured_utf16.starts_with(L"very", 8), "starts_with");
+     *   wassert(cured_utf16.starts_with(L"very", 4), "starts_with");
      *   return 0;
      * }
      * ```
      *
      * @param text The raw UTF-16 encoded string to match with.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @return bool Whether this cured string similarly starts with the specified string.
      */
-    bool starts_with(const wchar_t* text, const size_t size) const noexcept;
+    bool starts_with(const wchar_t* text, const size_t length) const noexcept;
 
     /**
      * @brief Checks if this cured string similarly starts with another UTF-16 encoded string.
@@ -621,16 +621,16 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   wassert(cured_utf16.ends_with(L"text", 8), "ends_with");
+     *   wassert(cured_utf16.ends_with(L"text", 4), "ends_with");
      *   return 0;
      * }
      * ```
      *
      * @param text The raw UTF-16 encoded string to match with.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @return bool Whether this cured string similarly ends with the specified string.
      */
-    bool ends_with(const wchar_t* text, const size_t size) const noexcept;
+    bool ends_with(const wchar_t* text, const size_t length) const noexcept;
 
     /**
      * @brief Checks if this cured string similarly ends with another UTF-16 encoded string.
@@ -814,16 +814,16 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   wassert(cured_utf16.contains(L"funny", 10), "contains");
+     *   wassert(cured_utf16.contains(L"funny", 5), "contains");
      *   return 0;
      * }
      * ```
      *
      * @param text The raw UTF-16 encoded string to match with.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @return bool Whether this cured string similarly contains the specified string.
      */
-    bool contains(const wchar_t* text, const size_t size) const noexcept;
+    bool contains(const wchar_t* text, const size_t length) const noexcept;
 
     /**
      * @brief Checks if this cured string similarly contains another UTF-16 encoded string.
@@ -1182,7 +1182,7 @@ namespace decancer {
      *   std::vector<decancer::match_t> matches{};
      *   decancer::match_t first_match;
      *
-     *   matches = cured_utf16.find(L"funny", 10);
+     *   matches = cured_utf16.find(L"funny", 5);
      *   wassert(matches.size() == 1, "matches size");
      *
      *   first_match = matches.at(0);
@@ -1194,12 +1194,12 @@ namespace decancer {
      * ```
      *
      * @param text The raw UTF-16 encoded string to match with.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @see find_multiple
      * @return std::vector<decancer::match_t> A list of every match in the cured string.
      * @note Each match is based on UTF-8 character indices.
      */
-    std::vector<match_t> find(const wchar_t* text, const size_t size) const noexcept;
+    std::vector<match_t> find(const wchar_t* text, const size_t length) const noexcept;
 
     /**
      * @brief Finds every similar-looking match of a UTF-16 encoded string in the cured string.
@@ -1593,7 +1593,7 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   cured_utf16.censor(L"funny", 10, '-');
+     *   cured_utf16.censor(L"funny", 5, '-');
      *   wassert(cured_utf16 == "very ----- text", "censor");
      *
      *   return 0;
@@ -1601,12 +1601,12 @@ namespace decancer {
      * ```
      *
      * @param text The raw UTF-16 encoded string to match with.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @param replacement The replacement character, in ASCII.
      * @see censor_multiple
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
-    void censor(const wchar_t* text, const size_t size, const char replacement) const;
+    void censor(const wchar_t* text, const size_t length, const char replacement) const;
 
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
@@ -1816,7 +1816,7 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   cured_utf16.censor(L"funny", 10, 0x2dUL);
+     *   cured_utf16.censor(L"funny", 5, 0x2dUL);
      *   wassert(cured_utf16 == "very ----- text", "censor");
      *
      *   return 0;
@@ -1824,12 +1824,12 @@ namespace decancer {
      * ```
      *
      * @param text The raw UTF-16 encoded string to match with.
-     * @param size UTF-16 size of the other string, in bytes.
+     * @param length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @param replacement The replacement character, as a unicode codepoint.
      * @see censor_multiple
      * @throw decancer::error Thrown if the input string or replacement character is malformed.
      */
-    void censor(const wchar_t* text, const size_t size, const uint32_t replacement) const;
+    void censor(const wchar_t* text, const size_t length, const uint32_t replacement) const;
 
     /**
      * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
@@ -2349,7 +2349,7 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   cured_utf16.replace(L"very", 8, L"not", 6);
+     *   cured_utf16.replace(L"very", 4, L"not", 3);
      *   wassert(cured_utf16 == L"not funny text", "replace");
      *
      *   return 0;
@@ -2357,13 +2357,13 @@ namespace decancer {
      * ```
      *
      * @param find The raw UTF-16 encoded string to match with.
-     * @param find_size UTF-16 size of the other string, in bytes.
+     * @param find_length Length of the search string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @param replacement The raw UTF-16 encoded string to replace with.
-     * @param replacement_size UTF-16 size of the replacement string, in bytes.
+     * @param replacement_length Length of the replacement string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @see replace_multiple
      * @throw decancer::error Thrown if any of the arguments use an invalid encoding.
      */
-    void replace(const wchar_t* find, const size_t find_size, const wchar_t* replacement, const size_t replacement_size) const;
+    void replace(const wchar_t* find, const size_t find_length, const wchar_t* replacement, const size_t replacement_length) const;
 
     /**
      * @brief Replaces every similar-looking match of the specified UTF-16 encoded string with another UTF-16 encoded string.
@@ -2740,7 +2740,7 @@ namespace decancer {
      *
      *   decancer::cured_string cured_utf16{wide_very_funny_text};
      *
-     *   cured_utf16.replace_multiple({L"very", L"not"}, L"sussy", 10);
+     *   cured_utf16.replace_multiple({L"very", L"not"}, L"sussy", 5);
      *   wassert(cured_utf16 == L"sussy sussy text", "replace_multiple");
      *
      *   return 0;
@@ -2749,11 +2749,11 @@ namespace decancer {
      *
      * @param keywords A list of raw null-terminated UTF-16 keywords to match with.
      * @param replacement The raw UTF-16 encoded string to replace with.
-     * @param replacement_size UTF-16 size of the replacement string, in bytes.
+     * @param replacement_length Length of the raw UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @see replace
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
-    void replace_multiple(const std::initializer_list<const wchar_t*>& keywords, const wchar_t* replacement, const size_t replacement_size) const;
+    void replace_multiple(const std::initializer_list<const wchar_t*>& keywords, const wchar_t* replacement, const size_t replacement_length) const;
 
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
@@ -2780,7 +2780,7 @@ namespace decancer {
      *   std::wstring very{L"very"};
      *   std::wstring not{L"not"};
      *
-     *   cured_utf16.replace_multiple({very, not}, L"sussy", 10);
+     *   cured_utf16.replace_multiple({very, not}, L"sussy", 5);
      *   wassert(cured_utf16 == L"sussy sussy text", "replace_multiple");
      *
      *   return 0;
@@ -2789,11 +2789,11 @@ namespace decancer {
      *
      * @param keywords A list of UTF-16 keywords to match with.
      * @param replacement The raw UTF-16 encoded string to replace with.
-     * @param replacement_size UTF-16 size of the replacement string, in bytes.
+     * @param replacement_length Length of the replacement string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      * @see replace
      * @throw decancer::error Thrown if the input keywords or replacement character is malformed.
      */
-    void replace_multiple(const std::initializer_list<std::wstring>& keywords, const wchar_t* replacement, const size_t replacement_size) const;
+    void replace_multiple(const std::initializer_list<std::wstring>& keywords, const wchar_t* replacement, const size_t replacement_length) const;
 
     /**
      * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.

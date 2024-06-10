@@ -29,7 +29,7 @@ if(NOT EXISTS "${CMAKE_SOURCE_DIR}/target/release/decancer.lib"
 execute_process(COMMAND cargo build "--release" WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
 
-find_library(DECANCER_LIBRARY NAMES "decancer.lib" "libdecancer.a" HINTS "${CMAKE_SOURCE_DIR}/target/release" REQUIRED)
+find_library(DECANCER_LIBRARY NAMES "decancer.lib" "libdecancer.a" HINTS "${CMAKE_SOURCE_DIR}/target/release" "${CMAKE_SOURCE_DIR}/target/debug" REQUIRED)
 
 target_compile_definitions(decancer PRIVATE __DECANCER_CXX_BUILDING__)
 target_include_directories(decancer PUBLIC ${CMAKE_SOURCE_DIR})

@@ -92,7 +92,14 @@ pub unsafe extern "C" fn decancer_cure_wide(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn decancer_translation_init(output: *mut Translation) {
+  (*output).slot_c = 0;
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *mut Translation) {
+  decancer_translation_free(output);
+  
   match decancer::cure_char(input, transmute(options)) {
     decancer::Translation::Character(c) => {
       (*output).kind = 0;
@@ -421,23 +428,39 @@ comparison_fn! {
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cured_raw(
   cured: *mut decancer::CuredString,
+  mat: *const Range<usize>,
   output_size: *mut usize,
 ) -> *const u8 {
-  *output_size = (*cured).len();
+  let ptr = (*cured).as_ptr();
+  
+  if mat.is_null() {
+    *output_size = (*cured).len();
 
-  (*cured).as_ptr()
+    ptr
+  } else {
+    *output_size = (*mat).len();
+    
+    ptr.offset((*mat).start as _)
+  }
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_cured_raw_wide(
   cured: *mut decancer::CuredString,
+  mat: *const Range<usize>,
   output_ptr: *mut usize,
-  output_size: *mut usize,
+  output_length: *mut usize,
 ) -> *mut Vec<u16> {
-  let vec = Box::new((*cured).encode_utf16().collect::<Vec<_>>());
+  let s = if mat.is_null() {
+    (*cured).as_str()
+  } else {
+    (*cured).get_unchecked((*mat).clone())
+  };
+  
+  let vec = Box::new(s.encode_utf16().collect::<Vec<_>>());
 
   *output_ptr = vec.as_ptr() as _;
-  *output_size = vec.len();
+  *output_length = vec.len();
 
   Box::into_raw(vec)
 }

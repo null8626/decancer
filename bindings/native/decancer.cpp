@@ -5,7 +5,7 @@ using namespace decancer;
 
 #define DECANCER_STRING(text)              reinterpret_cast<const uint8_t*>(text)
 #define DECANCER_WSTRING(text)             reinterpret_cast<const uint16_t*>(text)
-#define DECANCER_INTO_ERROR(error_struct)  native_error(generate_error_message(&error_struct), error_struct.message_length + 1)
+#define DECANCER_INTO_ERROR(error_struct)  cure_error(generate_error_message(&error_struct), error_struct.message_length + 1)
 
 #define DECANCER_CTOR_IMPL(method_name, text_argument, length_argument, ...)                          \
   cured_string::cured_string(__VA_ARGS__, const options_t options) {                                  \
@@ -229,12 +229,11 @@ translation::translation(const translation& other) {
 
 translation::translation(translation&& other) {
   memcpy(&m_translation, &other.m_translation, sizeof(translation_t));
-  memset(&other.m_translation, 0, sizeof(translation_t));
+  decancer_translation_init(&other.m_translation);
 }
 
 translation::translation(const uint32_t code, const options_t opt) {
-  memset(&m_translation, 0, sizeof(translation_t));
-
+  decancer_translation_init(&m_translation);
   decancer_cure_char(code, opt, &m_translation);
 }
 
@@ -246,7 +245,7 @@ translation& translation::operator=(const translation& other) & {
 
 translation& translation::operator=(translation&& other) & {
   memcpy(&m_translation, &other.m_translation, sizeof(translation_t));
-  memset(&other.m_translation, 0, sizeof(translation_t));
+  decancer_translation_init(&other.m_translation);
   return *this;
 }
 
