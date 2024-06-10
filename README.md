@@ -494,7 +494,7 @@ int main(void) {
     0xd835, 0xdce3
   };
 
-  cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+  cured = decancer_cure_wide(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
 
   if (cured == NULL) {
     print_error(&error);

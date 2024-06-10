@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 
 /// A configuration struct where you can customize decancer's behavior.
 ///
-/// By default, decancer cures as much characters as possible and turns all of the output characters to lowercase.
+/// By default, decancer cures as much characters as possible and turns all the output characters to lowercase.
 ///
 /// If you don't plan on using this struct and only using decancer's defaults, it's recommended to disable the default `options` feature flag to optimize away unnecessary option checks.
 ///
