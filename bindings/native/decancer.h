@@ -6,6 +6,7 @@
 #define __DECANCER_H__
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #if defined(_WIN32) && !defined(__DECANCER_CXX__) && !defined(__DECANCER_CXX_BUILDING__) && !defined(__DECANCER_TEST__)
