@@ -12,47 +12,59 @@ rmSync(join(TESTS_DIR, 'build'), {
   force: true
 })
 
-await Promise.all(readdirSync(TESTS_DIR).filter(f => f.endsWith('.c')).map(f => rm(join(TESTS_DIR, f), {
-  force: true
-})))
+await Promise.all(
+  readdirSync(TESTS_DIR)
+    .filter(f => f.endsWith('.c'))
+    .map(f =>
+      rm(join(TESTS_DIR, f), {
+        force: true
+      })
+    )
+)
 
 const functions = []
 let status = 0
 let example = []
 
-for (const line of readFileSync(join(ROOT_DIR, 'decancer.h')).toString().trim().split(/\r?\n/g).map(x => x.replace(/^\s*\* ?/, ''))) {
+for (const line of readFileSync(join(ROOT_DIR, 'decancer.h'))
+  .toString()
+  .trim()
+  .split(/\r?\n/g)
+  .map(x => x.replace(/^\s*\* ?/, ''))) {
   switch (status) {
     case 0: {
       if (line.startsWith('```c')) {
         status = 1
       }
-      
+
       break
     }
-    
+
     case 1: {
       if (line.startsWith('```')) {
         status = 2
       } else {
         example.push(line)
       }
-    
+
       break
     }
-    
+
     case 2: {
       if (line.startsWith('/')) {
         status = 3
       }
-      
+
       break
     }
-    
+
     default: {
       const functionName = line.match(/(decancer_\w+)\(/)[1]
-      const exampleCode = example.join('\n').replace('int main(', `int ${functionName}_test(`)
+      const exampleCode = example
+        .join('\n')
+        .replace('int main(', `int ${functionName}_test(`)
       functions.push(functionName)
-      
+
       writeFileSync(join(TESTS_DIR, `${functionName}_test.c`), exampleCode)
       example = []
       status = 0
@@ -93,12 +105,12 @@ try {
     cwd: TESTS_DIR,
     stdio: 'inherit'
   })
-  
+
   execSync('cmake --build build --config Debug', {
     cwd: TESTS_DIR,
     stdio: 'inherit'
   })
-  
+
   const exe = process.platform === 'win32' ? '.exe' : ''
 
   execSync(`.${sep}decancer_native_test${exe}`, {
