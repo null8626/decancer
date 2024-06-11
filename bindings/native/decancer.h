@@ -270,14 +270,28 @@ namespace decancer {
   typedef void* DECANCER_EXPORT_NAME(cured_raw_utf16_t);
 
   /**
-   * @brief Represents a matcher iterator object returned from decancer_find and decancer_find_utf16.
+   * @brief Represents a UTF-8 matcher iterator object returned from decancer_find.
    *
+   * @see decancer_matcher_utf16_t
    * @see decancer_find
-   * @see decancer_find_utf16
+   * @see decancer_matcher_next
    * @see decancer_matcher_free
+   * @note For its UTF-16 counterpart, see decancer_matcher_utf16_t.
    * @note You are responsible in freeing this object later by calling decancer_matcher_free.
    */
   typedef void* DECANCER_EXPORT_NAME(matcher_t);
+
+  /**
+   * @brief Represents a UTF-16 matcher iterator object returned from decancer_find_utf16.
+   *
+   * @see decancer_matcher_t
+   * @see decancer_find_utf16
+   * @see decancer_matcher_utf16_next
+   * @see decancer_matcher_utf16_free
+   * @note For its UTF-8 counterpart, see decancer_matcher_t.
+   * @note You are responsible in freeing this object later by calling decancer_matcher_utf16_free.
+   */
+  typedef void* DECANCER_EXPORT_NAME(matcher_utf16_t);
 
   /**
    * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_utf16.
@@ -852,7 +866,7 @@ extern "C" {
    * @see decancer_find_multiple_utf16
    * @see decancer_matcher_next
    * @see decancer_matcher_free
-   * @return decancer_matcher_t A matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
+   * @return decancer_matcher_t A UTF-8 matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-16 counterpart, see decancer_find_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
    */
@@ -898,7 +912,7 @@ extern "C" {
    *   decancer_cured_raw_utf16_t raw_contents_handle;
    *   size_t raw_contents_length;
    *   uint16_t* raw_contents;
-   *   decancer_matcher_t matcher;
+   *   decancer_matcher_utf16_t matcher;
    *   decancer_match_t match;
    *
    *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
@@ -911,7 +925,7 @@ extern "C" {
    *   matcher = decancer_find_utf16(cured, funny, sizeof(funny) / sizeof(uint16_t));
    *   decancer_assert(matcher != NULL, "decancer_find_utf16", CURED_END);
    *
-   *   decancer_assert(decancer_matcher_next(matcher, &match), "first iteration of decancer_matcher_next", MATCHER_END);
+   *   decancer_assert(decancer_matcher_utf16_next(matcher, &match), "first iteration of decancer_matcher_next", MATCHER_END);
    *
    *   decancer_assert(match.start == 5, "start of funny", RAW_CONTENTS_END);
    *   decancer_assert(match.end == 10, "end of funny", RAW_CONTENTS_END);
@@ -921,12 +935,12 @@ extern "C" {
    *   decancer_assert(raw_contents_length == (sizeof(funny) / sizeof(uint16_t)), "length of funny", RAW_CONTENTS_END);
    *   decancer_assert(!memcmp(raw_contents, funny, sizeof(funny)), "contents of funny", RAW_CONTENTS_END);
    *
-   *   decancer_assert(!decancer_matcher_next(matcher, &match), "end of iteration", RAW_CONTENTS_END);
+   *   decancer_assert(!decancer_matcher_utf16_next(matcher, &match), "end of iteration", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
    *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * MATCHER_END:
-   *   decancer_matcher_free(matcher);
+   *   decancer_matcher_utf16_free(matcher);
    * CURED_END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -939,13 +953,13 @@ extern "C" {
    * @see decancer_find
    * @see decancer_find_multiple
    * @see decancer_find_multiple_utf16
-   * @see decancer_matcher_next
-   * @see decancer_matcher_free
-   * @return decancer_matcher_t A matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
+   * @see decancer_matcher_utf16_next
+   * @see decancer_matcher_utf16_free
+   * @return decancer_matcher_utf16_t A UTF-16 matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find.
-   * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
+   * @note You are responsible in freeing the returned object later by calling decancer_matcher_utf16_free.
    */
-  DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_t) decancer_find_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
+  DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_utf16_t) decancer_find_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
 
   /**
    * @brief Finds every similar-looking match from a list of UTF-8 keywords in the cured string.
@@ -1145,7 +1159,7 @@ extern "C" {
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matches_t) decancer_find_multiple_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_utf16_t)* other, const size_t other_length);
 
   /**
-   * @brief Iterates to the next element of the matcher iterator.
+   * @brief Iterates to the next element of a UTF-8 matcher iterator.
    *
    * Example:
    * ```c
@@ -1207,11 +1221,100 @@ extern "C" {
    * }
    * ```
    *
-   * @param matcher The matcher iterator object.
+   * @param matcher The UTF-8 matcher iterator object.
    * @param match A pointer to a decancer_match_t struct.
+   * @see decancer_find
+   * @see decancer_matcher_utf16_next
+   * @see decancer_matcher_free
    * @return bool true if a new value is present, or false if the iteration is complete.
+   * @note For its UTF-16 counterpart, see decancer_matcher_utf16_next.
    */
   DECANCER_EXPORT bool decancer_matcher_next(DECANCER_EXPORT_NAME(matcher_t) matcher, DECANCER_EXPORT_NAME(match_t)* match);
+
+  /**
+   * @brief Iterates to the next element of a UTF-16 matcher iterator.
+   *
+   * Example:
+   * ```c
+   * #include <decancer.h>
+   *
+   * #include <string.h>
+   * #include <stdlib.h>
+   * #include <stdio.h>
+   *
+   * #define decancer_assert(expr, notes, label)                    \
+   *   if (!(expr)) {                                               \
+   *     fprintf(stderr, "assertion failure at " notes "\n");       \
+   *     ret = 1;                                                   \
+   *     goto label;                                                \
+   *   }
+   *
+   * int main(void) {
+   *   int ret = 0;
+   *
+   *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint16_t input[] = {
+   *     0x0076, 0xff25, 0x24e1,
+   *     0xd835, 0xdd02, 0x0020,
+   *     0xd835, 0xdd3d, 0xd835,
+   *     0xdd4c, 0x0147, 0x2115,
+   *     0xff59, 0x0020, 0x0163,
+   *     0x4e47, 0xd835, 0xdd4f,
+   *     0xd835, 0xdce3
+   *   };
+   *
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *   size_t raw_contents_length;
+   *   uint16_t* raw_contents;
+   *   decancer_matcher_utf16_t matcher;
+   *   decancer_match_t match;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *
+   *   if (cured == NULL) {
+   *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
+   *     return 1;
+   *   }
+   *
+   *   matcher = decancer_find_utf16(cured, funny, sizeof(funny) / sizeof(uint16_t));
+   *   decancer_assert(matcher != NULL, "decancer_find_utf16", CURED_END);
+   *
+   *   decancer_assert(decancer_matcher_utf16_next(matcher, &match), "first iteration of decancer_matcher_next", MATCHER_END);
+   *
+   *   decancer_assert(match.start == 5, "start of funny", RAW_CONTENTS_END);
+   *   decancer_assert(match.end == 10, "end of funny", RAW_CONTENTS_END);
+   *
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, &match, &raw_contents, &raw_contents_length);
+   *
+   *   decancer_assert(raw_contents_length == (sizeof(funny) / sizeof(uint16_t)), "length of funny", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, funny, sizeof(funny)), "contents of funny", RAW_CONTENTS_END);
+   *
+   *   decancer_assert(!decancer_matcher_utf16_next(matcher, &match), "end of iteration", RAW_CONTENTS_END);
+   *
+   * RAW_CONTENTS_END:
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
+   * MATCHER_END:
+   *   decancer_matcher_utf16_free(matcher);
+   * CURED_END:
+   *   decancer_cured_free(cured);
+   *   return ret;
+   * }
+   * ```
+   *
+   * @param matcher The UTF-16 matcher iterator object.
+   * @param match A pointer to a decancer_match_t struct.
+   * @return bool true if a new value is present, or false if the iteration is complete.
+   * @see decancer_find_utf16
+   * @see decancer_matcher_next
+   * @see decancer_matcher_utf16_free
+   * @note For its UTF-8 counterpart, see decancer_matcher_next.
+   */
+  DECANCER_EXPORT bool decancer_matcher_utf16_next(DECANCER_EXPORT_NAME(matcher_utf16_t) matcher, DECANCER_EXPORT_NAME(match_t)* match);
 
   /**
    * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
@@ -2266,14 +2369,22 @@ extern "C" {
   DECANCER_EXPORT void decancer_cured_raw_utf16_free(DECANCER_EXPORT_NAME(cured_raw_utf16_t) raw_utf16_handle);
 
   /**
-   * @brief Frees the matcher iterator object created by decancer_find and decancer_find_utf16.
+   * @brief Frees the UTF-8 matcher iterator object created by decancer_find.
 
-   * @param matcher The matcher iterator object created by decancer_find and decancer_find_utf16.
+   * @param matcher The matcher iterator object created by decancer_find.
    * @see decancer_find
-   * @see decancer_find_utf16
    * @see decancer_matcher_next
    */
   DECANCER_EXPORT void decancer_matcher_free(DECANCER_EXPORT_NAME(matcher_t) matcher);
+
+  /**
+   * @brief Frees the UTF-16 matcher iterator object created by decancer_find_utf16.
+
+   * @param matcher The matcher iterator object created by decancer_find_utf16.
+   * @see decancer_find_utf16
+   * @see decancer_matcher_utf16_next
+   */
+  DECANCER_EXPORT void decancer_matcher_utf16_free(DECANCER_EXPORT_NAME(matcher_utf16_t) matcher);
 
   /**
    * @brief Frees the matches object created by decancer_find_multiple and decancer_find_multiple_utf16.

@@ -100,25 +100,16 @@ testFile += '\n  return 0;\n}'
 
 writeFileSync(join(TESTS_DIR, 'test.c'), testFile)
 
-execSync('cmake -B build .', {
-  cwd: TESTS_DIR,
-  stdio: 'inherit'
-})
+try {
+  execSync('cmake -B build .', {
+    cwd: TESTS_DIR,
+    stdio: 'inherit'
+  })
 
-execSync('cmake --build build --config Debug', {
-  cwd: TESTS_DIR,
-  stdio: 'inherit'
-})
-
-console.log(readdirSync(join(TESTS_DIR, 'build')))
-
-const exe = process.platform === 'win32' ? '.exe' : ''
-
-execSync(`.${sep}decancer_native_test${exe}`, {
-  cwd: join(
-    TESTS_DIR,
-    'build',
-    `${process.platform === 'win32' ? 'D' : 'd'}ebug`
-  ),
-  stdio: 'inherit'
-})
+  execSync('cmake --build build --config Debug', {
+    cwd: TESTS_DIR,
+    stdio: 'inherit'
+  })
+} catch {
+  process.exit(1)
+}

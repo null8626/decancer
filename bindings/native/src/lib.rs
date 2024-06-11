@@ -28,6 +28,12 @@ pub struct Translation {
   slot_c: usize,
 }
 
+#[repr(C)]
+pub struct MatcherUtf16 {
+  other: Vec<u8>,
+  matcher: Option<decancer::Matcher<'static, 'static>>,
+}
+
 const INVALID_UTF8_MESSAGE: &str = "Invalid UTF-8 bytes.";
 const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
@@ -148,11 +154,20 @@ pub unsafe extern "C" fn decancer_find_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
   other_length: usize,
-) -> *mut decancer::Matcher<'static, 'static> {
+) -> *mut MatcherUtf16 {
   match utf16::get(other_str, other_length) {
-    Some(result) => Box::into_raw(Box::new(transmute(
-      (*cured).find(str::from_utf8_unchecked(&result)),
-    ))),
+    Some(result) => {
+      let mut output = Box::new(MatcherUtf16 {
+        other: result,
+        matcher: None,
+      });
+
+      output.matcher.replace(transmute(
+        (*cured).find(str::from_utf8_unchecked(&output.other)),
+      ));
+
+      Box::into_raw(output)
+    },
     None => 0 as _,
   }
 }
@@ -196,6 +211,21 @@ pub unsafe extern "C" fn decancer_matcher_next(
   output: *mut Range<usize>,
 ) -> bool {
   match (*matcher).next() {
+    Some(mat) => {
+      *output = mat;
+      true
+    },
+
+    None => false,
+  }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_utf16_next(
+  matcher: *mut MatcherUtf16,
+  output: *mut Range<usize>,
+) -> bool {
+  match (*matcher).matcher.as_mut().unwrap_unchecked().next() {
     Some(mat) => {
       *output = mat;
       true
@@ -494,6 +524,11 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16_free(raw_utf16_handle: *mut Ve
 
 #[no_mangle]
 pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'static, 'static>) {
+  let _ = Box::from_raw(matcher);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_utf16_free(matcher: *mut MatcherUtf16) {
   let _ = Box::from_raw(matcher);
 }
 
