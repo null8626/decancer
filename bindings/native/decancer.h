@@ -1384,7 +1384,7 @@ extern "C" {
    *   decancer_error_t error;
    *   size_t raw_contents_size;
    *   const uint8_t* raw_contents;
-   *   
+   *
    *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
@@ -1690,7 +1690,7 @@ extern "C" {
    *   decancer_error_t error;
    *   size_t raw_contents_size;
    *   const uint8_t* raw_contents;
-   *   
+   *
    *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
