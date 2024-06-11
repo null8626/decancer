@@ -208,7 +208,7 @@ namespace decancer {
    * @brief Represents an error caused by decancer not being able to cure a string.
    *
    * @see decancer_cure
-   * @see decancer_cure_wide
+   * @see decancer_cure_utf16
    */
   typedef struct {
     /**
@@ -244,9 +244,9 @@ namespace decancer {
   /**
    * @brief Represents a UTF-16 encoded keyword. This struct is often used inside an array.
    *
-   * @see decancer_find_multiple_wide
-   * @see decancer_censor_multiple_wide
-   * @see decancer_replace_multiple_wide
+   * @see decancer_find_multiple_utf16
+   * @see decancer_censor_multiple_utf16
+   * @see decancer_replace_multiple_utf16
    */
   typedef struct {
     /**
@@ -258,32 +258,32 @@ namespace decancer {
      * @brief UTF-16 size of the string, in bytes.
      */
     size_t size;
-  } DECANCER_EXPORT_NAME(keyword_wide_t);
+  } DECANCER_EXPORT_NAME(keyword_utf16_t);
 
   /**
-   * @brief Represents a rust object returned from decancer_cured_raw_wide. This value has no use other than retaining the lifetime of the returned UTF-16 pointer.
+   * @brief Represents a rust object returned from decancer_cured_raw_utf16. This value has no use other than retaining the lifetime of the returned UTF-16 pointer.
    *
-   * @see decancer_cured_raw_wide
-   * @see decancer_cured_raw_wide_free
-   * @note You are responsible in freeing this object later by calling decancer_cured_raw_wide_free.
+   * @see decancer_cured_raw_utf16
+   * @see decancer_cured_raw_utf16_free
+   * @note You are responsible in freeing this object later by calling decancer_cured_raw_utf16_free.
    */
-  typedef void* DECANCER_EXPORT_NAME(cured_raw_wide_t);
+  typedef void* DECANCER_EXPORT_NAME(cured_raw_utf16_t);
 
   /**
-   * @brief Represents a matcher iterator object returned from decancer_find and decancer_find_wide.
+   * @brief Represents a matcher iterator object returned from decancer_find and decancer_find_utf16.
    *
    * @see decancer_find
-   * @see decancer_find_wide
+   * @see decancer_find_utf16
    * @see decancer_matcher_free
    * @note You are responsible in freeing this object later by calling decancer_matcher_free.
    */
   typedef void* DECANCER_EXPORT_NAME(matcher_t);
 
   /**
-   * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_wide.
+   * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_utf16.
    *
    * @see decancer_find_multiple
-   * @see decancer_find_multiple_wide
+   * @see decancer_find_multiple_utf16
    * @see decancer_matches_free
    * @note You are responsible in freeing this object later by calling decancer_matches_free.
    */
@@ -342,10 +342,10 @@ namespace decancer {
   } DECANCER_EXPORT_NAME(translation_t);
 
   /**
-   * @brief Represents a cured string returned from decancer_cure and decancer_cure_wide.
+   * @brief Represents a cured string returned from decancer_cure and decancer_cure_utf16.
    *
    * @see decancer_cure
-   * @see decancer_cure_wide
+   * @see decancer_cure_utf16
    * @see decancer_cured_free
    * @note You are responsible in freeing this object later by calling decancer_cured_free.
    */
@@ -355,7 +355,7 @@ namespace decancer {
    * @brief Represents a match in UTF-8 indices.
    *
    * @see decancer_find
-   * @see decancer_find_wide
+   * @see decancer_find_utf16
    * @see decancer_matcher_next
    */
   typedef struct {
@@ -374,7 +374,7 @@ namespace decancer {
    * @brief An unsigned 32-bit bitflags that lets you customize decancer's behavior in its curing functions.
    *
    * @see decancer_cure
-   * @see decancer_cure_wide
+   * @see decancer_cure_utf16
    * @see decancer_cure_char
    * @see DECANCER_OPTION_DEFAULT
    * @see DECANCER_OPTION_RETAIN_CAPITALIZATION
@@ -434,14 +434,13 @@ extern "C" {
    * #include <stdio.h>
    *
    * int main(void) {
-   *   decancer_error_t error;
-   *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
    *
-   *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -457,11 +456,11 @@ extern "C" {
    * @param input_size UTF-8 size of the input string, in bytes.
    * @param options Options to customize decancer's curing behavior. To use decancer's default behavior, pass in DECANCER_OPTION_DEFAULT.
    * @param error A pointer to a decancer_error_t struct. This pointer can be NULL if you want to ignore errors.
-   * @see decancer_cure_wide
+   * @see decancer_cure_utf16
    * @see decancer_cure_char
    * @see decancer_cured_free
    * @return decancer_cured_t The cured string object or NULL failure -- see the modified error struct for more details.
-   * @note For its UTF-16 counterpart, see decancer_cure_wide.
+   * @note For its UTF-16 counterpart, see decancer_cure_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure(const uint8_t* input_str, const size_t input_size, const DECANCER_EXPORT_NAME(options_t) options, DECANCER_EXPORT_NAME(error_t)* error);
@@ -478,10 +477,8 @@ extern "C" {
    * #include <stdio.h>
    *
    * int main(void) {
-   *   decancer_error_t error;
-   *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -491,7 +488,8 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -514,7 +512,7 @@ extern "C" {
    * @note For its UTF-8 counterpart, see decancer_cure.
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
    */
-  DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure_wide(const uint16_t* input_str, const size_t input_length, const DECANCER_EXPORT_NAME(options_t) options, DECANCER_EXPORT_NAME(error_t)* error);
+  DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_t) decancer_cure_utf16(const uint16_t* input_str, const size_t input_length, const DECANCER_EXPORT_NAME(options_t) options, DECANCER_EXPORT_NAME(error_t)* error);
 
   /**
    * @brief Cures a single unicode codepoint.
@@ -564,7 +562,7 @@ extern "C" {
    * @param options Options to customize decancer's curing behavior. To use decancer's default behavior, pass in DECANCER_OPTION_DEFAULT.
    * @param translation A pointer to the output translation struct.
    * @see decancer_cure
-   * @see decancer_cure_wide
+   * @see decancer_cure_utf16
    * @see decancer_translation_init
    * @see decancer_translation_free
    * @note You are responsible in freeing the translation struct later by passing it as a pointer to decancer_translation_free.
@@ -592,14 +590,14 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
    *
-   *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -621,10 +619,10 @@ extern "C" {
    * @param cured The cured string object.
    * @param match A pointer to a match object if you just want a slice, otherwise NULL if you want the entire string.
    * @param output_size A pointer to the output's UTF-8 size, in bytes.
-   * @see decancer_cured_raw_wide
-   * @see decancer_cured_raw_wide_free
+   * @see decancer_cured_raw_utf16
+   * @see decancer_cured_raw_utf16_free
    * @return const uint8_t* An immutable UTF-8 pointer representing raw contents of the cured string object.
-   * @note For its UTF-16 counterpart, see decancer_cured_raw_wide.
+   * @note For its UTF-16 counterpart, see decancer_cured_raw_utf16.
    * @note The returned pointer remains valid until cured gets passed onto decancer_cured_free.
    */
   DECANCER_EXPORT const uint8_t* decancer_cured_raw(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(match_t)* match, size_t* output_size);
@@ -649,10 +647,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -662,7 +659,11 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "very funny text"
+   *   uint16_t expected_contents[] = { 0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e, 0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -671,13 +672,13 @@ extern "C" {
    *
    *   size_t raw_contents_length;
    *   uint16_t* raw_contents;
-   *   decancer_cured_raw_wide_t raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
+   *   decancer_cured_raw_utf16_t raw_contents_handle = decancer_cured_raw_utf16(cured, NULL, &raw_contents, &raw_contents_length);
    *
-   *   decancer_assert(raw_contents_length == 15, "size of very funny text");
-   *   decancer_assert(!memcmp(raw_contents, L"very funny text", raw_contents_length * sizeof(uint16_t)), "contents of very funny text");
+   *   decancer_assert(raw_contents_length == (sizeof(expected_contents) / sizeof(uint16_t)), "length of very funny text");
+   *   decancer_assert(!memcmp(raw_contents, expected_contents, sizeof(expected_contents)), "contents of very funny text");
    *
    * END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    *   decancer_cured_free(cured);
    *   return ret;
    * }
@@ -688,13 +689,13 @@ extern "C" {
    * @param output_ptr A pointer to the output's UTF-16 encoded string.
    * @param output_length A pointer to the length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_cured_raw
-   * @see decancer_cured_raw_wide_free
-   * @return decancer_cured_raw_wide_t A rust object. This value has no use other than retaining the lifetime of the returned UTF-16 pointer.
+   * @see decancer_cured_raw_utf16_free
+   * @return decancer_cured_raw_utf16_t A rust object. This value has no use other than retaining the lifetime of the returned UTF-16 pointer.
    * @note For its UTF-8 counterpart, see decancer_cured_raw.
-   * @note You are responsible in freeing the returned object later by calling decancer_cured_raw_wide_free.
-   * @note The lifetime of the UTF-16 encoded string remains valid until the returned object gets passed onto decancer_cured_raw_wide_free.
+   * @note You are responsible in freeing the returned object later by calling decancer_cured_raw_utf16_free.
+   * @note The lifetime of the UTF-16 encoded string remains valid until the returned object gets passed onto decancer_cured_raw_utf16_free.
    */
-  DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_raw_wide_t) decancer_cured_raw_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(match_t)* match, uint16_t** output_ptr, size_t* output_length);
+  DECANCER_EXPORT DECANCER_EXPORT_NAME(cured_raw_utf16_t) decancer_cured_raw_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(match_t)* match, uint16_t** output_ptr, size_t* output_length);
 
   /**
    * @brief Returns the raw list of every similar-looking match from a decancer_matches_t object.
@@ -716,6 +717,12 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_keyword_t keywords[] = {
    *     {"very", 4},
    *     {"funny", 5}
@@ -729,12 +736,7 @@ extern "C" {
    *   const uint8_t* raw_contents;
    *   size_t raw_contents_size;
    *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -799,6 +801,12 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_cured_t cured;
    *   decancer_error_t error;
    *   size_t raw_contents_size;
@@ -806,12 +814,7 @@ extern "C" {
    *   decancer_matcher_t matcher;
    *   decancer_match_t match;
    *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -844,13 +847,13 @@ extern "C" {
    * @param cured The cured string object.
    * @param other_str The UTF-8 encoded string to match with.
    * @param other_size UTF-8 size of the other string, in bytes.
-   * @see decancer_find_wide
+   * @see decancer_find_utf16
    * @see decancer_find_multiple
-   * @see decancer_find_multiple_wide
+   * @see decancer_find_multiple_utf16
    * @see decancer_matcher_next
    * @see decancer_matcher_free
    * @return decancer_matcher_t A matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
-   * @note For its UTF-16 counterpart, see decancer_find_wide.
+   * @note For its UTF-16 counterpart, see decancer_find_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_t) decancer_find(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
@@ -875,16 +878,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_cured_t cured;
-   *   decancer_error_t error;
-   *   decancer_cured_raw_wide_t raw_contents_handle;
-   *   size_t raw_contents_length;
-   *   uint16_t* raw_contents;
-   *   decancer_matcher_t matcher;
-   *   decancer_match_t match;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -894,30 +890,41 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *   size_t raw_contents_length;
+   *   uint16_t* raw_contents;
+   *   decancer_matcher_t matcher;
+   *   decancer_match_t match;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   matcher = decancer_find_wide(cured, L"funny", 5);
-   *   decancer_assert(matcher != NULL, "decancer_find_wide", CURED_END);
+   *   matcher = decancer_find_utf16(cured, funny, sizeof(funny) / sizeof(uint16_t));
+   *   decancer_assert(matcher != NULL, "decancer_find_utf16", CURED_END);
    *
    *   decancer_assert(decancer_matcher_next(matcher, &match), "first iteration of decancer_matcher_next", MATCHER_END);
    *
    *   decancer_assert(match.start == 5, "start of funny", RAW_CONTENTS_END);
    *   decancer_assert(match.end == 10, "end of funny", RAW_CONTENTS_END);
    *
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, &match, &raw_contents, &raw_contents_length);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, &match, &raw_contents, &raw_contents_length);
    *
-   *   decancer_assert(raw_contents_length == 5, "length of funny", RAW_CONTENTS_END);
-   *   decancer_assert(!memcmp(raw_contents, L"funny", raw_contents_length * sizeof(uint16_t)), "contents of funny", RAW_CONTENTS_END);
+   *   decancer_assert(raw_contents_length == (sizeof(funny) / sizeof(uint16_t)), "length of funny", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, funny, sizeof(funny)), "contents of funny", RAW_CONTENTS_END);
    *
    *   decancer_assert(!decancer_matcher_next(matcher, &match), "end of iteration", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * MATCHER_END:
    *   decancer_matcher_free(matcher);
    * CURED_END:
@@ -931,14 +938,14 @@ extern "C" {
    * @param other_length Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_find
    * @see decancer_find_multiple
-   * @see decancer_find_multiple_wide
+   * @see decancer_find_multiple_utf16
    * @see decancer_matcher_next
    * @see decancer_matcher_free
    * @return decancer_matcher_t A matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
    */
-  DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_t) decancer_find_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
+  DECANCER_EXPORT DECANCER_EXPORT_NAME(matcher_t) decancer_find_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
 
   /**
    * @brief Finds every similar-looking match from a list of UTF-8 keywords in the cured string.
@@ -961,6 +968,12 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_keyword_t keywords[] = {
    *     {"very", 4},
    *     {"funny", 5}
@@ -974,12 +987,7 @@ extern "C" {
    *   const uint8_t* raw_contents;
    *   size_t raw_contents_size;
    *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1021,18 +1029,18 @@ extern "C" {
    * @param other A list of UTF-8 keywords to match with.
    * @param other_length Length of the keywords array in units of decancer_keyword_t -- or sizeof(array) / sizeof(decancer_keyword_t).
    * @see decancer_find
-   * @see decancer_find_wide
-   * @see decancer_find_multiple_wide
+   * @see decancer_find_utf16
+   * @see decancer_find_multiple_utf16
    * @see decancer_matches_free
    * @return decancer_matches_t A matches object or NULL if the keywords are not properly UTF-8 encoded.
-   * @note For its UTF-16 counterpart, see decancer_find_multiple_wide.
+   * @note For its UTF-16 counterpart, see decancer_find_multiple_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
    */
   DECANCER_EXPORT DECANCER_EXPORT_NAME(matches_t) decancer_find_multiple(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_t)* other, const size_t other_length);
 
   /**
    * @brief Finds every similar-looking match from a list of UTF-16 keywords in the cured string.
-   * Unlike decancer_find_wide, this function also takes note of overlapping matches and merges them together.
+   * Unlike decancer_find_utf16, this function also takes note of overlapping matches and merges them together.
    *
    * Example:
    * ```c
@@ -1051,22 +1059,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_keyword_wide_t keywords[] = {
-   *     {L"very", 4},
-   *     {L"funny", 5}
-   *   };
-   *
-   *   decancer_cured_t cured;
-   *   decancer_error_t error;
-   *   decancer_matches_t matches;
-   *   size_t raw_matches_length;
-   *   const decancer_match_t* raw_matches;
-   *   decancer_cured_raw_wide_t raw_contents_handle;
-   *   uint16_t* raw_contents;
-   *   size_t raw_contents_length;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1076,15 +1071,35 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "very"
+   *   uint16_t very[] = { 0x76, 0x65, 0x72, 0x79 };
+   *
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   decancer_keyword_utf16_t keywords[] = {
+   *     {very, sizeof(very) / sizeof(uint16_t)},
+   *     {funny, sizeof(funny) / sizeof(uint16_t)}
+   *   };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   decancer_matches_t matches;
+   *   size_t raw_matches_length;
+   *   const decancer_match_t* raw_matches;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *   uint16_t* raw_contents;
+   *   size_t raw_contents_length;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   matches = decancer_find_multiple_wide(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_wide_t));
-   *   decancer_assert(matches != NULL, "decancer_find_multiple_wide", CURED_END);
+   *   matches = decancer_find_multiple_utf16(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_utf16_t));
+   *   decancer_assert(matches != NULL, "decancer_find_multiple_utf16", CURED_END);
    *
    *   raw_matches = decancer_matches_raw(matches, &raw_matches_length);
    *
@@ -1093,22 +1108,22 @@ extern "C" {
    *   decancer_assert(raw_matches[0].start == 0, "start of very", MATCHES_END);
    *   decancer_assert(raw_matches[0].end == 4, "end of very", MATCHES_END);
    *
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, &raw_matches[0], &raw_contents, &raw_contents_length);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, &raw_matches[0], &raw_contents, &raw_contents_length);
    *
-   *   decancer_assert(raw_contents_length == 4, "length of very", RAW_CONTENTS_END);
-   *   decancer_assert(!memcmp(raw_contents, L"very", raw_contents_length * sizeof(uint16_t)), "contents of very", RAW_CONTENTS_END);
+   *   decancer_assert(raw_contents_length == (sizeof(very) / sizeof(uint16_t)), "length of very", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, very, sizeof(very)), "contents of very", RAW_CONTENTS_END);
    *
    *   decancer_assert(raw_matches[1].start == 5, "start of funny", RAW_CONTENTS_END);
    *   decancer_assert(raw_matches[1].end == 10, "end of funny", RAW_CONTENTS_END);
    *
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, &raw_matches[1], &raw_contents, &raw_contents_length);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, &raw_matches[1], &raw_contents, &raw_contents_length);
    *
-   *   decancer_assert(raw_contents_length == 5, "length of funny", RAW_CONTENTS_END);
-   *   decancer_assert(!memcmp(raw_contents, L"funny", raw_contents_length * sizeof(uint16_t)), "contents of funny", RAW_CONTENTS_END);
+   *   decancer_assert(raw_contents_length == (sizeof(funny) / sizeof(uint16_t)), "length of funny", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, funny, sizeof(funny)), "contents of funny", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * MATCHES_END:
    *   decancer_matches_free(matches);
    * CURED_END:
@@ -1121,13 +1136,13 @@ extern "C" {
    * @param other A list of UTF-16 keywords to match with.
    * @param other_length Length of the keywords array in units of decancer_keyword_t -- or sizeof(array) / sizeof(decancer_keyword_t).
    * @see decancer_find
-   * @see decancer_find_wide
+   * @see decancer_find_utf16
    * @see decancer_matches_free
    * @return decancer_matches_t A matches object or NULL if the keywords are not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find_multiple.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
    */
-  DECANCER_EXPORT DECANCER_EXPORT_NAME(matches_t) decancer_find_multiple_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_wide_t)* other, const size_t other_length);
+  DECANCER_EXPORT DECANCER_EXPORT_NAME(matches_t) decancer_find_multiple_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_utf16_t)* other, const size_t other_length);
 
   /**
    * @brief Iterates to the next element of the matcher iterator.
@@ -1149,6 +1164,12 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_cured_t cured;
    *   decancer_error_t error;
    *   size_t raw_contents_size;
@@ -1156,12 +1177,7 @@ extern "C" {
    *   decancer_matcher_t matcher;
    *   decancer_match_t match;
    *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1217,17 +1233,18 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_cured_t cured;
    *   decancer_error_t error;
    *   size_t raw_contents_size;
    *   const uint8_t* raw_contents;
    *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1250,11 +1267,11 @@ extern "C" {
    * @param other_str The UTF-8 encoded string to match with.
    * @param other_size UTF-8 size of the other string, in bytes.
    * @param replacement_char The censor unicode codepoint. Ideally '*' (0x2a) or '-' (0x2a).
-   * @see decancer_censor_wide
+   * @see decancer_censor_utf16
    * @see decancer_censor_multiple
-   * @see decancer_censor_multiple_wide
+   * @see decancer_censor_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
-   * @note For its UTF-16 counterpart, see decancer_censor_wide.
+   * @note For its UTF-16 counterpart, see decancer_censor_utf16.
    */
   DECANCER_EXPORT bool decancer_censor(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size, const uint32_t replacement_char);
 
@@ -1278,14 +1295,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_cured_t cured;
-   *   decancer_error_t error;
-   *   size_t raw_contents_length;
-   *   uint16_t* raw_contents;
-   *   decancer_cured_raw_wide_t raw_contents_handle;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1295,7 +1307,19 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   // UTF-16 bytes for "very ***** text"
+   *   uint16_t expected_contents[] = { 0x76, 0x65, 0x72, 0x79, 0x20, 0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0x20, 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   size_t raw_contents_length;
+   *   uint16_t* raw_contents;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1303,13 +1327,15 @@ extern "C" {
    *   }
    *
    *   // 0x2a is the ASCII representation of '*'
-   *   decancer_assert(decancer_censor_wide(cured, L"funny", 5, 0x2a), "decancer_censor_wide", CURED_END);
+   *   decancer_assert(decancer_censor_utf16(cured, funny, sizeof(funny) / sizeof(uint16_t), 0x2a), "decancer_censor_utf16", CURED_END);
    *
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
-   *   decancer_assert(!memcmp(raw_contents, L"very ***** text", raw_contents_length * sizeof(uint16_t)), "censor result", RAW_CONTENTS_END);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, NULL, &raw_contents, &raw_contents_length);
+   *
+   *   decancer_assert(raw_contents_length == (sizeof(expected_contents) / sizeof(uint16_t)), "length of censor result", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, expected_contents, sizeof(expected_contents)), "censor result", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * CURED_END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1322,11 +1348,11 @@ extern "C" {
    * @param replacement_char The censor unicode codepoint. Ideally '*' (0x2a) or '-' (0x2a).
    * @see decancer_censor
    * @see decancer_censor_multiple
-   * @see decancer_censor_multiple_wide
+   * @see decancer_censor_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_censor.
    */
-  DECANCER_EXPORT bool decancer_censor_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length, const uint32_t replacement_char);
+  DECANCER_EXPORT bool decancer_censor_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length, const uint32_t replacement_char);
 
   /**
    * @brief Replaces every similar-looking match of the specified UTF-8 encoded string with another UTF-8 encoded string.
@@ -1348,17 +1374,18 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_cured_t cured;
    *   decancer_error_t error;
    *   size_t raw_contents_size;
    *   const uint8_t* raw_contents;
-   *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1381,11 +1408,11 @@ extern "C" {
    * @param other_size UTF-8 size of the other string, in bytes.
    * @param replacement_str The UTF-8 encoded string to replace with.
    * @param replacement_size UTF-8 size of the replacement string, in bytes.
-   * @see decancer_replace_wide
+   * @see decancer_replace_utf16
    * @see decancer_replace_multiple
-   * @see decancer_replace_multiple_wide
+   * @see decancer_replace_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
-   * @note For its UTF-16 counterpart, see decancer_replace_wide.
+   * @note For its UTF-16 counterpart, see decancer_replace_utf16.
    */
   DECANCER_EXPORT bool decancer_replace(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size, const uint8_t* replacement_str, const size_t replacement_size);
 
@@ -1409,14 +1436,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_cured_t cured;
-   *   decancer_error_t error;
-   *   size_t raw_contents_length;
-   *   uint16_t* raw_contents;
-   *   decancer_cured_raw_wide_t raw_contents_handle;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1426,20 +1448,37 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "not"
+   *   uint16_t not[] = { 0x6e, 0x6f, 0x74 };
+   *
+   *   // UTF-16 bytes for "very"
+   *   uint16_t very[] = { 0x76, 0x65, 0x72, 0x79 };
+   *
+   *   // UTF-16 bytes for "not funny text"
+   *   uint16_t expected_contents[] = { 0x6e, 0x6f, 0x74, 0x20, 0x66, 0x75, 0x6e, 0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   size_t raw_contents_length;
+   *   uint16_t* raw_contents;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   decancer_assert(decancer_replace_wide(cured, L"very", 4, L"not", 3), "decancer_replace_wide", CURED_END);
+   *   decancer_assert(decancer_replace_utf16(cured, very, sizeof(very) / sizeof(uint16_t), not, sizeof(not) / sizeof(uint16_t)), "decancer_replace_utf16", CURED_END);
    *
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
-   *   decancer_assert(!memcmp(raw_contents, L"not funny text", raw_contents_length * sizeof(uint16_t)), "replace result", RAW_CONTENTS_END);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, NULL, &raw_contents, &raw_contents_length);
+   *
+   *   decancer_assert(raw_contents_length == (sizeof(expected_contents) / sizeof(uint16_t)), "length of replace result", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, expected_contents, sizeof(expected_contents)), "replace result", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * CURED_END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1453,11 +1492,11 @@ extern "C" {
    * @param replacement_length Length of the replacement string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_replace
    * @see decancer_replace_multiple
-   * @see decancer_replace_multiple_wide
+   * @see decancer_replace_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_replace.
    */
-  DECANCER_EXPORT bool decancer_replace_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
+  DECANCER_EXPORT bool decancer_replace_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
 
   /**
    * @brief Censors every similar-looking match of the specified list of UTF-8 keywords.
@@ -1480,6 +1519,12 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_keyword_t keywords[] = {
    *     {"very", 4},
    *     {"funny", 5}
@@ -1490,12 +1535,7 @@ extern "C" {
    *   size_t raw_contents_size;
    *   const uint8_t* raw_contents;
    *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1519,16 +1559,16 @@ extern "C" {
    * @param other_length Length of the keywords array in units of decancer_keyword_t -- or sizeof(array) / sizeof(decancer_keyword_t).
    * @param replacement_char The censor unicode codepoint. Ideally '*' (0x2a) or '-' (0x2a).
    * @see decancer_censor
-   * @see decancer_censor_wide
-   * @see decancer_censor_multiple_wide
+   * @see decancer_censor_utf16
+   * @see decancer_censor_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
-   * @note For its UTF-16 counterpart, see decancer_censor_multiple_wide.
+   * @note For its UTF-16 counterpart, see decancer_censor_multiple_utf16.
    */
   DECANCER_EXPORT bool decancer_censor_multiple(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_t)* other, const size_t other_length, const uint32_t replacement_char);
 
   /**
    * @brief Censors every similar-looking match of the specified list of UTF-16 keywords.
-   * Unlike decancer_censor_wide, this function also takes note of overlapping matches.
+   * Unlike decancer_censor_utf16, this function also takes note of overlapping matches.
    *
    * Example:
    * ```c
@@ -1547,19 +1587,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_keyword_wide_t keywords[] = {
-   *     {L"very", 4},
-   *     {L"funny", 5}
-   *   };
-   *
-   *   decancer_cured_t cured;
-   *   decancer_error_t error;
-   *   size_t raw_contents_length;
-   *   uint16_t* raw_contents;
-   *   decancer_cured_raw_wide_t raw_contents_handle;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1569,7 +1599,27 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "very"
+   *   uint16_t very[] = { 0x76, 0x65, 0x72, 0x79 };
+   *
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   // UTF-16 bytes for "**** ***** text"
+   *   uint16_t expected_contents[] = { 0x2a, 0x2a, 0x2a, 0x2a, 0x20, 0x2a, 0x2a, 0x2a, 0x2a, 0x2a, 0x20, 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_keyword_utf16_t keywords[] = {
+   *     {very, sizeof(very) / sizeof(uint16_t)},
+   *     {funny, sizeof(funny) / sizeof(uint16_t)}
+   *   };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   size_t raw_contents_length;
+   *   uint16_t* raw_contents;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1577,13 +1627,15 @@ extern "C" {
    *   }
    *
    *   // 0x2a is the ASCII representation of '*'
-   *   decancer_assert(decancer_censor_multiple_wide(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_wide_t), 0x2a), "decancer_censor_multiple_wide", CURED_END);
+   *   decancer_assert(decancer_censor_multiple_utf16(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_utf16_t), 0x2a), "decancer_censor_multiple_utf16", CURED_END);
    *
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
-   *   decancer_assert(!memcmp(raw_contents, L"**** ***** text", raw_contents_length * sizeof(uint16_t)), "censor multiple result", RAW_CONTENTS_END);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, NULL, &raw_contents, &raw_contents_length);
+   *
+   *   decancer_assert(raw_contents_length == (sizeof(expected_contents) / sizeof(uint16_t)), "length of censor multiple result", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, expected_contents, sizeof(expected_contents)), "censor multiple result", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * CURED_END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1595,12 +1647,12 @@ extern "C" {
    * @param other_length Length of the keywords array in units of decancer_keyword_t -- or sizeof(array) / sizeof(decancer_keyword_t).
    * @param replacement_char The censor unicode codepoint. Ideally '*' (0x2a) or '-' (0x2a).
    * @see decancer_censor
-   * @see decancer_censor_wide
+   * @see decancer_censor_utf16
    * @see decancer_censor_multiple
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_censor_multiple.
    */
-  DECANCER_EXPORT bool decancer_censor_multiple_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_wide_t)* other, const size_t other_length, const uint32_t replacement_char);
+  DECANCER_EXPORT bool decancer_censor_multiple_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_utf16_t)* other, const size_t other_length, const uint32_t replacement_char);
 
   /**
    * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
@@ -1623,6 +1675,12 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
    *   decancer_keyword_t keywords[] = {
    *     {"very", 4},
    *     {"funny", 5}
@@ -1632,13 +1690,8 @@ extern "C" {
    *   decancer_error_t error;
    *   size_t raw_contents_size;
    *   const uint8_t* raw_contents;
-   *
-   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
-   *
-   *   cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1662,16 +1715,16 @@ extern "C" {
    * @param replacement_str The UTF-8 encoded string to replace with.
    * @param replacement_size UTF-8 size of the replacement string, in bytes.
    * @see decancer_replace
-   * @see decancer_replace_wide
-   * @see decancer_replace_multiple_wide
+   * @see decancer_replace_utf16
+   * @see decancer_replace_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
-   * @note For its UTF-16 counterpart, see decancer_replace_multiple_wide.
+   * @note For its UTF-16 counterpart, see decancer_replace_multiple_utf16.
    */
   DECANCER_EXPORT bool decancer_replace_multiple(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_t)* other, const size_t other_length, const uint8_t* replacement_str, const size_t replacement_size);
 
   /**
    * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
-   * Unlike decancer_replace_wide, this function also takes note of overlapping matches.
+   * Unlike decancer_replace_utf16, this function also takes note of overlapping matches.
    *
    * Example:
    * ```c
@@ -1690,19 +1743,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_keyword_wide_t keywords[] = {
-   *     {L"very", 4},
-   *     {L"funny", 5}
-   *   };
-   *
-   *   decancer_cured_t cured;
-   *   decancer_error_t error;
-   *   size_t raw_contents_length;
-   *   uint16_t* raw_contents;
-   *   decancer_cured_raw_wide_t raw_contents_handle;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1712,20 +1755,45 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "very"
+   *   uint16_t very[] = { 0x76, 0x65, 0x72, 0x79 };
+   *
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   // UTF-16 bytes for "sussy"
+   *   uint16_t sussy[] = { 0x73, 0x75, 0x73, 0x73, 0x79 };
+   *
+   *   // UTF-16 bytes for "sussy sussy text"
+   *   uint16_t expected_contents[] = { 0x73, 0x75, 0x73, 0x73, 0x79, 0x20, 0x73, 0x75, 0x73, 0x73, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_keyword_utf16_t keywords[] = {
+   *     {very, sizeof(very) / sizeof(uint16_t)},
+   *     {funny, sizeof(funny) / sizeof(uint16_t)}
+   *   };
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   size_t raw_contents_length;
+   *   uint16_t* raw_contents;
+   *   decancer_cured_raw_utf16_t raw_contents_handle;
+   *
+   *   cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   decancer_assert(decancer_replace_multiple_wide(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_wide_t), L"sussy", 5), "decancer_replace_multiple_wide", CURED_END);
+   *   decancer_assert(decancer_replace_multiple_utf16(cured, keywords, sizeof(keywords) / sizeof(decancer_keyword_utf16_t), sussy, sizeof(sussy) / sizeof(uint16_t)), "decancer_replace_multiple_utf16", CURED_END);
    *
-   *   raw_contents_handle = decancer_cured_raw_wide(cured, NULL, &raw_contents, &raw_contents_length);
-   *   decancer_assert(!memcmp(raw_contents, L"sussy sussy text", raw_contents_length * sizeof(uint16_t)), "replace multiple result", RAW_CONTENTS_END);
+   *   raw_contents_handle = decancer_cured_raw_utf16(cured, NULL, &raw_contents, &raw_contents_length);
+   *
+   *   decancer_assert(raw_contents_length == (sizeof(expected_contents) / sizeof(uint16_t)), "length of replace multiple result", RAW_CONTENTS_END);
+   *   decancer_assert(!memcmp(raw_contents, expected_contents, sizeof(expected_contents)), "replace multiple result", RAW_CONTENTS_END);
    *
    * RAW_CONTENTS_END:
-   *   decancer_cured_raw_wide_free(raw_contents_handle);
+   *   decancer_cured_raw_utf16_free(raw_contents_handle);
    * CURED_END:
    *   decancer_cured_free(cured);
    *   return ret;
@@ -1738,12 +1806,12 @@ extern "C" {
    * @param replacement_str The UTF-16 encoded string to replace with.
    * @param replacement_length Length of the replacement string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_replace
-   * @see decancer_replace_wide
+   * @see decancer_replace_utf16
    * @see decancer_replace_multiple
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_replace_multiple.
    */
-  DECANCER_EXPORT bool decancer_replace_multiple_wide(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_wide_t)* other, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
+  DECANCER_EXPORT bool decancer_replace_multiple_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const DECANCER_EXPORT_NAME(keyword_utf16_t)* other, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
 
   /**
    * @brief Checks if the cured string similarly contains the specified UTF-8 encoded string.
@@ -1765,14 +1833,14 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
    *
-   *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1790,9 +1858,9 @@ extern "C" {
    * @param cured The cured string object.
    * @param other_str The UTF-8 encoded string to match with.
    * @param other_size UTF-8 size of the other string, in bytes.
-   * @see decancer_contains_wide
+   * @see decancer_contains_utf16
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
-   * @note For its UTF-16 counterpart, see decancer_contains_wide.
+   * @note For its UTF-16 counterpart, see decancer_contains_utf16.
    */
   DECANCER_EXPORT bool decancer_contains(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
 
@@ -1816,10 +1884,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1829,14 +1896,18 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "funny"
+   *   uint16_t funny[] = { 0x66, 0x75, 0x6e, 0x6e, 0x79 };
+   *
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   decancer_assert(decancer_contains_wide(cured, L"funny", 5), "decancer_contains_wide");
+   *   decancer_assert(decancer_contains_utf16(cured, funny, sizeof(funny) / sizeof(uint16_t)), "decancer_contains_utf16");
    *
    * END:
    *   decancer_cured_free(cured);
@@ -1851,7 +1922,7 @@ extern "C" {
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_contains.
    */
-  DECANCER_EXPORT bool decancer_contains_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
+  DECANCER_EXPORT bool decancer_contains_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
 
   /**
    * @brief Checks if the cured string similarly starts with the specified UTF-8 encoded string.
@@ -1873,14 +1944,14 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
    *
-   *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -1898,9 +1969,9 @@ extern "C" {
    * @param cured The cured string object.
    * @param other_str The UTF-8 encoded string to match with.
    * @param other_size UTF-8 size of the other string, in bytes.
-   * @see decancer_starts_with_wide
+   * @see decancer_starts_with_utf16
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
-   * @note For its UTF-16 counterpart, see decancer_starts_with_wide.
+   * @note For its UTF-16 counterpart, see decancer_starts_with_utf16.
    */
   DECANCER_EXPORT bool decancer_starts_with(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
 
@@ -1924,10 +1995,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -1937,14 +2007,18 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "very"
+   *   uint16_t very[] = { 0x76, 0x65, 0x72, 0x79 };
+   *
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   decancer_assert(decancer_starts_with_wide(cured, L"very", 4), "decancer_starts_with_wide");
+   *   decancer_assert(decancer_starts_with_utf16(cured, very, sizeof(very) / sizeof(uint16_t)), "decancer_starts_with_utf16");
    *
    * END:
    *   decancer_cured_free(cured);
@@ -1959,7 +2033,7 @@ extern "C" {
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_starts_with.
    */
-  DECANCER_EXPORT bool decancer_starts_with_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
+  DECANCER_EXPORT bool decancer_starts_with_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
 
   /**
    * @brief Checks if the cured string similarly ends with the specified UTF-8 encoded string.
@@ -1981,14 +2055,14 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
    *
-   *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -2006,9 +2080,9 @@ extern "C" {
    * @param cured The cured string object.
    * @param other_str The UTF-8 encoded string to match with.
    * @param other_size UTF-8 size of the other string, in bytes.
-   * @see decancer_ends_with_wide
+   * @see decancer_ends_with_utf16
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
-   * @note For its UTF-16 counterpart, see decancer_ends_with_wide.
+   * @note For its UTF-16 counterpart, see decancer_ends_with_utf16.
    */
   DECANCER_EXPORT bool decancer_ends_with(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
 
@@ -2032,10 +2106,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -2045,14 +2118,18 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "text"
+   *   uint16_t text[] = { 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   decancer_assert(decancer_ends_with_wide(cured, L"text", 4), "decancer_ends_with_wide");
+   *   decancer_assert(decancer_ends_with_utf16(cured, text, sizeof(text) / sizeof(uint16_t)), "decancer_ends_with_utf16");
    *
    * END:
    *   decancer_cured_free(cured);
@@ -2067,7 +2144,7 @@ extern "C" {
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_ends_with.
    */
-  DECANCER_EXPORT bool decancer_ends_with_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
+  DECANCER_EXPORT bool decancer_ends_with_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
 
   /**
    * @brief Checks if the cured string is similar with the specified UTF-8 encoded string.
@@ -2089,14 +2166,14 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint8_t string[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
-   *                       0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
-   *                       0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
    *
-   *   decancer_cured_t cured = decancer_cure(string, sizeof(string), DECANCER_OPTION_DEFAULT, &error);
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
@@ -2114,9 +2191,9 @@ extern "C" {
    * @param cured The cured string object.
    * @param other_str The UTF-8 encoded string to match with.
    * @param other_size UTF-8 size of the other string, in bytes.
-   * @see decancer_equals_wide
+   * @see decancer_equals_utf16
    * @return bool true if the cured string is similar with the specified string, false otherwise.
-   * @note For its UTF-16 counterpart, see decancer_equals_wide.
+   * @note For its UTF-16 counterpart, see decancer_equals_utf16.
    */
   DECANCER_EXPORT bool decancer_equals(DECANCER_EXPORT_NAME(cured_t) cured, const uint8_t* other_str, const size_t other_size);
 
@@ -2140,10 +2217,9 @@ extern "C" {
    *
    * int main(void) {
    *   int ret = 0;
-   *   decancer_error_t error;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
-   *   uint16_t string[] = {
+   *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
    *     0xd835, 0xdd02, 0x0020,
    *     0xd835, 0xdd3d, 0xd835,
@@ -2153,14 +2229,18 @@ extern "C" {
    *     0xd835, 0xdce3
    *   };
    *
-   *   decancer_cured_t cured = decancer_cure_wide(string, sizeof(string) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
+   *   // UTF-16 bytes for "very funny text"
+   *   uint16_t expected_contents[] = { 0x76, 0x65, 0x72, 0x79, 0x20, 0x66, 0x75, 0x6e, 0x6e, 0x79, 0x20, 0x74, 0x65, 0x78, 0x74 };
+   *
+   *   decancer_error_t error;
+   *   decancer_cured_t cured = decancer_cure_utf16(input, sizeof(input) / sizeof(uint16_t), DECANCER_OPTION_DEFAULT, &error);
    *
    *   if (cured == NULL) {
    *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
    *     return 1;
    *   }
    *
-   *   decancer_assert(decancer_equals_wide(cured, L"very funny text", 15), "decancer_equals_wide");
+   *   decancer_assert(decancer_equals_utf16(cured, expected_contents, sizeof(expected_contents) / sizeof(uint16_t)), "decancer_equals_utf16");
    *
    * END:
    *   decancer_cured_free(cured);
@@ -2175,32 +2255,32 @@ extern "C" {
    * @return bool true if the cured string is similar with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_equals.
    */
-  DECANCER_EXPORT bool decancer_equals_wide(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
+  DECANCER_EXPORT bool decancer_equals_utf16(DECANCER_EXPORT_NAME(cured_t) cured, const uint16_t* other_str, const size_t other_length);
 
   /**
-   * @brief Frees the rust object created by decancer_cured_raw_wide.
+   * @brief Frees the rust object created by decancer_cured_raw_utf16.
 
-   * @param wide The rust object created by decancer_cured_raw_wide.
-   * @see decancer_cured_raw_wide
+   * @param raw_utf16_handle The rust object created by decancer_cured_raw_utf16.
+   * @see decancer_cured_raw_utf16
    */
-  DECANCER_EXPORT void decancer_cured_raw_wide_free(DECANCER_EXPORT_NAME(cured_raw_wide_t) wide);
+  DECANCER_EXPORT void decancer_cured_raw_utf16_free(DECANCER_EXPORT_NAME(cured_raw_utf16_t) raw_utf16_handle);
 
   /**
-   * @brief Frees the matcher iterator object created by decancer_find and decancer_find_wide.
+   * @brief Frees the matcher iterator object created by decancer_find and decancer_find_utf16.
 
-   * @param matcher The matcher iterator object created by decancer_find and decancer_find_wide.
+   * @param matcher The matcher iterator object created by decancer_find and decancer_find_utf16.
    * @see decancer_find
-   * @see decancer_find_wide
+   * @see decancer_find_utf16
    * @see decancer_matcher_next
    */
   DECANCER_EXPORT void decancer_matcher_free(DECANCER_EXPORT_NAME(matcher_t) matcher);
 
   /**
-   * @brief Frees the matches object created by decancer_find_multiple and decancer_find_multiple_wide.
+   * @brief Frees the matches object created by decancer_find_multiple and decancer_find_multiple_utf16.
 
-   * @param matches The matches object created by decancer_find_multiple and decancer_find_multiple_wide.
+   * @param matches The matches object created by decancer_find_multiple and decancer_find_multiple_utf16.
    * @see decancer_find_multiple
-   * @see decancer_find_multiple_wide
+   * @see decancer_find_multiple_utf16
    * @see decancer_matches_raw
    */
   DECANCER_EXPORT void decancer_matches_free(DECANCER_EXPORT_NAME(matches_t) matches);
@@ -2225,8 +2305,8 @@ extern "C" {
   DECANCER_EXPORT void decancer_translation_free(DECANCER_EXPORT_NAME(translation_t)* translation);
 
   /**
-   * @brief Frees the cured string object created by decancer_cure and decancer_cure_wide.
-   * @param cured The cured string object created by decancer_cure and decancer_cure_wide.
+   * @brief Frees the cured string object created by decancer_cure and decancer_cure_utf16.
+   * @param cured The cured string object created by decancer_cure and decancer_cure_utf16.
    */
   DECANCER_EXPORT void decancer_cured_free(DECANCER_EXPORT_NAME(cured_t) cured);
 

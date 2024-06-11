@@ -61,7 +61,7 @@ pub unsafe extern "C" fn decancer_cure(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_cure_wide(
+pub unsafe extern "C" fn decancer_cure_utf16(
   input_str: *const u16,
   input_length: usize,
   options: u32,
@@ -144,7 +144,7 @@ pub unsafe extern "C" fn decancer_find(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_find_wide(
+pub unsafe extern "C" fn decancer_find_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
   other_length: usize,
@@ -170,7 +170,7 @@ pub unsafe extern "C" fn decancer_find_multiple(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_find_multiple_wide(
+pub unsafe extern "C" fn decancer_find_multiple_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
   other_length: usize,
@@ -226,7 +226,7 @@ pub unsafe extern "C" fn decancer_censor(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_censor_wide(
+pub unsafe extern "C" fn decancer_censor_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
   other_length: usize,
@@ -266,7 +266,7 @@ pub unsafe extern "C" fn decancer_censor_multiple(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_censor_multiple_wide(
+pub unsafe extern "C" fn decancer_censor_multiple_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
   other_length: usize,
@@ -307,7 +307,7 @@ pub unsafe extern "C" fn decancer_replace(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_replace_wide(
+pub unsafe extern "C" fn decancer_replace_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
   other_length: usize,
@@ -352,7 +352,7 @@ pub unsafe extern "C" fn decancer_replace_multiple(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_replace_multiple_wide(
+pub unsafe extern "C" fn decancer_replace_multiple_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
   other_length: usize,
@@ -382,7 +382,7 @@ pub unsafe extern "C" fn decancer_equals(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_equals_wide(
+pub unsafe extern "C" fn decancer_equals_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
   other_length: usize,
@@ -406,7 +406,7 @@ macro_rules! comparison_fn {
       }
 
       #[no_mangle]
-      pub unsafe extern "C" fn [<decancer_ $name _wide>](
+      pub unsafe extern "C" fn [<decancer_ $name _utf16>](
         cured: *mut decancer::CuredString,
         other_str: *const u16,
         other_length: usize,
@@ -445,7 +445,7 @@ pub unsafe extern "C" fn decancer_cured_raw(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_cured_raw_wide(
+pub unsafe extern "C" fn decancer_cured_raw_utf16(
   cured: *mut decancer::CuredString,
   mat: *const Range<usize>,
   output_ptr: *mut usize,
@@ -488,8 +488,8 @@ pub unsafe extern "C" fn __decancer_translation_clone(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_cured_raw_wide_free(wide: *mut Vec<u16>) {
-  let _ = Box::from_raw(wide);
+pub unsafe extern "C" fn decancer_cured_raw_utf16_free(raw_utf16_handle: *mut Vec<u16>) {
+  let _ = Box::from_raw(raw_utf16_handle);
 }
 
 #[no_mangle]
