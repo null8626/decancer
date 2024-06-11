@@ -149,10 +149,16 @@ pub unsafe extern "C" fn decancer_find_utf16(
   other_str: *const u16,
   other_length: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
+  println!("cured: {}", (*cured).as_str());
+  
   match utf16::get(other_str, other_length) {
-    Some(result) => Box::into_raw(Box::new(transmute(
-      (*cured).find(str::from_utf8_unchecked(&result)),
-    ))),
+    Some(result) => {
+      println!("text: {}", str::from_utf8_unchecked(&result));
+      
+      Box::into_raw(Box::new(transmute(
+        (*cured).find(str::from_utf8_unchecked(&result)),
+      )))
+    },
     None => 0 as _,
   }
 }
