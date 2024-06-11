@@ -440,6 +440,7 @@ extern "C" {
    * @brief Cures a UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -483,6 +484,7 @@ extern "C" {
    * @brief Cures a UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -532,6 +534,7 @@ extern "C" {
    * @brief Cures a single unicode codepoint.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -588,6 +591,7 @@ extern "C" {
    * @brief Retrieves the raw UTF-8 bytes from a cured string object.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -645,6 +649,7 @@ extern "C" {
    * @brief Retrieves the raw UTF-16 bytes from a cured string object.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -715,6 +720,7 @@ extern "C" {
    * @brief Returns the raw list of every similar-looking match from a decancer_matches_t object.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -799,6 +805,7 @@ extern "C" {
    * @brief Finds every similar-looking match of a UTF-8 encoded string in the cured string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -876,6 +883,7 @@ extern "C" {
    * @brief Finds every similar-looking match of a UTF-16 encoded string in the cured string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -966,6 +974,7 @@ extern "C" {
    * Unlike decancer_find, this function also takes note of overlapping matches and merges them together.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1057,6 +1066,7 @@ extern "C" {
    * Unlike decancer_find_utf16, this function also takes note of overlapping matches and merges them together.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1162,6 +1172,7 @@ extern "C" {
    * @brief Iterates to the next element of a UTF-8 matcher iterator.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1235,6 +1246,7 @@ extern "C" {
    * @brief Iterates to the next element of a UTF-16 matcher iterator.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1320,6 +1332,7 @@ extern "C" {
    * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1382,6 +1395,7 @@ extern "C" {
    * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1461,6 +1475,7 @@ extern "C" {
    * @brief Replaces every similar-looking match of the specified UTF-8 encoded string with another UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1523,6 +1538,7 @@ extern "C" {
    * @brief Replaces every similar-looking match of the specified UTF-16 encoded string with another UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1606,6 +1622,7 @@ extern "C" {
    * Unlike decancer_censor, this function also takes note of overlapping matches.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1674,6 +1691,7 @@ extern "C" {
    * Unlike decancer_censor_utf16, this function also takes note of overlapping matches.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1762,6 +1780,7 @@ extern "C" {
    * Unlike decancer_replace, this function also takes note of overlapping matches.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1830,6 +1849,7 @@ extern "C" {
    * Unlike decancer_replace_utf16, this function also takes note of overlapping matches.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1920,6 +1940,7 @@ extern "C" {
    * @brief Checks if the cured string similarly contains the specified UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -1971,6 +1992,7 @@ extern "C" {
    * @brief Checks if the cured string similarly contains the specified UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -2031,6 +2053,7 @@ extern "C" {
    * @brief Checks if the cured string similarly starts with the specified UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -2082,6 +2105,7 @@ extern "C" {
    * @brief Checks if the cured string similarly starts with the specified UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -2142,6 +2166,7 @@ extern "C" {
    * @brief Checks if the cured string similarly ends with the specified UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -2193,6 +2218,7 @@ extern "C" {
    * @brief Checks if the cured string similarly ends with the specified UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -2253,6 +2279,7 @@ extern "C" {
    * @brief Checks if the cured string is similar with the specified UTF-8 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
@@ -2304,6 +2331,7 @@ extern "C" {
    * @brief Checks if the cured string is similar with the specified UTF-16 encoded string.
    *
    * Example:
+   *
    * ```c
    * #include <decancer.h>
    *
