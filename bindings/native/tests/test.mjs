@@ -110,9 +110,15 @@ execSync('cmake --build build --config Debug', {
   stdio: 'inherit'
 })
 
+console.log(readdirSync(join(TESTS_DIR, 'build')))
+
 const exe = process.platform === 'win32' ? '.exe' : ''
 
 execSync(`.${sep}decancer_native_test${exe}`, {
-  cwd: join(TESTS_DIR, 'build', 'Debug'),
+  cwd: join(
+    TESTS_DIR,
+    'build',
+    `${process.platform === 'win32' ? 'D' : 'd'}ebug`
+  ),
   stdio: 'inherit'
 })
