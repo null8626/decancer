@@ -105,7 +105,7 @@ try {
     cwd: TESTS_DIR,
     stdio: 'inherit'
   })
-  
+
   execSync('cmake --build build --config Debug', {
     cwd: TESTS_DIR,
     stdio: 'inherit'

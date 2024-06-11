@@ -280,7 +280,7 @@ namespace decancer {
    * @note You are responsible in freeing this object later by calling decancer_matcher_free.
    */
   typedef void* DECANCER_EXPORT_NAME(matcher_t);
-  
+
   /**
    * @brief Represents a UTF-16 matcher iterator object returned from decancer_find_utf16.
    *
@@ -2376,7 +2376,7 @@ extern "C" {
    * @see decancer_matcher_next
    */
   DECANCER_EXPORT void decancer_matcher_free(DECANCER_EXPORT_NAME(matcher_t) matcher);
-  
+
   /**
    * @brief Frees the UTF-16 matcher iterator object created by decancer_find_utf16.
 

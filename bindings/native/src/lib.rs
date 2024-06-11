@@ -161,9 +161,11 @@ pub unsafe extern "C" fn decancer_find_utf16(
         other: result,
         matcher: None,
       });
-      
-      output.matcher.replace(transmute((*cured).find(str::from_utf8_unchecked(&output.other))));
-      
+
+      output.matcher.replace(transmute(
+        (*cured).find(str::from_utf8_unchecked(&output.other)),
+      ));
+
       Box::into_raw(output)
     },
     None => 0 as _,
