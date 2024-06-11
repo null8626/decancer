@@ -115,6 +115,10 @@ console.log(readdirSync(join(TESTS_DIR, 'build')))
 const exe = process.platform === 'win32' ? '.exe' : ''
 
 execSync(`.${sep}decancer_native_test${exe}`, {
-  cwd: join(TESTS_DIR, 'build', `${process.platform === 'win32' ? 'D' : 'd'}ebug`),
+  cwd: join(
+    TESTS_DIR,
+    'build',
+    `${process.platform === 'win32' ? 'D' : 'd'}ebug`
+  ),
   stdio: 'inherit'
 })
