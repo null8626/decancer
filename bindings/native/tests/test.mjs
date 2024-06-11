@@ -100,12 +100,16 @@ testFile += '\n  return 0;\n}'
 
 writeFileSync(join(TESTS_DIR, 'test.c'), testFile)
 
-execSync('cmake -B build .', {
-  cwd: TESTS_DIR,
-  stdio: 'inherit'
-})
-
-execSync('cmake --build build --config Debug', {
-  cwd: TESTS_DIR,
-  stdio: 'inherit'
-})
+try {
+  execSync('cmake -B build .', {
+    cwd: TESTS_DIR,
+    stdio: 'inherit'
+  })
+  
+  execSync('cmake --build build --config Debug', {
+    cwd: TESTS_DIR,
+    stdio: 'inherit'
+  })
+} catch {
+  process.exit(1)
+}
