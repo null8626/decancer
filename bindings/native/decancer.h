@@ -2641,7 +2641,6 @@ extern "C" {
    * @return decancer_cured_t The newly cloned cured string object.
    * @see decancer_cure
    * @see decancer_cure_utf16
-   * @see decancer_cured_clone
    * @see decancer_cured_free
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
    */
