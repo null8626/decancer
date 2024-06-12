@@ -255,9 +255,9 @@ namespace decancer {
     const uint16_t* string;
 
     /**
-     * @brief UTF-16 size of the string, in bytes.
+     * @brief Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
      */
-    size_t size;
+    size_t length;
   } DECANCER_EXPORT_NAME(keyword_utf16_t);
 
   /**
