@@ -496,14 +496,63 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn __decancer_cured_clone(
-  cured: *mut decancer::CuredString,
-) -> *mut decancer::CuredString {
-  Box::into_raw(Box::new((*cured).clone()))
+pub unsafe extern "C" fn decancer_cured_raw_utf16_clone(raw_utf16_handle: *mut Vec<u16>) -> *mut Vec<u16> {
+  Box::into_raw(Box::new((*raw_utf16_handle).clone()))
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn __decancer_translation_clone(
+pub unsafe extern "C" fn decancer_cured_raw_utf16_free(raw_utf16_handle: *mut Vec<u16>) {
+  let _ = Box::from_raw(raw_utf16_handle);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_consume(matcher: *mut decancer::Matcher<'static, 'static>) -> *mut Vec<Range<usize>> {
+  let mut output = Vec::new();
+  
+  while let Some(value) = (*matcher).next() {
+    output.push(value);
+  }
+  
+  let _ = Box::from_raw(matcher);
+  Box::into_raw(Box::new(output))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'static, 'static>) {
+  let _ = Box::from_raw(matcher);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_utf16_consume(matcher: *mut MatcherUtf16) -> *mut Vec<Range<usize>> {
+  let mut output = Vec::new();
+  
+  while let Some(value) = (*matcher).matcher.as_mut().unwrap_unchecked().next() {
+    output.push(value);
+  }
+  
+  let _ = Box::from_raw(matcher);
+  Box::into_raw(Box::new(output))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matcher_utf16_free(matcher: *mut MatcherUtf16) {
+  let _ = Box::from_raw(matcher);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matches_clone(
+  matches: *mut Vec<Range<usize>>,
+) -> *mut Vec<Range<usize>> {
+  Box::into_raw(Box::new((*matches).clone()))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_matches_free(matches: *mut Vec<Range<usize>>) {
+  let _ = Box::from_raw(matches);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_translation_clone(
   translation_in: *const Translation,
   translation_out: *mut Translation,
 ) {
@@ -518,30 +567,17 @@ pub unsafe extern "C" fn __decancer_translation_clone(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn decancer_cured_raw_utf16_free(raw_utf16_handle: *mut Vec<u16>) {
-  let _ = Box::from_raw(raw_utf16_handle);
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'static, 'static>) {
-  let _ = Box::from_raw(matcher);
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn decancer_matcher_utf16_free(matcher: *mut MatcherUtf16) {
-  let _ = Box::from_raw(matcher);
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn decancer_matches_free(matches: *mut Vec<Range<usize>>) {
-  let _ = Box::from_raw(matches);
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn decancer_translation_free(translation: *mut Translation) {
   if (*translation).kind == 1 && (*translation).slot_c != 0 {
     let _ = Box::from_raw((*translation).slot_c as *mut String);
   }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_cured_clone(
+  cured: *mut decancer::CuredString,
+) -> *mut decancer::CuredString {
+  Box::into_raw(Box::new((*cured).clone()))
 }
 
 #[no_mangle]
