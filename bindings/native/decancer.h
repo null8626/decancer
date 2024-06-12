@@ -186,220 +186,220 @@
  */
 #define DECANCER_OPTION_PURE_HOMOGLYPH 0x1ffffc
 
+/**
+ * @brief Represents an error caused by decancer not being able to cure a string.
+ *
+ * @see decancer_cure
+ * @see decancer_cure_utf16
+ */
+typedef struct {
   /**
-   * @brief Represents an error caused by decancer not being able to cure a string.
-   *
-   * @see decancer_cure
-   * @see decancer_cure_utf16
+   * @brief Null-terminated ASCII encoded error message.
    */
-  typedef struct {
-    /**
-     * @brief Null-terminated ASCII encoded error message.
-     */
-    const char* message;
-
-    /**
-     * @brief The length of the error message.
-     */
-    uint8_t message_length;
-  } decancer_error_t;
+  const char* message;
 
   /**
-   * @brief Represents a UTF-8 encoded keyword. This struct is often used inside an array.
-   *
-   * @see decancer_find_multiple
-   * @see decancer_censor_multiple
-   * @see decancer_replace_multiple
+   * @brief The length of the error message.
    */
-  typedef struct {
-    /**
-     * @brief UTF-8 encoded string.
-     */
-    const uint8_t* string;
+  uint8_t message_length;
+} decancer_error_t;
 
-    /**
-     * @brief UTF-8 size of the string, in bytes.
-     */
-    size_t size;
-  } decancer_keyword_t;
+/**
+ * @brief Represents a UTF-8 encoded keyword. This struct is often used inside an array.
+ *
+ * @see decancer_find_multiple
+ * @see decancer_censor_multiple
+ * @see decancer_replace_multiple
+ */
+typedef struct {
+  /**
+   * @brief UTF-8 encoded string.
+   */
+  const uint8_t* string;
 
   /**
-   * @brief Represents a UTF-16 encoded keyword. This struct is often used inside an array.
-   *
-   * @see decancer_find_multiple_utf16
-   * @see decancer_censor_multiple_utf16
-   * @see decancer_replace_multiple_utf16
+   * @brief UTF-8 size of the string, in bytes.
    */
-  typedef struct {
+  size_t size;
+} decancer_keyword_t;
+
+/**
+ * @brief Represents a UTF-16 encoded keyword. This struct is often used inside an array.
+ *
+ * @see decancer_find_multiple_utf16
+ * @see decancer_censor_multiple_utf16
+ * @see decancer_replace_multiple_utf16
+ */
+typedef struct {
+  /**
+   * @brief UTF-16 encoded string.
+   */
+  const uint16_t* string;
+
+  /**
+   * @brief Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
+   */
+  size_t length;
+} decancer_keyword_utf16_t;
+
+/**
+ * @brief Represents a rust object returned from decancer_cured_raw_utf16. This value has no use other than retaining the lifetime of the returned UTF-16 pointer.
+ *
+ * @see decancer_cured_raw_utf16
+ * @see decancer_cured_raw_utf16_free
+ * @note You are responsible in freeing this object later by calling decancer_cured_raw_utf16_free.
+ */
+typedef void* decancer_cured_raw_utf16_t;
+
+/**
+ * @brief Represents a UTF-8 matcher iterator object returned from decancer_find.
+ *
+ * @see decancer_matcher_utf16_t
+ * @see decancer_find
+ * @see decancer_matcher_next
+ * @see decancer_matcher_free
+ * @note For its UTF-16 counterpart, see decancer_matcher_utf16_t.
+ * @note You are responsible in freeing this object later by calling decancer_matcher_free.
+ */
+typedef void* decancer_matcher_t;
+
+/**
+ * @brief Represents a UTF-16 matcher iterator object returned from decancer_find_utf16.
+ *
+ * @see decancer_matcher_t
+ * @see decancer_find_utf16
+ * @see decancer_matcher_utf16_next
+ * @see decancer_matcher_utf16_free
+ * @note For its UTF-8 counterpart, see decancer_matcher_t.
+ * @note You are responsible in freeing this object later by calling decancer_matcher_utf16_free.
+ */
+typedef void* decancer_matcher_utf16_t;
+
+/**
+ * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_utf16.
+ *
+ * @see decancer_find_multiple
+ * @see decancer_find_multiple_utf16
+ * @see decancer_matches_free
+ * @note You are responsible in freeing this object later by calling decancer_matches_free.
+ */
+typedef void* decancer_matches_t;
+
+/**
+ * @brief Represents a translation of a unicode codepoint.
+ *
+ * @see decancer_cure_char
+ * @see decancer_translation_init
+ * @see decancer_translation_free
+ * @note You are responsible in freeing this object later passing it as a pointer to decancer_translation_free.
+ * @warning You MUST pass this struct to decancer_translation_init first after initializing before using decancer_cure_char. Not doing so could result in possible undefined behavior.
+ */
+typedef struct {
+  /**
+   * @brief The type of the translation result. This can be any of the following values:
+   *
+   * @see DECANCER_TRANSLATION_KIND_CHARACTER
+   * @see DECANCER_TRANSLATION_KIND_STRING
+   * @see DECANCER_TRANSLATION_KIND_NONE
+   */
+  uint8_t kind;
+
+  /**
+   * @brief A union of translation results. This can either be a unicode character or a UTF-8 encoded string.
+   */
+  union {
     /**
-     * @brief UTF-16 encoded string.
+     * @brief The translation, as a unicode character.
      */
-    const uint16_t* string;
+    uint32_t character;
 
     /**
-     * @brief Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
+     * @brief The translation, as a UTF-8 encoded string.
      */
-    size_t length;
-  } decancer_keyword_utf16_t;
-
-  /**
-   * @brief Represents a rust object returned from decancer_cured_raw_utf16. This value has no use other than retaining the lifetime of the returned UTF-16 pointer.
-   *
-   * @see decancer_cured_raw_utf16
-   * @see decancer_cured_raw_utf16_free
-   * @note You are responsible in freeing this object later by calling decancer_cured_raw_utf16_free.
-   */
-  typedef void* decancer_cured_raw_utf16_t;
-
-  /**
-   * @brief Represents a UTF-8 matcher iterator object returned from decancer_find.
-   *
-   * @see decancer_matcher_utf16_t
-   * @see decancer_find
-   * @see decancer_matcher_next
-   * @see decancer_matcher_free
-   * @note For its UTF-16 counterpart, see decancer_matcher_utf16_t.
-   * @note You are responsible in freeing this object later by calling decancer_matcher_free.
-   */
-  typedef void* decancer_matcher_t;
-
-  /**
-   * @brief Represents a UTF-16 matcher iterator object returned from decancer_find_utf16.
-   *
-   * @see decancer_matcher_t
-   * @see decancer_find_utf16
-   * @see decancer_matcher_utf16_next
-   * @see decancer_matcher_utf16_free
-   * @note For its UTF-8 counterpart, see decancer_matcher_t.
-   * @note You are responsible in freeing this object later by calling decancer_matcher_utf16_free.
-   */
-  typedef void* decancer_matcher_utf16_t;
-
-  /**
-   * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_utf16.
-   *
-   * @see decancer_find_multiple
-   * @see decancer_find_multiple_utf16
-   * @see decancer_matches_free
-   * @note You are responsible in freeing this object later by calling decancer_matches_free.
-   */
-  typedef void* decancer_matches_t;
-
-  /**
-   * @brief Represents a translation of a unicode codepoint.
-   *
-   * @see decancer_cure_char
-   * @see decancer_translation_init
-   * @see decancer_translation_free
-   * @note You are responsible in freeing this object later passing it as a pointer to decancer_translation_free.
-   * @warning You MUST pass this struct to decancer_translation_init first after initializing before using decancer_cure_char. Not doing so could result in possible undefined behavior.
-   */
-  typedef struct {
-    /**
-     * @brief The type of the translation result. This can be any of the following values:
-     *
-     * @see DECANCER_TRANSLATION_KIND_CHARACTER
-     * @see DECANCER_TRANSLATION_KIND_STRING
-     * @see DECANCER_TRANSLATION_KIND_NONE
-     */
-    uint8_t kind;
-
-    /**
-     * @brief A union of translation results. This can either be a unicode character or a UTF-8 encoded string.
-     */
-    union {
+    struct {
       /**
-       * @brief The translation, as a unicode character.
+       * @brief Raw UTF-8 encoded string.
        */
-      uint32_t character;
+      const uint8_t* contents;
 
       /**
-       * @brief The translation, as a UTF-8 encoded string.
+       * @brief UTF-8 size of the string, in bytes.
        */
-      struct {
-        /**
-         * @brief Raw UTF-8 encoded string.
-         */
-        const uint8_t* contents;
+      size_t size;
 
-        /**
-         * @brief UTF-8 size of the string, in bytes.
-         */
-        size_t size;
+      /**
+       * @brief A pointer to a heap memory block, unused.
+       * @note If this value is not NULL and kind is DECANCER_TRANSLATION_KIND_STRING, then you must pass this struct to decancer_translation_free later.
+       */
+      void* __heap;
+    } string;
+  } contents;
+} decancer_translation_t;
 
-        /**
-         * @brief A pointer to a heap memory block, unused.
-         * @note If this value is not NULL and kind is DECANCER_TRANSLATION_KIND_STRING, then you must pass this struct to decancer_translation_free later.
-         */
-        void* __heap;
-      } string;
-    } contents;
-  } decancer_translation_t;
+/**
+ * @brief Represents a cured string returned from decancer_cure and decancer_cure_utf16.
+ *
+ * @see decancer_cure
+ * @see decancer_cure_utf16
+ * @see decancer_cured_free
+ * @note You are responsible in freeing this object later by calling decancer_cured_free.
+ */
+typedef void* decancer_cured_t;
+
+/**
+ * @brief Represents a match in UTF-8 indices.
+ *
+ * @see decancer_find
+ * @see decancer_find_utf16
+ * @see decancer_matcher_next
+ */
+typedef struct {
+  /**
+   * @brief Start of the match in UTF-8 indices.
+   */
+  size_t start;
 
   /**
-   * @brief Represents a cured string returned from decancer_cure and decancer_cure_utf16.
-   *
-   * @see decancer_cure
-   * @see decancer_cure_utf16
-   * @see decancer_cured_free
-   * @note You are responsible in freeing this object later by calling decancer_cured_free.
+   * @brief End of the match in UTF-8 indices (non-inclusive).
    */
-  typedef void* decancer_cured_t;
+  size_t end;
+} decancer_match_t;
 
-  /**
-   * @brief Represents a match in UTF-8 indices.
-   *
-   * @see decancer_find
-   * @see decancer_find_utf16
-   * @see decancer_matcher_next
-   */
-  typedef struct {
-    /**
-     * @brief Start of the match in UTF-8 indices.
-     */
-    size_t start;
-
-    /**
-     * @brief End of the match in UTF-8 indices (non-inclusive).
-     */
-    size_t end;
-  } decancer_match_t;
-
-  /**
-   * @brief An unsigned 32-bit bitflags that lets you customize decancer's behavior in its curing functions.
-   *
-   * @see decancer_cure
-   * @see decancer_cure_utf16
-   * @see decancer_cure_char
-   * @see DECANCER_OPTION_DEFAULT
-   * @see DECANCER_OPTION_RETAIN_CAPITALIZATION
-   * @see DECANCER_OPTION_DISABLE_BIDI
-   * @see DECANCER_OPTION_RETAIN_DIACRITICS
-   * @see DECANCER_OPTION_RETAIN_GREEK
-   * @see DECANCER_OPTION_RETAIN_CYRILLIC
-   * @see DECANCER_OPTION_RETAIN_HEBREW
-   * @see DECANCER_OPTION_RETAIN_ARABIC
-   * @see DECANCER_OPTION_RETAIN_DEVANAGARI
-   * @see DECANCER_OPTION_RETAIN_BENGALI
-   * @see DECANCER_OPTION_RETAIN_ARMENIAN
-   * @see DECANCER_OPTION_RETAIN_GUJARATI
-   * @see DECANCER_OPTION_RETAIN_TAMIL
-   * @see DECANCER_OPTION_RETAIN_THAI
-   * @see DECANCER_OPTION_RETAIN_LAO
-   * @see DECANCER_OPTION_RETAIN_BURMESE
-   * @see DECANCER_OPTION_RETAIN_KHMER
-   * @see DECANCER_OPTION_RETAIN_MONGOLIAN
-   * @see DECANCER_OPTION_RETAIN_CHINESE
-   * @see DECANCER_OPTION_RETAIN_JAPANESE
-   * @see DECANCER_OPTION_RETAIN_KOREAN
-   * @see DECANCER_OPTION_RETAIN_BRAILLE
-   * @see DECANCER_OPTION_RETAIN_EMOJIS
-   * @see DECANCER_OPTION_ASCII_ONLY
-   * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
-   * @see DECANCER_OPTION_ALL
-   * @see DECANCER_OPTION_PURE_HOMOGLYPH
-   */
-  typedef uint32_t decancer_options_t;
+/**
+ * @brief An unsigned 32-bit bitflags that lets you customize decancer's behavior in its curing functions.
+ *
+ * @see decancer_cure
+ * @see decancer_cure_utf16
+ * @see decancer_cure_char
+ * @see DECANCER_OPTION_DEFAULT
+ * @see DECANCER_OPTION_RETAIN_CAPITALIZATION
+ * @see DECANCER_OPTION_DISABLE_BIDI
+ * @see DECANCER_OPTION_RETAIN_DIACRITICS
+ * @see DECANCER_OPTION_RETAIN_GREEK
+ * @see DECANCER_OPTION_RETAIN_CYRILLIC
+ * @see DECANCER_OPTION_RETAIN_HEBREW
+ * @see DECANCER_OPTION_RETAIN_ARABIC
+ * @see DECANCER_OPTION_RETAIN_DEVANAGARI
+ * @see DECANCER_OPTION_RETAIN_BENGALI
+ * @see DECANCER_OPTION_RETAIN_ARMENIAN
+ * @see DECANCER_OPTION_RETAIN_GUJARATI
+ * @see DECANCER_OPTION_RETAIN_TAMIL
+ * @see DECANCER_OPTION_RETAIN_THAI
+ * @see DECANCER_OPTION_RETAIN_LAO
+ * @see DECANCER_OPTION_RETAIN_BURMESE
+ * @see DECANCER_OPTION_RETAIN_KHMER
+ * @see DECANCER_OPTION_RETAIN_MONGOLIAN
+ * @see DECANCER_OPTION_RETAIN_CHINESE
+ * @see DECANCER_OPTION_RETAIN_JAPANESE
+ * @see DECANCER_OPTION_RETAIN_KOREAN
+ * @see DECANCER_OPTION_RETAIN_BRAILLE
+ * @see DECANCER_OPTION_RETAIN_EMOJIS
+ * @see DECANCER_OPTION_ASCII_ONLY
+ * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
+ * @see DECANCER_OPTION_ALL
+ * @see DECANCER_OPTION_PURE_HOMOGLYPH
+ */
+typedef uint32_t decancer_options_t;
 
 #ifdef __cplusplus
 extern "C" {
