@@ -2,6 +2,17 @@
 
 'use strict'
 
+const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS
+  ? JSON.parse(process.env.DECANCER_SETUP_OUTPUTS)
+  : null
+
+export function isAffected(value) {
+  return SETUP_OUTPUTS !== null
+    ? SETUP_OUTPUTS.release !== 'null' ||
+        SETUP_OUTPUTS[`${value}_affected`] === 'true'
+    : true
+}
+
 export function options(argv) {
   return Object.fromEntries(
     argv.map(x => x.match(/^\-\-([\w\-]+)=(.*)/)?.slice(1)).filter(x => x)
