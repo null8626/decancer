@@ -684,7 +684,6 @@ jobs:
           path: bindings/wasm/bin
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
-       steps:
       - name: Delete GitHub Pages deployment history
         uses: strumwolf/delete-deployment-environment@v3
         with:
