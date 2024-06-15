@@ -18,7 +18,9 @@ const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CORE_DIR = join(ROOT_DIR, 'core')
 const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
-const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS ? JSON.parse(process.env.DECANCER_SETUP_OUTPUTS) : null
+const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS
+  ? JSON.parse(process.env.DECANCER_SETUP_OUTPUTS)
+  : null
 const OPTIONS = options(process.argv.slice(2))
 
 function isAffected(value) {

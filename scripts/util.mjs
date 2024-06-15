@@ -2,7 +2,9 @@
 
 'use strict'
 
-const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS ? JSON.parse(process.env.DECANCER_SETUP_OUTPUTS) : null
+const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS
+  ? JSON.parse(process.env.DECANCER_SETUP_OUTPUTS)
+  : null
 
 export function isAffected(value) {
   return SETUP_OUTPUTS !== null
