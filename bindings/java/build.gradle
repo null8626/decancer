@@ -13,8 +13,8 @@ repositories {
 }
 
 jar {
-  archiveBaseName = 'decancer'
-  archiveVersion = '3.2.0'
+  archiveBaseName 'decancer'
+  archiveVersion '3.2.0'
 
   from('./bin') {
     include '*.dll'
@@ -33,21 +33,21 @@ publishing {
       from components.java
       
       pom {
-        name = 'decancer'
+        name 'decancer'
         description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
-        url = 'https://github.com/null8626/decancer'
+        url 'https://github.com/null8626/decancer'
         
         licenses {
           license {
-            name = 'MIT License'
-            url = 'https://github.com/null8626/decancer/blob/v3.2.0/LICENSE'
+            name 'MIT License'
+            url 'https://github.com/null8626/decancer/blob/v3.2.0/LICENSE'
           }
         }
         
         developers {
           developer {
-            id = 'null8626'
-            name = 'null8626'
+            id 'null8626'
+            name 'null8626'
           }
         }
       }

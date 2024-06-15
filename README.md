@@ -154,7 +154,6 @@ Tip: You can shrink the size of the resulting jar file by removing binaries in t
 </details>
 <details>
 <summary><b>C/C++</b></summary>
-<!---[ end, begin DECANCER_NATIVE ]--->
 
 ### Download
 
@@ -349,7 +348,6 @@ public class Program {
 </details>
 <details>
 <summary><b>C/C++</b></summary>
-<!---[ end, begin DECANCER_NATIVE ]--->
 
 UTF-8 example:
 
@@ -440,9 +438,7 @@ END:
 }
 ```
 
-<!---[ end, begin DECANCER_GLOBAL ]--->
 </details>
-<!---[ end ]--->
 
 ## Donations
 
