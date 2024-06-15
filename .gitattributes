@@ -5,7 +5,7 @@
 **/*.wasm binary
 **/*.jar binary
 **/*.zip binary
-**/*.h linguist-vendored=true eol=lf
+**/*.h eol=lf
 **/*.ts linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf

@@ -71,12 +71,3 @@ cured.censorMultiple(['very', 'text'], '-')
 console.log(cured.toString())
 // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
 ```
-## Donations
-
-If you want to support my eyes for manually looking at thousands of unicode characters, consider donating! ❤
-
-[![ko-fi][ko-fi-image]][ko-fi-url]
-
-## Contributing
-
-Please read [`CONTRIBUTING.md`](https://github.com/null8626/decancer/blob/main/CONTRIBUTING.md) for newbie contributors who want to contribute!

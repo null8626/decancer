@@ -40,7 +40,7 @@ appendFileSync(
     native_affected: files.some(
       ({ filename }) =>
         filename.startsWith('bindings/native/src') ||
-        /\.([ch](pp)?)$/.test(filename)
+        filename === 'bindings/native/decancer.h'
     ),
     java_affected:
       coreAffected ||
