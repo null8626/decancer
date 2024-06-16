@@ -1,7 +1,7 @@
-package com.github.null8626.decancer;
+package io.github.null8626.decancer;
 
-import com.github.null8626.decancer.CuredString;
-import com.github.null8626.decancer.Match;
+import io.github.null8626.decancer.CuredString;
+import io.github.null8626.decancer.Match;
 import org.junit.jupiter.api.*;
 
 public class DecancerTest {

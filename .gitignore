@@ -16,6 +16,7 @@
 .yarnrc.yml
 bindings/java/.gradle/
 bindings/java/build/
+bindings/java/gradle.properties
 bindings/native/tests/*.c
 bindings/native/tests/build/
 bindings/native/docs/

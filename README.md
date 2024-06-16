@@ -101,7 +101,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.null8626:decancer:v3.2.0'
+  implementation 'io.github.null8626:decancer:3.2.0'
 }
 ```
 
@@ -121,9 +121,9 @@ In your `pom.xml`:
 
 <dependencies>
   <dependency>
-  <groupId>com.github.null8626</groupId>
+  <groupId>io.github.null8626</groupId>
   <artifactId>decancer</artifactId>
-  <version>v3.2.0</version>
+  <version>3.2.0</version>
   </dependency>
 </dependencies>
 ```
@@ -313,8 +313,10 @@ console.log(cured.toString())
 <details>
 <summary><b>Java</b></summary>
 
+For more information, please read the [documentation](https://javadoc.io/doc/io.github.null8626/decancer).
+
 ```java
-import com.github.null8626.decancer.CuredString;
+import io.github.null8626.decancer.CuredString;
 
 public class Program {
   public static void main(String[] args) {

@@ -1,10 +1,11 @@
 plugins {
-  id 'java'
+  id 'java-library'
   id 'maven-publish'
+  id 'org.jreleaser' version '1.12.0'
 }
 
-group 'com.github.null8626'
-version '3.2.0'
+group 'io.github.null8626'
+version '3.0.3'
 description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
 
 repositories {
@@ -14,7 +15,7 @@ repositories {
 
 jar {
   archiveBaseName = 'decancer'
-  archiveVersion = '3.2.0'
+  archiveVersion = '3.0.3'
 
   from('./bin') {
     include '*.dll'
@@ -25,22 +26,24 @@ jar {
 
 publishing {
   publications {
-    mavenJava(MavenPublication) {
-      groupId 'com.github.null8626'
-      artifactId 'decancer'
-      version '3.2.0'
-      
+    maven(MavenPublication) {
+      artifactId = 'decancer'
+      groupId = 'io.github.null8626'
+      version = '3.0.3'
+    
       from components.java
       
       pom {
         name = 'decancer'
-        description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
+        description = 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
         url = 'https://github.com/null8626/decancer'
+        inceptionYear = '2021'
         
         licenses {
           license {
             name = 'MIT License'
-            url = 'https://github.com/null8626/decancer/blob/v3.2.0/LICENSE'
+            distribution = 'repo'
+            url = 'https://github.com/null8626/decancer/blob/v3.0.3/LICENSE'
           }
         }
         
@@ -48,9 +51,60 @@ publishing {
           developer {
             id = 'null8626'
             name = 'null8626'
+            url = 'https://github.com/null8626'
+            timezone = 'Asia/Jakarta'
           }
         }
+        
+        scm {
+          url = 'https://github.com/null8626/decancer'
+          connection = 'scm:git:git://github.com/null8626/decancer'
+          developerConnection = 'scm:git:git://github.com/null8626/decancer'
+        }
+        
+        issueManagement {
+          system = 'GitHub'
+          url = 'https://github.com/null8626/decancer/issues'
+        }
+        
+        ciManagement {
+          system = 'Github Actions'
+          url = 'https://github.com/null8626/decancer/actions'
+        }
       }
+    }
+  }
+  
+  repositories {
+    maven {
+      url = layout.buildDirectory.dir('staging-deploy')
+    }
+  }
+}
+
+jreleaser {
+  signing {
+    active = 'ALWAYS'
+    armored = true
+  }
+  
+  deploy {
+    maven {
+      mavenCentral {
+        sonatype {
+          active = 'ALWAYS'
+          url = 'https://central.sonatype.com/api/v1/publisher'
+          gitRootSearch = true
+          maxRetries = 250
+          stagingRepository(layout.buildDirectory.dir('staging-deploy').get().toString())
+        }
+      }
+    }
+  }
+  
+  release {
+    github {
+      enabled: false
     }
   }
 }
@@ -61,10 +115,15 @@ javadoc {
   }
 }
 
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
+
 test {
   useJUnitPlatform()
   
-  systemProperty 'DECANCER_INSIDE_JAR', System.getProperty('DECANCER_INSIDE_JAR')
+  systemProperty 'DECANCER_TESTING', System.getProperty('DECANCER_TESTING')
   systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
 }
 

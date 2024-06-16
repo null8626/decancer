@@ -195,7 +195,7 @@ jobs:
       - name: Test
         run: |
           chmod +x ./gradlew
-          ./gradlew test --warning-mode all -DDECANCER_INSIDE_JAR=0
+          ./gradlew test javadoc --warning-mode all -DDECANCER_TESTING=1
         working-directory: bindings/java
         shell: bash
   native:
@@ -627,9 +627,9 @@ jobs:
           sudo ./llvm.sh 18 all
         shell: bash
       - name: Prettier files
+        run: node scripts/pretty.mjs --clang-format=clang-format-18
         env:
           DECANCER_SETUP_OUTPUTS: ${{ toJSON(needs.setup.outputs) }}
-        run: node scripts/pretty.mjs --clang-format=clang-format-18
         shell: bash
       - name: Update README files for bindings
         run: |
@@ -654,7 +654,7 @@ jobs:
           mv ./java-artifacts/**/*.{dll,so,dylib} .
           zip -FSr ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
         shell: bash
-      - name: Import GPG key
+      - name: Import Actions GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
@@ -716,7 +716,6 @@ jobs:
       - node-test
       - node-freebsd
       - native-test
-      - java
       - commit
       - pages
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
@@ -732,13 +731,13 @@ jobs:
           path: artifacts
       - name: Modify artifacts
         run: node scripts/ci_artifacts.mjs
-      - name: Install dependencies
+      - name: Install node dependencies
         working-directory: bindings/node
         run: yarn install
-      - name: Move artifacts
+      - name: Move node artifacts
         working-directory: bindings/node
         run: yarn artifacts
-      - name: Publish
+      - name: Publish node binding
         working-directory: bindings/node
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
@@ -746,21 +745,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Import GPG key
+      - name: Import Actions GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.CI_GPG_PASS }}
           git_user_signingkey: true
           git_tag_gpgsign: true
-      - name: Create Tag
+      - name: Create GitHub Tag
         uses: rickstaa/action-create-tag@v1
         with:
           message: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
           tag: "v${{ needs.setup.outputs.release }}"
           gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
           gpg_passphrase: ${{ secrets.CI_GPG_PASS }}
-      - name: Create Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           body: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
@@ -771,3 +770,37 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_REPOSITORY: null8626/decancer
+  publish-java:
+    name: Publish java binding
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+      - commit
+      - java
+    if: ${{ always() && needs.setup.outputs.release != 'null' }}
+    env:
+      JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
+      JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}
+      JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
+      JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.MAVEN_GPG_PUBLIC_KEY }}
+      JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+      JRELEASER_VERSION: ${{ needs.setup.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: oracle
+          java-version: 21
+      - name: Prepare java binding
+        working-directory: bindings/java
+        run: |
+          unzip ./bin/bindings.zip -d ./bin
+          chmod +x ./gradlew
+          ./gradlew jreleaserConfig
+          ./gradlew clean build publish -x test
+        shell: bash
+      - name: Publish java binding
+        working-directory: bindings/java
+        run: ./gradlew jreleaserFullRelease --stacktrace
+        continue-on-error: true
+        shell: bash

@@ -8,8 +8,8 @@ use jni::{
 };
 use std::mem::transmute;
 
-const CUREDSTRING_CLASS: &str = "com/github/null8626/decancer/CuredString";
-const MATCH_CLASS: &str = "com/github/null8626/decancer/Match";
+const CUREDSTRING_CLASS: &str = "io/github/null8626/decancer/CuredString";
+const MATCH_CLASS: &str = "io/github/null8626/decancer/Match";
 
 macro_rules! jni_unwrap {
   ($env:ident, $value:expr, $return_value:expr) => {
@@ -99,7 +99,7 @@ macro_rules! get_string_array {
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cure<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<'local>(
   mut env: JNIEnv<'local>,
   _: JClass<'local>,
   input: JString<'local>,
@@ -122,7 +122,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cure
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_find<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -157,7 +157,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_findMultiple<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_findMultiple<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JObjectArray<'local>,
@@ -191,7 +191,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_find
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_censor<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censor<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -215,7 +215,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_censorMultiple<
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censorMultiple<
   'local,
 >(
   mut env: JNIEnv<'local>,
@@ -240,7 +240,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cens
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replace<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_replace<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -254,7 +254,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_repl
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_replaceMultiple<
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_replaceMultiple<
   'local,
 >(
   mut env: JNIEnv<'local>,
@@ -269,7 +269,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_repl
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_equals<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_equals<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -281,7 +281,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_equa
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_startsWith<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_startsWith<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -293,7 +293,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_star
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_endsWith<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_endsWith<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -305,7 +305,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_ends
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_contains<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_contains<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
   input: JString<'local>,
@@ -317,7 +317,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_cont
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_toString<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_toString<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
 ) -> jstring {
@@ -327,7 +327,7 @@ pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_toSt
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_com_github_null8626_decancer_CuredString_destroy<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_destroy<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
 ) {

@@ -1,4 +1,4 @@
-package com.github.null8626.decancer;
+package io.github.null8626.decancer;
 
 import com.fizzed.jne.NativeTarget;
 import com.fizzed.jne.OperatingSystem;
@@ -9,8 +9,8 @@ import cz.adamh.utils.NativeUtils;
  *
  * <p>
  * This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: letter I and lowercase L)
+ * </p>
  *
- * @see <a href="https://github.com/null8626/decancer">github.com/null8626/decancer</a>
  * @author null8626
  */
 public class CuredString {
@@ -45,7 +45,7 @@ public class CuredString {
           break;
       }
 
-      if (System.getProperty("DECANCER_INSIDE_JAR", "1").equals("0")) {
+      if (System.getProperty("DECANCER_TESTING", "0").equals("1")) {
         System.loadLibrary("decancer-" + rustTarget);
       } else {
         NativeUtils.loadLibraryFromJar(
@@ -73,9 +73,11 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
-   * @return An array of Match objects containing every similar-looking match.
+   * @see findMultiple
+   * @return Match[] An array of Match objects containing every similar-looking match.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -86,9 +88,11 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The list of strings to match with.
-   * @return An array of Match objects containing every similar-looking match.
+   * @see find
+   * @return Match[] An array of Match objects containing every similar-looking match.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -99,9 +103,11 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
    * @param with The character to repeat.
+   * @see censorMultiple
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -113,9 +119,11 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The list of strings to match with.
    * @param with The character to repeat.
+   * @see censor
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -127,10 +135,11 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
    * @param with The other string to replace with.
-   * @return Another instance of a CuredString.
+   * @see replaceMultiple
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -141,23 +150,25 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The list of strings to match with.
    * @param with The other string to replace with.
-   * @return Another instance of a CuredString.
+   * @see replace
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
   public native void replaceMultiple(String[] other, String with);
 
   /**
-   * Checks if this object is similar with another string.
+   * Checks if this object is similar with another string
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
-   * @return Whether this object is similar with another string.
+   * @return boolean Whether this object is similar with another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -168,9 +179,10 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
-   * @return Whether this object similarly starts with another string.
+   * @return boolean Whether this object similarly starts with another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -181,9 +193,10 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
-   * @return Whether this object similarly ends with another string.
+   * @return boolean Whether this object similarly ends with another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -194,9 +207,10 @@ public class CuredString {
    *
    * <p>
    * This comparison is case-insensitive.
+   * </p>
    *
    * @param other The other string to match with.
-   * @return Whether this object similarly contains another string.
+   * @return boolean Whether this object similarly contains another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -206,9 +220,12 @@ public class CuredString {
    * Coerces this object to a String.
    *
    * <p>
-   * NOTE: It's highly NOT recommended to use Java's comparison methods after calling this. The string output is NOT meant to be displayed visually.
+   * This comparison is case-insensitive.<br>
    *
-   * @return The String representation of this object.
+   * <b>WARNING:</b> It's highly NOT recommended to use Java's comparison methods after calling this. The string output is NOT meant to be displayed visually.
+   * </p>
+   *
+   * @return String The String representation of this object.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -218,8 +235,9 @@ public class CuredString {
    * Destroys and frees the memory used by this object.
    *
    * <p>
-   * Repeated calls to this method is fine and does not guarantee a double-free.
+   * Repeated calls to this method is fine and does not guarantee a double-free.<br>
    * Any subsequent String objects from toString() calls can still be used after this.
+   * </p>
    *
    * @throws RuntimeException If a Rust panic occurs.
    */
@@ -229,7 +247,9 @@ public class CuredString {
    * Cures a string with decancer's default options.
    *
    * <p>
-   * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters. Therefore, the output of this function should NOT be displayed visually.
+   * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters.<br>
+   * Therefore, the output of this function should NOT be displayed visually.
+   * </p>
    *
    * @param input The string to cure.
    * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
