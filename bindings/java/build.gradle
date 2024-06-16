@@ -25,11 +25,7 @@ jar {
 }
 
 mavenPublishing {
-  coordinates(
-    groupId = 'io.github.null8626'
-    artifactId = 'decancer'
-    version = '3.0.0'
-  )
+  coordinates('io.github.null8626', 'decancer', '3.0.0')
   
   pom {
     name = 'decancer'
