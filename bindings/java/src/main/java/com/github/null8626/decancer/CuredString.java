@@ -1,4 +1,4 @@
-package com.github.null8626.decancer;
+package io.github.null8626.decancer;
 
 import com.fizzed.jne.NativeTarget;
 import com.fizzed.jne.OperatingSystem;

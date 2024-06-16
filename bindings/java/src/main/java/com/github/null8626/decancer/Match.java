@@ -1,4 +1,4 @@
-package com.github.null8626.decancer;
+package io.github.null8626.decancer;
 
 /**
  * A match yielded by the CuredString.find method.

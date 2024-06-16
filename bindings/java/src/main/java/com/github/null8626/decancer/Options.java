@@ -1,4 +1,4 @@
-package com.github.null8626.decancer;
+package io.github.null8626.decancer;
 
 /**
  * A configuration class where you can customize decancer's behavior.
