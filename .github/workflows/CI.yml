@@ -654,7 +654,7 @@ jobs:
           mv ./java-artifacts/**/*.{dll,so,dylib} .
           zip -FSr ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
         shell: bash
-      - name: Import GPG key
+      - name: Import Actions GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
@@ -750,6 +750,11 @@ jobs:
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Import Maven GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.MAVEN_GPG_PASS }}
       - name: Prepare java binding
         working-directory: bindings/java
         run: |
@@ -760,8 +765,7 @@ jobs:
           echo 'signing.keyId=$MAVEN_GPG_ID' >> ./gradle.properties
           echo 'signing.password=$MAVEN_GPG_PASS' >> ./gradle.properties
           echo 'signing.secretKeyRingFile=./keyring.gpg' >> ./gradle.properties
-          echo '$MAVEN_GPG_PRIVATE_KEY' > ./private_key.asc
-          gpg --quiet --output ./keyring.gpg --dearmor ./private_key.asc
+          echo '$MAVEN_GPG_PRIVATE_KEY' | gpg --dearmor > ./keyring.gpg
         env:
           MAVEN_CENTRAL_NAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
           MAVEN_CENTRAL_PASS: ${{ secrets.MAVEN_CENTRAL_PASS }}
@@ -775,7 +779,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew publishAndReleaseToMavenCentral -x test --no-configuration-cache
         shell: bash
-      #- name: Import GPG key
+      #- name: Import Actions GPG key
       #  uses: crazy-max/ghaction-import-gpg@v6
       #  with:
       #    gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
