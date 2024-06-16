@@ -760,7 +760,7 @@ jobs:
           echo 'signing.keyId=$MAVEN_GPG_ID' >> ./gradle.properties
           echo 'signing.password=$MAVEN_GPG_PASS' >> ./gradle.properties
           echo 'signing.secretKeyRingFile=./keyring.gpg' >> ./gradle.properties
-          echo '$MAVEN_GPG_PRIVATE_KEY' | base64 --decode > ./private_key.asc
+          echo '$MAVEN_GPG_PRIVATE_KEY' > ./private_key.asc
           gpg --quiet --output ./keyring.gpg --dearmor ./private_key.asc
         env:
           MAVEN_CENTRAL_NAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
