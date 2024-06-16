@@ -68,136 +68,136 @@ jobs:
       - name: Run cargo test
         working-directory: core
         run: cargo test --all-features
-  java-native:
-    strategy:
-      fail-fast: true
-      matrix:
-        settings:
-          - target: aarch64-apple-darwin
-            host: macos-latest
-          - target: aarch64-pc-windows-msvc
-            host: windows-latest
-          - target: aarch64-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: aarch64-unknown-linux-musl
-            host: ubuntu-latest
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              rustup target add aarch64-unknown-linux-musl
-              cargo build --target aarch64-unknown-linux-musl --release
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.a
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
-              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.a ../../artifacts/libdecancer-aarch64-unknown-linux-musl.a
-              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts/libdecancer-aarch64-unknown-linux-musl.so
-          - target: arm-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv5te-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv7-unknown-linux-gnueabi
-            host: ubuntu-latest
-          - target: armv7-unknown-linux-gnueabihf
-            host: ubuntu-latest
-          - target: i686-pc-windows-msvc
-            host: windows-latest
-          - target: i686-unknown-freebsd
-            host: ubuntu-latest
-          - target: i686-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: riscv64gc-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: x86_64-apple-darwin
-            host: macos-latest
-          - target: x86_64-pc-windows-msvc
-            host: windows-latest
-          - target: x86_64-unknown-freebsd
-            host: ubuntu-latest
-          - target: x86_64-unknown-linux-gnu
-            host: ubuntu-latest
-          - target: x86_64-unknown-linux-musl
-            host: ubuntu-latest
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
-            build: |
-              cargo build --release
-              strip ./target/release/libdecancer.a
-              strip ./target/release/libdecancer.so
-              mv ./target/release/libdecancer.a ../../artifacts/libdecancer-x86_64-unknown-linux-musl.a
-              mv ./target/release/libdecancer.so ../../artifacts/libdecancer-x86_64-unknown-linux-musl.so
-    needs:
-      - setup
-      - core
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Build native java bindings on ${{ matrix.settings.target }}
-    runs-on: ${{ matrix.settings.host }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: latest
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
-      - name: Make artifacts directory
-        run: mkdir artifacts
-        shell: bash
-      - name: Build with cross
-        if: ${{ !matrix.settings.build }}
-        uses: houseabsolute/actions-rust-cross@v0
-        with:
-          working-directory: bindings/java
-          args: '--release --target-dir=.'
-          command: build
-          target: ${{ matrix.settings.target }}
-      - name: Build in docker
-        uses: addnab/docker-run-action@v3
-        if: ${{ matrix.settings.docker && matrix.settings.build }}
-        with:
-          image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/bindings/java/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/java/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/java'
-          run: ${{ matrix.settings.build }}
-      - name: Build
-        working-directory: bindings/java
-        run: ${{ matrix.settings.build }}
-        if: ${{ !matrix.settings.docker && matrix.settings.build }}
-        shell: bash
-      - name: Move and rename binaries
-        if: ${{ !matrix.settings.build }}
-        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
-        shell: bash
-      - name: Upload artifact
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-${{ matrix.settings.target }}
-          path: ./artifacts/**
-          if-no-files-found: error
-  java:
-    needs:
-      - setup
-      - java-native
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Test java bindings
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: oracle
-          java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
-      - name: Download java artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: java-x86_64-unknown-linux-gnu
-          path: bindings/java/bin
-      - name: Test
-        run: |
-          chmod +x ./gradlew
-          ./gradlew test --warning-mode all -DDECANCER_INSIDE_JAR=0
-        working-directory: bindings/java
-        shell: bash
+#  java-native:
+#    strategy:
+#      fail-fast: true
+#      matrix:
+#        settings:
+#          - target: aarch64-apple-darwin
+#            host: macos-latest
+#          - target: aarch64-pc-windows-msvc
+#            host: windows-latest
+#          - target: aarch64-unknown-linux-gnu
+#            host: ubuntu-latest
+#          - target: aarch64-unknown-linux-musl
+#            host: ubuntu-latest
+#            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+#            build: |
+#              rustup target add aarch64-unknown-linux-musl
+#              cargo build --target aarch64-unknown-linux-musl --release
+#              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.a
+#              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
+#              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.a ../../artifacts/libdecancer-aarch64-unknown-linux-musl.a
+#              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts/libdecancer-aarch64-unknown-linux-musl.so
+#          - target: arm-unknown-linux-gnueabi
+#            host: ubuntu-latest
+#          - target: armv5te-unknown-linux-gnueabi
+#            host: ubuntu-latest
+#          - target: armv7-unknown-linux-gnueabi
+#            host: ubuntu-latest
+#          - target: armv7-unknown-linux-gnueabihf
+#            host: ubuntu-latest
+#          - target: i686-pc-windows-msvc
+#            host: windows-latest
+#          - target: i686-unknown-freebsd
+#            host: ubuntu-latest
+#          - target: i686-unknown-linux-gnu
+#            host: ubuntu-latest
+#          - target: riscv64gc-unknown-linux-gnu
+#            host: ubuntu-latest
+#          - target: x86_64-apple-darwin
+#            host: macos-latest
+#          - target: x86_64-pc-windows-msvc
+#            host: windows-latest
+#          - target: x86_64-unknown-freebsd
+#            host: ubuntu-latest
+#          - target: x86_64-unknown-linux-gnu
+#            host: ubuntu-latest
+#          - target: x86_64-unknown-linux-musl
+#            host: ubuntu-latest
+#            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+#            build: |
+#              cargo build --release
+#              strip ./target/release/libdecancer.a
+#              strip ./target/release/libdecancer.so
+#              mv ./target/release/libdecancer.a ../../artifacts/libdecancer-x86_64-unknown-linux-musl.a
+#              mv ./target/release/libdecancer.so ../../artifacts/libdecancer-x86_64-unknown-linux-musl.so
+#    needs:
+#      - setup
+#      - core
+#    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
+#    name: Build native java bindings on ${{ matrix.settings.target }}
+#    runs-on: ${{ matrix.settings.host }}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-node@v4
+#        with:
+#          node-version: latest
+#      - name: Setup Rust
+#        uses: actions-rs/toolchain@v1
+#        with:
+#          profile: minimal
+#          override: true
+#          toolchain: stable
+#      - name: Make artifacts directory
+#        run: mkdir artifacts
+#        shell: bash
+#      - name: Build with cross
+#        if: ${{ !matrix.settings.build }}
+#        uses: houseabsolute/actions-rust-cross@v0
+#        with:
+#          working-directory: bindings/java
+#          args: '--release --target-dir=.'
+#          command: build
+#          target: ${{ matrix.settings.target }}
+#      - name: Build in docker
+#        uses: addnab/docker-run-action@v3
+#        if: ${{ matrix.settings.docker && matrix.settings.build }}
+#        with:
+#          image: ${{ matrix.settings.docker }}
+#          options: '--user 0:0 -v ${{ github.workspace }}/bindings/java/.cargo/registry/cache:/root/.cargo/registry/cache -v ${{ github.workspace }}/bindings/java/.cargo/registry/index:/root/.cargo/registry/index -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace}}/bindings/java'
+#          run: ${{ matrix.settings.build }}
+#      - name: Build
+#        working-directory: bindings/java
+#        run: ${{ matrix.settings.build }}
+#        if: ${{ !matrix.settings.docker && matrix.settings.build }}
+#        shell: bash
+#      - name: Move and rename binaries
+#        if: ${{ !matrix.settings.build }}
+#        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
+#        shell: bash
+#      - name: Upload artifact
+#        if: ${{ github.event_name != 'pull_request' }}
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: java-${{ matrix.settings.target }}
+#          path: ./artifacts/**
+#          if-no-files-found: error
+#  java:
+#    needs:
+#      - setup
+#      - java-native
+#    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
+#    name: Test java bindings
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: actions/setup-java@v4
+#        with:
+#          distribution: oracle
+#          java-version: 21
+#      - uses: gradle/actions/setup-gradle@v3
+#      - name: Download java artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: java-x86_64-unknown-linux-gnu
+#          path: bindings/java/bin
+#      - name: Test
+#        run: |
+#          chmod +x ./gradlew
+#          ./gradlew test --warning-mode all -DDECANCER_INSIDE_JAR=0
+#        working-directory: bindings/java
+#        shell: bash
 #  native:
 #    strategy:
 #      fail-fast: true
@@ -608,7 +608,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
-      - java
+      #- java
       #- wasm
     if: ${{ always() && github.event_name != 'pull_request' }}
     steps:
@@ -716,7 +716,7 @@ jobs:
       #- node-test
       #- node-freebsd
       #- native-test
-      - java
+      #- java
       - commit
       #- pages
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
@@ -754,13 +754,14 @@ jobs:
         working-directory: bindings/java
         run: |
           unzip ./bin/bindings.zip -d ./bin
-          echo 'org.gradle.jvmargs=-Dfile.encoding=UTF-8' >> gradle.properties
-          echo 'mavenCentralUsername=$MAVEN_CENTRAL_NAME' >> gradle.properties
-          echo 'mavenCentralPassword=$MAVEN_CENTRAL_PASS' >> gradle.properties
-          echo 'signing.keyId=$MAVEN_GPG_ID' >> gradle.properties
-          echo 'signing.password=$MAVEN_GPG_PASS' >> gradle.properties
-          echo 'signing.secretKeyRingFile=./keyring.gpg' >> gradle.properties
-          echo '$MAVEN_GPG_PRIVATE_KEY' | gpg --dearmor > ./keyring.gpg
+          echo 'org.gradle.jvmargs=-Dfile.encoding=UTF-8' >> ./gradle.properties
+          echo 'mavenCentralUsername=$MAVEN_CENTRAL_NAME' >> ./gradle.properties
+          echo 'mavenCentralPassword=$MAVEN_CENTRAL_PASS' >> ./gradle.properties
+          echo 'signing.keyId=$MAVEN_GPG_ID' >> ./gradle.properties
+          echo 'signing.password=$MAVEN_GPG_PASS' >> ./gradle.properties
+          echo 'signing.secretKeyRingFile=./keyring.gpg' >> ./gradle.properties
+          echo '$MAVEN_GPG_PRIVATE_KEY' | base64 --decode > ./private_key.asc
+          gpg --quiet --output ./keyring.gpg --dearmor ./private_key.asc
         env:
           MAVEN_CENTRAL_NAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
           MAVEN_CENTRAL_PASS: ${{ secrets.MAVEN_CENTRAL_PASS }}

@@ -8,6 +8,7 @@
 **/*.exe
 **/*.lib
 **/*.obj
+**/*.asc
 **/*.gpg
 **/target/
 **/artifacts/
