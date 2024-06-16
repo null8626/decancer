@@ -1,6 +1,7 @@
 plugins {
   id 'java'
   id 'maven-publish'
+  id 'com.vanniktech.maven.publish' version '0.28.0'
 }
 
 group 'io.github.null8626'
@@ -23,35 +24,37 @@ jar {
   }
 }
 
-publishing {
-  publications {
-    mavenJava(MavenPublication) {
-      groupId 'io.github.null8626'
-      artifactId 'decancer'
-      version '3.0.0'
-      
-      from components.java
-      
-      pom {
-        name = 'decancer'
-        description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
-        url = 'https://github.com/null8626/decancer'
-        inceptionYear = '2024'
-        
-        licenses {
-          license {
-            name = 'MIT License'
-            url = 'https://github.com/null8626/decancer/blob/v3.0.0/LICENSE'
-          }
-        }
-        
-        developers {
-          developer {
-            id = 'null8626'
-            name = 'null8626'
-          }
-        }
+mavenPublishing {
+  coordinates(
+    groupId = 'io.github.null8626'
+    artifactId = 'decancer'
+    version = '3.0.0'
+  )
+  
+  pom {
+    name = 'decancer'
+    description = 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
+    url = 'https://github.com/null8626/decancer'
+    inceptionYear = '2021'
+    
+    licenses {
+      license {
+        name = 'MIT License'
+        url = 'https://github.com/null8626/decancer/blob/v3.0.0/LICENSE'
       }
+    }
+    
+    developers {
+      developer {
+        id = 'null8626'
+        name = 'null8626'
+      }
+    }
+    
+    scm {
+      url = 'https://github.com/null8626/decancer'
+      connection = 'scm:git:git://github.com/null8626/decancer'
+      developerConnection = 'scm:git:git://github.com/null8626/decancer'
     }
   }
 }
