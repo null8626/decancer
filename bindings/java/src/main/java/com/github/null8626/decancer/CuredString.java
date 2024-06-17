@@ -45,7 +45,7 @@ public class CuredString {
           break;
       }
 
-      if (System.getProperty("DECANCER_INSIDE_JAR", "1").equals("0")) {
+      if (System.getProperty("DECANCER_TESTING", "0").equals("1")) {
         System.loadLibrary("decancer-" + rustTarget);
       } else {
         NativeUtils.loadLibraryFromJar(

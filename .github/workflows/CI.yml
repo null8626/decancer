@@ -195,7 +195,7 @@ jobs:
       - name: Test
         run: |
           chmod +x ./gradlew
-          ./gradlew test --warning-mode all -DDECANCER_INSIDE_JAR=0
+          ./gradlew test --warning-mode all -DDECANCER_TESTING=1
         working-directory: bindings/java
         shell: bash
 #  native:
@@ -720,6 +720,14 @@ jobs:
       - commit
       #- pages
     if: ${{ always() && needs.setup.outputs.release != 'null' }}
+    env:
+      JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
+      JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}
+      JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
+      JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.MAVEN_GPG_PUBLIC_KEY }}
+      JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+      JRELEASER_GITHUB_TOKEN: ${{ serets.GITHUB_TOKEN }}
+      JRELEASER_VERSION: ${{ needs.setup.outputs.release }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -750,29 +758,15 @@ jobs:
       #  env:
       #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Prepare java binding
-        working-directory: bindings/java
-        run: |
-          unzip ./bin/bindings.zip -d ./bin
-          echo 'org.gradle.jvmargs=-Dfile.encoding=UTF-8' >> ./gradle.properties
-          echo 'mavenCentralUsername=$MAVEN_CENTRAL_NAME' >> ./gradle.properties
-          echo 'mavenCentralPassword=$MAVEN_CENTRAL_PASS' >> ./gradle.properties
-          echo 'signing.keyId=$MAVEN_GPG_ID' >> ./gradle.properties
-          echo 'signing.password=$MAVEN_GPG_PASS' >> ./gradle.properties
-          echo 'signing.secretKeyRingFile=./keyring.gpg' >> ./gradle.properties
-          echo -n $MAVEN_GPG_PRIVATE_KEY | base64 -d > ./keyring.gpg
-        env:
-          MAVEN_CENTRAL_NAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
-          MAVEN_CENTRAL_PASS: ${{ secrets.MAVEN_CENTRAL_PASS }}
-          MAVEN_GPG_ID: ${{ secrets.MAVEN_GPG_ID }}
-          MAVEN_GPG_PASS: ${{ secrets.MAVEN_GPG_PASS }}
-          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-        shell: bash
       - name: Publish java binding
         working-directory: bindings/java
         run: |
+          unzip ./bin/bindings.zip -d ./bin
           chmod +x ./gradlew
-          ./gradlew publishAndReleaseToMavenCentral -x test --no-configuration-cache
+          ./gradlew jreleaserConfig
+          ./gradlew clean
+          ./gradlew publish -x test
+          ./gradlew jreleaserFullRelease
         shell: bash
       #- name: Import Actions GPG key
       #  uses: crazy-max/ghaction-import-gpg@v6

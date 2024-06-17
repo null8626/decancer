@@ -1,6 +1,8 @@
 plugins {
   id 'java'
+  id 'java-library'
   id 'maven-publish'
+  id 'org.jreleaser' version '1.12.0'
 }
 
 group 'io.github.null8626'
@@ -23,29 +25,18 @@ jar {
   }
 }
 
-task sourcesJar(type: Jar) {
-  archiveClassifier = 'sources'
-}
-
-task javadocJar(type: Jar) {
-  archiveClassifier = 'javadoc'
-}
-
 publishing {
   publications {
-    mavenJava(MavenPublication) {
-      groupId 'io.github.null8626'
-      artifactId 'decancer'
-      version '3.0.0'
-      
+    maven(MavenPublication) {
+      artifactId = 'decancer'
+      groupId = 'io.github.null8626'
+      version = '3.0.0'
+    
       from components.java
-      
-      artifact sourcesJar
-      artifact javadocJar
       
       pom {
         name = 'decancer'
-        description 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
+        description = 'A tiny package that removes common unicode confusables/homoglyphs from strings.'
         url = 'https://github.com/null8626/decancer'
         inceptionYear = '2021'
         
@@ -84,6 +75,31 @@ publishing {
       }
     }
   }
+  
+  repositories {
+    maven {
+      url = layout.buildDirectory.dir('staging-deploy')
+    }
+  }
+}
+
+jreleaser {
+  signing {
+    active = 'ALWAYS'
+    armored = true
+  }
+  
+  deploy {
+    maven {
+      mavenCentral {
+        sonatype {
+          active = 'ALWAYS'
+          url = 'https://central.sonatype.com/api/v1/publisher'
+          stagingRepository('target/staging-deploy')
+        }
+      }
+    }
+  }
 }
 
 javadoc {
@@ -92,10 +108,18 @@ javadoc {
   }
 }
 
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
+
 test {
   useJUnitPlatform()
   
-  systemProperty 'DECANCER_INSIDE_JAR', System.getProperty('DECANCER_INSIDE_JAR')
+  dependsOn cleanTest
+  testLogging.showStandardStreams = true
+  
+  systemProperty 'DECANCER_TESTING', System.getProperty('DECANCER_TESTING')
   systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
 }
 
