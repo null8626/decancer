@@ -726,7 +726,7 @@ jobs:
       JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
       JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.MAVEN_GPG_PUBLIC_KEY }}
       JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-      JRELEASER_GITHUB_TOKEN: ${{ serets.GITHUB_TOKEN }}
+      JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       JRELEASER_VERSION: ${{ needs.setup.outputs.release }}
     steps:
       - uses: actions/checkout@v4

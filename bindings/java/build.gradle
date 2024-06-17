@@ -1,5 +1,4 @@
 plugins {
-  id 'java'
   id 'java-library'
   id 'maven-publish'
   id 'org.jreleaser' version '1.12.0'
@@ -115,9 +114,6 @@ java {
 
 test {
   useJUnitPlatform()
-  
-  dependsOn cleanTest
-  testLogging.showStandardStreams = true
   
   systemProperty 'DECANCER_TESTING', System.getProperty('DECANCER_TESTING')
   systemProperty 'java.library.path', "${System.getProperty('java.library.path')}${File.pathSeparatorChar}$rootDir/bin"
