@@ -11,7 +11,6 @@ import cz.adamh.utils.NativeUtils;
  * This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: letter I and lowercase L)
  * </p>
  *
- * @see <a href="https://github.com/null8626/decancer">github.com/null8626/decancer</a>
  * @author null8626
  */
 public class CuredString {
@@ -221,7 +220,7 @@ public class CuredString {
    * Coerces this object to a String.
    *
    * <p>
-   * This comparison is case-insensitive.
+   * This comparison is case-insensitive.<br>
    *
    * <b>WARNING:</b> It's highly NOT recommended to use Java's comparison methods after calling this. The string output is NOT meant to be displayed visually.
    * </p>
@@ -236,7 +235,7 @@ public class CuredString {
    * Destroys and frees the memory used by this object.
    *
    * <p>
-   * Repeated calls to this method is fine and does not guarantee a double-free.
+   * Repeated calls to this method is fine and does not guarantee a double-free.<br>
    * Any subsequent String objects from toString() calls can still be used after this.
    * </p>
    *
@@ -248,7 +247,7 @@ public class CuredString {
    * Cures a string with decancer's default options.
    *
    * <p>
-   * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters.
+   * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters.<br>
    * Therefore, the output of this function should NOT be displayed visually.
    * </p>
    *

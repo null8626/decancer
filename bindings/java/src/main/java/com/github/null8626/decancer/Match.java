@@ -1,9 +1,8 @@
 package io.github.null8626.decancer;
 
 /**
- * A match yielded by the CuredString.find method.
+ * A match yielded by the CuredString.find() method.
  *
- * @see <a href="https://github.com/null8626/decancer">github.com/null8626/decancer</a>
  * @author null8626
  */
 public class Match {

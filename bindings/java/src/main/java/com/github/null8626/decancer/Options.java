@@ -5,8 +5,8 @@ package io.github.null8626.decancer;
  *
  * <p>
  * By default, decancer cures as much characters as possible and turns all of the output characters to lowercase.
+ * </p>
  *
- * @see <a href="https://github.com/null8626/decancer">github.com/null8626/decancer</a>
  * @author null8626
  */
 public final class Options {
@@ -45,7 +45,7 @@ public final class Options {
    * Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
    *
    * <p>
-   * Many confusables are neither an uppercase or a lowercase character.
+   * Many confusables are neither an uppercase or a lowercase character.<br>
    * Therefore, the decancer defaults to displaying the translation in lowercase.
    * </p>
    *
