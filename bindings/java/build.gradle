@@ -95,10 +95,16 @@ jreleaser {
           active = 'ALWAYS'
           url = 'https://central.sonatype.com/api/v1/publisher'
           gitRootSearch = true
-          maxRetries = 200
+          maxRetries = 250
           stagingRepository(layout.buildDirectory.dir('staging-deploy').get().toString())
         }
       }
+    }
+  }
+  
+  release {
+    github {
+      enabled: false
     }
   }
 }
