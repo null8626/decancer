@@ -104,7 +104,8 @@ jreleaser {
   
   release {
     github {
-      enabled = false
+      skipTag = true
+      skipRelease = true
     }
   }
 }
