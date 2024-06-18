@@ -28,7 +28,7 @@ A library that removes common unicode confusables/homoglyphs from strings.
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
   - C/C++
-  - Java
+  - [Java](https://central.sonatype.com/artifact/io.github.null8626/decancer/overview)
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 <!---[ end ]--->
 
