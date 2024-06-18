@@ -195,7 +195,7 @@ jobs:
       - name: Test
         run: |
           chmod +x ./gradlew
-          ./gradlew test --warning-mode all -DDECANCER_TESTING=1
+          ./gradlew test javadoc --warning-mode all -DDECANCER_TESTING=1
         working-directory: bindings/java
         shell: bash
 #  native:
@@ -756,9 +756,9 @@ jobs:
           unzip ./bin/bindings.zip -d ./bin
           chmod +x ./gradlew
           ./gradlew jreleaserConfig
-          ./gradlew clean build -x test
-          ./gradlew publish
-          ./gradlew jreleaserFullRelease
+          ./gradlew clean build publish -x test
+          ./gradlew jreleaserFullRelease --stacktrace
+        continue-on-error: true
         env:
           JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
           JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}

@@ -1,1 +1,0 @@
-Expand-Archive -Path .\bin\bindings.zip -DestinationPath .\bin -Force
