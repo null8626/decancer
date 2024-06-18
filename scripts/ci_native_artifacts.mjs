@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const TARGET = process.argv[2]
-const IS_JAVA = process.argv.some(argv => argv === '--java')
+const IS_JAVA = process.argv.slice(2).some(argv => argv === '--java')
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGET_DIR = join(
@@ -41,7 +41,9 @@ for (const artifact of artifacts) {
         rename(join(TARGET_DIR, artifact), join(ROOT_DIR, 'artifacts', name))
       )
     }
-  } catch {
+  } catch (err) {
+    console.log(err.stack)
+    
     continue
   }
 }
