@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const TARGET = process.argv[2]
-const IS_JAVA = process.argv.slice(2).some(argv => argv === '--java')
+const IS_JAVA = process.argv.slice(3).some(argv => argv === '--java')
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGET_DIR = join(
@@ -26,7 +26,7 @@ for (let artifact of artifacts) {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 
     if (
-      (!IS_JAVA && ext === '.lib') ||
+      (!IS_JAVA && ext === 'lib') ||
       ext === 'dll' ||
       ext === 'so' ||
       ext === 'dylib'

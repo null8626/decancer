@@ -160,7 +160,9 @@ jobs:
         shell: bash
       - name: Move and rename binaries
         if: ${{ !matrix.settings.build }}
-        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
+        run: |
+          ls -R bindings/java
+          node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
         shell: bash
       - name: Upload artifact
         if: ${{ github.event_name != 'pull_request' }}
