@@ -1,6 +1,5 @@
 .github/** eol=lf
-**/.gitignore eol=lf
-**/.gitmodules eol=lf
+.gitignore eol=lf
 **/*.bin binary
 **/*.wasm binary
 **/*.jar binary
