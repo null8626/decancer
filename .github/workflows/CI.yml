@@ -647,6 +647,7 @@ jobs:
       - name: Modify bindings.zip
         if: ${{ needs.setup.outputs.java_affected == 'true' || needs.setup.outputs.release != 'null' }}
         run: |
+          node scripts/ci_validate_java_artifacts.mjs
           mv ./java-artifacts/**/*.{dll,so,dylib} .
           zip -FSr ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
         shell: bash

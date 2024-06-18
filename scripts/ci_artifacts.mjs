@@ -19,17 +19,70 @@ const [artifacts] = await Promise.all([
   mkdir(join(NODE_DIR, 'artifacts'))
 ])
 
+const expectedNativeTargets = [
+  'aarch64-apple-darwin',
+  'aarch64-apple-ios',
+  'aarch64-apple-ios-sim',
+  'aarch64-linux-android',
+  'aarch64-pc-windows-msvc',
+  'aarch64-unknown-linux-gnu',
+  'aarch64-unknown-linux-musl',
+  'arm-unknown-linux-gnueabi',
+  'armv5te-unknown-linux-gnueabi',
+  'armv7-linux-androideabi',
+  'armv7-unknown-linux-gnueabi',
+  'armv7-unknown-linux-gnueabihf',
+  'i586-unknown-linux-gnu',
+  'i686-pc-windows-msvc',
+  'i686-unknown-freebsd',
+  'i686-unknown-linux-gnu',
+  'powerpc64le-unknown-linux-gnu',
+  'riscv64gc-unknown-linux-gnu',
+  's390x-unknown-linux-gnu',
+  'sparcv9-sun-solaris',
+  'thumbv7neon-unknown-linux-gnueabihf',
+  'x86_64-apple-darwin',
+  'x86_64-apple-ios',
+  'x86_64-pc-windows-msvc',
+  'x86_64-unknown-freebsd',
+  'x86_64-unknown-illumos',
+  'x86_64-unknown-linux-gnu',
+  'x86_64-unknown-linux-musl'
+]
+
+const expectedNodeTargets = [
+  'x86_64-apple-darwin',
+  'x86_64-pc-windows-msvc',
+  'i686-pc-windows-msvc',
+  'x86_64-unknown-linux-gnu',
+  'x86_64-unknown-linux-musl',
+  'aarch64-apple-darwin',
+  'aarch64-unknown-linux-gnu',
+  'armv7-unknown-linux-gnueabihf',
+  'aarch64-linux-android',
+  'armv7-linux-androideabi',
+  'aarch64-unknown-linux-musl',
+  'aarch64-pc-windows-msvc',
+  'freebsd-x64'
+]
+
 void (await Promise.all(
   artifacts.map(async artifact => {
     if (artifact.startsWith('native-')) {
+      const target = artifact.slice(7)
+      
+      expectedNativeTargets.splice(expectedNativeTargets.indexOf(target), 1)
+      
       await execute(
-        `zip ../decancer-${artifact.slice(7)}.zip ./${artifact}/*`,
+        `zip ../decancer-${target}.zip ./${artifact}/*`,
         {
           cwd: ARTIFACTS_DIR,
           stdio: 'inherit'
         }
       )
     } else if (artifact.startsWith('node-')) {
+      expectedNodeTargets.splice(expectedNodeTargets.indexOf(artifact.slice(5)), 1)
+      
       const artifactsDir = join(
         join(NODE_DIR, 'artifacts'),
         artifact.replace(/^node-/, 'bindings-')
@@ -45,3 +98,8 @@ void (await Promise.all(
     }
   })
 ))
+
+if (expectedNativeTargets.length !== 0 || expectedNodeTargets.length !== 0) {
+  console.error('error: found missing targets. exiting.')
+  process.exit(1)
+}
