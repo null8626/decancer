@@ -18,16 +18,16 @@ public class Match {
    */
   public final long end;
 
-  protected final String matched;
+  private final String matched;
 
-  protected Match(final long start, final long end, final String matched) {
+  private Match(final long start, final long end, final String matched) {
     this.start = start;
     this.end = end;
     this.matched = matched;
   }
 
   /**
-   * @return Returns the matched portion of the original String.
+   * @return String The matched portion of the original String.
    */
   @Override
   public String toString() {
