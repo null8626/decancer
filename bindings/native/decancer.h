@@ -22,7 +22,7 @@
  * @see DECANCER_VERSION_MINOR
  * @see DECANCER_VERSION_PATCH
  */
-#define DECANCER_VERSION 0x030201
+#define DECANCER_VERSION 0x030202
 
 /**
  * @brief The current major version used by this library.
