@@ -36,7 +36,10 @@ for (let artifact of artifacts) {
       }
 
       promises.push(
-        rename(join(TARGET_DIR, artifact), join(ROOT_DIR, 'artifacts', artifact))
+        rename(
+          join(TARGET_DIR, artifact),
+          join(ROOT_DIR, 'artifacts', artifact)
+        )
       )
     }
   } catch {
