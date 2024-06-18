@@ -1,3 +1,7 @@
+/* eslint-disable */
+
+'use strict'
+
 import { readdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { dirname, join, sep } from 'node:path'
 import { execSync } from 'node:child_process'
