@@ -31,10 +31,12 @@ for (let artifact of artifacts) {
       ext === 'so' ||
       ext === 'dylib'
     ) {
+      const outputArtifact = IS_JAVA ? artifact.replace('decancer', `decancer-${TARGET}`) : artifact
+
       promises.push(
         rename(
           join(TARGET_DIR, artifact),
-          join(ROOT_DIR, 'artifacts', artifact)
+          join(ROOT_DIR, 'artifacts', outputArtifact)
         )
       )
     }
