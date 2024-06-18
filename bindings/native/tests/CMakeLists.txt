@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8.2)
+cmake_minimum_required(VERSION 3.21.0)
 
 project(
   decancer_native_test
@@ -13,14 +13,34 @@ file(GLOB DECANCER_NATIVE_TEST_SOURCE_FILES *.c)
 
 add_executable(decancer_native_test ${DECANCER_NATIVE_TEST_SOURCE_FILES})
 
-find_library(DECANCER_LIBRARY NAMES "decancer.lib" "libdecancer.a" HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug" REQUIRED)
+if(WIN32)
+find_file(
+  DECANCER_DLL
+  NAMES "decancer.dll"
+  HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug"
+  REQUIRED
+)
+endif()
 
-target_compile_definitions(decancer_native_test PRIVATE __DECANCER_TEST__)
+find_library(
+  DECANCER_LINK_LIBRARY
+  NAMES "decancer.dll.lib" "libdecancer.dylib" "libdecancer.so"
+  HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug"
+  REQUIRED
+)
+
 target_include_directories(decancer_native_test PUBLIC "${CMAKE_SOURCE_DIR}/..")
-target_link_libraries(decancer_native_test ${DECANCER_LIBRARY})
+target_link_libraries(decancer_native_test ${DECANCER_LINK_LIBRARY})
+
+if(WIN32)
+add_custom_command(
+  TARGET decancer_native_test POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy ${DECANCER_DLL} $<TARGET_FILE_DIR:decancer_native_test>
+  COMMAND_EXPAND_LISTS
+)
+endif()
 
 add_custom_command(
-  TARGET decancer_native_test
-  POST_BUILD
+  TARGET decancer_native_test POST_BUILD
   COMMAND decancer_native_test
 )

@@ -1,0 +1,33 @@
+#include <windows.h>
+
+VS_VERSION_INFO VERSIONINFO
+  FILEVERSION DECANCER_RC_VERSION_MAJOR,DECANCER_RC_VERSION_MINOR,DECANCER_RC_VERSION_PATCH,0
+  PRODUCTVERSION DECANCER_RC_VERSION_MAJOR,DECANCER_RC_VERSION_MINOR,DECANCER_RC_VERSION_PATCH,0
+  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+
+FILEFLAGS 0
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_DLL
+FILESUBTYPE VFT2_UNKNOWN
+
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "null8626"
+      VALUE "FileDescription", "A library that removes common unicode confusables/homoglyphs from strings."
+      VALUE "FileVersion", DECANCER_RC_VERSION
+      VALUE "ProductVersion", DECANCER_RC_VERSION
+      VALUE "ProductName", "decancer"
+      VALUE "InternalName", "decancer"
+      VALUE "LegalCopyright", "Copyright (C) 2021-2024 null - Licensed under the MIT License."
+      VALUE "OriginalFilename", "decancer.dll"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1200
+  END
+END

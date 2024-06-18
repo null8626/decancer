@@ -6,7 +6,7 @@ publish = false
 
 [lib]
 name = "decancer"
-crate-type = ["cdylib", "staticlib"]
+crate-type = ["cdylib"]
 
 [lints.clippy]
 all = { level = "warn", priority = -1 }
@@ -20,6 +20,9 @@ single-match-else = "allow"
 [dependencies]
 decancer = { path = "../../core", default-features = false }
 paste = "1"
+
+[target."cfg(windows)".build-dependencies]
+embed-resource = "2"
 
 [features]
 default = ["options", "leetspeak"]

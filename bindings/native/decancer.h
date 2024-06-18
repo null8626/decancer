@@ -9,11 +9,47 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#if defined(_WIN32) && !defined(__DECANCER_TEST__)
+#ifdef _WIN32
 #define DECANCER_EXPORT __declspec(dllimport)
 #else
 #define DECANCER_EXPORT
 #endif
+
+/**
+ * @brief The current version used by this library.
+ *
+ * @see DECANCER_VERSION_MAJOR
+ * @see DECANCER_VERSION_MINOR
+ * @see DECANCER_VERSION_PATCH
+ */
+#define DECANCER_VERSION 0x030201
+
+/**
+ * @brief The current major version used by this library.
+ *
+ * @see DECANCER_VERSION
+ * @see DECANCER_VERSION_MINOR
+ * @see DECANCER_VERSION_PATCH
+ */
+#define DECANCER_VERSION_MAJOR ((DECANCER_VERSION & 0xff0000) >> 16)
+
+/**
+ * @brief The current minor version used by this library.
+ *
+ * @see DECANCER_VERSION
+ * @see DECANCER_VERSION_MAJOR
+ * @see DECANCER_VERSION_PATCH
+ */
+#define DECANCER_VERSION_MINOR ((DECANCER_VERSION & 0xff00) >> 8)
+
+/**
+ * @brief The current patch version used by this library.
+ *
+ * @see DECANCER_VERSION
+ * @see DECANCER_VERSION_MAJOR
+ * @see DECANCER_VERSION_MINOR
+ */
+#define DECANCER_VERSION_PATCH (DECANCER_VERSION & 0xff)
 
 /**
  * @brief The translation is a single unicode character.

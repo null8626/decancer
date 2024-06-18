@@ -26,17 +26,11 @@ for (const artifact of artifacts) {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 
     if (
-      (!IS_JAVA && (ext === 'lib' || ext === 'a')) ||
+      (!IS_JAVA && ext === '.lib') ||
       ext === 'dll' ||
       ext === 'so' ||
       ext === 'dylib'
     ) {
-      if (ext === 'lib' && !artifact.endsWith('.dll.lib')) {
-        continue
-      }
-
-      let name = artifact.replace('.dll.lib', '.lib')
-
       if (IS_JAVA) {
         name = name.replace('decancer', `decancer-${TARGET}`)
       }

@@ -85,9 +85,7 @@ jobs:
             build: |
               rustup target add aarch64-unknown-linux-musl
               cargo build --target aarch64-unknown-linux-musl --release
-              /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.a
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
-              mv ./target/aarch64-unknown-linux-musl/release/libdecancer.a ../../artifacts/libdecancer-aarch64-unknown-linux-musl.a
               mv ./target/aarch64-unknown-linux-musl/release/libdecancer.so ../../artifacts/libdecancer-aarch64-unknown-linux-musl.so
           - target: arm-unknown-linux-gnueabi
             host: ubuntu-latest
@@ -118,9 +116,7 @@ jobs:
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
               cargo build --release
-              strip ./target/release/libdecancer.a
               strip ./target/release/libdecancer.so
-              mv ./target/release/libdecancer.a ../../artifacts/libdecancer-x86_64-unknown-linux-musl.a
               mv ./target/release/libdecancer.so ../../artifacts/libdecancer-x86_64-unknown-linux-musl.so
     needs:
       - setup
