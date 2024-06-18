@@ -137,7 +137,7 @@ powershell -NoLogo -NoProfile -NonInteractive -Command "Expand-Archive -Path .\b
 gradle build --warning-mode all
 ```
 
-OSX/Linux:
+macOS/Linux:
 
 ```sh
 git clone https://github.com/null8626/decancer.git --depth 1
