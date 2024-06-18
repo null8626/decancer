@@ -34,7 +34,7 @@ for (const artifact of artifacts) {
   expectedJavaTargets.splice(expectedJavaTargets.indexOf(artifact.slice(5)), 1)
 }
 
-if (artifact.length !== 0) {
+if (expectedJavaTargets.length !== 0) {
   console.error('error: found missing targets. exiting.')
   process.exit(1)
 }
