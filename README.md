@@ -313,6 +313,8 @@ console.log(cured.toString())
 <details>
 <summary><b>Java</b></summary>
 
+For more information, please read the [documentation](https://javadoc.io/doc/io.github.null8626/decancer).
+
 ```java
 import io.github.null8626.decancer.CuredString;
 
