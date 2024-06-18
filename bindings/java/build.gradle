@@ -95,7 +95,7 @@ jreleaser {
           active = 'ALWAYS'
           url = 'https://central.sonatype.com/api/v1/publisher'
           gitRootSearch = true
-          stagingRepository('target/staging-deploy')
+          stagingRepository(layout.buildDirectory.dir('staging-deploy').get().toString())
         }
       }
     }
