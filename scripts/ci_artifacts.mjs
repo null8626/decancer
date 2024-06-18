@@ -70,19 +70,19 @@ void (await Promise.all(
   artifacts.map(async artifact => {
     if (artifact.startsWith('native-')) {
       const target = artifact.slice(7)
-      
+
       expectedNativeTargets.splice(expectedNativeTargets.indexOf(target), 1)
-      
-      await execute(
-        `zip ../decancer-${target}.zip ./${artifact}/*`,
-        {
-          cwd: ARTIFACTS_DIR,
-          stdio: 'inherit'
-        }
-      )
+
+      await execute(`zip ../decancer-${target}.zip ./${artifact}/*`, {
+        cwd: ARTIFACTS_DIR,
+        stdio: 'inherit'
+      })
     } else if (artifact.startsWith('node-')) {
-      expectedNodeTargets.splice(expectedNodeTargets.indexOf(artifact.slice(5)), 1)
-      
+      expectedNodeTargets.splice(
+        expectedNodeTargets.indexOf(artifact.slice(5)),
+        1
+      )
+
       const artifactsDir = join(
         join(NODE_DIR, 'artifacts'),
         artifact.replace(/^node-/, 'bindings-')
