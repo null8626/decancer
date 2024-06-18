@@ -23,7 +23,9 @@ const promises = []
 
 for (const artifact of artifacts) {
   try {
+    console.log(artifact)
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
+    console.log(ext)
 
     if (
       (!IS_JAVA && ext === '.lib') ||

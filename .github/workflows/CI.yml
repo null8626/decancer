@@ -326,7 +326,7 @@ jobs:
         shell: bash
       - name: Move binaries
         if: ${{ !matrix.settings.build }}
-        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --move
+        run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }}
         shell: bash
       - name: Upload artifact
         if: ${{ needs.setup.outputs.release != 'null' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
