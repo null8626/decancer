@@ -21,11 +21,9 @@ const TARGET_DIR = join(
 const artifacts = await readdir(TARGET_DIR)
 const promises = []
 
-for (const artifact of artifacts) {
+for (let artifact of artifacts) {
   try {
-    console.log(artifact)
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
-    console.log(ext)
 
     if (
       (!IS_JAVA && ext === '.lib') ||
@@ -34,16 +32,14 @@ for (const artifact of artifacts) {
       ext === 'dylib'
     ) {
       if (IS_JAVA) {
-        name = name.replace('decancer', `decancer-${TARGET}`)
+        artifact = artifact.replace('decancer', `decancer-${TARGET}`)
       }
 
       promises.push(
-        rename(join(TARGET_DIR, artifact), join(ROOT_DIR, 'artifacts', name))
+        rename(join(TARGET_DIR, artifact), join(ROOT_DIR, 'artifacts', artifact))
       )
     }
-  } catch (err) {
-    console.log(err.stack)
-
+  } catch {
     continue
   }
 }
