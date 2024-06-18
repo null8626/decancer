@@ -1,15 +1,13 @@
 <!-- WARNING: this markdown file is computer generated.
      please modify the README.md file in the root directory instead. -->
 
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
 [crates-io-url]: https://crates.io/crates/decancer
 [npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/decancer
-[jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
-[jitpack-io-url]: https://jitpack.io/#null8626/decancer
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
 [codacy-image]: https://app.codacy.com/project/badge/Grade/d740b1aa867d42f2b37eb992ad73784a
 [codacy-url]: https://app.codacy.com/gh/null8626/decancer/dashboard

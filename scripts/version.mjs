@@ -46,6 +46,9 @@ void (await Promise.all([
     directUpdateFunc
   ),
   update(join(ROOT_DIR, 'index.html'), directUpdateFunc),
+  update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
+  update(join(CORE_DIR, 'README.md'), directUpdateFunc),
+  update(join(ROOT_DIR, 'bindings', 'node', 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
   update(join(ROOT_DIR, 'bindings', 'java', 'build.gradle'), updateGradleFunc),
