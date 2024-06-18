@@ -133,7 +133,7 @@ Windows:
 ```bat
 git clone https://github.com/null8626/decancer.git --depth 1
 cd .\decancer\bindings\java
-powershell -NoLogo -NoProfile -NonInteractive -File .\extract_bindings.ps1
+powershell -NoLogo -NoProfile -NonInteractive -Command "Expand-Archive -Path .\bin\bindings.zip -DestinationPath .\bin -Force"
 gradle build --warning-mode all
 ```
 
