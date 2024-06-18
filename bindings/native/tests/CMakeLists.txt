@@ -16,21 +16,21 @@ add_executable(decancer_native_test ${DECANCER_NATIVE_TEST_SOURCE_FILES})
 if(WIN32)
 find_file(
   DECANCER_DLL
-  NAMES "decancer.dll"
+  NAME "decancer.dll"
   HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug"
   REQUIRED
 )
 endif()
 
 find_library(
-  DECANCER_LINK_LIBRARY
+  DECANCER_LIBRARY
   NAMES "decancer.dll.lib" "libdecancer.dylib" "libdecancer.so"
   HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug"
   REQUIRED
 )
 
 target_include_directories(decancer_native_test PUBLIC "${CMAKE_SOURCE_DIR}/..")
-target_link_libraries(decancer_native_test ${DECANCER_LINK_LIBRARY})
+target_link_libraries(decancer_native_test ${DECANCER_LIBRARY})
 
 if(WIN32)
 add_custom_command(
