@@ -31,7 +31,9 @@ for (let artifact of artifacts) {
       ext === 'so' ||
       ext === 'dylib'
     ) {
-      const outputArtifact = IS_JAVA ? artifact.replace('decancer', `decancer-${TARGET}`) : artifact
+      const outputArtifact = IS_JAVA
+        ? artifact.replace('decancer', `decancer-${TARGET}`)
+        : artifact
 
       promises.push(
         rename(
