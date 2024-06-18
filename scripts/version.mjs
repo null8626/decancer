@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CORE_DIR = join(ROOT_DIR, 'core')
 const NODE_DIR = join(ROOT_DIR, 'bindings', 'node')
+const JRELEASER_VERSION = '1.12.0'
 
 async function update(filename, callback) {
   await writeFile(filename, callback(await readFile(filename, 'utf-8')))
@@ -24,8 +25,10 @@ function updateJsonFunc(str) {
 
 function updateGradleFunc(x) {
   return x
+    .replace(JRELEASER_VERSION, '{JRELEASER_VERSION}')
     .replace(/'\d+\.\d+\.\d+'/g, `'${process.argv[2]}'`)
     .replace(/\/v\d+\.\d+\.\d+\//, `/v${process.argv[2]}/`)
+    .replace('{JRELEASER_VERSION}', JRELEASER_VERSION)
 }
 
 const updateTomlFunc = x =>
