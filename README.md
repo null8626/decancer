@@ -1,12 +1,10 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![jitpack.io][jitpack-io-image]][jitpack-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
 [crates-io-downloads-image]: https://img.shields.io/crates/d/decancer?style=flat-square
 [crates-io-url]: https://crates.io/crates/decancer
 [npm-image]: https://img.shields.io/npm/v/decancer.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/decancer
-[jitpack-io-image]: https://jitpack.io/v/null8626/decancer.svg
-[jitpack-io-url]: https://jitpack.io/#null8626/decancer
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
 [codacy-image]: https://app.codacy.com/project/badge/Grade/d740b1aa867d42f2b37eb992ad73784a
 [codacy-url]: https://app.codacy.com/gh/null8626/decancer/dashboard
@@ -44,7 +42,7 @@ A library that removes common unicode confusables/homoglyphs from strings.
 In your `Cargo.toml`:
 
 ```toml
-decancer = "3.2.0"
+decancer = "3.2.1"
 ```
 
 <!---[ end, begin DECANCER_GLOBAL ]--->
@@ -80,7 +78,7 @@ In your code:
 
 ```html
 <script type="module">
-  import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.0/bindings/wasm/bin/decancer.min.js'
+  import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.1/bindings/wasm/bin/decancer.min.js'
 
   const decancer = await init()
 </script>
@@ -101,7 +99,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'io.github.null8626:decancer:3.2.0'
+  implementation 'io.github.null8626:decancer:3.2.1'
 }
 ```
 
@@ -123,7 +121,7 @@ In your `pom.xml`:
   <dependency>
   <groupId>io.github.null8626</groupId>
   <artifactId>decancer</artifactId>
-  <version>3.2.0</version>
+  <version>3.2.1</version>
   </dependency>
 </dependencies>
 ```
@@ -157,35 +155,35 @@ Tip: You can shrink the size of the resulting jar file by removing binaries in t
 
 ### Download
 
-- [Header file](https://raw.githubusercontent.com/null8626/decancer/v3.2.0/bindings/native/decancer.h)
-- [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-apple-darwin.zip)
-- [Download for ARM64 iOS](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-apple-ios.zip)
-- [Download for Apple iOS Simulator on ARM6](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-apple-ios-sim.zip)
-- [Download for ARM64 Android](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-linux-android.zip)
-- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-pc-windows-msvc.zip)
-- [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-unknown-linux-gnu.zip)
-- [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-aarch64-unknown-linux-musl.zip)
-- [Download for ARMv6 Linux (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-arm-unknown-linux-gnueabi.zip)
-- [Download for ARMv5TE Linux (kernel 4.4, glibc 2.23)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-armv5te-unknown-linux-gnueabi.zip)
-- [Download for ARMv7-A Android](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-armv7-linux-androideabi.zip)
-- [Download for ARMv7-A Linux (kernel 4.15, glibc 2.27)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-armv7-unknown-linux-gnueabi.zip)
-- [Download for ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-armv7-unknown-linux-gnueabihf.zip)
-- [Download for 32-bit Linux w/o SSE (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-i586-unknown-linux-gnu.zip)
-- [Download for 32-bit MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-i686-pc-windows-msvc.zip)
-- [Download for 32-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-i686-unknown-freebsd.zip)
-- [Download for 32-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-i686-unknown-linux-gnu.zip)
-- [Download for PPC64LE Linux (kernel 3.10, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-powerpc64le-unknown-linux-gnu.zip)
-- [Download for RISC-V Linux (kernel 4.20, glibc 2.29)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-riscv64gc-unknown-linux-gnu.zip)
-- [Download for S390x Linux (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-s390x-unknown-linux-gnu.zip)
-- [Download for SPARC Solaris 11, illumos](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-sparcv9-sun-solaris.zip)
-- [Download for Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-thumbv7neon-unknown-linux-gnueabihf.zip)
-- [Download for 64-bit macOS (10.12+, Sierra+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-apple-darwin.zip)
-- [Download for 64-bit iOS](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-apple-ios.zip)
-- [Download for 64-bit MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-pc-windows-msvc.zip)
-- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-unknown-freebsd.zip)
-- [Download for 64-bit illumos](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-unknown-illumos.zip)
-- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-unknown-linux-gnu.zip)
-- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v3.2.0/decancer-x86_64-unknown-linux-musl.zip)
+- [Header file](https://raw.githubusercontent.com/null8626/decancer/v3.2.1/bindings/native/decancer.h)
+- [Download for ARM64 macOS (11.0+, Big Sur+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-apple-darwin.zip)
+- [Download for ARM64 iOS](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-apple-ios.zip)
+- [Download for Apple iOS Simulator on ARM6](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-apple-ios-sim.zip)
+- [Download for ARM64 Android](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-linux-android.zip)
+- [Download for ARM64 Windows MSVC](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-pc-windows-msvc.zip)
+- [Download for ARM64 Linux (kernel 4.1, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-unknown-linux-gnu.zip)
+- [Download for ARM64 Linux with MUSL](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-aarch64-unknown-linux-musl.zip)
+- [Download for ARMv6 Linux (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-arm-unknown-linux-gnueabi.zip)
+- [Download for ARMv5TE Linux (kernel 4.4, glibc 2.23)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-armv5te-unknown-linux-gnueabi.zip)
+- [Download for ARMv7-A Android](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-armv7-linux-androideabi.zip)
+- [Download for ARMv7-A Linux (kernel 4.15, glibc 2.27)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-armv7-unknown-linux-gnueabi.zip)
+- [Download for ARMv7-A Linux, hardfloat (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-armv7-unknown-linux-gnueabihf.zip)
+- [Download for 32-bit Linux w/o SSE (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-i586-unknown-linux-gnu.zip)
+- [Download for 32-bit MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-i686-pc-windows-msvc.zip)
+- [Download for 32-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-i686-unknown-freebsd.zip)
+- [Download for 32-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-i686-unknown-linux-gnu.zip)
+- [Download for PPC64LE Linux (kernel 3.10, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-powerpc64le-unknown-linux-gnu.zip)
+- [Download for RISC-V Linux (kernel 4.20, glibc 2.29)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-riscv64gc-unknown-linux-gnu.zip)
+- [Download for S390x Linux (kernel 3.2, glibc 2.17)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-s390x-unknown-linux-gnu.zip)
+- [Download for SPARC Solaris 11, illumos](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-sparcv9-sun-solaris.zip)
+- [Download for Thumb2-mode ARMv7-A Linux with NEON (kernel 4.4, glibc 2.23)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-thumbv7neon-unknown-linux-gnueabihf.zip)
+- [Download for 64-bit macOS (10.12+, Sierra+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-apple-darwin.zip)
+- [Download for 64-bit iOS](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-apple-ios.zip)
+- [Download for 64-bit MSVC (Windows 7+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-pc-windows-msvc.zip)
+- [Download for 64-bit FreeBSD](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-unknown-freebsd.zip)
+- [Download for 64-bit illumos](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-unknown-illumos.zip)
+- [Download for 64-bit Linux (kernel 3.2+, glibc 2.17+)](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-unknown-linux-gnu.zip)
+- [Download for 64-bit Linux with MUSL](https://github.com/null8626/decancer/releases/download/v3.2.1/decancer-x86_64-unknown-linux-musl.zip)
 
 ### Building from source
 
@@ -289,7 +287,7 @@ console.log(cured.toString())
     <br />
     <button id="cure" onclick="cure()">cure!</button>
     <script type="module">
-      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.0/bindings/wasm/bin/decancer.min.js'
+      import init from 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.2.1/bindings/wasm/bin/decancer.min.js'
     
       const decancer = await init()
     
