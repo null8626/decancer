@@ -31,6 +31,18 @@ function updateGradleFunc(x) {
     .replace('{JRELEASER_VERSION}', JRELEASER_VERSION)
 }
 
+function updateNativeHeaderFunc(x) {
+  const versionHex = `0x${process.argv[2]
+    .split('.')
+    .map(x => x.padStart(2, '0'))
+    .join('')}`
+
+  return x.replace(
+    /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
+    `#define DECANCER_VERSION ${versionHex}`
+  )
+}
+
 const updateTomlFunc = x =>
   x.replace(/version = "\d+\.\d+\.\d+"/, `version = "${process.argv[2]}"`)
 const directUpdateFunc = x => x.replace(/(\d\.\d\.\d)/g, process.argv[2])
@@ -48,6 +60,10 @@ void (await Promise.all([
   update(join(ROOT_DIR, 'index.html'), directUpdateFunc),
   update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
+  update(
+    join(ROOT_DIR, 'bindings', 'native', 'decancer.h'),
+    updateNativeHeaderFunc
+  ),
   update(join(ROOT_DIR, 'bindings', 'node', 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),

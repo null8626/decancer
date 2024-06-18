@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const TARGET = process.argv[2]
-const IS_JAVA = process.argv.some(argv => argv === '--java')
+const IS_JAVA = process.argv.slice(2).some(argv => argv === '--java')
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGET_DIR = join(
@@ -21,28 +21,25 @@ const TARGET_DIR = join(
 const artifacts = await readdir(TARGET_DIR)
 const promises = []
 
-for (const artifact of artifacts) {
+for (let artifact of artifacts) {
   try {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 
     if (
-      (!IS_JAVA && (ext === 'lib' || ext === 'a')) ||
+      (!IS_JAVA && ext === '.lib') ||
       ext === 'dll' ||
       ext === 'so' ||
       ext === 'dylib'
     ) {
-      if (ext === 'lib' && !artifact.endsWith('.dll.lib')) {
-        continue
-      }
-
-      let name = artifact.replace('.dll.lib', '.lib')
-
       if (IS_JAVA) {
-        name = name.replace('decancer', `decancer-${TARGET}`)
+        artifact = artifact.replace('decancer', `decancer-${TARGET}`)
       }
 
       promises.push(
-        rename(join(TARGET_DIR, artifact), join(ROOT_DIR, 'artifacts', name))
+        rename(
+          join(TARGET_DIR, artifact),
+          join(ROOT_DIR, 'artifacts', artifact)
+        )
       )
     }
   } catch {
