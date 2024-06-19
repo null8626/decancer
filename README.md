@@ -447,7 +447,7 @@ If you want to support my eyes for manually looking at thousands of unicode char
 
 [![ko-fi][ko-fi-image]][ko-fi-url]
 
-<!---[ end, begin DECANCER_GLOBAL ]--->
+<!---[ begin DECANCER_GLOBAL ]--->
 
 ## Contributing
 
