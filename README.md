@@ -439,12 +439,15 @@ END:
 ```
 
 </details>
+<!---[ end ]--->
 
 ## Donations
 
 If you want to support my eyes for manually looking at thousands of unicode characters, consider donating! ❤
 
 [![ko-fi][ko-fi-image]][ko-fi-url]
+
+<!---[ end, begin DECANCER_GLOBAL ]--->
 
 ## Contributing
 

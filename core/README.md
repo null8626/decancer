@@ -54,3 +54,8 @@ assert_eq!(cured, "very ***** text with leetspeak");
 cured.censor_multiple(["very", "text"], '-');
 assert_eq!(cured, "---- ***** ---- with leetspeak");
 ```
+## Donations
+
+If you want to support my eyes for manually looking at thousands of unicode characters, consider donating! ❤
+
+[![ko-fi][ko-fi-image]][ko-fi-url]

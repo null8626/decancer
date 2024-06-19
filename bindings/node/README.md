@@ -69,3 +69,8 @@ cured.censorMultiple(['very', 'text'], '-')
 console.log(cured.toString())
 // => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
 ```
+## Donations
+
+If you want to support my eyes for manually looking at thousands of unicode characters, consider donating! ❤
+
+[![ko-fi][ko-fi-image]][ko-fi-url]
