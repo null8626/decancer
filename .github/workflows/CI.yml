@@ -695,6 +695,7 @@ jobs:
       - name: Generate native library documentation
         working-directory: bindings/native/docs
         run: |
+          doxygen
           node docgen.mjs
           mv ./html ../../../native_docs
         shell: bash
