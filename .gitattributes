@@ -1,5 +1,6 @@
 .github/** eol=lf
 .gitignore eol=lf
+.gitmodules eol=lf
 **/*.bin binary
 **/*.wasm binary
 **/*.jar binary
@@ -7,12 +8,15 @@
 **/*.h eol=lf
 .prettierrc.js linguist-vendored=true eol=lf
 **/CMakeLists.txt linguist-vendored=true eol=lf
+**/Doxyfile linguist-vendored=true eol=lf
+**/*.css linguist-vendored=true eol=lf
 **/*.ts linguist-vendored=true eol=lf
 **/*.mjs linguist-vendored=true eol=lf
 **/*.cjs linguist-vendored=true eol=lf
 **/*.html linguist-vendored=true eol=lf
-**/*.java eol=lf
 **/*.rc linguist-vendored=true eol=lf
+bindings/native/ linguist-vendored=true eol=lf
+**/*.java eol=lf
 **/*.rs eol=lf
 bindings/node/src/lib.js eol=lf
 **/*.md eol=lf

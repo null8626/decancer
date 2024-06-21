@@ -674,17 +674,30 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.native_affected == 'true') }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
           node-version: latest
+      - uses: ssciwr/doxygen-install@v1
       - name: Download wasm artifact
         uses: actions/download-artifact@v4
         with:
           name: wasm
           path: bindings/wasm/bin
+      - name: Move wasm example file
+        run: mv ./bindings/wasm/example.html ./wasm_example.html
+        shell: bash
+      - name: Generate native library documentation
+        working-directory: bindings/native/docs
+        run: |
+          node docgen.mjs
+          mv ./html ../../../native_docs
+        shell: bash
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
       - name: Delete GitHub Pages deployment history
