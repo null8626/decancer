@@ -22,7 +22,6 @@ bindings/native/docs/html/
 bindings/native/docs/xml/
 bindings/native/tests/*.c
 bindings/native/tests/build/
-bindings/native/docs/
 bindings/native/build/
 bindings/wasm/pkg/
 core/proptest-regressions/

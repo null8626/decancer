@@ -15,7 +15,7 @@
 **/*.cjs linguist-vendored=true eol=lf
 **/*.html linguist-vendored=true eol=lf
 **/*.rc linguist-vendored=true eol=lf
-bindings/native/ linguist-vendored=true eol=lf
+bindings/native/docs/ linguist-vendored=true eol=lf
 **/*.java eol=lf
 **/*.rs eol=lf
 bindings/node/src/lib.js eol=lf

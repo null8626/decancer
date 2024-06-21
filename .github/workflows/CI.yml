@@ -46,6 +46,7 @@ jobs:
       node_affected: ${{ steps.setup.outputs.node_affected }}
       wasm_affected: ${{ steps.setup.outputs.wasm_affected }}
       native_affected: ${{ steps.setup.outputs.native_affected }}
+      native_docs_affected: ${{ steps.setup.outputs.native_docs_affected }}
       java_affected: ${{ steps.setup.outputs.java_affected }}
   core:
     name: Test core
@@ -173,7 +174,7 @@ jobs:
     needs:
       - setup
       - java-native
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
+    if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
     name: Test java bindings
     runs-on: ubuntu-latest
     steps:
@@ -340,7 +341,7 @@ jobs:
     needs:
       - setup
       - native
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
+    if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -545,7 +546,7 @@ jobs:
     needs:
       - setup
       - node
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
+    if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -570,7 +571,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.native_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
@@ -604,7 +605,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
-      - native
       - java
       - wasm
     if: ${{ always() && github.event_name != 'pull_request' }}
@@ -675,7 +675,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.native_affected == 'true') }}
+    if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.native_docs_affected == 'true') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -686,6 +686,7 @@ jobs:
           node-version: latest
       - uses: ssciwr/doxygen-install@v1
       - name: Download wasm artifact
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
         uses: actions/download-artifact@v4
         with:
           name: wasm
@@ -696,8 +697,7 @@ jobs:
       - name: Generate native library documentation
         working-directory: bindings/native/docs
         run: |
-          doxygen
-          node docgen.mjs
+          node ./docgen.mjs
           mv ./html ../../../native_docs
         shell: bash
       - name: Setup GitHub Pages
@@ -730,7 +730,7 @@ jobs:
       - native-test
       - commit
       - pages
-    if: ${{ always() && needs.setup.outputs.release != 'null' }}
+    if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -789,7 +789,7 @@ jobs:
       - setup
       - commit
       - java
-    if: ${{ always() && needs.setup.outputs.release != 'null' }}
+    if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
     env:
       JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
       JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}

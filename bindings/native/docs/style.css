@@ -1,0 +1,168 @@
+html {
+  --font-family: "Inter";
+  --font-family-monospace: "Roboto Mono";
+  --top-height: 150px;
+  --searchbar-border-radius: 0px;
+}
+
+#MSearchField {
+  padding: 0px 10px;
+}
+
+#projectname a, div.header .title, h1, h2.groupheader {
+  font-weight: 900;
+}
+
+div.contents {
+  margin: 0px auto var(--spacing-medium) auto;
+}
+
+.see a {
+  font-family: var(--font-family-monospace);
+  font-size: var(--memname-font-size);
+}
+
+a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#apitype, h2.groupheader, #projectbrief {
+  user-select: none;
+}
+
+h2.groupheader {
+  box-shadow: none;
+}
+
+#projectbrief {
+  padding-bottom: 10px;
+}
+
+#top {
+  border-bottom: none;
+}
+
+#top, #apis {
+  overflow-x: hidden;
+}
+
+#apis {
+  background-color: #191A1C;
+  overflow-y: auto;
+}
+
+#apis, #apitype, #api {
+  font-size: var(--memname-font-size);
+}
+
+#apitype {
+  color: white;
+}
+
+#apilist {
+  padding-left: calc(var(--spacing-large) + 10px);
+  padding-right: var(--spacing-large);
+}
+
+#apilist:last-child {
+  margin-bottom: 35px;
+}
+
+#api {
+  font-family: var(--font-family-monospace);
+  display: block;
+  color: var(--primary-color);
+}
+
+#apitype {
+  padding: calc(var(--spacing-medium) - 5px) var(--spacing-large);
+  font-weight: bold;
+}
+
+#api-not-found {
+  font-size: var(--page-font-size);
+  text-align: center;
+  margin-top: 50px;
+  font-weight: bold;
+}
+
+#MSearchBox {
+  right: 0px;
+}
+
+@media screen and (max-width: 1169px) {
+  div.contents .textblock h1 a {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1170px) {
+  div.contents .textblock h1 a {
+    display: inline-block;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  #MSearchBox {
+    width: calc(100% - var(--spacing-medium) + var(--spacing-small));
+    margin-top: 0px;
+  }
+  
+  #titlearea {
+    background-color: var(--side-nav-background);
+  }
+  
+  html {
+    --searchbar-background: var(--page-background-color);
+  }
+  
+  html, body, .top-enabled {
+    position: relative;
+    height: 100%;
+  }
+  
+  #apis {
+    position: relative;
+    height: calc(100% - var(--top-height) + 29px);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  html, body {
+    overflow: auto;
+    position: relative;
+    height: 100%;
+  }
+  
+  #apis {
+    position: relative;
+    height: calc(100% - var(--top-height) + var(--spacing-large));
+  }
+  
+  #top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    height: 100%;
+  }
+  
+  #doc-content {
+    position: relative;
+    top: calc(var(--top-height) - 17px - 100%);
+    padding-top: 0px;
+    height: 100% !important;
+  }
+  
+  #MSearchBox {
+    width: calc(var(--side-nav-fixed-width) - calc(4 * var(--spacing-medium)));
+  }
+}
+
+html, div.header .title {
+  visibility: hidden;
+}
+
+hr, .permalink, .footer, #MSearchSelect, #MSearchBox .right {
+  display: none;
+}
