@@ -14,6 +14,8 @@
 
 .yarn/
 .yarnrc.yml
+wasm_example.html
+native_docs/
 bindings/java/.gradle/
 bindings/java/build/
 bindings/java/gradle.properties
@@ -22,7 +24,6 @@ bindings/native/docs/html/
 bindings/native/docs/xml/
 bindings/native/tests/*.c
 bindings/native/tests/build/
-bindings/native/docs/
 bindings/native/build/
 bindings/wasm/pkg/
 core/proptest-regressions/
