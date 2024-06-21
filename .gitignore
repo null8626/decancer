@@ -14,6 +14,8 @@
 
 .yarn/
 .yarnrc.yml
+wasm_example.html
+native_docs/
 bindings/java/.gradle/
 bindings/java/build/
 bindings/java/gradle.properties

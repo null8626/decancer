@@ -671,6 +671,7 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs:
+      - setup
       - commit
     permissions: write-all
     environment:
@@ -687,7 +688,7 @@ jobs:
           node-version: latest
       - uses: ssciwr/doxygen-install@v1
       - name: Download wasm artifact
-        if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
+        if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/download-artifact@v4
         with:
           name: wasm
