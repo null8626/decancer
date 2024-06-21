@@ -632,6 +632,7 @@ jobs:
         run: |
           node scripts/ci_readme.mjs ./core/README.md DECANCER_RUST
           node scripts/ci_readme.mjs ./bindings/node/README.md DECANCER_JS
+          node scripts/ci_readme.mjs ./bindings/native/README.md DECANCER_NATIVE
         shell: bash
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
