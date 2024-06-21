@@ -570,7 +570,7 @@ jobs:
     needs:
       - setup
       - core
-    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
+    if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.native_affected == 'true') }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@v1
@@ -604,6 +604,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
+      - native
       - java
       - wasm
     if: ${{ always() && github.event_name != 'pull_request' }}
