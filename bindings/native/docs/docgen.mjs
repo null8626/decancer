@@ -19,23 +19,24 @@ try {
   } catch {
     process.exit(1)
   }
-  
+
   XMLParser = (await import('fast-xml-parser')).XMLParser
 }
 
 function renderAPIHTML(parts) {
-  let rendered = '<div id="apis"><div id="api-not-found">Not such query exists :(</div>'
-  
+  let rendered =
+    '<div id="apis"><div id="api-not-found">Not such query exists :(</div>'
+
   for (const [name, members] of Object.entries(parts)) {
     rendered += `<div id="apitype">${name}</div><div id="apilist">`
-    
+
     for (const member of members) {
       rendered += `<a id="api" href="${member.href}">${member.name}</a>`
     }
-    
+
     rendered += '</div>'
   }
-  
+
   return `${rendered}</div>`
 }
 
@@ -52,7 +53,9 @@ const parser = new XMLParser({
   ignoreAttributes: false
 })
 
-const index = parser.parse(readFileSync(join(ROOT_DIR, 'xml', 'index.xml')).toString())
+const index = parser.parse(
+  readFileSync(join(ROOT_DIR, 'xml', 'index.xml')).toString()
+)
 
 const typeDefinitions = []
 const macros = []
@@ -70,16 +73,16 @@ for (const compound of index.doxygenindex.compound) {
         name: member.name,
         href: member['@_refid'].replace('decancer_8h_1', 'decancer_8h.html#')
       }
-      
+
       switch (member['@_kind']) {
         case 'define':
           macros.push(data)
           break
-        
+
         case 'typedef':
           typeDefinitions.push(data)
           break
-        
+
         case 'function':
           functions.push(data)
       }
@@ -93,11 +96,16 @@ const renderedAPIHTML = renderAPIHTML({
   Macros: macros
 })
 
-for (const htmlFile of readdirSync(HTML_DIR).filter(file => file.endsWith('.html'))) {
+for (const htmlFile of readdirSync(HTML_DIR).filter(file =>
+  file.endsWith('.html')
+)) {
   const htmlFilePath = join(HTML_DIR, htmlFile)
   const htmlFileContents = readFileSync(htmlFilePath).toString()
-  
+
   try {
-    writeFileSync(htmlFilePath, htmlFileContents.replace('$apis', renderedAPIHTML))
+    writeFileSync(
+      htmlFilePath,
+      htmlFileContents.replace('$apis', renderedAPIHTML)
+    )
   } catch {}
 }
