@@ -358,7 +358,7 @@ typedef void* decancer_matches_t;
  *
  *   union {
  *     uint32_t character;
- * 
+ *
  *     struct {
  *       const uint8_t* contents;
  *       size_t size;
