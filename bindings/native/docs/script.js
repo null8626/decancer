@@ -210,7 +210,7 @@ window.addEventListener('load', () => {
     for (const link of document.querySelectorAll('.memItemRight a')) {
       link.style.fontWeight = 'bold'
     }
-    
+
     for (const returnDoc of document.querySelectorAll('.return dd')) {
       returnDoc.innerHTML = returnDoc.innerHTML.replace(/^(const )?\w+\*? /, '')
     }
