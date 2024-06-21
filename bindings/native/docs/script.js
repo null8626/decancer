@@ -207,13 +207,12 @@ window.addEventListener('load', () => {
     document.querySelector('.contents .textblock:first-child').remove()
     document.querySelector('.contents p a:first-child').remove()
 
-    const firstHeader = document.querySelector('h2.groupheader')
-
-    firstHeader.style.paddingTop = '0px'
-    firstHeader.style.marginTop = '0px'
-
     for (const link of document.querySelectorAll('.memItemRight a')) {
       link.style.fontWeight = 'bold'
+    }
+    
+    for (const returnDoc of document.querySelectorAll('.return dd')) {
+      returnDoc.innerHTML = returnDoc.innerHTML.replace(/^(const )?\w+\*? /, '')
     }
 
     headerTitle.remove()

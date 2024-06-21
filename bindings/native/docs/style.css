@@ -35,6 +35,10 @@ h2.groupheader {
   box-shadow: none;
 }
 
+#apitype, #api-not-found, .see dd a {
+  font-weight: bold;
+}
+
 #projectbrief {
   padding-bottom: 10px;
 }
@@ -52,8 +56,12 @@ h2.groupheader {
   overflow-y: auto;
 }
 
-#apis, #apitype, #api {
+#apis, #apitype, #api, .note dd {
   font-size: var(--memname-font-size);
+}
+
+dl.section dd {
+  margin-bottom: 0px;
 }
 
 #apitype {
@@ -77,14 +85,12 @@ h2.groupheader {
 
 #apitype {
   padding: calc(var(--spacing-medium) - 5px) var(--spacing-large);
-  font-weight: bold;
 }
 
 #api-not-found {
   font-size: var(--page-font-size);
   text-align: center;
   margin-top: 50px;
-  font-weight: bold;
 }
 
 #MSearchBox {
