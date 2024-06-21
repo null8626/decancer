@@ -198,6 +198,7 @@
  * @brief Prevents decancer from curing all emojis.
  */
 #define DECANCER_OPTION_RETAIN_EMOJIS (1 << 21)
+
 /**
  * @brief Removes all non-ASCII characters from the result.
  *
@@ -225,6 +226,13 @@
 /**
  * @brief Represents an error caused by decancer not being able to cure a string.
  *
+ * ```c
+ * typedef struct {
+ *   const char* message;
+ *   uint8_t message_length;
+ * } decancer_error_t;
+ * ```
+ *
  * @see decancer_cure
  * @see decancer_cure_utf16
  */
@@ -242,6 +250,13 @@ typedef struct {
 
 /**
  * @brief Represents a UTF-8 encoded keyword. This struct is often used inside an array.
+ *
+ * ```c
+ * typedef struct {
+ *   const uint8_t* string;
+ *   size_t size;
+ * } decancer_keyword_t;
+ * ```
  *
  * @see decancer_find_multiple
  * @see decancer_censor_multiple
@@ -261,6 +276,13 @@ typedef struct {
 
 /**
  * @brief Represents a UTF-16 encoded keyword. This struct is often used inside an array.
+ *
+ * ```c
+ * typedef struct {
+ *   const uint16_t* string;
+ *   size_t length;
+ * } decancer_keyword_utf16_t;
+ * ```
  *
  * @see decancer_find_multiple_utf16
  * @see decancer_censor_multiple_utf16
@@ -330,6 +352,22 @@ typedef void* decancer_matches_t;
 /**
  * @brief Represents a translation of a unicode codepoint.
  *
+ * ```c
+ * typedef struct {
+ *   uint8_t kind;
+ *
+ *   union {
+ *     uint32_t character;
+ * 
+ *     struct {
+ *       const uint8_t* contents;
+ *       size_t size;
+ *       void* __heap;
+ *     } string;
+ *   } contents;
+ * } decancer_translation_t;
+ * ```
+ *
  * @see decancer_cure_char
  * @see decancer_translation_init
  * @see decancer_translation_clone
@@ -392,6 +430,13 @@ typedef void* decancer_cured_t;
 
 /**
  * @brief Represents a match in UTF-8 indices.
+ *
+ * ```c
+ * typedef struct {
+ *   size_t start;
+ *   size_t end;
+ * } decancer_match_t;
+ * ```
  *
  * @see decancer_find
  * @see decancer_find_utf16

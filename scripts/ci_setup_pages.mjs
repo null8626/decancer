@@ -9,8 +9,9 @@ import { fileURLToPath } from 'node:url'
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const MINIFIED_JS = join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js')
 const EXCLUDED = [
-  'index.html',
+  'wasm_example.html',
   ['bindings', 'wasm', 'bin'],
+  ['native_docs'],
   ['scripts'],
   ['.git']
 ]

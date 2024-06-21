@@ -1,0 +1,3 @@
+[submodule "bindings/native/docs/doxygen-awesome-css"]
+	path = bindings/native/docs/doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css.git
