@@ -115,12 +115,29 @@ dl.section dd {
     margin-top: 0px;
   }
   
+  div.memdoc {
+    padding-bottom: var(--spacing-medium);
+  }
+  
+  div.memdoc *:last-child {
+    margin-bottom: 0px;
+  }
+  
+  div.memproto {
+    padding: calc(var(--spacing-medium) / 2);
+  }
+  
+  div.fragment {
+    padding: calc((var(--spacing-large) - (var(--spacing-large) / 6)) / 2) calc(var(--spacing-large) / 2);
+  }
+  
   #titlearea {
     background-color: var(--side-nav-background);
   }
   
   html {
     --searchbar-background: var(--page-background-color);
+    --code-font-size: 13px;
   }
   
   html, body, .top-enabled {
