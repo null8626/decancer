@@ -817,6 +817,6 @@ jobs:
         shell: bash
       - name: Publish java binding
         working-directory: bindings/java
-        run: ./gradlew jreleaserFullRelease --stacktrace
+        run: ./gradlew jreleaserFullRelease
         continue-on-error: true
         shell: bash
