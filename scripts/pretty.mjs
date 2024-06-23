@@ -124,7 +124,7 @@ async function updateReadme() {
 }
 
 async function prettier() {
-  const extensions = ['js', 'ts', 'mjs', 'cjs', 'json']
+  const extensions = ['css', 'js', 'ts', 'mjs', 'cjs', 'json']
 
   await execute('npm i -g prettier')
 
