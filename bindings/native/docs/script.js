@@ -317,3 +317,4 @@ window.addEventListener('load', () => {
 
     elem.scrollIntoView()
   }
+})
