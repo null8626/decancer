@@ -17,6 +17,7 @@ on:
       - '**/*.json'
       - 'README.md'
       - 'core/bin/codepoints.bin'
+      - 'bindings/native/docs/**'
       - 'bindings/native/decancer.h'
       - 'bindings/native/decancer.cpp'
       - 'bindings/native/decancer.hpp'
