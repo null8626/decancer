@@ -1,6 +1,6 @@
 html {
-  --font-family: "Inter";
-  --font-family-monospace: "Roboto Mono";
+  --font-family: 'Inter';
+  --font-family-monospace: 'Roboto Mono';
   --top-height: 150px;
   --searchbar-border-radius: 0px;
 }
@@ -9,7 +9,10 @@ html {
   padding: 0px 10px;
 }
 
-#projectname a, div.header .title, h1, h2.groupheader {
+#projectname a,
+div.header .title,
+h1,
+h2.groupheader {
   font-weight: 900;
 }
 
@@ -27,7 +30,9 @@ a:hover {
   text-decoration: underline;
 }
 
-#apitype, h2.groupheader, #projectbrief {
+#apitype,
+h2.groupheader,
+#projectbrief {
   user-select: none;
 }
 
@@ -35,7 +40,9 @@ h2.groupheader {
   box-shadow: none;
 }
 
-#apitype, #api-not-found, .see dd a {
+#apitype,
+#api-not-found,
+.see dd a {
   font-weight: bold;
 }
 
@@ -47,16 +54,20 @@ h2.groupheader {
   border-bottom: none;
 }
 
-#top, #apis {
+#top,
+#apis {
   overflow-x: hidden;
 }
 
 #apis {
-  background-color: #191A1C;
+  background-color: #191a1c;
   overflow-y: auto;
 }
 
-#apis, #apitype, #api, .note dd {
+#apis,
+#apitype,
+#api,
+.note dd {
   font-size: var(--memname-font-size);
 }
 
@@ -114,29 +125,32 @@ dl.section dd {
     width: calc(100% - var(--spacing-medium) + var(--spacing-small));
     margin-top: 0px;
   }
-  
+
   div.memproto {
     padding: calc(var(--spacing-medium) / 2);
   }
-  
+
   div.fragment {
-    padding: calc((var(--spacing-large) - (var(--spacing-large) / 6)) / 2) calc(var(--spacing-large) / 2);
+    padding: calc((var(--spacing-large) - (var(--spacing-large) / 6)) / 2)
+      calc(var(--spacing-large) / 2);
   }
-  
+
   #titlearea {
     background-color: var(--side-nav-background);
   }
-  
+
   html {
     --searchbar-background: var(--page-background-color);
     --code-font-size: 13px;
   }
-  
-  html, body, .top-enabled {
+
+  html,
+  body,
+  .top-enabled {
     position: relative;
     height: 100%;
   }
-  
+
   #apis {
     position: relative;
     height: calc(100% - var(--top-height) + 29px);
@@ -144,40 +158,46 @@ dl.section dd {
 }
 
 @media screen and (min-width: 768px) {
-  html, body {
+  html,
+  body {
     overflow: auto;
     position: relative;
     height: 100%;
   }
-  
+
   #apis {
     position: relative;
     height: calc(100% - var(--top-height) + var(--spacing-large));
   }
-  
+
   #top {
     position: -webkit-sticky;
     position: sticky;
     top: 0px;
     height: 100%;
   }
-  
+
   #doc-content {
     position: relative;
     top: calc(var(--top-height) - 17px - 100%);
     padding-top: 0px;
     height: 100% !important;
   }
-  
+
   #MSearchBox {
     width: calc(var(--side-nav-fixed-width) - calc(4 * var(--spacing-medium)));
   }
 }
 
-html, div.header .title {
+html,
+div.header .title {
   visibility: hidden;
 }
 
-hr, .permalink, .footer, #MSearchSelect, #MSearchBox .right {
+hr,
+.permalink,
+.footer,
+#MSearchSelect,
+#MSearchBox .right {
   display: none;
 }

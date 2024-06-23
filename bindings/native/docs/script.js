@@ -291,6 +291,10 @@ window.addEventListener('load', () => {
     }
   })
 
+  for (const memname of document.querySelectorAll('td.memname')) {
+    memname.innerHTML = memname.innerHTML.replace(/^DECANCER_EXPORT /, '')
+  }
+
   const input = document.querySelector('input')
 
   window.addEventListener('keydown', event => {
