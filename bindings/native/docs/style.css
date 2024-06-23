@@ -115,14 +115,6 @@ dl.section dd {
     margin-top: 0px;
   }
   
-  div.memdoc {
-    padding-bottom: var(--spacing-medium);
-  }
-  
-  div.memdoc *:last-child {
-    margin-bottom: 0px;
-  }
-  
   div.memproto {
     padding: calc(var(--spacing-medium) / 2);
   }
