@@ -306,7 +306,7 @@ console.log(cured.toString())
 </html>
 ```
 
-[See this in action here.](https://null8626.github.io/decancer/wasm_example.html)
+[See this in action here.](https://null8626.github.io/decancer/wasm_example)
 
 </details>
 <details>
@@ -351,7 +351,7 @@ public class Program {
 <summary><b>C/C++</b></summary>
 <!---[ end, begin DECANCER_NATIVE ]--->
 
-For more information, please read the [documentation](https://null8626.github.io/decancer/native_docs/index.html).
+For more information, please read the [documentation](https://null8626.github.io/decancer/native_docs).
 
 UTF-8 example:
 
