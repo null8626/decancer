@@ -72,7 +72,7 @@ cargo build --release
 
 And the binary files should be generated in the `target/release` directory.
 ## Examples
-For more information, please read the [documentation](https://null8626.github.io/decancer/native_docs/index.html).
+For more information, please read the [documentation](https://null8626.github.io/decancer/native_docs).
 
 UTF-8 example:
 
