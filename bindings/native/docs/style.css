@@ -18,6 +18,7 @@ h2.groupheader {
 
 div.contents {
   margin: 0px auto var(--spacing-medium) auto;
+  padding-bottom: var(--spacing-large);
 }
 
 .see a {
