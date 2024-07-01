@@ -64,7 +64,10 @@ void (await Promise.all([
     join(ROOT_DIR, 'bindings', 'native', 'decancer.h'),
     updateNativeHeaderFunc
   ),
-  update(join(ROOT_DIR, 'bindings', 'native', 'docs', 'Doxyfile'), directUpdateFunc),
+  update(
+    join(ROOT_DIR, 'bindings', 'native', 'docs', 'Doxyfile'),
+    directUpdateFunc
+  ),
   update(join(ROOT_DIR, 'bindings', 'node', 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
