@@ -57,13 +57,14 @@ void (await Promise.all([
     join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js'),
     directUpdateFunc
   ),
-  update(join(ROOT_DIR, 'index.html'), directUpdateFunc),
+  update(join(ROOT_DIR, 'bindings', 'wasm', 'example.html'), directUpdateFunc),
   update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(
     join(ROOT_DIR, 'bindings', 'native', 'decancer.h'),
     updateNativeHeaderFunc
   ),
+  update(join(ROOT_DIR, 'bindings', 'native', 'docs', 'Doxyfile'), directUpdateFunc),
   update(join(ROOT_DIR, 'bindings', 'node', 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),

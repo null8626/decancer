@@ -1,6 +1,6 @@
 [package]
 name = "decancer"
-version = "3.2.2"
+version = "3.2.3"
 edition = "2021"
 authors = ["null (https://github.com/null8626)"]
 description = "A library that removes common unicode confusables/homoglyphs from strings."
