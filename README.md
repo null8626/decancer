@@ -306,7 +306,7 @@ console.log(cured.toString())
 </html>
 ```
 
-[See this in action here.](https://null8626.github.io/decancer/wasm_example.html)
+[See this in action here.](https://null8626.github.io/decancer/wasm_example)
 
 </details>
 <details>
