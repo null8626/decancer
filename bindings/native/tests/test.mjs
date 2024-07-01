@@ -69,10 +69,10 @@ for (const line of readFileSync(join(ROOT_DIR, 'decancer.h'))
           .join('\n')
           .replace('int main(', `int ${functionName}_test(`)
         functions.push(functionName)
-        
+
         writeFileSync(join(TESTS_DIR, `${functionName}_test.c`), exampleCode)
       } catch {}
-      
+
       example = []
       status = 0
     }
