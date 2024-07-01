@@ -63,13 +63,16 @@ for (const line of readFileSync(join(ROOT_DIR, 'decancer.h'))
     }
 
     default: {
-      const functionName = line.match(/(decancer_\w+)\(/)[1]
-      const exampleCode = example
-        .join('\n')
-        .replace('int main(', `int ${functionName}_test(`)
-      functions.push(functionName)
+      try {
+        const functionName = line.match(/(decancer_\w+)\(/)[1]
+        const exampleCode = example
+          .join('\n')
+          .replace('int main(', `int ${functionName}_test(`)
+        functions.push(functionName)
 
-      writeFileSync(join(TESTS_DIR, `${functionName}_test.c`), exampleCode)
+        writeFileSync(join(TESTS_DIR, `${functionName}_test.c`), exampleCode)
+      } catch {}
+
       example = []
       status = 0
     }
