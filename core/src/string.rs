@@ -81,11 +81,11 @@ impl CuredString {
 
     for mat in matches {
       let chars = original[mat.clone()].chars().count();
+      let cap = chars * with.len_utf8();
 
-      with_str.clear();
-      with_str.reserve_exact(chars);
+      with_str.reserve_exact(cap);
 
-      for _ in 0..chars {
+      for _ in with_str.len() / with.len_utf8()..chars {
         with_str.push(with);
       }
 
@@ -94,7 +94,7 @@ impl CuredString {
         &with_str,
       );
 
-      char_diff += with_str.len() as isize - mat.len() as isize;
+      char_diff += cap as isize - mat.len() as isize;
     }
   }
 
