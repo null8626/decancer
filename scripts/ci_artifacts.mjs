@@ -95,6 +95,8 @@ void (await Promise.all(
       ])
 
       await rename(join(originDir, nodeBinary), join(artifactsDir, nodeBinary))
+    } else if (artifact === 'java-jar') {
+      await rename(join(ARTIFACTS_DIR, artifact, 'decancer.jar'), join(ROOT_DIR, 'decancer.jar'))
     }
   })
 ))
