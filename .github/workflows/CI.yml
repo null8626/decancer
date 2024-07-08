@@ -723,6 +723,51 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+  java-publish:
+    name: Publish java binding
+    runs-on: ubuntu-latest
+    needs:
+      - setup
+      - commit
+      - java
+    if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
+    env:
+      JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
+      JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}
+      JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
+      JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.MAVEN_GPG_PUBLIC_KEY }}
+      JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+      JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      JRELEASER_VERSION: ${{ needs.setup.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: oracle
+          java-version: 21
+      - name: Prepare java binding
+        working-directory: bindings/java
+        run: |
+          unzip ./bin/bindings.zip -d ./bin
+          chmod +x ./gradlew
+          ./gradlew jreleaserConfig
+          ./gradlew clean build publish -x test
+        shell: bash
+      - name: Publish java binding
+        working-directory: bindings/java
+        run: ./gradlew jreleaserFullRelease
+        continue-on-error: true
+        shell: bash
+      - name: Move jar file
+        working-directory: bindings/java
+        run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../..
+        shell: bash
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-jar
+          path: ./decancer.jar
+          if-no-files-found: error
   publish:
     name: Publish
     runs-on: ubuntu-latest
@@ -733,6 +778,7 @@ jobs:
       - native-test
       - commit
       - pages
+      - java-publish
     if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
     steps:
       - uses: actions/checkout@v4
@@ -780,43 +826,10 @@ jobs:
           body: "This is the GitHub Release for decancer v${{ needs.setup.outputs.release }}."
           draft: false
           prerelease: false
-          files: "*.zip"
+          files: |
+            decancer.jar
+            *.zip
           tag_name: "v${{ needs.setup.outputs.release }}"
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_REPOSITORY: null8626/decancer
-  publish-java:
-    name: Publish java binding
-    runs-on: ubuntu-latest
-    needs:
-      - setup
-      - commit
-      - java
-    if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
-    env:
-      JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
-      JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}
-      JRELEASER_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASS }}
-      JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.MAVEN_GPG_PUBLIC_KEY }}
-      JRELEASER_GPG_SECRET_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-      JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      JRELEASER_VERSION: ${{ needs.setup.outputs.release }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: oracle
-          java-version: 21
-      - name: Prepare java binding
-        working-directory: bindings/java
-        run: |
-          unzip ./bin/bindings.zip -d ./bin
-          chmod +x ./gradlew
-          ./gradlew jreleaserConfig
-          ./gradlew clean build publish -x test
-        shell: bash
-      - name: Publish java binding
-        working-directory: bindings/java
-        run: ./gradlew jreleaserFullRelease
-        continue-on-error: true
-        shell: bash
