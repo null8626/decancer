@@ -1,4 +1,8 @@
-#![allow(clippy::missing_safety_doc, clippy::unused_unit, clippy::missing_transmute_annotations)]
+#![allow(
+  clippy::missing_safety_doc,
+  clippy::unused_unit,
+  clippy::missing_transmute_annotations
+)]
 
 use jni::{
   errors::Result,
