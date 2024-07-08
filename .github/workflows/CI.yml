@@ -766,7 +766,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: java-jar
-          path: ./decancer.jar
+          path: decancer.jar
           if-no-files-found: error
   publish:
     name: Publish
