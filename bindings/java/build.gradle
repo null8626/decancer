@@ -87,7 +87,7 @@ jreleaser {
     name = 'decancer'
     version = '3.2.3'
     description = 'A library that removes common unicode confusables/homoglyphs from strings.'
-    longDescription = 'A library that removes common unicode confusables/homoglyphs from strings.'
+    longDescription = 'A library that removes common unicode confusables/homoglyphs from strings. By default, the library supports filtering over 220,000 unicode codepoints and reordering right-to-left text as it were to be rendered graphically.'
     license = 'MIT'
     inceptionYear = '2021'
     copyright = 'Copyright (c) 2021-2024 null8626'
