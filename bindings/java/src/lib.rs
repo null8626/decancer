@@ -1,10 +1,10 @@
 #![allow(clippy::missing_safety_doc, clippy::unused_unit)]
 
 use jni::{
+  errors::Result,
   objects::{JClass, JObject, JObjectArray, JString, JValue, JValueGen},
   signature::{Primitive, ReturnType},
   sys::{jboolean, jchar, jint, jlong, jobject, jstring},
-  errors::Result,
   JNIEnv,
 };
 use std::mem::transmute;
@@ -29,10 +29,16 @@ macro_rules! jni_unwrap {
   };
 }
 
-fn get_inner_unchecked<'a, 'local>(env: &'a mut JNIEnv<'local>, this: &'a JObject<'local>) -> Result<*mut decancer::CuredString> {
+fn get_inner_unchecked<'a, 'local>(
+  env: &'a mut JNIEnv<'local>,
+  this: &'a JObject<'local>,
+) -> Result<*mut decancer::CuredString> {
   let descriptor = env.get_field_id(CUREDSTRING_CLASS, "inner", "J")?;
-  
-  env.get_field_unchecked(this, descriptor, ReturnType::Primitive(Primitive::Long)).and_then(|field| field.j()).map(|value| value as _)
+
+  env
+    .get_field_unchecked(this, descriptor, ReturnType::Primitive(Primitive::Long))
+    .and_then(|field| field.j())
+    .map(|value| value as _)
 }
 
 macro_rules! get_inner_unchecked {
@@ -66,7 +72,10 @@ macro_rules! get_inner {
   };
 }
 
-fn get_string_array<'a, 'local>(env: &'a mut JNIEnv<'local>, object: &'a JObjectArray<'local>)  -> Result<Vec<String>> {
+fn get_string_array<'a, 'local>(
+  env: &'a mut JNIEnv<'local>,
+  object: &'a JObjectArray<'local>,
+) -> Result<Vec<String>> {
   let input_len = env.get_array_length(object)?;
   let mut objects: Vec<String> = Vec::with_capacity(input_len as _);
 
