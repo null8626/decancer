@@ -80,18 +80,17 @@ impl CuredString {
     let mut char_diff = 0isize;
 
     for mat in matches {
-      let chars = original[mat.clone()].chars().count();
-      let cap = chars * with.len_utf8();
+      let cap = original[mat.clone()].chars().count() * with.len_utf8();
 
       with_str.reserve_exact(cap);
 
-      for _ in with_str.len() / with.len_utf8()..chars {
+      for _ in (with_str.len()..cap).step_by(with.len_utf8()) {
         with_str.push(with);
       }
 
       self.0.replace_range(
         (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
-        &with_str,
+        &with_str[..cap],
       );
 
       char_diff += cap as isize - mat.len() as isize;
