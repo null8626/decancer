@@ -229,6 +229,7 @@ impl IsolatingRunSequence {
 
         if class == e {
           found_e = true;
+          break;
         } else if class == not_e {
           found_not_e = true;
         } else if matches!(class, Class::EN | Class::AN) {
@@ -236,11 +237,8 @@ impl IsolatingRunSequence {
             found_not_e = true;
           } else {
             found_e = true;
+            break;
           }
-        }
-
-        if found_e {
-          break;
         }
       }
 
@@ -267,12 +265,10 @@ impl IsolatingRunSequence {
           .unwrap()
           .len_utf8();
 
-        for class in &mut processing_classes[pair.start..pair.start + start_char_len] {
-          *class = class_to_set;
-        }
-
-        for class in &mut processing_classes[pair.end..pair.end + end_char_len] {
-          *class = class_to_set;
+        for class in
+          (pair.start..pair.start + start_char_len).chain(pair.end..pair.end + end_char_len)
+        {
+          processing_classes[class] = class_to_set;
         }
 
         for idx in self.iter_backwards_from(pair.start, pair.start_run) {
@@ -285,9 +281,7 @@ impl IsolatingRunSequence {
           *class = class_to_set;
         }
 
-        let nsm_start = pair.start + start_char_len;
-
-        for idx in self.iter_forwards_from(nsm_start, pair.start_run) {
+        for idx in self.iter_forwards_from(pair.start + start_char_len, pair.start_run) {
           if processing_classes[idx] == Class::BN {
             processing_classes[idx] = class_to_set;
           } else {
@@ -295,9 +289,7 @@ impl IsolatingRunSequence {
           }
         }
 
-        let nsm_end = pair.end + end_char_len;
-
-        for idx in self.iter_forwards_from(nsm_end, pair.end_run) {
+        for idx in self.iter_forwards_from(pair.end + end_char_len, pair.end_run) {
           if processing_classes[idx] == Class::BN {
             processing_classes[idx] = class_to_set;
           } else {
