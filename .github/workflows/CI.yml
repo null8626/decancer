@@ -193,7 +193,7 @@ jobs:
       - name: Test
         run: |
           chmod +x ./gradlew
-          ./gradlew test javadoc --warning-mode all -DDECANCER_TESTING=1
+          ./gradlew test javadoc -DDECANCER_TESTING=1
         working-directory: bindings/java
         shell: bash
   native:

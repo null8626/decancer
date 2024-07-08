@@ -134,7 +134,7 @@ Windows:
 git clone https://github.com/null8626/decancer.git --depth 1
 cd .\decancer\bindings\java
 powershell -NoLogo -NoProfile -NonInteractive -Command "Expand-Archive -Path .\bin\bindings.zip -DestinationPath .\bin -Force"
-gradle build --warning-mode all
+gradle build -x test
 ```
 
 macOS/Linux:
@@ -144,7 +144,7 @@ git clone https://github.com/null8626/decancer.git --depth 1
 cd ./decancer/bindings/java
 unzip ./bin/bindings.zip -d ./bin
 chmod +x ./gradlew
-./gradlew build --warning-mode all
+./gradlew build -x test
 ```
 
 Tip: You can shrink the size of the resulting jar file by removing binaries in the `bin` directory for the platforms you don't want to support.
