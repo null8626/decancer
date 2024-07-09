@@ -46,6 +46,7 @@ function updateNativeHeaderFunc(x) {
       /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
       `#define DECANCER_VERSION ${versionHex}`
     )
+    .replace(/@date \d{4}\-\d{2}\-\d{2}/, `@date ${new Date().toISOString().replace(/T[\d\:\.]+Z$/, '')}`)
     .replace(/\d\.\d\.\d/, process.argv[2])
 }
 
