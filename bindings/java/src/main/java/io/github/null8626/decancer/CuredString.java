@@ -12,6 +12,8 @@ import cz.adamh.utils.NativeUtils;
  * </p>
  *
  * @author null8626
+ * @version 3.2.3
+ * @since 3.0.0
  */
 public class CuredString {
 
@@ -80,6 +82,7 @@ public class CuredString {
    * @return Match[] An array of Match objects containing every similar-looking match.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.1.0
    */
   public native Match[] find(String other);
 
@@ -95,6 +98,7 @@ public class CuredString {
    * @return Match[] An array of Match objects containing every similar-looking match.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.1.1
    */
   public native Match[] findMultiple(String[] other);
 
@@ -111,6 +115,7 @@ public class CuredString {
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.1.1
    */
   public native void censor(String other, char with);
 
@@ -127,6 +132,7 @@ public class CuredString {
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.1.1
    */
   public native void censorMultiple(String[] other, char with);
 
@@ -142,6 +148,7 @@ public class CuredString {
    * @see replaceMultiple
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.1.1
    */
   public native void replace(String other, String with);
 
@@ -157,6 +164,7 @@ public class CuredString {
    * @see replace
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.1.1
    */
   public native void replaceMultiple(String[] other, String with);
 
@@ -171,6 +179,7 @@ public class CuredString {
    * @return boolean Whether this object is similar with another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public native boolean equals(String other);
 
@@ -185,6 +194,7 @@ public class CuredString {
    * @return boolean Whether this object similarly starts with another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public native boolean startsWith(String other);
 
@@ -199,6 +209,7 @@ public class CuredString {
    * @return boolean Whether this object similarly ends with another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public native boolean endsWith(String other);
 
@@ -213,6 +224,7 @@ public class CuredString {
    * @return boolean Whether this object similarly contains another string.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public native boolean contains(String other);
 
@@ -228,6 +240,7 @@ public class CuredString {
    * @return String The String representation of this object.
    * @throws NullPointerException If destroy() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public native String toString();
 
@@ -240,6 +253,7 @@ public class CuredString {
    * </p>
    *
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public native void destroy();
 
@@ -254,6 +268,7 @@ public class CuredString {
    * @param input The string to cure.
    * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public CuredString(String input) {
     this.inner = CuredString.cure(input, 0);
@@ -266,6 +281,7 @@ public class CuredString {
    * @param options The explicit options.
    * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
    * @throws RuntimeException If a Rust panic occurs.
+   * @since 3.0.0
    */
   public CuredString(String input, Options options) {
     this.inner = CuredString.cure(input, options.inner);

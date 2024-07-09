@@ -8,21 +8,29 @@ package io.github.null8626.decancer;
  * </p>
  *
  * @author null8626
+ * @version 3.2.3
+ * @since 3.0.0
  */
 public final class Options {
 
   /**
    * Raw native bitflags.
+   *
+   * @since 3.0.0
    */
   protected int inner;
 
   /**
    * Predefined configuration with all options enabled.
+   *
+   * @since 3.2.0
    */
   public static Options ALL = new Options(0xffffff);
 
   /**
    * Predefined configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
+   *
+   * @since 3.0.0
    */
   public static Options PURE_HOMOGLYPH = new Options(0x1ffffc);
 
@@ -32,6 +40,8 @@ public final class Options {
    * <p>
    * By default, all options here are disabled, which means that decancer cures as much characters as possible and turns all of the output characters to lowercase.
    * </p>
+   *
+   * @since 3.0.0
    */
   public Options() {
     this.inner = 0;
@@ -50,6 +60,7 @@ public final class Options {
    * </p>
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainCapitalization() {
     this.inner |= (1 << 0);
@@ -67,6 +78,7 @@ public final class Options {
    * @see retainArabic
    * @see retainHebrew
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options disableBidi() {
     this.inner |= (1 << 1);
@@ -81,6 +93,7 @@ public final class Options {
    * </p>
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainDiacritics() {
     this.inner |= (1 << 2);
@@ -91,6 +104,7 @@ public final class Options {
    * Prevents decancer from curing all greek characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainGreek() {
     this.inner |= (1 << 3);
@@ -101,6 +115,7 @@ public final class Options {
    * Prevents decancer from curing all cyrillic characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainCyrillic() {
     this.inner |= (1 << 4);
@@ -111,6 +126,7 @@ public final class Options {
    * Prevents decancer from curing all hebrew characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainHebrew() {
     this.inner |= (1 << 5);
@@ -121,6 +137,7 @@ public final class Options {
    * Prevents decancer from curing all arabic characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainArabic() {
     this.inner |= (1 << 6);
@@ -131,6 +148,7 @@ public final class Options {
    * Prevents decancer from curing all devanagari characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainDevanagari() {
     this.inner |= (1 << 7);
@@ -141,6 +159,7 @@ public final class Options {
    * Prevents decancer from curing all bengali characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainBengali() {
     this.inner |= (1 << 8);
@@ -151,6 +170,7 @@ public final class Options {
    * Prevents decancer from curing all armenian characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainArmenian() {
     this.inner |= (1 << 9);
@@ -161,6 +181,7 @@ public final class Options {
    * Prevents decancer from curing all gujarati characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainGujarati() {
     this.inner |= (1 << 10);
@@ -171,6 +192,7 @@ public final class Options {
    * Prevents decancer from curing all tamil characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainTamil() {
     this.inner |= (1 << 11);
@@ -181,6 +203,7 @@ public final class Options {
    * Prevents decancer from curing all thai characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainThai() {
     this.inner |= (1 << 12);
@@ -191,6 +214,7 @@ public final class Options {
    * Prevents decancer from curing all lao characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainLao() {
     this.inner |= (1 << 13);
@@ -201,6 +225,7 @@ public final class Options {
    * Prevents decancer from curing all burmese characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainBurmese() {
     this.inner |= (1 << 14);
@@ -211,6 +236,7 @@ public final class Options {
    * Prevents decancer from curing all khmer characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainKhmer() {
     this.inner |= (1 << 15);
@@ -221,6 +247,7 @@ public final class Options {
    * Prevents decancer from curing all mongolian characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainMongolian() {
     this.inner |= (1 << 16);
@@ -231,6 +258,7 @@ public final class Options {
    * Prevents decancer from curing all chinese characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainChinese() {
     this.inner |= (1 << 17);
@@ -246,6 +274,7 @@ public final class Options {
    *
    * @see retainChinese
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainJapanese() {
     this.inner |= (1 << 18);
@@ -256,6 +285,7 @@ public final class Options {
    * Prevents decancer from curing all korean characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainKorean() {
     this.inner |= (1 << 19);
@@ -266,6 +296,7 @@ public final class Options {
    * Prevents decancer from curing all braille characters.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainBraille() {
     this.inner |= (1 << 20);
@@ -276,6 +307,7 @@ public final class Options {
    * Prevents decancer from curing all emojis.
    *
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.0.0
    */
   public Options retainEmojis() {
     this.inner |= (1 << 21);
@@ -287,6 +319,7 @@ public final class Options {
    *
    * @see alphanumericOnly
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.2.0
    */
   public Options asciiOnly() {
     this.inner |= (1 << 22);
@@ -298,6 +331,7 @@ public final class Options {
    *
    * @see asciiOnly
    * @return Options A reference to this object to allow for method chaining.
+   * @since 3.2.0
    */
   public Options alphanumericOnly() {
     this.inner |= (1 << 23);

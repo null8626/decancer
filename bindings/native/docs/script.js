@@ -204,9 +204,6 @@ window.addEventListener('load', () => {
       }
     }
 
-    document.querySelector('.contents .textblock:first-child').remove()
-    document.querySelector('.contents p a:first-child').remove()
-
     for (const link of document.querySelectorAll('.memItemRight a')) {
       link.style.fontWeight = 'bold'
     }
@@ -214,6 +211,14 @@ window.addEventListener('load', () => {
     for (const returnDoc of document.querySelectorAll('.return dd')) {
       returnDoc.innerHTML = returnDoc.innerHTML.replace(/^(const )?\w+\*? /, '')
     }
+
+    document.querySelector('.contents p').remove()
+
+    for (const textBlock of document.querySelectorAll('.contents .textblock')) {
+      textBlock.remove()
+    }
+
+    document.querySelector('.contents p a').remove()
 
     headerTitle.remove()
   } else if (structMatch) {
@@ -258,6 +263,12 @@ window.addEventListener('load', () => {
     elementsToScrollInto.push(headerTitle)
   } else {
     headerTitle.remove()
+  }
+
+  for (const since of document.querySelectorAll('.since dd')) {
+    const version = since.innerHTML.trim()
+
+    since.innerHTML = `<a href="https://github.com/null8626/decancer/releases/tag/v${version}">v${version}</a>`
   }
 
   try {

@@ -9,6 +9,18 @@ import { fileURLToPath } from 'node:url'
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CORE_DIR = join(ROOT_DIR, 'core')
 const NODE_DIR = join(ROOT_DIR, 'bindings', 'node')
+const JAVA_SOURCES_DIR = join(
+  ROOT_DIR,
+  'bindings',
+  'java',
+  'src',
+  'main',
+  'java',
+  'io',
+  'github',
+  'null8626',
+  'decancer'
+)
 const JRELEASER_VERSION = '1.12.0'
 
 async function update(filename, callback) {
@@ -31,21 +43,31 @@ function updateGradleFunc(x) {
     .replace('{JRELEASER_VERSION}', JRELEASER_VERSION)
 }
 
+const updateTomlFunc = x =>
+  x.replace(/version = "\d+\.\d+\.\d+"/, `version = "${process.argv[2]}"`)
+const directUpdateFunc = x => x.replace(/\d\.\d\.\d/g, process.argv[2])
+
+const updateDocStringVersionFunc = x =>
+  x.replace(/@version \d\.\d\.\d/, `@version ${process.argv[2]}`)
+
 function updateNativeHeaderFunc(x) {
   const versionHex = `0x${process.argv[2]
     .split('.')
     .map(x => x.padStart(2, '0'))
     .join('')}`
 
-  return x.replace(
-    /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
-    `#define DECANCER_VERSION ${versionHex}`
+  return updateDocStringVersionFunc(
+    x
+      .replace(
+        /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
+        `#define DECANCER_VERSION ${versionHex}`
+      )
+      .replace(
+        /@date \d{4}\-\d{2}\-\d{2}/,
+        `@date ${new Date().toISOString().replace(/T[\d\:\.]+Z$/, '')}`
+      )
   )
 }
-
-const updateTomlFunc = x =>
-  x.replace(/version = "\d+\.\d+\.\d+"/, `version = "${process.argv[2]}"`)
-const directUpdateFunc = x => x.replace(/(\d\.\d\.\d)/g, process.argv[2])
 
 void (await Promise.all([
   update(join(CORE_DIR, 'Cargo.toml'), updateTomlFunc),
@@ -77,6 +99,15 @@ void (await Promise.all([
       Promise.all(
         files.map(file =>
           update(join(NODE_DIR, 'npm', file, 'package.json'), updateJsonFunc)
+        )
+      ).then(resolve)
+    })
+  }),
+  new Promise(resolve => {
+    readdir(JAVA_SOURCES_DIR).then(files => {
+      Promise.all(
+        files.map(file =>
+          update(join(JAVA_SOURCES_DIR, file), updateDocStringVersionFunc)
         )
       ).then(resolve)
     })
