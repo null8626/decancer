@@ -71,7 +71,10 @@ for (const compound of index.doxygenindex.compound) {
     for (const member of compound.member) {
       const data = {
         name: member.name,
-        href: member['@_refid'].replace(/_1([a-f0-9]+)$/, (_, x) => `.html#${x}`)
+        href: member['@_refid'].replace(
+          /_1([a-f0-9]+)$/,
+          (_, x) => `.html#${x}`
+        )
       }
 
       switch (member['@_kind']) {
