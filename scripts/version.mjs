@@ -41,10 +41,12 @@ function updateNativeHeaderFunc(x) {
     .map(x => x.padStart(2, '0'))
     .join('')}`
 
-  return x.replace(
-    /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
-    `#define DECANCER_VERSION ${versionHex}`
-  ).replace(/\d\.\d\.\d/, process.argv[2])
+  return x
+    .replace(
+      /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
+      `#define DECANCER_VERSION ${versionHex}`
+    )
+    .replace(/\d\.\d\.\d/, process.argv[2])
 }
 
 void (await Promise.all([

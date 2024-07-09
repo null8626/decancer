@@ -211,13 +211,13 @@ window.addEventListener('load', () => {
     for (const returnDoc of document.querySelectorAll('.return dd')) {
       returnDoc.innerHTML = returnDoc.innerHTML.replace(/^(const )?\w+\*? /, '')
     }
-    
+
     document.querySelector('.contents p').remove()
 
     for (const textBlock of document.querySelectorAll('.contents .textblock')) {
       textBlock.remove()
     }
-    
+
     document.querySelector('.contents p a').remove()
 
     headerTitle.remove()
@@ -267,7 +267,7 @@ window.addEventListener('load', () => {
 
   for (const since of document.querySelectorAll('.since dd')) {
     const version = since.innerHTML.trim()
-    
+
     since.innerHTML = `<a href="https://github.com/null8626/decancer/releases/tag/v${version}">v${version}</a>`
   }
 

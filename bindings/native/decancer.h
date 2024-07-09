@@ -210,7 +210,7 @@
  *
  * @see DECANCER_OPTION_RETAIN_CHINESE
  * @note To also provent decancer from curing kanji characters, use DECANCER_OPTION_RETAIN_CHINESE.
- * @since 3.0.0 
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_JAPANESE (1 << 18)
 
