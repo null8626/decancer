@@ -1,11 +1,11 @@
 /**
+ * @module decancer
  * @file decancer.h
  * @brief A library that removes common unicode confusables/homoglyphs from strings.
  * @author null8626
  * @copyright Copyright (c) 2021-2024 null8626
  * @date 2024-07-09
  * @version 3.2.3
- * @see https://github.com/null8626/decancer
  */
 
 #ifndef __DECANCER_H__

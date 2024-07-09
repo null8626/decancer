@@ -4,6 +4,7 @@ package io.github.null8626.decancer;
  * A match yielded by the CuredString.find() method.
  *
  * @author null8626
+ * @version 3.2.3
  * @since 3.1.0
  */
 public class Match {
