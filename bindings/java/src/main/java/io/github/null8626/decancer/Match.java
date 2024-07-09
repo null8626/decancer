@@ -4,16 +4,21 @@ package io.github.null8626.decancer;
  * A match yielded by the CuredString.find() method.
  *
  * @author null8626
+ * @since 3.1.0
  */
 public class Match {
 
   /**
    * The UTF-8 byte offset to the beginning of the match.
+   *
+   * @since 3.1.0
    */
   public final long start;
 
   /**
    * The UTF-8 byte offset to the end of the match (non-inclusive).
+   *
+   * @since 3.1.0
    */
   public final long end;
 
@@ -27,6 +32,7 @@ public class Match {
 
   /**
    * @return String The matched portion of the original String.
+   * @since 3.1.0
    */
   @Override
   public String toString() {

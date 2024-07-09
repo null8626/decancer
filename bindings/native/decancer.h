@@ -1,5 +1,8 @@
 /**
  * @file decancer.h
+ * @brief A library that removes common unicode confusables/homoglyphs from strings.
+ * @author Copyright (c) 2021-2024 null8626
+ * @version 3.2.3
  */
 
 #ifndef __DECANCER_H__
@@ -21,6 +24,7 @@
  * @see DECANCER_VERSION_MAJOR
  * @see DECANCER_VERSION_MINOR
  * @see DECANCER_VERSION_PATCH
+ * @since 3.2.2
  */
 #define DECANCER_VERSION 0x030203
 
@@ -30,6 +34,7 @@
  * @see DECANCER_VERSION
  * @see DECANCER_VERSION_MINOR
  * @see DECANCER_VERSION_PATCH
+ * @since 3.2.2
  */
 #define DECANCER_VERSION_MAJOR ((DECANCER_VERSION & 0xff0000) >> 16)
 
@@ -39,6 +44,7 @@
  * @see DECANCER_VERSION
  * @see DECANCER_VERSION_MAJOR
  * @see DECANCER_VERSION_PATCH
+ * @since 3.2.2
  */
 #define DECANCER_VERSION_MINOR ((DECANCER_VERSION & 0xff00) >> 8)
 
@@ -48,16 +54,19 @@
  * @see DECANCER_VERSION
  * @see DECANCER_VERSION_MAJOR
  * @see DECANCER_VERSION_MINOR
+ * @since 3.2.2
  */
 #define DECANCER_VERSION_PATCH (DECANCER_VERSION & 0xff)
 
 /**
  * @brief The translation is a single unicode character.
+ * @since 1.5.4
  */
 #define DECANCER_TRANSLATION_KIND_CHARACTER 0
 
 /**
  * @brief The translation is a string.
+ * @since 1.5.4
  */
 #define DECANCER_TRANSLATION_KIND_STRING 1
 
@@ -65,6 +74,7 @@
  * @brief The translation is an empty string.
  *
  * You can get this when the input character is a control character, surrogate, combining character (e.g diacritics), private use character, byte order character, or any invalid unicode value.
+ * @since 1.5.4
  */
 #define DECANCER_TRANSLATION_KIND_NONE 2
 
@@ -72,6 +82,7 @@
  * @brief Uses decancer's default options -- AKA to be AS AGGRESSIVE AS POSSIBLE.
  *
  * This makes decancer cures as much characters as possible and turns all the output characters to lowercase.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_DEFAULT 0
 
@@ -79,6 +90,7 @@
  * @brief Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
  *
  * @note Many confusables are neither an uppercase or a lowercase character. Therefore, the decancer defaults to displaying the translation in LOWERCASE.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_CAPITALIZATION (1 << 0)
 
@@ -91,6 +103,7 @@
  * @see DECANCER_OPTION_RETAIN_ARABIC
  * @see DECANCER_OPTION_RETAIN_HEBREW
  * @warning This speeds up the function call, but CAN BREAK right-to-left characters. It's highly recommended to also use DECANCER_OPTION_RETAIN_ARABIC and DECANCER_OPTION_RETAIN_HEBREW.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_DISABLE_BIDI (1 << 1)
 
@@ -98,81 +111,97 @@
  * @brief Prevents decancer from curing characters WITH diacritics or accents.
  *
  * @note Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_DIACRITICS (1 << 2)
 
 /**
  * @brief Prevents decancer from curing all greek characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_GREEK (1 << 3)
 
 /**
  * @brief Prevents decancer from curing all cyrillic characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_CYRILLIC (1 << 4)
 
 /**
  * @brief Prevents decancer from curing all hebrew characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_HEBREW (1 << 5)
 
 /**
  * @brief Prevents decancer from curing all arabic characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_ARABIC (1 << 6)
 
 /**
  * @brief Prevents decancer from curing all devanagari characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_DEVANAGARI (1 << 7)
 
 /**
  * @brief Prevents decancer from curing all bengali characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_BENGALI (1 << 8)
 
 /**
  * @brief Prevents decancer from curing all armenian characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_ARMENIAN (1 << 9)
 
 /**
  * @brief Prevents decancer from curing all gujarati characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_GUJARATI (1 << 10)
 
 /**
  * @brief Prevents decancer from curing all tamil characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_TAMIL (1 << 11)
 
 /**
  * @brief Prevents decancer from curing all thai characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_THAI (1 << 12)
 
 /**
  * @brief Prevents decancer from curing all lao characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_LAO (1 << 13)
 
 /**
  * @brief Prevents decancer from curing all burmese characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_BURMESE (1 << 14)
 
 /**
  * @brief Prevents decancer from curing all khmer characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_KHMER (1 << 15)
 
 /**
  * @brief Prevents decancer from curing all mongolian characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_MONGOLIAN (1 << 16)
 
 /**
  * @brief Prevents decancer from curing all chinese characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_CHINESE (1 << 17)
 
@@ -181,21 +210,25 @@
  *
  * @see DECANCER_OPTION_RETAIN_CHINESE
  * @note To also provent decancer from curing kanji characters, use DECANCER_OPTION_RETAIN_CHINESE.
+ * @since 3.0.0 
  */
 #define DECANCER_OPTION_RETAIN_JAPANESE (1 << 18)
 
 /**
  * @brief Prevents decancer from curing all korean characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_KOREAN (1 << 19)
 
 /**
  * @brief Prevents decancer from curing all braille characters.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_BRAILLE (1 << 20)
 
 /**
  * @brief Prevents decancer from curing all emojis.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_EMOJIS (1 << 21)
 
@@ -203,6 +236,7 @@
  * @brief Removes all non-ASCII characters from the result.
  *
  * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
+ * @since 3.2.0
  */
 #define DECANCER_OPTION_ASCII_ONLY (1 << 22)
 
@@ -210,16 +244,19 @@
  * @brief Removes all non-alphanumeric characters from the result.
  *
  * @see DECANCER_OPTION_ASCII_ONLY
+ * @since 3.2.0
  */
 #define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 23)
 
 /**
  * @brief A configuration where every option is enabled.
+ * @since 3.2.0
  */
 #define DECANCER_OPTION_ALL 0xffffff
 
 /**
  * @brief Prevents decancer from curing characters from major foreign writing systems, including diacritics.
+ * @since 3.0.0
  */
 #define DECANCER_OPTION_PURE_HOMOGLYPH 0x1ffffc
 
@@ -235,15 +272,18 @@
  *
  * @see decancer_cure
  * @see decancer_cure_utf16
+ * @since 2.0.0
  */
 typedef struct {
   /**
    * @brief Null-terminated ASCII encoded error message.
+   * @since 2.0.0
    */
   const char* message;
 
   /**
    * @brief The length of the error message.
+   * @since 2.0.0
    */
   uint8_t message_length;
 } decancer_error_t;
@@ -261,15 +301,18 @@ typedef struct {
  * @see decancer_find_multiple
  * @see decancer_censor_multiple
  * @see decancer_replace_multiple
+ * @since 3.2.2
  */
 typedef struct {
   /**
    * @brief UTF-8 encoded string.
+   * @since 3.2.2
    */
   const uint8_t* string;
 
   /**
    * @brief UTF-8 size of the string, in bytes.
+   * @since 3.2.2
    */
   size_t size;
 } decancer_keyword_t;
@@ -287,15 +330,18 @@ typedef struct {
  * @see decancer_find_multiple_utf16
  * @see decancer_censor_multiple_utf16
  * @see decancer_replace_multiple_utf16
+ * @since 3.2.2
  */
 typedef struct {
   /**
    * @brief UTF-16 encoded string.
+   * @since 3.2.2
    */
   const uint16_t* string;
 
   /**
    * @brief Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
+   * @since 3.2.2
    */
   size_t length;
 } decancer_keyword_utf16_t;
@@ -307,6 +353,7 @@ typedef struct {
  * @see decancer_cured_raw_utf16_clone
  * @see decancer_cured_raw_utf16_free
  * @note You are responsible in freeing this object later by calling decancer_cured_raw_utf16_free.
+ * @since 3.2.2
  */
 typedef void* decancer_cured_raw_utf16_t;
 
@@ -320,6 +367,7 @@ typedef void* decancer_cured_raw_utf16_t;
  * @see decancer_matcher_free
  * @note For its UTF-16 counterpart, see decancer_matcher_utf16_t.
  * @note You are responsible in freeing this object later by calling decancer_matcher_free.
+ * @since 3.1.0
  */
 typedef void* decancer_matcher_t;
 
@@ -333,6 +381,7 @@ typedef void* decancer_matcher_t;
  * @see decancer_matcher_utf16_free
  * @note For its UTF-8 counterpart, see decancer_matcher_t.
  * @note You are responsible in freeing this object later by calling decancer_matcher_utf16_free.
+ * @since 3.2.2
  */
 typedef void* decancer_matcher_utf16_t;
 
@@ -346,6 +395,7 @@ typedef void* decancer_matcher_utf16_t;
  * @see decancer_matches_clone
  * @see decancer_matches_free
  * @note You are responsible in freeing this object later by calling decancer_matches_free.
+ * @since 3.1.1
  */
 typedef void* decancer_matches_t;
 
@@ -387,30 +437,36 @@ typedef struct {
 
   /**
    * @brief A union of translation results. This can either be a unicode character or a UTF-8 encoded string.
+   * @since 1.5.4
    */
   union {
     /**
      * @brief The translation, as a unicode character.
+     * @since 1.5.4
      */
     uint32_t character;
 
     /**
      * @brief The translation, as a UTF-8 encoded string.
+     * @since 1.5.4
      */
     struct {
       /**
        * @brief Raw UTF-8 encoded string.
+       * @since 1.5.4
        */
       const uint8_t* contents;
 
       /**
        * @brief UTF-8 size of the string, in bytes.
+       * @since 1.5.4
        */
       size_t size;
 
       /**
        * @brief A pointer to a heap memory block, unused.
        * @note If this value is not NULL and kind is DECANCER_TRANSLATION_KIND_STRING, then you must pass this struct to decancer_translation_free later.
+       * @since 3.1.0
        */
       void* __heap;
     } string;
@@ -425,6 +481,7 @@ typedef struct {
  * @see decancer_cured_clone
  * @see decancer_cured_free
  * @note You are responsible in freeing this object later by calling decancer_cured_free.
+ * @since 1.5.3
  */
 typedef void* decancer_cured_t;
 
@@ -442,15 +499,18 @@ typedef void* decancer_cured_t;
  * @see decancer_find_utf16
  * @see decancer_matcher_consume
  * @see decancer_matcher_next
+ * @since 3.1.0
  */
 typedef struct {
   /**
    * @brief Start of the match in UTF-8 indices.
+   * @since 3.1.0
    */
   size_t start;
 
   /**
    * @brief End of the match in UTF-8 indices (non-inclusive).
+   * @since 3.1.0
    */
   size_t end;
 } decancer_match_t;
@@ -488,6 +548,7 @@ typedef struct {
  * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
  * @see DECANCER_OPTION_ALL
  * @see DECANCER_OPTION_PURE_HOMOGLYPH
+ * @since 3.0.0
  */
 typedef uint32_t decancer_options_t;
 
@@ -537,6 +598,7 @@ extern "C" {
    * @return decancer_cured_t The cured string object or NULL failure -- see the modified error struct for more details.
    * @note For its UTF-16 counterpart, see decancer_cure_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
+   * @since 1.5.3
    */
   DECANCER_EXPORT decancer_cured_t decancer_cure(const uint8_t* input_str, const size_t input_size, const decancer_options_t options, decancer_error_t* error);
 
@@ -588,6 +650,7 @@ extern "C" {
    * @return decancer_cured_t The cured string object or NULL failure -- see the modified error struct for more details.
    * @note For its UTF-8 counterpart, see decancer_cure.
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_cured_t decancer_cure_utf16(const uint16_t* input_str, const size_t input_length, const decancer_options_t options, decancer_error_t* error);
 
@@ -646,6 +709,7 @@ extern "C" {
    * @see decancer_translation_free
    * @note You are responsible in freeing the translation struct later by passing it as a pointer to decancer_translation_free.
    * @warning You MUST pass the translation struct to decancer_translation_init first before using this function. Not doing so could result in possible undefined behavior.
+   * @since 1.5.4
    */
   DECANCER_EXPORT void decancer_cure_char(const uint32_t input, const decancer_options_t options, decancer_translation_t* translation);
 
@@ -703,6 +767,7 @@ extern "C" {
    * @see decancer_cured_raw_utf16
    * @note For its UTF-16 counterpart, see decancer_cured_raw_utf16.
    * @note The returned pointer remains valid until cured gets passed onto decancer_cured_free.
+   * @since 3.1.1
    */
   DECANCER_EXPORT const uint8_t* decancer_cured_raw(decancer_cured_t cured, const decancer_match_t* match, size_t* output_size);
 
@@ -775,6 +840,7 @@ extern "C" {
    * @note For its UTF-8 counterpart, see decancer_cured_raw.
    * @note You are responsible in freeing the returned object later by calling decancer_cured_raw_utf16_free.
    * @note The lifetime of the UTF-16 encoded string remains valid until the returned object gets passed onto decancer_cured_raw_utf16_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_cured_raw_utf16_t decancer_cured_raw_utf16(decancer_cured_t cured, const decancer_match_t* match, uint16_t** output_ptr, size_t* output_length);
 
@@ -860,6 +926,7 @@ extern "C" {
    * @param output_size A pointer to the output's array size.
    * @return const decancer_match_t* The raw pointer containing every similar-looking match.
    * @note The returned pointer remains valid until the matches object gets passed onto decancer_matches_free.
+   * @since 3.1.1
    */
   DECANCER_EXPORT const decancer_match_t* decancer_matches_raw(decancer_matches_t matches, size_t* output_size);
 
@@ -939,6 +1006,7 @@ extern "C" {
    * @return decancer_matcher_t A UTF-8 matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-16 counterpart, see decancer_find_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
+   * @since 3.1.0
    */
   DECANCER_EXPORT decancer_matcher_t decancer_find(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
 
@@ -1030,6 +1098,7 @@ extern "C" {
    * @return decancer_matcher_utf16_t A UTF-16 matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_utf16_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matcher_utf16_t decancer_find_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
 
@@ -1125,6 +1194,7 @@ extern "C" {
    * @return decancer_matches_t A matches object or NULL if the keywords are not properly UTF-8 encoded.
    * @note For its UTF-16 counterpart, see decancer_find_multiple_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
+   * @since 3.1.1
    */
   DECANCER_EXPORT decancer_matches_t decancer_find_multiple(decancer_cured_t cured, const decancer_keyword_t* other, const size_t other_length);
 
@@ -1235,6 +1305,7 @@ extern "C" {
    * @return decancer_matches_t A matches object or NULL if the keywords are not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find_multiple.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matches_t decancer_find_multiple_utf16(decancer_cured_t cured, const decancer_keyword_utf16_t* other, const size_t other_length);
 
@@ -1309,6 +1380,7 @@ extern "C" {
    * @see decancer_matcher_free
    * @return bool true if a new value is present, or false if the iteration is complete.
    * @note For its UTF-16 counterpart, see decancer_matcher_utf16_next.
+   * @since 3.1.0
    */
   DECANCER_EXPORT bool decancer_matcher_next(decancer_matcher_t matcher, decancer_match_t* match);
 
@@ -1395,6 +1467,7 @@ extern "C" {
    * @see decancer_matcher_next
    * @see decancer_matcher_utf16_free
    * @note For its UTF-8 counterpart, see decancer_matcher_next.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_matcher_utf16_next(decancer_matcher_utf16_t matcher, decancer_match_t* match);
 
@@ -1458,6 +1531,7 @@ extern "C" {
    * @see decancer_censor_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_censor_utf16.
+   * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_censor(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size, const uint32_t replacement_char);
 
@@ -1538,6 +1612,7 @@ extern "C" {
    * @see decancer_censor_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_censor.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_censor_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length, const uint32_t replacement_char);
 
@@ -1601,6 +1676,7 @@ extern "C" {
    * @see decancer_replace_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_replace_utf16.
+   * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_replace(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size, const uint8_t* replacement_str, const size_t replacement_size);
 
@@ -1684,6 +1760,7 @@ extern "C" {
    * @see decancer_replace_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_replace.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_replace_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
 
@@ -1753,6 +1830,7 @@ extern "C" {
    * @see decancer_censor_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_censor_multiple_utf16.
+   * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_censor_multiple(decancer_cured_t cured, const decancer_keyword_t* other, const size_t other_length, const uint32_t replacement_char);
 
@@ -1842,6 +1920,7 @@ extern "C" {
    * @see decancer_censor_multiple
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_censor_multiple.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_censor_multiple_utf16(decancer_cured_t cured, const decancer_keyword_utf16_t* other, const size_t other_length, const uint32_t replacement_char);
 
@@ -1911,6 +1990,7 @@ extern "C" {
    * @see decancer_replace_multiple_utf16
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_replace_multiple_utf16.
+   * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_replace_multiple(decancer_cured_t cured, const decancer_keyword_t* other, const size_t other_length, const uint8_t* replacement_str, const size_t replacement_size);
 
@@ -2003,6 +2083,7 @@ extern "C" {
    * @see decancer_replace_multiple
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_replace_multiple.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_replace_multiple_utf16(decancer_cured_t cured, const decancer_keyword_utf16_t* other, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
 
@@ -2055,6 +2136,7 @@ extern "C" {
    * @see decancer_contains_utf16
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_contains_utf16.
+   * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_contains(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
 
@@ -2116,6 +2198,7 @@ extern "C" {
    * @see decancer_contains
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_contains.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_contains_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
 
@@ -2168,6 +2251,7 @@ extern "C" {
    * @see decancer_starts_with_utf16
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_starts_with_utf16.
+   * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_starts_with(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
 
@@ -2229,6 +2313,7 @@ extern "C" {
    * @see decancer_starts_with
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_starts_with.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_starts_with_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
 
@@ -2281,6 +2366,7 @@ extern "C" {
    * @see decancer_ends_with_utf16
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_ends_with_utf16.
+   * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_ends_with(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
 
@@ -2342,6 +2428,7 @@ extern "C" {
    * @see decancer_ends_with
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_ends_with.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_ends_with_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
 
@@ -2394,6 +2481,7 @@ extern "C" {
    * @see decancer_equals_utf16
    * @return bool true if the cured string is similar with the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_equals_utf16.
+   * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_equals(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
 
@@ -2455,6 +2543,7 @@ extern "C" {
    * @see decancer_equals
    * @return bool true if the cured string is similar with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_equals.
+   * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_equals_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
 
@@ -2466,6 +2555,7 @@ extern "C" {
    * @see decancer_cured_raw_utf16
    * @see decancer_cured_raw_utf16_free
    * @note You are responsible in freeing the returned object later by calling decancer_cured_raw_utf16_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_cured_raw_utf16_t decancer_cured_raw_utf16_clone(decancer_cured_raw_utf16_t raw_utf16_handle);
 
@@ -2475,6 +2565,7 @@ extern "C" {
    * @param raw_utf16_handle The rust object to free.
    * @see decancer_cured_raw_utf16
    * @see decancer_cured_raw_utf16_clone
+   * @since 3.2.2
    */
   DECANCER_EXPORT void decancer_cured_raw_utf16_free(decancer_cured_raw_utf16_t raw_utf16_handle);
 
@@ -2548,6 +2639,7 @@ extern "C" {
    * @note For its UTF-16 counterpart, see decancer_matcher_utf16_consume.
    * @note You don't need to pass the UTF-8 matcher iterator object to decancer_matcher_free after calling this.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matches_t decancer_matcher_consume(decancer_matcher_t matcher);
 
@@ -2559,6 +2651,7 @@ extern "C" {
    * @see decancer_matcher_consume
    * @see decancer_matcher_next
    * @see decancer_matcher_utf16_free
+   * @since 3.1.0
    */
   DECANCER_EXPORT void decancer_matcher_free(decancer_matcher_t matcher);
 
@@ -2641,6 +2734,7 @@ extern "C" {
    * @note For its UTF-8 counterpart, see decancer_matcher_consume.
    * @note You don't need to pass the UTF-16 matcher iterator object to decancer_matcher_utf16_free after calling this.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matches_t decancer_matcher_utf16_consume(decancer_matcher_utf16_t matcher);
 
@@ -2651,6 +2745,7 @@ extern "C" {
    * @see decancer_find_utf16
    * @see decancer_matcher_free
    * @see decancer_matcher_utf16_next
+   * @since 3.2.2
    */
   DECANCER_EXPORT void decancer_matcher_utf16_free(decancer_matcher_utf16_t matcher);
 
@@ -2666,6 +2761,7 @@ extern "C" {
    * @see decancer_matches_raw
    * @see decancer_matches_free
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matches_t decancer_matches_clone(decancer_matches_t matches);
 
@@ -2679,6 +2775,7 @@ extern "C" {
    * @see decancer_matcher_utf16_consume
    * @see decancer_matches_clone
    * @see decancer_matches_raw
+   * @since 3.1.1
    */
   DECANCER_EXPORT void decancer_matches_free(decancer_matches_t matches);
 
@@ -2690,6 +2787,7 @@ extern "C" {
    * @see decancer_translation_clone
    * @see decancer_translation_free
    * @note This function MUST be called before any calls to decancer_cure_char.
+   * @since 3.2.2
    */
   DECANCER_EXPORT void decancer_translation_init(decancer_translation_t* translation);
 
@@ -2702,6 +2800,7 @@ extern "C" {
    * @see decancer_translation_init
    * @see decancer_translation_free
    * @note You are responsible in freeing the translation struct later by passing it as a pointer to decancer_translation_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT void decancer_translation_clone(const decancer_translation_t* translation_in, decancer_translation_t* translation_out);
 
@@ -2712,6 +2811,7 @@ extern "C" {
    * @see decancer_cure_char
    * @see decancer_translation_init
    * @see decancer_translation_clone
+   * @since 3.1.0
    */
   DECANCER_EXPORT void decancer_translation_free(decancer_translation_t* translation);
 
@@ -2724,6 +2824,7 @@ extern "C" {
    * @see decancer_cure_utf16
    * @see decancer_cured_free
    * @note You are responsible in freeing the returned object later by calling decancer_cured_free.
+   * @since 3.2.2
    */
   DECANCER_EXPORT decancer_cured_t decancer_cured_clone(decancer_cured_t cured);
 
@@ -2734,6 +2835,7 @@ extern "C" {
    * @see decancer_cure
    * @see decancer_cure_utf16
    * @see decancer_cured_clone
+   * @since 3.1.0
    */
   DECANCER_EXPORT void decancer_cured_free(decancer_cured_t cured);
 

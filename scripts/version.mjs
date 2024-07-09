@@ -31,6 +31,10 @@ function updateGradleFunc(x) {
     .replace('{JRELEASER_VERSION}', JRELEASER_VERSION)
 }
 
+const updateTomlFunc = x =>
+  x.replace(/version = "\d+\.\d+\.\d+"/, `version = "${process.argv[2]}"`)
+const directUpdateFunc = x => x.replace(/\d\.\d\.\d/g, process.argv[2])
+
 function updateNativeHeaderFunc(x) {
   const versionHex = `0x${process.argv[2]
     .split('.')
@@ -40,12 +44,8 @@ function updateNativeHeaderFunc(x) {
   return x.replace(
     /#define DECANCER_VERSION 0x[a-fA-F0-9]{6}/,
     `#define DECANCER_VERSION ${versionHex}`
-  )
+  ).replace(/\d\.\d\.\d/, process.argv[2])
 }
-
-const updateTomlFunc = x =>
-  x.replace(/version = "\d+\.\d+\.\d+"/, `version = "${process.argv[2]}"`)
-const directUpdateFunc = x => x.replace(/(\d\.\d\.\d)/g, process.argv[2])
 
 void (await Promise.all([
   update(join(CORE_DIR, 'Cargo.toml'), updateTomlFunc),
