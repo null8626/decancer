@@ -147,9 +147,11 @@ impl Options {
 
   #[cfg(feature = "options")]
   pub(crate) const fn refuse_cure(self, attributes: u8) -> bool {
+    let locale = attributes >> 2;
+    
     ((attributes & 1) != 0 && self.is(2))
       || ((attributes & 2) != 0 && self.is(22))
-      || self.is(attributes >> 2)
+      || locale > 2 && self.is(locale)
   }
 
   pub(crate) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
