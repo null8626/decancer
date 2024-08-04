@@ -25,14 +25,14 @@ public final class Options {
    *
    * @since 3.2.0
    */
-  public static Options ALL = new Options(0xffffff);
+  public static Options ALL = new Options(0x1ffffff);
 
   /**
    * Predefined configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
    *
    * @since 3.0.0
    */
-  public static Options PURE_HOMOGLYPH = new Options(0x1ffffc);
+  public static Options PURE_HOMOGLYPH = new Options(0x3ffffc);
 
   /**
    * Creates a new Options object with decancer's default options.
@@ -315,6 +315,17 @@ public final class Options {
   }
 
   /**
+   * Prevents decancer from curing all turkish characters.
+   *
+   * @return Options A reference to this object to allow for method chaining.
+   * @since 3.2.4
+   */
+  public Options retainTurkish() {
+    this.inner |= (1 << 22);
+    return this;
+  }
+
+  /**
    * Removes all non-ASCII characters from the result.
    *
    * @see alphanumericOnly
@@ -322,7 +333,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options asciiOnly() {
-    this.inner |= (1 << 22);
+    this.inner |= (1 << 23);
     return this;
   }
 
@@ -334,7 +345,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options alphanumericOnly() {
-    this.inner |= (1 << 23);
+    this.inner |= (1 << 24);
     return this;
   }
 }

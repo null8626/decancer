@@ -76,6 +76,8 @@ const RETAINABLE_SCRIPTS = Object.entries({
   braille: 20
 })
 
+const TURKISH_CHARACTERS = ['ç', 'ğ', 'ı', 'i', 'ö', 'ş', 'ü']
+
 function getAttributes(codepoint) {
   const { name } = blocks.find(({ start, end }) =>
     containsInclusive(codepoint, start, end)
@@ -89,14 +91,20 @@ function getAttributes(codepoint) {
     }
   })
 
-  const retainableScriptShift = retainableScript
-    ? retainableScript[1].shift ?? retainableScript[1]
-    : binarySearchExists(emojis, codepoint)
-      ? 21
-      : 0
+  let retainableScriptShift = 0
+
+  if (retainableScript) {
+    retainableScriptShift = retainableScript[1].shift ?? retainableScript[1]
+  } else if (binarySearchExists(emojis, codepoint)) {
+    retainableScriptShift = 21
+  }
 
   return (
-    (retainableScriptShift << 1) |
+    (retainableScriptShift << 2) |
+    (Number(
+      TURKISH_CHARACTERS.includes(String.fromCodePoint(codepoint).toLowerCase())
+    ) <<
+      1) |
     Number(binarySearchExists(diacritics, codepoint))
   )
 }
