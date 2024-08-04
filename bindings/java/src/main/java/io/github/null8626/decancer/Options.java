@@ -317,6 +317,11 @@ public final class Options {
   /**
    * Prevents decancer from curing all turkish characters.
    *
+   * <p>
+   * To also prevent decancer from curing the uppercase dotted i character (İ), use retainCapitalization().
+   * </p>
+   *
+   * @see retainCapitalization
    * @return Options A reference to this object to allow for method chaining.
    * @since 3.2.4
    */

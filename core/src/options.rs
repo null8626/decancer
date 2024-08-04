@@ -62,11 +62,6 @@ impl Options {
     return Self(0);
   }
 
-  #[deprecated(since = "3.2.0", note = "use Options::all() instead")]
-  pub const fn formatter() -> Self {
-    Self::all()
-  }
-
   /// Creates a new configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
   #[cfg_attr(not(feature = "options"), cold)]
   pub const fn pure_homoglyph() -> Self {
@@ -111,6 +106,11 @@ impl Options {
 
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
+    
+    /// Prevents decancer from curing all turkish characters.
+    ///
+    /// **NOTE:** To also prevent decancer from curing [the uppercase dotted i character](https://en.wikipedia.org/wiki/İ) (`İ`), use [`retain_capitalization`][Options::retain_capitalization].
+    22: retain_turkish,
 
     /// Removes all non-ASCII characters from the result.
     23: ascii_only,
@@ -137,7 +137,6 @@ impl Options {
     17: chinese,
     19: korean,
     20: braille,
-    22: turkish,
   }
 
   #[cfg(feature = "options")]
