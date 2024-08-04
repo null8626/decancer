@@ -90,7 +90,7 @@ In your code:
 
 ### As a JAR file
 
-[**You can download the latest JAR file here.**](https://github.com/null8626/decancer/releases/download/v3.2.4/decancer.jar)
+[You can download the latest JAR file here.](https://github.com/null8626/decancer/releases/download/v3.2.4/decancer.jar)
 
 ### As a dependency
 
