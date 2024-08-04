@@ -66,6 +66,8 @@ const expectedNodeTargets = [
   'freebsd-x64'
 ]
 
+let foundJavaJar = false
+
 void (await Promise.all(
   artifacts.map(async artifact => {
     if (artifact.startsWith('native-')) {
@@ -100,11 +102,13 @@ void (await Promise.all(
         join(ARTIFACTS_DIR, artifact, 'decancer.jar'),
         join(ROOT_DIR, 'decancer.jar')
       )
+      
+      foundJavaJar = true
     }
   })
 ))
 
-if (expectedNativeTargets.length !== 0 || expectedNodeTargets.length !== 0) {
+if (expectedNativeTargets.length !== 0 || expectedNodeTargets.length !== 0 || !foundJavaJar) {
   console.error('error: found missing targets. exiting.')
   process.exit(1)
 }

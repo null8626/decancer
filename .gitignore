@@ -6,6 +6,7 @@
 **/*.dylib
 **/*.so
 **/*.exe
+**/*.jar
 **/*.lib
 **/*.obj
 **/target/

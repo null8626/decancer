@@ -499,7 +499,7 @@ jobs:
           path: decancer.*.node
           if-no-files-found: error
   node-freebsd:
-    runs-on: macos-13
+    runs-on: macos-12
     needs:
       - setup
       - core
@@ -509,7 +509,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         id: build
-        uses: cross-platform-actions/action@v0.24.0
+        uses: cross-platform-actions/action@v0.23.0
         timeout-minutes: 30
         env:
           DEBUG: napi:*
@@ -522,7 +522,6 @@ jobs:
           environment_variables: DEBUG RUSTUP_IO_THREADS
           shell: bash
           run: |
-            sudo pkg update -f
             sudo pkg install -y -f curl node libnghttp2 npm
             sudo npm install -g yarn --ignore-scripts
             curl https://sh.rustup.rs -sSf --output rustup.sh
@@ -761,7 +760,7 @@ jobs:
       #  shell: bash
       - name: Move jar file
         working-directory: bindings/java
-        run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../..
+        run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../../decancer.jar
         shell: bash
       - name: Upload jar artifact
         uses: actions/upload-artifact@v4
