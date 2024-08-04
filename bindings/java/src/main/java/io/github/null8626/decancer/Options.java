@@ -313,7 +313,7 @@ public final class Options {
     this.inner |= (1 << 21);
     return this;
   }
-  
+
   /**
    * Prevents decancer from curing all turkish characters.
    *

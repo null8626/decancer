@@ -90,16 +90,23 @@ function getAttributes(codepoint) {
       return data.check(name)
     }
   })
-  
+
   let retainableScriptShift = 0
-  
+
   if (retainableScript) {
     retainableScriptShift = retainableScript[1].shift ?? retainableScript[1]
   } else if (binarySearchExists(emojis, codepoint)) {
     retainableScriptShift = 21
   }
 
-  return (retainableScriptShift << 2) | (Number(TURKISH_CHARACTERS.includes(String.fromCodePoint(codepoint).toLowerCase())) << 1) | Number(binarySearchExists(diacritics, codepoint))
+  return (
+    (retainableScriptShift << 2) |
+    (Number(
+      TURKISH_CHARACTERS.includes(String.fromCodePoint(codepoint).toLowerCase())
+    ) <<
+      1) |
+    Number(binarySearchExists(diacritics, codepoint))
+  )
 }
 
 const { codepoints, similar } = JSON.parse(readFileSync(process.argv[2]))
