@@ -106,7 +106,7 @@ impl Options {
 
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
-    
+
     /// Prevents decancer from curing all turkish characters.
     ///
     /// **NOTE:** To also prevent decancer from curing [the uppercase dotted i character](https://en.wikipedia.org/wiki/İ) (`İ`), use [`retain_capitalization`][Options::retain_capitalization].
