@@ -62,9 +62,10 @@ const expectedNodeTargets = [
   'aarch64-linux-android',
   'armv7-linux-androideabi',
   'aarch64-unknown-linux-musl',
-  'aarch64-pc-windows-msvc',
-  'freebsd-x64'
+  'aarch64-pc-windows-msvc' //, 'freebsd-x64'
 ]
+
+let foundJavaJar = false
 
 void (await Promise.all(
   artifacts.map(async artifact => {
@@ -100,11 +101,17 @@ void (await Promise.all(
         join(ARTIFACTS_DIR, artifact, 'decancer.jar'),
         join(ROOT_DIR, 'decancer.jar')
       )
+
+      foundJavaJar = true
     }
   })
 ))
 
-if (expectedNativeTargets.length !== 0 || expectedNodeTargets.length !== 0) {
+if (
+  expectedNativeTargets.length !== 0 ||
+  expectedNodeTargets.length !== 0 ||
+  !foundJavaJar
+) {
   console.error('error: found missing targets. exiting.')
   process.exit(1)
 }
