@@ -102,8 +102,11 @@ function getAttributes(codepoint) {
   return (
     (retainableScriptShift << 2) |
     (Number(
-      TURKISH_CHARACTERS.includes(String.fromCodePoint(codepoint).toLowerCase()) || codepoint === 0x130
-    ) << 1) |
+      TURKISH_CHARACTERS.includes(
+        String.fromCodePoint(codepoint).toLowerCase()
+      ) || codepoint === 0x130
+    ) <<
+      1) |
     Number(binarySearchExists(diacritics, codepoint))
   )
 }
