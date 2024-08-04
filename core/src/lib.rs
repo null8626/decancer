@@ -1,7 +1,7 @@
 #![doc = include_str!("../README.md")]
 #![allow(clippy::upper_case_acronyms)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
-#![forbid(unsafe_code)]
+#![forbid(unsafe_code, rustdoc::broken_intra_doc_links)]
 
 mod bidi;
 mod codepoints;
@@ -56,10 +56,10 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   let retain_capitalization = options.is(0);
 
   #[cfg(feature = "options")]
-  let ascii_only = options.is(22);
+  let ascii_only = options.is(23);
 
   #[cfg(feature = "options")]
-  let alphanumeric_only = options.is(23);
+  let alphanumeric_only = options.is(24);
 
   #[cfg(feature = "options")]
   let default_output = if is_case_sensitive && retain_capitalization {

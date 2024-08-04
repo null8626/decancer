@@ -237,6 +237,9 @@
 
 /**
  * @brief Prevents decancer from curing all turkish characters.
+ *
+ * @see DECANCER_RETAIN_CAPITALIZATION
+ * @note To also prevent decancer from curing the uppercase dotted i character (İ), use DECANCER_RETAIN_CAPITALIZATION.
  * @since 3.2.4
  */
 #define DECANCER_OPTION_RETAIN_TURKISH (1 << 22)
