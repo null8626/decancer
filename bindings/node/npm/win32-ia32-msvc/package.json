@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-win32-ia32-msvc",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "os": [
     "win32"
   ],
