@@ -68,13 +68,14 @@ options! {
     19: retain_korean,
     20: retain_braille,
     21: retain_emojis,
-    22: ascii_only,
-    23: alphanumeric_only,
+    22: retain_turkish,
+    23: ascii_only,
+    24: alphanumeric_only,
   }
 
   overrides {
-    all: 0xffffff,
-    pure_homoglyph: 0x1ffffc,
+    all: 0x1ffffff,
+    pure_homoglyph: 0x3ffffc,
   }
 }
 

@@ -56,7 +56,7 @@ impl Options {
   #[cfg_attr(not(feature = "options"), cold)]
   pub const fn all() -> Self {
     #[cfg(feature = "options")]
-    return Self(0xffffff);
+    return Self(0x1ffffff);
 
     #[cfg(not(feature = "options"))]
     return Self(0);
@@ -71,7 +71,7 @@ impl Options {
   #[cfg_attr(not(feature = "options"), cold)]
   pub const fn pure_homoglyph() -> Self {
     #[cfg(feature = "options")]
-    return Self(0x1ffffc);
+    return Self(0x3ffffc);
 
     #[cfg(not(feature = "options"))]
     return Self(0);
@@ -113,10 +113,10 @@ impl Options {
     21: retain_emojis,
 
     /// Removes all non-ASCII characters from the result.
-    22: ascii_only,
+    23: ascii_only,
 
     /// Removes all non-alphanumeric characters from the result.
-    23: alphanumeric_only,
+    24: alphanumeric_only,
   }
 
   retain! {
@@ -137,6 +137,7 @@ impl Options {
     17: chinese,
     19: korean,
     20: braille,
+    22: turkish,
   }
 
   #[cfg(feature = "options")]
@@ -146,9 +147,7 @@ impl Options {
 
   #[cfg(feature = "options")]
   pub(crate) const fn refuse_cure(self, attributes: u8) -> bool {
-    let locale = attributes >> 1;
-
-    ((attributes & 1) != 0 && self.is(2)) || (locale > 2 && self.is(locale))
+    ((attributes & 1) != 0 && self.is(2)) || ((attributes & 2) != 0 && self.is(22)) || self.is(attributes >> 2)
   }
 
   pub(crate) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {

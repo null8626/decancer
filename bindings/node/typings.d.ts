@@ -44,6 +44,7 @@ export interface Options {
   retainKorean?: boolean
   retainBraille?: boolean
   retainEmojis?: boolean
+  retainTurkish?: boolean
   pureHomoglyph?: boolean
   asciiOnly?: boolean
   alphanumericOnly?: boolean

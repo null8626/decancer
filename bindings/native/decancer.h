@@ -236,12 +236,18 @@
 #define DECANCER_OPTION_RETAIN_EMOJIS (1 << 21)
 
 /**
+ * @brief Prevents decancer from curing all turkish characters.
+ * @since 3.2.4
+ */
+#define DECANCER_OPTION_RETAIN_TURKISH (1 << 22)
+
+/**
  * @brief Removes all non-ASCII characters from the result.
  *
  * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ASCII_ONLY (1 << 22)
+#define DECANCER_OPTION_ASCII_ONLY (1 << 23)
 
 /**
  * @brief Removes all non-alphanumeric characters from the result.
@@ -249,19 +255,19 @@
  * @see DECANCER_OPTION_ASCII_ONLY
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 23)
+#define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 24)
 
 /**
  * @brief A configuration where every option is enabled.
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ALL 0xffffff
+#define DECANCER_OPTION_ALL 0x1ffffff
 
 /**
  * @brief Prevents decancer from curing characters from major foreign writing systems, including diacritics.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_PURE_HOMOGLYPH 0x1ffffc
+#define DECANCER_OPTION_PURE_HOMOGLYPH 0x3ffffc
 
 /**
  * @brief Represents an error caused by decancer not being able to cure a string.
