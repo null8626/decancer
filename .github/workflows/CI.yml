@@ -753,11 +753,11 @@ jobs:
           ./gradlew jreleaserConfig
           ./gradlew clean build publish -x test
         shell: bash
-      #- name: Publish java binding
-      #  working-directory: bindings/java
-      #  run: ./gradlew jreleaserFullRelease
-      #  continue-on-error: true
-      #  shell: bash
+      - name: Publish java binding
+        working-directory: bindings/java
+        run: ./gradlew jreleaserFullRelease
+        continue-on-error: true
+        shell: bash
       - name: Move jar file
         working-directory: bindings/java
         run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../../decancer.jar
