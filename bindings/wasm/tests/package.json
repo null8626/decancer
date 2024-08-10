@@ -21,7 +21,7 @@
   "dependencies": {
     "@fastify/static": "^7.0.0",
     "fastify": "^4.21.0",
-    "puppeteer": "^22.0.0"
+    "puppeteer": "^23.0.2"
   },
   "engines": {
     "node": ">= 16.3"
