@@ -173,7 +173,7 @@ console.log('- fetching unicode blocks...')
 const blocksResponse = await fetch(
   'https://en.wikipedia.org/wiki/Unicode_block'
 )
-const $ = cheerio.default.load(await blocksResponse.text())
+const $ = cheerio.load(await blocksResponse.text())
 
 // we do a little scraping
 $('tr').each((i, element) => {
