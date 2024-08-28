@@ -35,8 +35,9 @@ too-many-lines = "allow"
 unreadable-literal = "allow"
 
 [features]
-default = ["options", "leetspeak"]
+default = ["options", "separators", "leetspeak"]
 options = []
+separators = []
 leetspeak = ["regex", "lazy_static"]
 
 [dev-dependencies]

@@ -190,6 +190,7 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
     let mut start_index = self.self_index + skipped;
     self.self_index = start_index + matched_skip;
     let mut last_match_end = start_index;
+    #[cfg(feature = "separators")]
     let mut current_separator: Option<char> = None;
 
     while let Some(next_self_char) = self.self_iterator.next() {
@@ -199,7 +200,10 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
       {
         self.self_index += matched_skip;
         last_match_end = self.self_index;
-        current_separator = None;
+        #[cfg(feature = "separators")]
+        {
+          current_separator = None;
+        }
 
         current_other = unwrap_or_ret!(
           self.other_iterator.next(),
@@ -212,10 +216,14 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
       if let Some(matched_skip) = self.matches(next_self_char, current_other.0) {
         self.self_index += matched_skip;
         last_match_end = self.self_index;
-        current_separator = None;
+        #[cfg(feature = "separators")]
+        {
+          current_separator = None;
+        }
       } else {
         self.self_index += next_self_char.len_utf8();
 
+        #[cfg(feature = "separators")]
         match current_separator {
           Some(separator) => {
             if !is(next_self_char, separator) {
@@ -238,6 +246,22 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
           None => {
             current_separator.replace(next_self_char);
           },
+        }
+
+        #[cfg(not(feature = "separators"))]
+        {
+          if current_other.1.is_none() {
+            return Some(start_index..last_match_end);
+          }
+
+          self.other_iterator.restart();
+
+          current_other = self.other_iterator.next()?;
+
+          let (skipped, matched_skip) = self.skip_until(current_other.0)?;
+
+          start_index = self.self_index + skipped;
+          self.self_index = start_index + matched_skip;
         }
       }
     }
