@@ -125,8 +125,7 @@ where
 
         chars
           .next()
-          .map(|next_char| chars.next().is_none() && similar::is(*ch as _, next_char))
-          .unwrap_or_default()
+          .map_or_else(Default::default, |next_char| chars.next().is_none() && similar::is(*ch as _, next_char))
       },
 
       Self::String(s) => Matcher::is_equal(s, o),
