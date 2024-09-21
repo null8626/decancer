@@ -184,7 +184,7 @@ jobs:
         with:
           distribution: oracle
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
       - name: Download java artifact
         uses: actions/download-artifact@v4
         with:
