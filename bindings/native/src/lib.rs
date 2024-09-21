@@ -431,8 +431,7 @@ macro_rules! comparison_fn {
         other_length: usize,
       ) -> bool {
         utf8::get(other_str, other_length)
-          .map(|s| (*cured).$name(s))
-          .unwrap_or_default()
+          .map_or_else(Default::default, |s| (*cured).$name(s))
       }
 
       #[no_mangle]
@@ -442,8 +441,7 @@ macro_rules! comparison_fn {
         other_length: usize,
       ) -> bool {
         utf16::get(other_str, other_length)
-          .map(|vec| unsafe { (*cured).$name(str::from_utf8(&vec).unwrap()) })
-          .unwrap_or_default()
+          .map_or_else(Default::default, |vec| unsafe { (*cured).$name(str::from_utf8(&vec).unwrap()) })
       }
     }
   )*};
