@@ -84,6 +84,8 @@ impl CuredString {
 
 #[wasm_bindgen]
 pub fn cure(input: &str, options: u32) -> Result<CuredString, JsError> {
+  console_error_panic_hook::set_once();
+
   match decancer::cure(input, options.into()) {
     Ok(output) => Ok(CuredString(output)),
     Err(err) => Err(JsError::new(<decancer::Error as AsRef<str>>::as_ref(&err))),
