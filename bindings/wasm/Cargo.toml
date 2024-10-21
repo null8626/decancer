@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 decancer = { path = "../../core" }
-wasm-bindgen = { version = "0.2.8", default-features = false, features = ["std"] }
+wasm-bindgen = { version = "0.2.9", default-features = false, features = ["std"] }
