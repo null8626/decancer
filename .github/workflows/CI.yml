@@ -582,7 +582,7 @@ jobs:
         with:
           node-version: latest
       - name: Setup wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        run: cargo install wasm-pack
       - name: Build wasm
         working-directory: bindings/wasm
         run: |
