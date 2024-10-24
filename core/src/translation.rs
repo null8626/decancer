@@ -123,9 +123,9 @@ where
       Self::Character(ch) => {
         let mut chars = o.chars();
 
-        chars
-          .next()
-          .map_or_else(Default::default, |next_char| chars.next().is_none() && similar::is(*ch as _, next_char))
+        chars.next().map_or_else(Default::default, |next_char| {
+          chars.next().is_none() && similar::is(*ch as _, next_char)
+        })
       },
 
       Self::String(s) => Matcher::is_equal(s, o),
