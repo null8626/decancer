@@ -804,6 +804,7 @@ jobs:
         working-directory: bindings/node
         run: |
           cp ./README.md ..
+          cp ./README.md ./npm
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
           npm publish --access public
         env:
