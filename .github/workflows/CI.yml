@@ -571,7 +571,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - setup
-      - core
+      #- core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
     steps:
       - uses: actions/checkout@v4
