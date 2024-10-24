@@ -440,7 +440,7 @@ jobs:
             build: yarn build --target aarch64-pc-windows-msvc
     needs:
       - setup
-      - core
+      #- core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
     name: Build node bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
