@@ -112,6 +112,6 @@ if (
   expectedNodeTargets.length !== 0 ||
   !foundJavaJar
 ) {
-  console.error('error: found missing targets. exiting.')
+  console.error(`error: found missing targets. exiting.\nmissing native targets: ${expectedNativeTargets.length}\nmissing node targets: ${expectedNodeTargets.length}\nfound java jar: ${foundJavaJar ? 'yes' : 'no'}`)
   process.exit(1)
 }
