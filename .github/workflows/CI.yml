@@ -611,6 +611,11 @@ jobs:
     if: ${{ always() && github.event_name != 'pull_request' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Pull previous commit
+        run: git reset --soft HEAD~1
+        shell: bash
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
@@ -661,11 +666,12 @@ jobs:
           passphrase: ${{ secrets.CI_GPG_PASS }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-      - name: Commit
+      - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
           commit: -S
-          message: 'chore: update files'
+          message: ${{ github.event.head_commit.message }}
+          push: --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   pages:
