@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
       - name: Setup
         id: setup
         run: node scripts/ci_setup.mjs
@@ -63,7 +63,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: latest
+          node-version: 22.x
       - name: Ensure no default features is working
         working-directory: core
         run: cargo c --no-default-features
@@ -130,7 +130,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -296,7 +296,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -349,7 +349,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: latest
+          node-version: 22.x
           cache: yarn
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -421,7 +421,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
-          node-version: latest
+          node-version: 22.x
           cache: yarn
       - name: Install Rust
         uses: actions-rs/toolchain@v1
@@ -442,7 +442,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
         with:
-          node-version: latest
+          node-version: 22.x
           cache: yarn
           architecture: x86
       - name: Install dependencies
@@ -524,7 +524,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
           cache: yarn
       - name: Install dependencies
         working-directory: bindings/node
@@ -551,7 +551,7 @@ jobs:
           toolchain: stable
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
       - name: Setup wasm-pack
         run: cargo install wasm-pack
       - name: Build wasm
@@ -592,7 +592,7 @@ jobs:
           toolchain: stable
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
       - name: Setup clang
         if: ${{ needs.setup.outputs.native_affected == 'true' || needs.setup.outputs.release != 'null' }}
         run: |
@@ -663,7 +663,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
+          node-version: 22.x
       - uses: ssciwr/doxygen-install@v1
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
@@ -700,12 +700,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-  java-publish:
-    name: Publish java binding
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     needs:
       - setup
       - commit
+      - node-test
+      - node-freebsd
+      - native-test
+      - commit
+      - pages
       - java
     if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
     env:
@@ -722,47 +727,9 @@ jobs:
         with:
           distribution: oracle
           java-version: 21
-      - name: Prepare java binding
-        working-directory: bindings/java
-        run: |
-          unzip ./bin/bindings.zip -d ./bin
-          chmod +x ./gradlew
-          ./gradlew jreleaserConfig
-          ./gradlew clean build publish -x test
-        shell: bash
-      - name: Publish java binding
-        working-directory: bindings/java
-        run: ./gradlew jreleaserFullRelease
-        continue-on-error: true
-        shell: bash
-      - name: Move jar file
-        working-directory: bindings/java
-        run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../../decancer.jar
-        shell: bash
-      - name: Upload jar artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: java-jar
-          path: decancer.jar
-          if-no-files-found: error
-  publish:
-    name: Publish
-    runs-on: ubuntu-latest
-    needs:
-      - setup
-      - node-test
-      - node-freebsd
-      - native-test
-      - commit
-      - pages
-      - java-publish
-    if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release != 'null' }}
-    steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: latest
-          cache: yarn
+          node-version: 22.x
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -783,6 +750,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Prepare java binding
+        working-directory: bindings/java
+        run: |
+          unzip ./bin/bindings.zip -d ./bin
+          chmod +x ./gradlew
+          ./gradlew jreleaserConfig
+          ./gradlew clean build publish -x test
+        shell: bash
+      - name: Publish java binding
+        working-directory: bindings/java
+        run: ./gradlew jreleaserFullRelease
+        continue-on-error: true
+        shell: bash
+      - name: Move jar file
+        working-directory: bindings/java
+        run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../../decancer.jar
+        shell: bash
       - name: Import Actions GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:

@@ -12,7 +12,7 @@ import cz.adamh.utils.NativeUtils;
  * </p>
  *
  * @author null8626
- * @version 3.2.7
+ * @version 3.2.8
  * @since 3.0.0
  */
 public class CuredString {

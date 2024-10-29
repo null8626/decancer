@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'io.github.null8626'
-version '3.2.7'
+version '3.2.8'
 description 'A library that removes common unicode confusables/homoglyphs from strings.'
 
 repositories {
@@ -15,7 +15,7 @@ repositories {
 
 jar {
   archiveBaseName = 'decancer'
-  archiveVersion = '3.2.7'
+  archiveVersion = '3.2.8'
 
   from('./bin') {
     include '*.dll'
@@ -29,7 +29,7 @@ publishing {
     maven(MavenPublication) {
       artifactId = 'decancer'
       groupId = 'io.github.null8626'
-      version = '3.2.7'
+      version = '3.2.8'
     
       from components.java
       
@@ -43,7 +43,7 @@ publishing {
           license {
             name = 'MIT License'
             distribution = 'repo'
-            url = 'https://github.com/null8626/decancer/blob/v3.2.7/LICENSE'
+            url = 'https://github.com/null8626/decancer/blob/v3.2.8/LICENSE'
           }
         }
         
@@ -85,7 +85,7 @@ publishing {
 jreleaser {
   project {
     name = 'decancer'
-    version = '3.2.7'
+    version = '3.2.8'
     description = 'A library that removes common unicode confusables/homoglyphs from strings.'
     longDescription = 'A library that removes common unicode confusables/homoglyphs from strings. By default, the library supports filtering over 220,000 unicode codepoints and reordering right-to-left text as it were to be rendered graphically.'
     license = 'MIT'
