@@ -21,7 +21,7 @@ BEGIN
       VALUE "ProductVersion", DECANCER_RC_VERSION
       VALUE "ProductName", "decancer"
       VALUE "InternalName", "decancer"
-      VALUE "LegalCopyright", "Copyright (C) 2021-2024 null - Licensed under the MIT License."
+      VALUE "LegalCopyright", "Copyright (C) 2021-2025 null - Licensed under the MIT License."
       VALUE "OriginalFilename", "decancer.dll"
     END
   END
