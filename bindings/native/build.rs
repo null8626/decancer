@@ -12,16 +12,16 @@ fn embed() {
 
   embed_resource::compile(
     "decancer.rc",
-    &[
+    [
       &rc_version_major,
       &rc_version_minor,
       &rc_version_patch,
       &rc_version,
     ],
-  )
+  );
 }
 
 fn main() {
   #[cfg(windows)]
-  embed()
+  embed();
 }

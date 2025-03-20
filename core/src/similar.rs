@@ -76,7 +76,7 @@ impl<'a> CachedPeek<'a> {
   }
 }
 
-impl<'a> Iterator for CachedPeek<'a> {
+impl Iterator for CachedPeek<'_> {
   type Item = (char, Option<char>);
 
   fn next(&mut self) -> Option<Self::Item> {
@@ -177,7 +177,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   }
 }
 
-impl<'a, 'b> Iterator for Matcher<'a, 'b> {
+impl Iterator for Matcher<'_, '_> {
   type Item = Range<usize>;
 
   fn next(&mut self) -> Option<Self::Item> {
@@ -274,4 +274,4 @@ impl<'a, 'b> Iterator for Matcher<'a, 'b> {
   }
 }
 
-impl<'a, 'b> FusedIterator for Matcher<'a, 'b> {}
+impl FusedIterator for Matcher<'_, '_> {}

@@ -1,5 +1,3 @@
-#![allow(clippy::missing_safety_doc)]
-
 mod ptr;
 mod utf16;
 mod utf8;
@@ -7,7 +5,7 @@ mod utf8;
 use std::{
   borrow::Cow,
   convert::AsRef,
-  mem::{size_of, transmute},
+  mem::transmute,
   ops::{Deref, Range},
   ptr::copy_nonoverlapping,
   str,
@@ -495,7 +493,7 @@ pub unsafe extern "C" fn decancer_cured_raw(
   } else {
     *output_size = (*mat).len();
 
-    ptr.offset((*mat).start as _)
+    ptr.add((*mat).start)
   }
 }
 
@@ -538,7 +536,7 @@ pub unsafe extern "C" fn decancer_matcher_consume(
 ) -> *mut Vec<Range<usize>> {
   let mut output = Vec::new();
 
-  while let Some(value) = (*matcher).next() {
+  for value in (*matcher).by_ref() {
     output.push(value);
   }
 
@@ -587,7 +585,7 @@ pub unsafe extern "C" fn decancer_translation_clone(
   translation_in: *const Translation,
   translation_out: *mut Translation,
 ) {
-  copy_nonoverlapping(translation_in, translation_out, size_of::<Translation>());
+  copy_nonoverlapping(translation_in, translation_out, 1);
 
   if (*translation_in).slot_c != 0 {
     (*translation_out).slot_c = Box::into_raw(Box::new(
