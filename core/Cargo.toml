@@ -13,7 +13,6 @@ exclude = ["rustfmt.toml"]
 rust-version = "1.65.0"
 
 [dependencies]
-paste = "1"
 serde = { version = "1", default-features = false, optional = true }
 regex = { version = "1", default-features = false, features = ["std", "perf"], optional = true }
 lazy_static = { version = "1", optional = true }

@@ -269,7 +269,7 @@ public final class Options {
    * Prevents decancer from curing all katakana and hiragana characters.
    *
    * <p>
-   * To also provent decancer from curing kanji characters, use retainChinese().
+   * To also prevent decancer from curing kanji characters, use retainChinese().
    * </p>
    *
    * @see retainChinese

@@ -4,7 +4,6 @@ mod ptr;
 mod utf16;
 mod utf8;
 
-use paste::paste;
 use std::{
   borrow::Cow,
   convert::AsRef,
@@ -421,36 +420,64 @@ pub unsafe extern "C" fn decancer_equals_utf16(
     .is_some_and(|vec| unsafe { (*cured) == str::from_utf8(&vec).unwrap() })
 }
 
-macro_rules! comparison_fn {
-  ($($name:ident,)*) => {$(
-    paste! {
-      #[no_mangle]
-      pub unsafe extern "C" fn [<decancer_ $name>](
-        cured: *mut decancer::CuredString,
-        other_str: *const u8,
-        other_length: usize,
-      ) -> bool {
-        utf8::get(other_str, other_length)
-          .map_or_else(Default::default, |s| (*cured).$name(s))
-      }
-
-      #[no_mangle]
-      pub unsafe extern "C" fn [<decancer_ $name _utf16>](
-        cured: *mut decancer::CuredString,
-        other_str: *const u16,
-        other_length: usize,
-      ) -> bool {
-        utf16::get(other_str, other_length)
-          .map_or_else(Default::default, |vec| unsafe { (*cured).$name(str::from_utf8(&vec).unwrap()) })
-      }
-    }
-  )*};
+#[no_mangle]
+pub unsafe extern "C" fn decancer_starts_with(
+  cured: *mut decancer::CuredString,
+  other_str: *const u8,
+  other_length: usize,
+) -> bool {
+  utf8::get(other_str, other_length).map_or_else(Default::default, |s| (*cured).starts_with(s))
 }
 
-comparison_fn! {
-  starts_with,
-  ends_with,
-  contains,
+#[no_mangle]
+pub unsafe extern "C" fn decancer_starts_with_utf16(
+  cured: *mut decancer::CuredString,
+  other_str: *const u16,
+  other_length: usize,
+) -> bool {
+  utf16::get(other_str, other_length).map_or_else(Default::default, |vec| unsafe {
+    (*cured).starts_with(str::from_utf8(&vec).unwrap())
+  })
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_ends_with(
+  cured: *mut decancer::CuredString,
+  other_str: *const u8,
+  other_length: usize,
+) -> bool {
+  utf8::get(other_str, other_length).map_or_else(Default::default, |s| (*cured).ends_with(s))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_ends_with_utf16(
+  cured: *mut decancer::CuredString,
+  other_str: *const u16,
+  other_length: usize,
+) -> bool {
+  utf16::get(other_str, other_length).map_or_else(Default::default, |vec| unsafe {
+    (*cured).ends_with(str::from_utf8(&vec).unwrap())
+  })
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_contains(
+  cured: *mut decancer::CuredString,
+  other_str: *const u8,
+  other_length: usize,
+) -> bool {
+  utf8::get(other_str, other_length).map_or_else(Default::default, |s| (*cured).contains(s))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn decancer_contains_utf16(
+  cured: *mut decancer::CuredString,
+  other_str: *const u16,
+  other_length: usize,
+) -> bool {
+  utf16::get(other_str, other_length).map_or_else(Default::default, |vec| unsafe {
+    (*cured).contains(str::from_utf8(&vec).unwrap())
+  })
 }
 
 #[no_mangle]

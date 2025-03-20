@@ -1,5 +1,4 @@
 use crate::{codepoints::Codepoint, Translation};
-use paste::paste;
 use std::cmp::Ordering;
 
 /// A configuration struct where you can customize decancer's behavior.
@@ -33,21 +32,6 @@ macro_rules! options {
         return self;
       }
     )*
-  };
-}
-
-macro_rules! retain {
-  ($(
-    $idx:literal: $name:ident,
-  )*) => {
-    paste! {
-      options! {
-        $(
-          #[doc = concat!("Prevents decancer from curing all ", stringify!($name), " characters.")]
-          $idx: [<retain_ $name>],
-        )*
-      }
-    }
   };
 }
 
@@ -99,10 +83,61 @@ impl Options {
     /// **NOTE:** Decancer can still cure standalone diacritic characters, which is used in [Zalgo texts](https://en.wikipedia.org/wiki/Zalgo_text).
     2: retain_diacritics,
 
+    /// Prevents decancer from curing all greek characters.
+    3: retain_greek,
+
+    /// Prevents decancer from curing all cyrillic characters.
+    4: retain_cyrillic,
+
+    /// Prevents decancer from curing all hebrew characters.
+    5: retain_hebrew,
+
+    /// Prevents decancer from curing all arabic characters.
+    6: retain_arabic,
+
+    /// Prevents decancer from curing all devanagari characters.
+    7: retain_devanagari,
+
+    /// Prevents decancer from curing all bengali characters.
+    8: retain_bengali,
+
+    /// Prevents decancer from curing all armenian characters.
+    9: retain_armenian,
+
+    /// Prevents decancer from curing all gujarati characters.
+    10: retain_gujarati,
+
+    /// Prevents decancer from curing all tamil characters.
+    11: retain_tamil,
+
+    /// Prevents decancer from curing all thai characters.
+    12: retain_thai,
+
+    /// Prevents decancer from curing all lao characters.
+    13: retain_lao,
+
+    /// Prevents decancer from curing all burmese characters.
+    14: retain_burmese,
+
+    /// Prevents decancer from curing all khmer characters.
+    15: retain_khmer,
+
+    /// Prevents decancer from curing all mongolian characters.
+    16: retain_mongolian,
+
+    /// Prevents decancer from curing all chinese characters.
+    17: retain_chinese,
+
     /// Prevents decancer from curing all katakana and hiragana characters.
     ///
-    /// **NOTE:** To also provent decancer from curing kanji characters, use [`retain_chinese`][Options::retain_chinese].
+    /// **NOTE:** To also prevent decancer from curing kanji characters, use [`retain_chinese`][Options::retain_chinese].
     18: retain_japanese,
+
+    /// Prevents decancer from curing all korean characters.
+    19: retain_korean,
+
+    /// Prevents decancer from curing all braille characters.
+    20: retain_braille,
 
     /// Prevents decancer from curing all emojis.
     21: retain_emojis,
@@ -117,26 +152,6 @@ impl Options {
 
     /// Removes all non-alphanumeric characters from the result.
     24: alphanumeric_only,
-  }
-
-  retain! {
-    3: greek,
-    4: cyrillic,
-    5: hebrew,
-    6: arabic,
-    7: devanagari,
-    8: bengali,
-    9: armenian,
-    10: gujarati,
-    11: tamil,
-    12: thai,
-    13: lao,
-    14: burmese,
-    15: khmer,
-    16: mongolian,
-    17: chinese,
-    19: korean,
-    20: braille,
   }
 
   #[cfg(feature = "options")]
