@@ -1,7 +1,7 @@
 plugins {
   id 'java-library'
   id 'maven-publish'
-  id 'org.jreleaser' version '3.3.0'
+  id 'org.jreleaser' version '1.18.0'
 }
 
 group = 'io.github.null8626'

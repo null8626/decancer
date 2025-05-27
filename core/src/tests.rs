@@ -165,6 +165,7 @@ fn irs_sorted(
   sequences
 }
 
+#[allow(clippy::needless_pass_by_value)]
 fn test_irs_runs(
   paragraph: &Paragraph,
   classes: &[Class],

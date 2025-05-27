@@ -144,9 +144,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   fn matches(&mut self, self_char: char, other_char: char) -> Option<usize> {
     #[cfg(feature = "leetspeak")]
     {
-      self
-        .matches_leetspeak(other_char)
-        .or_else(|| Self::matches_character(self_char, other_char))
+      Self::matches_character(self_char, other_char).or_else(|| self.matches_leetspeak(other_char))
     }
 
     #[cfg(not(feature = "leetspeak"))]

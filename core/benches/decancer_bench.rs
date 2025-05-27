@@ -17,5 +17,15 @@ fn cure_char(c: &mut Criterion) {
   });
 }
 
-criterion_group!(benches, cure, cure_char);
+fn leetspeak(c: &mut Criterion) {
+  c.bench_function("leetspeak", |b| {
+    b.iter(|| {
+      let cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdf").unwrap();
+
+      assert_eq!(cured, "very funny text with leetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdf");
+    });
+  });
+}
+
+criterion_group!(benches, cure, cure_char, leetspeak);
 criterion_main!(benches);

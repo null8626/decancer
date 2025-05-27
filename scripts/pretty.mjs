@@ -78,7 +78,7 @@ async function updateReadme() {
       const integer = bin.readUint32LE(offset)
 
       const codepoint = integer & CODEPOINT_MASK
-      let toAdd = (1 + bin.readUint8(offset + 4)) & 0x7f
+      let toAdd = 1 + (bin.readUint8(offset + 4) & 0x7f)
 
       const uppercasedCodepoint = String.fromCodePoint(codepoint)
         .toUpperCase()
