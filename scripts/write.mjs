@@ -252,7 +252,7 @@ for (i = 0; i < expanded.length; i++) {
       previous.translation.length === 1 &&
       previous.attributes === attributes &&
       previous.caseSensitive === caseSensitive &&
-      (previous.codepoint + previous.rangeSize + 1) === codepoint
+      previous.codepoint + previous.rangeSize + 1 === codepoint
     ) {
       const previousTranslationCharCode = previous.translation.charCodeAt()
       const currentTranslationCharCode = translation.charCodeAt()

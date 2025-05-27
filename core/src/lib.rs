@@ -162,6 +162,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   let mut paragraph_start = 0;
   let mut paragraph_level: Option<Level> = None;
   let mut pure_ltr = true;
+  let mut has_isolate_controls = false;
 
   let mut idx = 0;
 
@@ -186,10 +187,12 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
               range: paragraph_start..paragraph_end,
               level: paragraph_level.unwrap_or(Level::ltr()),
               pure_ltr,
+              has_isolate_controls,
             });
 
             paragraph_start = paragraph_end;
             pure_ltr = true;
+            has_isolate_controls = false;
             isolate_stack.clear();
             paragraph_level = None;
           },
@@ -232,6 +235,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
 
           Class::RLI | Class::LRI | Class::FSI => {
             pure_ltr = false;
+            has_isolate_controls = true;
             isolate_stack.push(idx);
           },
 
@@ -254,6 +258,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
       range: paragraph_start..idx,
       level: paragraph_level.unwrap_or(Level::ltr()),
       pure_ltr,
+      has_isolate_controls,
     });
   }
 
@@ -264,8 +269,10 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
   let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
 
   let mut levels = Vec::with_capacity(refined_input.len());
+  let mut level_runs = Vec::new();
   let mut processing_classes = original_classes.clone();
   let mut output = String::with_capacity(refined_input.len());
+  let mut sequences = Vec::new();
 
   for paragraph in &paragraphs {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
@@ -275,10 +282,20 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
       let original_classes = paragraph.sliced(&original_classes);
       let processing_classes = paragraph.sliced_mut(&mut processing_classes);
       let levels = paragraph.sliced_mut(&mut levels);
+      level_runs.clear();
 
-      paragraph.compute_explicit(input, original_classes, processing_classes, levels);
+      paragraph.compute_explicit(
+        input,
+        original_classes,
+        processing_classes,
+        levels,
+        &mut level_runs,
+      );
 
-      for sequence in paragraph.isolating_run_sequences(levels, original_classes) {
+      sequences.clear();
+      paragraph.isolating_run_sequences(levels, &level_runs, original_classes, &mut sequences);
+
+      for sequence in &sequences {
         sequence.resolve_implicit_weak(input, processing_classes);
         sequence.resolve_implicit_neutral(input, processing_classes, levels);
       }

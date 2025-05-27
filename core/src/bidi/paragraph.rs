@@ -157,8 +157,8 @@ impl IsolatingRunSequence {
     &self,
     text: &str,
     original_classes: &[Class],
-  ) -> Vec<BracketPair> {
-    let mut ret = Vec::new();
+    bracket_pairs: &mut Vec<BracketPair>,
+  ) {
     let mut stack = Vec::new();
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
@@ -182,7 +182,7 @@ impl IsolatingRunSequence {
             .rev()
             .find(|(_, element)| element.0 == matched.opening)
           {
-            ret.push(BracketPair {
+            bracket_pairs.push(BracketPair {
               start: element.1,
               end: actual_index,
               start_run: element.2,
@@ -195,8 +195,7 @@ impl IsolatingRunSequence {
       }
     }
 
-    ret.sort_by_key(|r| r.start);
-    ret
+    bracket_pairs.sort_by_key(|r| r.start);
   }
 
   pub(crate) fn resolve_implicit_neutral(
@@ -208,8 +207,11 @@ impl IsolatingRunSequence {
     let e = levels[self.runs[0].start].class();
 
     let not_e = if e == Class::L { Class::R } else { Class::L };
+    let mut bracket_pairs = Vec::new();
 
-    for pair in self.identify_bracket_pairs(text, processing_classes) {
+    self.identify_bracket_pairs(text, processing_classes, &mut bracket_pairs);
+
+    for pair in bracket_pairs {
       let mut found_e = false;
       let mut found_not_e = false;
       let mut class_to_set = None;
@@ -372,6 +374,7 @@ pub(crate) struct Paragraph {
   pub(crate) range: Range<usize>,
   pub(crate) level: Level,
   pub(crate) pure_ltr: bool,
+  pub(crate) has_isolate_controls: bool,
 }
 
 impl Paragraph {
@@ -509,6 +512,7 @@ impl Paragraph {
     original_classes: &[Class],
     processing_classes: &mut [Class],
     levels: &mut [Level],
+    runs: &mut Vec<Range<usize>>,
   ) {
     let mut stack = vec![Status {
       level: self.level,
@@ -518,6 +522,9 @@ impl Paragraph {
     let mut overflow_isolate_count = 0;
     let mut overflow_embedding_count = 0;
     let mut valid_isolate_count = 0;
+
+    let mut current_run_level = Level::ltr();
+    let mut current_run_start = 0;
 
     for (idx, character) in input.char_indices() {
       let current_class = original_classes[idx];
@@ -638,14 +645,70 @@ impl Paragraph {
         levels[idx + j] = levels[idx];
         processing_classes[idx + j] = processing_classes[idx];
       }
+
+      if idx == 0 {
+        current_run_level = levels[idx];
+      } else if original_classes[idx].removed_by_x9() && levels[idx] != current_run_level {
+        runs.push(current_run_start..idx);
+        current_run_level = levels[idx];
+        current_run_start = idx;
+      }
+    }
+
+    if levels.len() > current_run_start {
+      runs.push(current_run_start..levels.len());
     }
   }
 
-  pub(crate) fn isolating_run_sequences<'a>(
-    &'a self,
-    levels: &'a [Level],
-    original_classes: &'a [Class],
-  ) -> impl Iterator<Item = IsolatingRunSequence> + 'a {
+  pub(crate) fn isolating_run_sequences(
+    &self,
+    levels: &[Level],
+    level_runs: &[Range<usize>],
+    original_classes: &[Class],
+    irs: &mut Vec<IsolatingRunSequence>,
+  ) {
+    if !self.has_isolate_controls {
+      irs.reserve_exact(level_runs.len());
+
+      for run in level_runs {
+        let run_levels = &levels[run.clone()];
+        let run_classes = &original_classes[run.clone()];
+        let seq_level = run_levels[run_classes
+          .iter()
+          .position(|c| !c.removed_by_x9())
+          .unwrap_or(0)];
+
+        let end_level = run_levels[run_classes
+          .iter()
+          .rposition(|c| !c.removed_by_x9())
+          .unwrap_or(run.end - run.start - 1)];
+
+        let pred_level = match original_classes[..run.start]
+          .iter()
+          .rposition(|c| !c.removed_by_x9())
+        {
+          Some(idx) => levels[idx],
+          None => self.level,
+        };
+
+        let succ_level = match original_classes[run.end..]
+          .iter()
+          .position(|c| !c.removed_by_x9())
+        {
+          Some(idx) => levels[run.end + idx],
+          None => self.level,
+        };
+
+        irs.push(IsolatingRunSequence {
+          runs: vec![run.clone()],
+          start_class: max(seq_level, pred_level).class(),
+          end_class: max(end_level, succ_level).class(),
+        });
+      }
+
+      return;
+    }
+
     let mut runs = Vec::new();
 
     if !levels.is_empty() {
@@ -693,16 +756,20 @@ impl Paragraph {
 
     sequences.extend(stack.into_iter().rev().filter(|seq| !seq.is_empty()));
 
-    sequences.into_iter().map(move |sequence| {
+    irs.reserve_exact(sequences.len());
+
+    for sequence in sequences {
+      assert!(!sequence.is_empty());
+
+      let sequence_start = sequence[0].start;
+      let runs_len = sequence.len();
+      let sequence_end = sequence[runs_len - 1].end;
+
       let mut result = IsolatingRunSequence {
         runs: sequence,
         start_class: Class::L,
         end_class: Class::L,
       };
-
-      let sequence_start = result.runs[0].start;
-      let runs_len = result.runs.len();
-      let sequence_end = result.runs[runs_len - 1].end;
 
       let sequence_level = levels[result
         .iter_forwards_from(sequence_start, 0)
@@ -743,7 +810,8 @@ impl Paragraph {
 
       result.start_class = max(sequence_level, preceeding_level).class();
       result.end_class = max(end_level, succeeding_level).class();
-      result
-    })
+
+      irs.push(result);
+    }
   }
 }

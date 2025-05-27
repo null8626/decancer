@@ -151,14 +151,37 @@ fn bidi_class() {
   assert_eq!(Class::new(0x30000), Some(Class::L));
 }
 
+fn level_runs(levels: &[Level], original_classes: &[Class]) -> Vec<Range<usize>> {
+  let mut runs = Vec::new();
+
+  if levels.is_empty() {
+    return runs;
+  }
+
+  let mut current_run_level = levels[0];
+  let mut current_run_start = 0;
+
+  for i in 1..levels.len() {
+    if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
+      runs.push(current_run_start..i);
+      current_run_level = levels[i];
+      current_run_start = i;
+    }
+  }
+
+  runs.push(current_run_start..levels.len());
+  runs
+}
+
 fn irs_sorted(
   paragraph: &Paragraph,
   levels: &[Level],
   classes: &[Class],
 ) -> Vec<IsolatingRunSequence> {
-  let mut sequences = paragraph
-    .isolating_run_sequences(levels, classes)
-    .collect::<Vec<_>>();
+  let level_runs = level_runs(levels, classes);
+  let mut sequences = Vec::new();
+
+  paragraph.isolating_run_sequences(levels, &level_runs, classes, &mut sequences);
 
   sequences.sort_by(|a, b| a.runs[0].clone().cmp(b.runs[0].clone()));
 
@@ -231,6 +254,7 @@ fn isolating_run_sequences() {
     range: 0..1,
     level: Level::ltr(),
     pure_ltr: false,
+    has_isolate_controls: true,
   };
 
   test_irs_runs(

@@ -28,9 +28,7 @@ public class DecancerTest {
 
   @Test
   public void censorMultiple() throws Exception {
-    try (
-      final CuredString string = new CuredString("helloh yeah")
-    ) {
+    try (final CuredString string = new CuredString("helloh yeah")) {
       final String[] keywords = { "hello", "oh yeah" };
       string.censorMultiple(keywords, '*');
 

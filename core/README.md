@@ -18,7 +18,7 @@
 A library that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of [**Binary Search**](https://en.wikipedia.org/wiki/Binary_search_algorithm) to ensure speed!
-- By default, it's capable of filtering **328,071 (29.45%) different unicode codepoints** like:
+- By default, it's capable of filtering **328,968 (29.53%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
