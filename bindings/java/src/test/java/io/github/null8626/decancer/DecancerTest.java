@@ -1,8 +1,10 @@
 package io.github.null8626.decancer;
 
-import io.github.null8626.decancer.CuredString;
-import io.github.null8626.decancer.Match;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class DecancerTest {
 
@@ -15,63 +17,45 @@ public class DecancerTest {
 
   @Test
   public void censor() throws Exception {
-    CuredString string = new CuredString("wow heellllo wow hello wow!");
-
-    try {
+    try (
+      final CuredString string = new CuredString("wow heellllo wow hello wow!")
+    ) {
       string.censor("hello", '*');
 
-      Assertions.assertEquals(string.toString(), "wow ******** wow ***** wow!");
-      string.destroy();
-    } catch (Exception err) {
-      string.destroy();
-      throw err;
+      Assertions.assertEquals("wow ******** wow ***** wow!", string.toString());
     }
   }
 
   @Test
   public void censorMultiple() throws Exception {
-    CuredString string = new CuredString("helloh yeah");
-
-    try {
-      String[] keywords = { "hello", "oh yeah" };
+    try (
+      final CuredString string = new CuredString("wow heellllo wow hello wow!")
+    ) {
+      final String[] keywords = { "hello", "oh yeah" };
       string.censorMultiple(keywords, '*');
 
-      Assertions.assertEquals(string.toString(), "***********");
-      string.destroy();
-    } catch (Exception err) {
-      string.destroy();
-      throw err;
+      Assertions.assertEquals("***********", string.toString());
     }
   }
 
   @Test
   public void replace() throws Exception {
-    CuredString string = new CuredString("wow hello wow heellllo!");
-
-    try {
+    try (
+      final CuredString string = new CuredString("wow hello wow heellllo!")
+    ) {
       string.replace("hello", "world");
 
-      Assertions.assertEquals(string.toString(), "wow world wow world!");
-      string.destroy();
-    } catch (Exception err) {
-      string.destroy();
-      throw err;
+      Assertions.assertEquals("wow world wow world!", string.toString());
     }
   }
 
   @Test
   public void replaceMultiple() throws Exception {
-    CuredString string = new CuredString("helloh yeah");
-
-    try {
-      String[] keywords = { "hello", "oh yeah" };
+    try (final CuredString string = new CuredString("helloh yeah")) {
+      final String[] keywords = { "hello", "oh yeah" };
       string.replaceMultiple(keywords, "world");
 
-      Assertions.assertEquals(string.toString(), "world");
-      string.destroy();
-    } catch (Exception err) {
-      string.destroy();
-      throw err;
+      Assertions.assertEquals("world", string.toString());
     }
   }
 
@@ -79,10 +63,10 @@ public class DecancerTest {
   public void find() {
     final Match[] match = this.cured.find("funny");
 
-    Assertions.assertEquals(match.length, 1);
-    Assertions.assertEquals(match[0].start, 5);
-    Assertions.assertEquals(match[0].end, 10);
-    Assertions.assertEquals(match[0].toString(), "funny");
+    Assertions.assertEquals(1, match.length, 1);
+    Assertions.assertEquals(5, match[0].start, 5);
+    Assertions.assertEquals(10, match[0].end, 10);
+    Assertions.assertEquals("funny", match[0].toString());
   }
 
   @Test
@@ -113,6 +97,6 @@ public class DecancerTest {
 
   @AfterEach
   public void cleanup() {
-    this.cured.destroy();
+    this.cured.close();
   }
 }

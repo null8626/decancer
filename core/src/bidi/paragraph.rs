@@ -52,13 +52,13 @@ impl IsolatingRunSequence {
           },
           Class::AL => processing_classes[i] = Class::R,
           _ => {},
-        };
+        }
 
         match w2_processing_class {
           Class::L | Class::R => last_strong_is_al = false,
           Class::AL => last_strong_is_al = true,
           _ => {},
-        };
+        }
 
         let class_before_w456 = processing_classes[i];
 
@@ -122,7 +122,7 @@ impl IsolatingRunSequence {
             },
           },
           _ => {},
-        };
+        }
 
         bn_run_indices.clear();
         prev_class_before_w5 = processing_classes[i];
@@ -149,7 +149,7 @@ impl IsolatingRunSequence {
         Class::L => last_strong_is_l = true,
         Class::R | Class::AL => last_strong_is_l = false,
         _ => {},
-      };
+      }
     }
   }
 
@@ -326,7 +326,7 @@ impl IsolatingRunSequence {
               next_class = self.end_class;
               break;
             },
-          };
+          }
         }
 
         let new_class = match (prev_class, next_class) {

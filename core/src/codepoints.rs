@@ -14,8 +14,7 @@ pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);
 pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 6) - 1;
 
-const RANGE_MASK: u32 = 0x0800_0000;
-const STRING_TRANSLATION_MASK: u32 = 0x1000_0000;
+const STRING_TRANSLATION_MASK: u32 = 0x10000000;
 
 #[derive(Copy, Clone)]
 #[cfg_attr(not(feature = "options"), allow(dead_code))]
@@ -26,16 +25,16 @@ impl Codepoint {
     self.0 & CODEPOINT_MASK
   }
 
-  const fn range_end(self) -> Option<u32> {
-    if (self.0 & RANGE_MASK) != 0 {
-      Some((self.1 & 0x7f) as _)
+  const fn range_size(self) -> u32 {
+    if self.is_string_translation() {
+      0
     } else {
-      None
+      (self.1 & 0x7f) as _
     }
   }
 
   const fn is_string_translation(self) -> bool {
-    (self.0 & STRING_TRANSLATION_MASK) != 0
+    self.0 >= STRING_TRANSLATION_MASK
   }
 
   const fn ascii_translation(self) -> u32 {
@@ -63,9 +62,9 @@ impl Codepoint {
 
     if other < conf {
       return Some(Ordering::Less);
-    } else if let Some(range_end) = self.range_end() {
-      conf += range_end;
     }
+
+    conf += self.range_size();
 
     if other > conf {
       return Some(Ordering::Greater);

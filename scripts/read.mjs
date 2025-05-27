@@ -7,7 +7,6 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const CODEPOINT_MASK = 0xfffff
-const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const STRING_TRANSLATION_MASK = 0x10000000
 
@@ -23,25 +22,18 @@ class Codepoints {
       input.translation = ''
     }
 
-    if (input.rangeUntil === null) {
-      this.#inner.push({
-        codepoint: input.codepoint,
-        translation: input.translation
-      })
-    } else {
-      const ogTranslationCode = input.syncedTranslation
-        ? input.translation.charCodeAt()
-        : input.translation
+    const ogTranslationCode = input.syncedTranslation
+      ? input.translation.charCodeAt()
+      : input.translation
 
-      for (let c = input.codepoint; c <= input.rangeUntil; c++)
-        this.#inner.push({
-          codepoint: c,
-          translation:
-            typeof ogTranslationCode === 'number'
-              ? String.fromCharCode(ogTranslationCode + (c - input.codepoint))
-              : ogTranslationCode
-        })
-    }
+    for (let i = 0; i <= input.rangeSize; i++)
+      this.#inner.push({
+        codepoint: c,
+        translation:
+          typeof ogTranslationCode === 'number'
+            ? String.fromCharCode(ogTranslationCode + input.codepoint + i)
+            : ogTranslationCode
+      })
   }
 
   get inner() {
@@ -89,11 +81,10 @@ for (let offset = 6; offset < codepointsEnd; offset += 6) {
   codepoints.push({
     codepoint,
     translation:
-      (integer & STRING_TRANSLATION_MASK) !== 0
+      integer >= STRING_TRANSLATION_MASK
         ? getTranslation(integer, secondByte)
         : String.fromCharCode((integer >> 20) & 0x7f),
-    rangeUntil:
-      (integer & RANGE_MASK) !== 0 ? codepoint + (secondByte & 0x7f) : null,
+    rangeSize: secondByte & 0x7f,
     syncedTranslation: secondByte >= 0x80
   })
 }
@@ -109,11 +100,10 @@ for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 6) {
   codepoints.push({
     codepoint,
     translation:
-      (integer & STRING_TRANSLATION_MASK) !== 0
+      integer >= STRING_TRANSLATION_MASK
         ? getTranslation(integer, secondByte)
         : String.fromCharCode((integer >> 20) & 0x7f),
-    rangeUntil:
-      (integer & RANGE_MASK) !== 0 ? codepoint + (secondByte & 0x7f) : null,
+    rangeSize: secondByte & 0x7f,
     syncedTranslation: secondByte >= 0x80
   })
 }

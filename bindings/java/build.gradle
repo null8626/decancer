@@ -1,27 +1,16 @@
 plugins {
   id 'java-library'
   id 'maven-publish'
-  id 'org.jreleaser' version '1.12.0'
+  id 'org.jreleaser' version '3.3.0'
 }
 
-group 'io.github.null8626'
-version '3.2.8'
-description 'A library that removes common unicode confusables/homoglyphs from strings.'
+group = 'io.github.null8626'
+version = '3.3.0'
+description = 'A library that removes common unicode confusables/homoglyphs from strings.'
 
 repositories {
   mavenCentral()
-  maven { url 'https://jitpack.io' }
-}
-
-jar {
-  archiveBaseName = 'decancer'
-  archiveVersion = '3.2.8'
-
-  from('./bin') {
-    include '*.dll'
-    include '*.dylib'
-    include '*.so'
-  }
+  maven { url = 'https://jitpack.io' }
 }
 
 publishing {
@@ -29,7 +18,7 @@ publishing {
     maven(MavenPublication) {
       artifactId = 'decancer'
       groupId = 'io.github.null8626'
-      version = '3.2.8'
+      version = '3.3.0'
     
       from components.java
       
@@ -43,7 +32,7 @@ publishing {
           license {
             name = 'MIT License'
             distribution = 'repo'
-            url = 'https://github.com/null8626/decancer/blob/v3.2.8/LICENSE'
+            url = 'https://github.com/null8626/decancer/blob/v3.3.0/LICENSE'
           }
         }
         
@@ -85,7 +74,7 @@ publishing {
 jreleaser {
   project {
     name = 'decancer'
-    version = '3.2.8'
+    version = '3.3.0'
     description = 'A library that removes common unicode confusables/homoglyphs from strings.'
     longDescription = 'A library that removes common unicode confusables/homoglyphs from strings. By default, the library supports filtering over 220,000 unicode codepoints and reordering right-to-left text as it were to be rendered graphically.'
     license = 'MIT'
@@ -120,15 +109,26 @@ jreleaser {
   }
 }
 
-javadoc {
-  if (JavaVersion.current().isJava9Compatible()) {
-    options.addBooleanOption('html5', true)
-  }
-}
-
 java {
   withJavadocJar()
   withSourcesJar()
+
+  jar {
+    archiveBaseName = 'decancer'
+    archiveVersion = '3.3.0'
+  
+    from('./bin') {
+      include '*.dll'
+      include '*.dylib'
+      include '*.so'
+    }
+  }
+
+  javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+      options.addBooleanOption('html5', true)
+    }
+  }
 }
 
 test {
@@ -140,7 +140,13 @@ test {
 
 dependencies {
   implementation 'com.github.adamheinrich:native-utils:e6a3948966'
-  implementation 'com.fizzed:jne:4.1.1'
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
-  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+  implementation 'com.fizzed:jne:4.3.0'
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.12.2'
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.12.2"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.12.2"
+}
+
+tasks.withType(JavaCompile) {
+  options.compilerArgs << "-Xlint:deprecation"
 }

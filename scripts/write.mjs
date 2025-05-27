@@ -17,8 +17,6 @@ import { fileURLToPath } from 'node:url'
 import { deserialize } from 'node:v8'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
-
-const RANGE_MASK = 0x8000000n
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
 const STRING_TRANSLATION_MASK = 0x10000000n
@@ -26,7 +24,7 @@ const STRING_TRANSLATION_MASK = 0x10000000n
 console.log('- fetching unicode data...')
 
 if (!existsSync(CACHE_FILE)) {
-  execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
+  execSync(`node "${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}"`, {
     stdio: 'inherit'
   })
 }
@@ -241,51 +239,41 @@ assert(
 
 const grandTotal = new SortedSet(x => x.codepoint)
 
-let curr
-for (i = 0, curr = null; i < expanded.length; i++) {
+for (i = 0; i < expanded.length; i++) {
   const [codepoint, translation] = expanded[i]
   const caseSensitive = isCaseSensitive(codepoint)
   const attributes = getAttributes(codepoint)
 
-  if (translation.length === 1) {
-    const [nextCodepoint, nextTranslation] = expanded[i + 1] ?? []
-    const ordered =
-      codepoint + 1 === nextCodepoint &&
-      caseSensitive === isCaseSensitive(nextCodepoint) &&
-      attributes === getAttributes(nextCodepoint)
+  if (translation.length === 1 && grandTotal.length > 0) {
+    const previous = grandTotal.array[grandTotal.length - 1]
 
-    if (curr !== null) {
+    if (
+      previous.rangeSize < 0x7f &&
+      previous.translation.length === 1 &&
+      previous.attributes === attributes &&
+      previous.caseSensitive === caseSensitive &&
+      (previous.codepoint + previous.rangeSize + 1) === codepoint
+    ) {
+      const previousTranslationCharCode = previous.translation.charCodeAt()
+      const currentTranslationCharCode = translation.charCodeAt()
+
       if (
-        ordered &&
-        !curr.syncedTranslation &&
-        nextTranslation.length === 1 &&
-        nextTranslation === translation
+        previous.rangeSize === 0 &&
+        previousTranslationCharCode + 1 === currentTranslationCharCode
       ) {
-        curr.rangeUntil++
+        previous.syncedTranslation = true
+        previous.rangeSize++
+        continue
+      } else if (
+        (previous.syncedTranslation &&
+          previousTranslationCharCode + previous.rangeSize + 1 ===
+            currentTranslationCharCode) ||
+        (!previous.syncedTranslation &&
+          previousTranslationCharCode === currentTranslationCharCode)
+      ) {
+        previous.rangeSize++
         continue
       }
-
-      grandTotal.push(curr)
-
-      curr = null
-      continue
-    }
-
-    const synced =
-      translation.charCodeAt() + 1 === nextTranslation?.charCodeAt() &&
-      nextTranslation.length === 1
-
-    if (ordered && (synced || nextTranslation === translation)) {
-      curr = {
-        caseSensitive,
-        codepoint,
-        translation,
-        rangeUntil: codepoint + 1,
-        syncedTranslation: synced,
-        attributes
-      }
-
-      continue
     }
   }
 
@@ -293,7 +281,7 @@ for (i = 0, curr = null; i < expanded.length; i++) {
     caseSensitive,
     codepoint,
     translation,
-    rangeUntil: null,
+    rangeSize: 0,
     syncedTranslation: false,
     attributes
   })
@@ -305,6 +293,8 @@ console.log(
     100
   ).toFixed(2)}%).`
 )
+
+writeFileSync('./wtf.json', JSON.stringify(grandTotal.array, null, 2))
 
 const similarBytes = Buffer.from(
   similar.reduce(
@@ -332,7 +322,7 @@ for (const {
   caseSensitive,
   codepoint,
   translation,
-  rangeUntil,
+  rangeSize,
   syncedTranslation,
   attributes
 } of grandTotal.array) {
@@ -348,13 +338,9 @@ for (const {
       BigInt(((translation.length << 3) | (offset >> 8)) << 20)
     middleByte = offset & 0xff
   } else {
-    if (rangeUntil !== null) {
-      if (syncedTranslation) middleByte = 0x80
+    if (syncedTranslation) middleByte = 0x80
 
-      firstBytes |= RANGE_MASK
-      middleByte |= rangeUntil - codepoint
-    }
-
+    middleByte |= rangeSize
     firstBytes |= BigInt(translation.charCodeAt() << 20)
   }
 

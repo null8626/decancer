@@ -8,7 +8,7 @@ package io.github.null8626.decancer;
  * </p>
  *
  * @author null8626
- * @version 3.2.8
+ * @version 3.3.0
  * @since 3.0.0
  */
 public final class Options {
@@ -63,7 +63,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainCapitalization() {
-    this.inner |= (1 << 0);
+    this.inner |= 1;
     return this;
   }
 

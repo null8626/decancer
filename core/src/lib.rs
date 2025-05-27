@@ -87,7 +87,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
     ) {
       #[cfg(feature = "options")]
       if retain_capitalization {
-        translation = translation.into_uppercase();
+        translation.make_uppercase();
       }
 
       #[cfg(feature = "options")]
@@ -155,7 +155,6 @@ macro_rules! cure_char {
 
 fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   let mut refined_input = String::with_capacity(input.len());
-
   let mut original_classes = Vec::with_capacity(input.len());
   let mut isolate_stack = Vec::new();
 

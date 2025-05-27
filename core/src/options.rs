@@ -175,21 +175,16 @@ impl Options {
       let mid = (start + end) / 2;
       let codepoint = Codepoint::at(offset + (mid * 6));
       #[cfg(feature = "options")]
-      let mat = codepoint.matches(code, self);
+      let ord = codepoint.matches(code, self)?;
 
       #[cfg(not(feature = "options"))]
-      let mat = codepoint.matches(code);
+      let ord = codepoint.matches(code)?;
 
-      match mat {
-        Some(ord) => match ord {
-          Ordering::Equal => return Some(codepoint.translation(code)),
-          Ordering::Greater => start = mid + 1,
-          Ordering::Less => end = mid - 1,
-        },
-
-        // could've just used ? but Rust doesn't allow it in a const fn
-        None => break,
-      };
+      match ord {
+        Ordering::Equal => return Some(codepoint.translation(code)),
+        Ordering::Greater => start = mid + 1,
+        Ordering::Less => end = mid - 1,
+      }
     }
 
     None

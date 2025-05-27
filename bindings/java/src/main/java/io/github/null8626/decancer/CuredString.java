@@ -12,10 +12,10 @@ import cz.adamh.utils.NativeUtils;
  * </p>
  *
  * @author null8626
- * @version 3.2.8
+ * @version 3.3.0
  * @since 3.0.0
  */
-public class CuredString {
+public class CuredString implements AutoCloseable {
 
   private long inner;
 
@@ -54,7 +54,7 @@ public class CuredString {
           "/" + libPrefix + "decancer-" + rustTarget + "." + fileExtension
         );
       }
-    } catch (Throwable err) {
+    } catch (final Throwable err) {
       throw new RuntimeException(
         "[" +
         rustTarget +
@@ -80,7 +80,7 @@ public class CuredString {
    * @param other The other string to match with.
    * @see findMultiple
    * @return Match[] An array of Match objects containing every similar-looking match.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.0
    */
@@ -96,7 +96,7 @@ public class CuredString {
    * @param other The list of strings to match with.
    * @see find
    * @return Match[] An array of Match objects containing every similar-looking match.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
    */
@@ -113,7 +113,7 @@ public class CuredString {
    * @param with The character to repeat.
    * @see censorMultiple
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
    */
@@ -130,7 +130,7 @@ public class CuredString {
    * @param with The character to repeat.
    * @see censor
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
    */
@@ -146,7 +146,7 @@ public class CuredString {
    * @param other The other string to match with.
    * @param with The other string to replace with.
    * @see replaceMultiple
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
    */
@@ -162,7 +162,7 @@ public class CuredString {
    * @param other The list of strings to match with.
    * @param with The other string to replace with.
    * @see replace
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
    */
@@ -177,7 +177,7 @@ public class CuredString {
    *
    * @param other The other string to match with.
    * @return boolean Whether this object is similar with another string.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
@@ -192,7 +192,7 @@ public class CuredString {
    *
    * @param other The other string to match with.
    * @return boolean Whether this object similarly starts with another string.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
@@ -207,7 +207,7 @@ public class CuredString {
    *
    * @param other The other string to match with.
    * @return boolean Whether this object similarly ends with another string.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
@@ -222,7 +222,7 @@ public class CuredString {
    *
    * @param other The other string to match with.
    * @return boolean Whether this object similarly contains another string.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
@@ -238,10 +238,11 @@ public class CuredString {
    * </p>
    *
    * @return String The String representation of this object.
-   * @throws NullPointerException If destroy() has been called prior to this.
+   * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
+  @Override
   public native String toString();
 
   /**
@@ -253,9 +254,10 @@ public class CuredString {
    * </p>
    *
    * @throws RuntimeException If a Rust panic occurs.
-   * @since 3.0.0
+   * @since 3.3.0
    */
-  public native void destroy();
+  @Override
+  public native void close();
 
   /**
    * Cures a string with decancer's default options.

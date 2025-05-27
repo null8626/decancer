@@ -62,7 +62,7 @@ macro_rules! get_inner {
     if inner.is_null() {
       let _ = $env.throw_new(
         "java/lang/NullPointerException",
-        "destroy() has been called prior to this.",
+        "close() has been called prior to this.",
       );
 
       return $return_value;
@@ -331,7 +331,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_toStr
 }
 
 #[no_mangle]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_destroy<'local>(
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_close<'local>(
   mut env: JNIEnv<'local>,
   this: JObject<'local>,
 ) {

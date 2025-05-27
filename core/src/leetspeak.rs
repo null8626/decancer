@@ -56,7 +56,8 @@ pub(crate) fn find(haystack: &str, character: u32) -> Option<usize> {
     _ => return None,
   };
 
-  let regex = &REGEXES[idx as usize];
-
-  regex.as_ref()?.find(haystack).map(|mat| mat.len())
+  REGEXES[idx as usize]
+    .as_ref()?
+    .find(haystack)
+    .map(|mat| mat.len())
 }

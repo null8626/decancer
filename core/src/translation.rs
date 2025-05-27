@@ -43,11 +43,11 @@ impl Translation {
   }
 
   #[cfg(feature = "options")]
-  pub(crate) fn into_uppercase(self) -> Self {
+  pub(crate) fn make_uppercase(&mut self) {
     match self {
-      Self::Character(c) => Self::Character(c.to_uppercase().next().unwrap()),
-      Self::String(s) => Self::String(Cow::Owned(s.as_ref().to_uppercase())),
-      Self::None => Self::None,
+      Self::Character(c) => *c = c.to_uppercase().next().unwrap(),
+      Self::String(s) => s.to_mut().make_ascii_uppercase(),
+      Self::None => {},
     }
   }
 

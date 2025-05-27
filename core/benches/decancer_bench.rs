@@ -3,7 +3,7 @@ use rand::random;
 
 fn cure(c: &mut Criterion) {
   c.bench_function("cure", |b| {
-    b.iter(|| decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap())
+    b.iter(|| decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap());
   });
 }
 
@@ -13,7 +13,7 @@ fn cure_char(c: &mut Criterion) {
       random::<char>,
       |character| decancer::cure_char!(character),
       BatchSize::SmallInput,
-    )
+    );
   });
 }
 

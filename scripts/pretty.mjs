@@ -14,7 +14,6 @@ import { options } from './util.mjs'
 const CODEPOINT_MASK = 0xfffff
 // 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..=0x10ffff
 const NONE_CODEPOINTS_COUNT = 10 + 18 + 1 + 8448 + 196112
-const RANGE_MASK = 0x8000000
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CORE_DIR = join(ROOT_DIR, 'core')
 const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
@@ -65,14 +64,12 @@ async function updateReadme() {
 
       caseSensitiveCodepoints.push(codepoint)
 
-      if ((integer & RANGE_MASK) !== 0) {
-        const rangeUntil = bin.readUint8(offset + 4) & 0x7f
+      const rangeSize = bin.readUint8(offset + 4) & 0x7f
 
-        caseSensitiveCodepoints.push(
-          ...Array.from({ length: rangeUntil }, (_, i) => codepoint + 1 + i)
-        )
-        toAdd += rangeUntil
-      }
+      caseSensitiveCodepoints.push(
+        ...Array.from({ length: rangeSize }, (_, i) => codepoint + 1 + i)
+      )
+      toAdd += rangeSize
 
       codepointsCount += toAdd
     }
@@ -81,11 +78,7 @@ async function updateReadme() {
       const integer = bin.readUint32LE(offset)
 
       const codepoint = integer & CODEPOINT_MASK
-      let toAdd = 1
-
-      if ((integer & RANGE_MASK) !== 0) {
-        toAdd += bin.readUint8(offset + 4) & 0x7f
-      }
+      let toAdd = (1 + bin.readUint8(offset + 4)) & 0x7f
 
       const uppercasedCodepoint = String.fromCodePoint(codepoint)
         .toUpperCase()

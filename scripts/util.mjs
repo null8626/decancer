@@ -172,4 +172,8 @@ export class SortedSet {
   get array() {
     return this.#array
   }
+
+  get length() {
+    return this.#array.length
+  }
 }
