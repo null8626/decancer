@@ -36,7 +36,7 @@ server.on('message', async message => {
 
           if (tries === 5) {
             error(
-              '- [client] aborting browser launching process due to error:\n${err.stack}'
+              `- [client] aborting browser launching process due to error:\n${err.stack}`
             )
 
             return server.postMessage(null)
