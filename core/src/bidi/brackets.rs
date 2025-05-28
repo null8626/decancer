@@ -37,7 +37,7 @@ impl OpeningBracket {
 
       let diff = (first >> 28) & 7;
 
-      let closing = if (first >> 31) == 1 {
+      let closing = if first >= 0x80000000 {
         opening - diff
       } else {
         opening + diff

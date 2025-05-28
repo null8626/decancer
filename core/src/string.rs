@@ -1,7 +1,4 @@
-use crate::{
-  util::{merge_ranges, unwrap_or_ret},
-  Matcher,
-};
+use crate::{util::merge_ranges, Matcher};
 #[cfg(feature = "serde")]
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{
@@ -214,7 +211,9 @@ impl CuredString {
   /// This comparison is case-insensitive.
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = self.find(other);
-    let mat = unwrap_or_ret!(iter.next(), false);
+    let Some(mat) = iter.next() else {
+      return false;
+    };
 
     mat.start == 0
   }
@@ -223,7 +222,9 @@ impl CuredString {
   ///
   /// This comparison is case-insensitive.
   pub fn ends_with(&self, other: &str) -> bool {
-    let last = unwrap_or_ret!(self.find(other).last(), false);
+    let Some(last) = self.find(other).last() else {
+      return false;
+    };
 
     last.end == self.len()
   }

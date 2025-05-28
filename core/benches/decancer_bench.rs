@@ -17,6 +17,7 @@ fn cure_char(c: &mut Criterion) {
   });
 }
 
+#[cfg(feature = "leetspeak")]
 fn leetspeak(c: &mut Criterion) {
   c.bench_function("leetspeak", |b| {
     b.iter(|| {
@@ -27,5 +28,10 @@ fn leetspeak(c: &mut Criterion) {
   });
 }
 
+#[cfg(feature = "leetspeak")]
 criterion_group!(benches, cure, cure_char, leetspeak);
+
+#[cfg(not(feature = "leetspeak"))]
+criterion_group!(benches, cure, cure_char);
+
 criterion_main!(benches);

@@ -666,8 +666,114 @@ impl Paragraph {
     level_runs: &[Range<usize>],
     original_classes: &[Class],
     irs: &mut Vec<IsolatingRunSequence>,
-  ) {
-    if !self.has_isolate_controls {
+  ) -> Result<(), Error> {
+    if self.has_isolate_controls {
+      let mut runs = Vec::new();
+
+      if let Some(&(mut current_run_level)) = levels.first() {
+        let mut current_run_start = 0;
+
+        for i in 1..levels.len() {
+          if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
+            runs.push(current_run_start..i);
+
+            current_run_level = levels[i];
+            current_run_start = i;
+          }
+        }
+
+        runs.push(current_run_start..levels.len());
+      }
+
+      let mut sequences = Vec::with_capacity(runs.len());
+      let mut stack = vec![vec![]];
+
+      for run in runs {
+        let start_class = original_classes[run.start];
+        let end_class = original_classes[run.clone()]
+          .iter()
+          .copied()
+          .rev()
+          .find(|x| !x.removed_by_x9())
+          .unwrap_or(start_class);
+
+        let mut sequence = if start_class == Class::PDI && stack.len() > 1 {
+          stack.pop().unwrap()
+        } else {
+          Vec::with_capacity(1)
+        };
+
+        sequence.push(run);
+
+        if end_class.is_isolate() {
+          stack.push(sequence);
+        } else {
+          sequences.push(sequence);
+        }
+      }
+
+      sequences.extend(stack.into_iter().rev().filter(|seq| !seq.is_empty()));
+
+      irs.reserve_exact(sequences.len());
+
+      for sequence in sequences {
+        if sequence.is_empty() {
+          return Err(Error::MalformedIsolatingRunSequence);
+        }
+
+        let sequence_start = sequence[0].start;
+        let runs_len = sequence.len();
+        let sequence_end = sequence[runs_len - 1].end;
+
+        let mut result = IsolatingRunSequence {
+          runs: sequence,
+          start_class: Class::L,
+          end_class: Class::L,
+        };
+
+        let sequence_level = levels[result
+          .iter_forwards_from(sequence_start, 0)
+          .find(|&i| !original_classes[i].removed_by_x9())
+          .unwrap_or(sequence_start)];
+
+        let end_level = levels[result
+          .iter_backwards_from(sequence_end, runs_len - 1)
+          .find(|&i| !original_classes[i].removed_by_x9())
+          .unwrap_or(sequence_end - 1)];
+
+        let preceeding_level = match original_classes[..sequence_start]
+          .iter()
+          .rposition(|x| !x.removed_by_x9())
+        {
+          Some(idx) => levels[idx],
+          None => self.level,
+        };
+
+        let last_non_removed = original_classes[..sequence_end]
+          .iter()
+          .copied()
+          .rev()
+          .find(|x| !x.removed_by_x9())
+          .unwrap_or(Class::BN);
+
+        let succeeding_level = if last_non_removed.is_isolate() {
+          self.level
+        } else {
+          match original_classes[sequence_end..]
+            .iter()
+            .position(|x| !x.removed_by_x9())
+          {
+            Some(idx) => levels[sequence_end + idx],
+            None => self.level,
+          }
+        };
+
+        result.start_class = max(sequence_level, preceeding_level).class();
+        result.end_class = max(end_level, succeeding_level).class();
+
+        irs.push(result);
+      }
+    } else {
       irs.reserve_exact(level_runs.len());
 
       for run in level_runs {
@@ -705,113 +811,8 @@ impl Paragraph {
           end_class: max(end_level, succ_level).class(),
         });
       }
-
-      return;
     }
 
-    let mut runs = Vec::new();
-
-    if !levels.is_empty() {
-      let mut current_run_level = levels[0];
-      let mut current_run_start = 0;
-
-      for i in 1..levels.len() {
-        if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
-          runs.push(current_run_start..i);
-
-          current_run_level = levels[i];
-          current_run_start = i;
-        }
-      }
-
-      runs.push(current_run_start..levels.len());
-    }
-
-    let mut sequences = Vec::with_capacity(runs.len());
-    let mut stack = vec![vec![]];
-
-    for run in runs {
-      let start_class = original_classes[run.start];
-      let end_class = original_classes[run.clone()]
-        .iter()
-        .copied()
-        .rev()
-        .find(|x| !x.removed_by_x9())
-        .unwrap_or(start_class);
-
-      let mut sequence = if start_class == Class::PDI && stack.len() > 1 {
-        stack.pop().unwrap()
-      } else {
-        Vec::with_capacity(1)
-      };
-
-      sequence.push(run);
-
-      if end_class.is_isolate() {
-        stack.push(sequence);
-      } else {
-        sequences.push(sequence);
-      }
-    }
-
-    sequences.extend(stack.into_iter().rev().filter(|seq| !seq.is_empty()));
-
-    irs.reserve_exact(sequences.len());
-
-    for sequence in sequences {
-      assert!(!sequence.is_empty());
-
-      let sequence_start = sequence[0].start;
-      let runs_len = sequence.len();
-      let sequence_end = sequence[runs_len - 1].end;
-
-      let mut result = IsolatingRunSequence {
-        runs: sequence,
-        start_class: Class::L,
-        end_class: Class::L,
-      };
-
-      let sequence_level = levels[result
-        .iter_forwards_from(sequence_start, 0)
-        .find(|i| !original_classes[*i].removed_by_x9())
-        .unwrap_or(sequence_start)];
-
-      let end_level = levels[result
-        .iter_backwards_from(sequence_end, runs_len - 1)
-        .find(|i| !original_classes[*i].removed_by_x9())
-        .unwrap_or(sequence_end - 1)];
-
-      let preceeding_level = match original_classes[..sequence_start]
-        .iter()
-        .rposition(|x| !x.removed_by_x9())
-      {
-        Some(idx) => levels[idx],
-        None => self.level,
-      };
-
-      let last_non_removed = original_classes[..sequence_end]
-        .iter()
-        .copied()
-        .rev()
-        .find(|x| !x.removed_by_x9())
-        .unwrap_or(Class::BN);
-
-      let succeeding_level = if last_non_removed.is_isolate() {
-        self.level
-      } else {
-        match original_classes[sequence_end..]
-          .iter()
-          .position(|x| !x.removed_by_x9())
-        {
-          Some(idx) => levels[sequence_end + idx],
-          None => self.level,
-        }
-      };
-
-      result.start_class = max(sequence_level, preceeding_level).class();
-      result.end_class = max(end_level, succeeding_level).class();
-
-      irs.push(result);
-    }
+    Ok(())
   }
 }

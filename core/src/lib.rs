@@ -42,6 +42,8 @@ error_enum! {
     LevelModificationUnderflow,
     /// Attempted to raise a unicode bidi level that is already at `MAX_IMPLICIT_DEPTH` (126).
     LevelModificationOverflow,
+    /// Got a malformed isolating run sequence structure.
+    MalformedIsolatingRunSequence,
   }
 }
 
@@ -293,7 +295,7 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
       );
 
       sequences.clear();
-      paragraph.isolating_run_sequences(levels, &level_runs, original_classes, &mut sequences);
+      paragraph.isolating_run_sequences(levels, &level_runs, original_classes, &mut sequences)?;
 
       for sequence in &sequences {
         sequence.resolve_implicit_weak(input, processing_classes);

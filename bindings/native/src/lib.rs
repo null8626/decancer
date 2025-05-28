@@ -534,11 +534,7 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16_free(raw_utf16_handle: *mut Ve
 pub unsafe extern "C" fn decancer_matcher_consume(
   matcher: *mut decancer::Matcher<'static, 'static>,
 ) -> *mut Vec<Range<usize>> {
-  let mut output = Vec::new();
-
-  for value in (*matcher).by_ref() {
-    output.push(value);
-  }
+  let output = (*matcher).by_ref().collect::<Vec<_>>();
 
   let _ = Box::from_raw(matcher);
   Box::into_raw(Box::new(output))
@@ -553,11 +549,7 @@ pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'
 pub unsafe extern "C" fn decancer_matcher_utf16_consume(
   matcher: *mut MatcherUtf16,
 ) -> *mut Vec<Range<usize>> {
-  let mut output = Vec::new();
-
-  while let Some(value) = (*matcher).matcher.as_mut().unwrap_unchecked().next() {
-    output.push(value);
-  }
+  let output = (*matcher).matcher.as_mut().unwrap_unchecked().collect::<Vec<_>>();
 
   let _ = Box::from_raw(matcher);
   Box::into_raw(Box::new(output))

@@ -125,7 +125,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   #[cfg(feature = "leetspeak")]
   fn matches_leetspeak(&mut self, other_char: char) -> Option<usize> {
     let haystack = &self.self_str[self.self_index..];
-    let matched_len = leetspeak::find(haystack, other_char as _)?;
+    let matched_len = leetspeak::find(haystack.as_bytes(), other_char as _)?;
 
     self.self_iterator = haystack[matched_len..].chars();
 
@@ -155,7 +155,9 @@ impl<'a, 'b> Matcher<'a, 'b> {
 
   pub(crate) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
     let mut iter = Self::new(self_str, other_str);
-    let mat = unwrap_or_ret!(iter.next(), false);
+    let Some(mat) = iter.next() else {
+      return false;
+    };
 
     mat.start == 0 && mat.end == self_str.len()
   }

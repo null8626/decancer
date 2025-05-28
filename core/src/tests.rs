@@ -1,6 +1,8 @@
+#[cfg(feature = "options")]
+use crate::Options;
 use crate::{
   bidi::{IsolatingRunSequence, Paragraph},
-  Class, CuredString, Level, Matcher, Options,
+  Class, CuredString, Level, Matcher,
 };
 use proptest::prelude::*;
 use std::ops::Range;
@@ -181,7 +183,9 @@ fn irs_sorted(
   let level_runs = level_runs(levels, classes);
   let mut sequences = Vec::new();
 
-  paragraph.isolating_run_sequences(levels, &level_runs, classes, &mut sequences);
+  paragraph
+    .isolating_run_sequences(levels, &level_runs, classes, &mut sequences)
+    .unwrap();
 
   sequences.sort_by(|a, b| a.runs[0].clone().cmp(b.runs[0].clone()));
 
