@@ -73,13 +73,13 @@ function* bidiDerivedIter(bidiDerived) {
 
     if (bidiDerived[i][0].includes('..')) {
       const [startString, endString] = bidiDerived[i][0].split('..')
-      const end = parseInt(endString.trimRight(), 16)
+      const end = parseInt(endString.trimEnd(), 16)
 
       for (let start = parseInt(startString, 16); start <= end; start++) {
         yield [start, second]
       }
     } else {
-      yield [parseInt(bidiDerived[i][0].trimRight(), 16), second]
+      yield [parseInt(bidiDerived[i][0].trimEnd(), 16), second]
     }
   }
 }
@@ -111,7 +111,7 @@ const [unicodeResponse, cheerio, twemojiParser] = await Promise.all([
 ])
 
 const unicode = unicodeResponse
-  .trimRight()
+  .trimEnd()
   .split('\n')
   .map(x => x.split(';'))
 
@@ -212,7 +212,7 @@ void (await Promise.all([
         'https://www.unicode.org/Public/UNIDATA/extracted/DerivedBidiClass.txt'
       )
     )
-      .trimRight()
+      .trimEnd()
       .split('\n')
       .map(x => x.split(';'))
       .filter(x => x[0][0] !== '#' && x.length === 2)
@@ -272,10 +272,10 @@ void (await Promise.all([
 
     const bidiBracketsBuffer = Buffer.concat(
       (await request('https://unicode.org/Public/UNIDATA/BidiBrackets.txt'))
-        .trimRight()
+        .trimEnd()
         .split('\n')
         .map(x => x.split(';'))
-        .filter(x => x.length === 3 && x[2].trimLeft().startsWith('o'))
+        .filter(x => x.length === 3 && x[2].trimStart().startsWith('o'))
         .map(x => {
           const codepoint1 = parseInt(x[0], 16)
           const diff = parseInt(x[1], 16) - codepoint1

@@ -549,7 +549,11 @@ pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'
 pub unsafe extern "C" fn decancer_matcher_utf16_consume(
   matcher: *mut MatcherUtf16,
 ) -> *mut Vec<Range<usize>> {
-  let output = (*matcher).matcher.as_mut().unwrap_unchecked().collect::<Vec<_>>();
+  let output = (*matcher)
+    .matcher
+    .as_mut()
+    .unwrap_unchecked()
+    .collect::<Vec<_>>();
 
   let _ = Box::from_raw(matcher);
   Box::into_raw(Box::new(output))

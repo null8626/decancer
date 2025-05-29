@@ -25,7 +25,7 @@ try {
 
 function renderAPIHTML(parts) {
   let rendered =
-    '<div id="apis"><div id="api-not-found">Not such query exists :(</div>'
+    '<div id="apis"><div id="api-not-found">No such query exists :(</div>'
 
   for (const [name, members] of Object.entries(parts)) {
     rendered += `<div id="apitype">${name}</div><div id="apilist">`
