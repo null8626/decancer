@@ -1,5 +1,5 @@
 use super::{BracketPair, Class, Level, OpeningBracket};
-use crate::{util, Error};
+use crate::Error;
 use std::{
   cmp::{max, min},
   ops::{Index, IndexMut, Range},
@@ -162,7 +162,7 @@ impl IsolatingRunSequence {
     let mut stack = Vec::new();
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
-      for (i, ch) in util::sliced(text, level_run.clone()).char_indices() {
+      for (i, ch) in text[level_run.clone()].char_indices() {
         let actual_index = level_run.start + i;
 
         if original_classes[actual_index] != Class::ON {
@@ -216,11 +216,7 @@ impl IsolatingRunSequence {
       let mut found_not_e = false;
       let mut class_to_set = None;
 
-      let start_char_len = util::sliced(text, pair.start..)
-        .chars()
-        .next()
-        .unwrap()
-        .len_utf8();
+      let start_char_len = text[pair.start..].chars().next().unwrap().len_utf8();
 
       for enclosed_i in self.iter_forwards_from(pair.start + start_char_len, pair.start_run) {
         if enclosed_i >= pair.end {
@@ -261,11 +257,7 @@ impl IsolatingRunSequence {
       }
 
       if let Some(class_to_set) = class_to_set {
-        let end_char_len = util::sliced(text, pair.end..)
-          .chars()
-          .next()
-          .unwrap()
-          .len_utf8();
+        let end_char_len = text[pair.end..].chars().next().unwrap().len_utf8();
 
         for class in
           (pair.start..pair.start + start_char_len).chain(pair.end..pair.end + end_char_len)
@@ -383,7 +375,7 @@ impl Paragraph {
     &'a self,
     slicable: &'a T,
   ) -> &'a <T as Index<Range<usize>>>::Output {
-    util::sliced(slicable, self.range.clone())
+    &slicable[self.range.clone()]
   }
 
   #[inline(always)]
@@ -391,7 +383,7 @@ impl Paragraph {
     &'a self,
     slicable: &'a mut T,
   ) -> &'a mut <T as Index<Range<usize>>>::Output {
-    util::sliced_mut(slicable, self.range.clone())
+    &mut slicable[self.range.clone()]
   }
 
   pub(crate) fn visual_runs(

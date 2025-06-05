@@ -1,7 +1,7 @@
 use crate::codepoints::CODEPOINTS;
 #[cfg(feature = "leetspeak")]
 use crate::leetspeak;
-use std::{iter::FusedIterator, ops::Range, str::Chars};
+use std::{char, iter::FusedIterator, ops::Range, str::Chars};
 
 pub(crate) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
 pub(crate) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
@@ -101,6 +101,7 @@ pub struct Matcher<'a, 'b> {
   #[cfg(feature = "leetspeak")]
   self_str: &'a str,
   self_index: usize,
+  start_index: usize,
   other_iterator: CachedPeek<'b>,
 }
 
@@ -118,6 +119,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
       #[cfg(feature = "leetspeak")]
       self_str,
       self_index: 0,
+      start_index: 0,
       other_iterator: CachedPeek::new(other_chars, other_first.unwrap()),
     }
   }
@@ -162,18 +164,28 @@ impl<'a, 'b> Matcher<'a, 'b> {
     mat.start == 0 && mat.end == self_str.len()
   }
 
-  fn skip_until(&mut self, other_char: char) -> Option<(usize, usize)> {
+  fn restart(&mut self) -> Option<(char, Option<char>)> {
+    self.other_iterator.restart();
+
+    let current_other = self.other_iterator.next()?;
     let mut skipped = 0;
+    let matched_skip;
 
     loop {
       let next_self_char = self.self_iterator.next()?;
 
-      if let Some(matched_skip) = self.matches(next_self_char, other_char) {
-        return Some((skipped, matched_skip));
+      if let Some(matched_skip_inner) = self.matches(next_self_char, current_other.0) {
+        matched_skip = matched_skip_inner;
+        break;
       }
 
       skipped += next_self_char.len_utf8();
     }
+
+    self.start_index = self.self_index + skipped;
+    self.self_index = self.start_index + matched_skip;
+
+    Some(current_other)
   }
 }
 
@@ -181,15 +193,9 @@ impl Iterator for Matcher<'_, '_> {
   type Item = Range<usize>;
 
   fn next(&mut self) -> Option<Self::Item> {
-    self.other_iterator.restart();
+    let mut current_other = self.restart()?;
+    let mut last_match_end = self.start_index;
 
-    let mut current_other = self.other_iterator.next()?;
-
-    let (skipped, matched_skip) = self.skip_until(current_other.0)?;
-
-    let mut start_index = self.self_index + skipped;
-    self.self_index = start_index + matched_skip;
-    let mut last_match_end = start_index;
     #[cfg(feature = "separators")]
     let mut current_separator: Option<char> = None;
 
@@ -207,7 +213,7 @@ impl Iterator for Matcher<'_, '_> {
 
         match self.other_iterator.next() {
           Some(new) => current_other = new,
-          None => return Some(start_index..last_match_end),
+          None => return Some(self.start_index..last_match_end),
         }
 
         continue;
@@ -228,18 +234,11 @@ impl Iterator for Matcher<'_, '_> {
           Some(separator) => {
             if !is(next_self_char, separator) {
               if current_other.1.is_none() {
-                return Some(start_index..last_match_end);
+                return Some(self.start_index..last_match_end);
               }
 
-              self.other_iterator.restart();
-
               current_separator = None;
-              current_other = self.other_iterator.next()?;
-
-              let (skipped, matched_skip) = self.skip_until(current_other.0)?;
-
-              start_index = self.self_index + skipped;
-              self.self_index = start_index + matched_skip;
+              current_other = self.restart()?;
             }
           },
 
@@ -254,20 +253,13 @@ impl Iterator for Matcher<'_, '_> {
             return Some(start_index..last_match_end);
           }
 
-          self.other_iterator.restart();
-
-          current_other = self.other_iterator.next()?;
-
-          let (skipped, matched_skip) = self.skip_until(current_other.0)?;
-
-          start_index = self.self_index + skipped;
-          self.self_index = start_index + matched_skip;
+          current_other = self.restart()?;
         }
       }
     }
 
     if current_other.1.is_none() {
-      Some(start_index..last_match_end)
+      Some(self.start_index..last_match_end)
     } else {
       None
     }

@@ -42,18 +42,15 @@ impl Level {
   }
 
   pub(crate) fn raise(&mut self, amount: u8) -> Result<(), Error> {
-    let number = self
-      .0
-      .checked_add(amount)
-      .ok_or(Error::LevelModificationOverflow)?;
+    if let Some(number) = self.0.checked_add(amount) {
+      if number <= MAX_IMPLICIT_DEPTH {
+        self.0 = number;
 
-    if number <= MAX_IMPLICIT_DEPTH {
-      self.0 = number;
-
-      Ok(())
-    } else {
-      Err(Error::LevelModificationOverflow)
+        return Ok(());
+      }
     }
+
+    Err(Error::LevelModificationOverflow)
   }
 
   pub(crate) const fn is_rtl(self) -> bool {

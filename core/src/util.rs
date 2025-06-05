@@ -1,4 +1,4 @@
-use std::ops::{Index, IndexMut, Range};
+use std::ops::Range;
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
@@ -47,19 +47,6 @@ impl Binary {
       self.at(offset + 3),
     ])
   }
-}
-
-#[inline(always)]
-pub(crate) fn sliced<R, T: Index<R> + ?Sized>(slicable: &T, range: R) -> &<T as Index<R>>::Output {
-  slicable.index(range)
-}
-
-#[inline(always)]
-pub(crate) fn sliced_mut<R, T: IndexMut<R> + ?Sized>(
-  slicable: &mut T,
-  range: R,
-) -> &mut <T as Index<R>>::Output {
-  slicable.index_mut(range)
 }
 
 // special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
