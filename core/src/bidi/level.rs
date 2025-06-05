@@ -56,19 +56,15 @@ impl Level {
     }
   }
 
-  pub(crate) const fn is_ltr(self) -> bool {
-    self.0 % 2 == 0
-  }
-
   pub(crate) const fn is_rtl(self) -> bool {
     self.0 % 2 == 1
   }
 
   pub(crate) const fn class(self) -> Class {
-    if self.is_ltr() {
-      Class::L
-    } else {
+    if self.is_rtl() {
       Class::R
+    } else {
+      Class::L
     }
   }
 

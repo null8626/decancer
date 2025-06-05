@@ -44,6 +44,8 @@ error_enum! {
     LevelModificationOverflow,
     /// Got a malformed isolating run sequence structure.
     MalformedIsolatingRunSequence,
+    /// Got a malformed bidi level override status stack.
+    MalformedOverrideStatusStack,
   }
 }
 
@@ -292,7 +294,7 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
         processing_classes,
         levels,
         &mut level_runs,
-      );
+      )?;
 
       sequences.clear();
       paragraph.isolating_run_sequences(levels, &level_runs, original_classes, &mut sequences)?;

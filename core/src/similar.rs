@@ -1,14 +1,14 @@
+use crate::codepoints::CODEPOINTS;
 #[cfg(feature = "leetspeak")]
 use crate::leetspeak;
-use crate::{codepoints::CODEPOINTS, util::unwrap_or_ret};
 use std::{iter::FusedIterator, ops::Range, str::Chars};
 
 pub(crate) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
 pub(crate) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
 
 pub(crate) fn is(self_char: char, other_char: char) -> bool {
-  let self_char = self_char.to_lowercase().next().unwrap() as u32;
-  let other_char = other_char.to_lowercase().next().unwrap() as u32;
+  let self_char = self_char.to_lowercase().next().unwrap_or(self_char) as u32;
+  let other_char = other_char.to_lowercase().next().unwrap_or(other_char) as u32;
 
   if self_char == other_char {
     return true;
@@ -58,7 +58,7 @@ impl<'a> CachedPeek<'a> {
     self.index += 1;
 
     match self.cache.get(self.index) {
-      Some(value) => Some(*value),
+      Some(&value) => Some(value),
 
       None => {
         let value = self.iterator.next()?;
@@ -205,10 +205,10 @@ impl Iterator for Matcher<'_, '_> {
           current_separator = None;
         }
 
-        current_other = unwrap_or_ret!(
-          self.other_iterator.next(),
-          Some(start_index..last_match_end)
-        );
+        match self.other_iterator.next() {
+          Some(new) => current_other = new,
+          None => return Some(start_index..last_match_end),
+        }
 
         continue;
       }

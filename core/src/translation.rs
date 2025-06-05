@@ -45,7 +45,7 @@ impl Translation {
   #[cfg(feature = "options")]
   pub(crate) fn make_uppercase(&mut self) {
     match self {
-      Self::Character(c) => *c = c.to_uppercase().next().unwrap(),
+      Self::Character(c) => *c = c.to_uppercase().next().unwrap_or(*c),
       Self::String(s) => s.to_mut().make_ascii_uppercase(),
       Self::None => {},
     }

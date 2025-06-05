@@ -513,7 +513,7 @@ impl Paragraph {
     processing_classes: &mut [Class],
     levels: &mut [Level],
     runs: &mut Vec<Range<usize>>,
-  ) {
+  ) -> Result<(), Error> {
     let mut stack = vec![Status {
       level: self.level,
       status: OverrideStatus::Neutral,
@@ -537,7 +537,10 @@ impl Paragraph {
         | Class::RLI
         | Class::LRI
         | Class::FSI => {
-          let last = stack.last().unwrap();
+          let Some(last) = stack.last() else {
+            return Err(Error::MalformedOverrideStatusStack);
+          };
+
           levels[idx] = last.level;
 
           let is_isolate = current_class.is_isolate();
@@ -602,7 +605,10 @@ impl Paragraph {
             valid_isolate_count -= 1;
           }
 
-          let last = stack.last().unwrap();
+          let Some(last) = stack.last() else {
+            return Err(Error::MalformedOverrideStatusStack);
+          };
+
           levels[idx] = last.level;
 
           match last.status {
@@ -616,19 +622,32 @@ impl Paragraph {
           if overflow_isolate_count <= 0 {
             if overflow_embedding_count > 0 {
               overflow_embedding_count -= 1;
-            } else if stack.len() >= 2 && stack.last().unwrap().status != OverrideStatus::Isolate {
-              stack.pop();
+            } else {
+              let Some(last) = stack.last() else {
+                return Err(Error::MalformedOverrideStatusStack);
+              };
+
+              if stack.len() >= 2 && last.status != OverrideStatus::Isolate {
+                stack.pop();
+              }
             }
           }
 
-          levels[idx] = stack.last().unwrap().level;
+          let Some(last) = stack.last() else {
+            return Err(Error::MalformedOverrideStatusStack);
+          };
+
+          levels[idx] = last.level;
           processing_classes[idx] = Class::BN;
         },
 
         Class::B => {},
 
         _ => {
-          let last = stack.last().unwrap();
+          let Some(last) = stack.last() else {
+            return Err(Error::MalformedOverrideStatusStack);
+          };
+
           levels[idx] = last.level;
 
           if current_class != Class::BN {
@@ -658,6 +677,8 @@ impl Paragraph {
     if levels.len() > current_run_start {
       runs.push(current_run_start..levels.len());
     }
+
+    Ok(())
   }
 
   pub(crate) fn isolating_run_sequences(

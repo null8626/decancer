@@ -81,9 +81,7 @@ where
     let previous = &mut ranges[j];
 
     if current.start >= previous.start && current.start <= previous.end {
-      if current.end > previous.end {
-        previous.end = current.end;
-      }
+      previous.end = previous.end.max(current.end);
     } else {
       j += 1;
       ranges[j] = current;
@@ -159,14 +157,3 @@ macro_rules! numbered_enum {
 }
 
 pub(crate) use numbered_enum;
-
-macro_rules! unwrap_or_ret {
-  ($option:expr,$fallback:expr) => {
-    match $option {
-      Some(inner) => inner,
-      None => return $fallback,
-    }
-  };
-}
-
-pub(crate) use unwrap_or_ret;
