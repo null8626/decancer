@@ -21,7 +21,7 @@ const JAVA_SOURCES_DIR = join(
   'null8626',
   'decancer'
 )
-const JRELEASER_VERSION = '1.12.0'
+const JRELEASER_VERSION = '1.18.0'
 
 async function update(filename, callback) {
   await writeFile(filename, callback(await readFile(filename, 'utf-8')))

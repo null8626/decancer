@@ -8,7 +8,7 @@ package io.github.null8626.decancer;
  * </p>
  *
  * @author null8626
- * @version 3.3.0
+ * @version 3.3.2
  * @since 3.0.0
  */
 public final class Options {

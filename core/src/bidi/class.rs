@@ -32,7 +32,7 @@ numbered_enum! {
 }
 
 impl Class {
-  pub(crate) fn new(code: u32) -> Option<Self> {
+  pub(crate) const fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_DICTIONARY_COUNT as i32;
 
@@ -48,7 +48,7 @@ impl Class {
       } else if code > (other + BIDI.u16_at(offset + 4) as u32) {
         start = mid + 1;
       } else {
-        return Some(((kv >> 20) as u8).into());
+        return Some(Self::from_number((kv >> 20) as _));
       }
     }
 

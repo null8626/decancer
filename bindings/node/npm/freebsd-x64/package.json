@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-freebsd-x64",
-  "version": "3.3.0",
+  "version": "3.3.2",
   "os": [
     "freebsd"
   ],
