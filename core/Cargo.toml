@@ -35,14 +35,13 @@ unreadable-literal = "allow"
 
 [features]
 default = ["options", "separators", "leetspeak"]
+serde = ["dep:serde"]
 options = []
 separators = []
 leetspeak = ["regex", "lazy_static"]
 
 [dev-dependencies]
 proptest = { version = "1", default-features = false, features = ["std"] }
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
 criterion = { version = "0.6", default-features = false }
 rand = "0.9"
 censor = "0.3"
