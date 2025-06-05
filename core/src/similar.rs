@@ -250,7 +250,7 @@ impl Iterator for Matcher<'_, '_> {
         #[cfg(not(feature = "separators"))]
         {
           if current_other.1.is_none() {
-            return Some(start_index..last_match_end);
+            return Some(self.start_index..last_match_end);
           }
 
           current_other = self.restart()?;

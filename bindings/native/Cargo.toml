@@ -29,3 +29,6 @@ embed-resource = "2"
 default = ["options", "leetspeak"]
 options = ["decancer/options"]
 leetspeak = ["decancer/leetspeak"]
+
+[profile.release]
+lto = true
