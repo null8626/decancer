@@ -132,11 +132,11 @@ macro_rules! numbered_enum {
       $($enum_prop = $enum_prop_value,)*
     }
 
-    impl From<$enum_type> for $enum_name {
-      fn from(value: $enum_type) -> Self {
+    impl $enum_name {
+      const fn from_number(value: $enum_type) -> Self {
         match value {
           $($enum_prop_value => Self::$enum_prop,)*
-          _ => panic!(concat!("invalid ", stringify!($enum_name), " value: {}"), value),
+          _ => unreachable!(),
         }
       }
     }

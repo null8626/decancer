@@ -33,12 +33,15 @@ impl Level {
   }
 
   pub(crate) fn lower(&mut self, amount: u8) -> Result<(), Error> {
-    self.0 = self
-      .0
-      .checked_sub(amount)
-      .ok_or(Error::LevelModificationUnderflow)?;
+    match self.0.checked_sub(amount) {
+      Some(result) => {
+        self.0 = result;
 
-    Ok(())
+        Ok(())
+      },
+
+      None => Err(Error::LevelModificationUnderflow),
+    }
   }
 
   pub(crate) fn raise(&mut self, amount: u8) -> Result<(), Error> {
