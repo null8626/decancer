@@ -28,10 +28,10 @@ class Codepoints {
 
     for (let i = 0; i <= input.rangeSize; i++)
       this.#inner.push({
-        codepoint: c,
+        codepoint: input.codepoint + i,
         translation:
           typeof ogTranslationCode === 'number'
-            ? String.fromCharCode(ogTranslationCode + input.codepoint + i)
+            ? String.fromCharCode(ogTranslationCode + i)
             : ogTranslationCode
       })
   }
@@ -77,15 +77,15 @@ for (let offset = 6; offset < codepointsEnd; offset += 6) {
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & CODEPOINT_MASK
+  const isStringTranslation = integer >= STRING_TRANSLATION_MASK
 
   codepoints.push({
     codepoint,
-    translation:
-      integer >= STRING_TRANSLATION_MASK
-        ? getTranslation(integer, secondByte)
-        : String.fromCharCode((integer >> 20) & 0x7f),
-    rangeSize: secondByte & 0x7f,
-    syncedTranslation: secondByte >= 0x80
+    translation: isStringTranslation
+      ? getTranslation(integer, secondByte)
+      : String.fromCharCode((integer >> 20) & 0x7f),
+    rangeSize: isStringTranslation ? 0 : secondByte & 0x7f,
+    syncedTranslation: !isStringTranslation && secondByte >= 0x80
   })
 }
 
@@ -96,15 +96,15 @@ for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 6) {
   const secondByte = binary.readUint8(offset + 4)
 
   const codepoint = integer & CODEPOINT_MASK
+  const isStringTranslation = integer >= STRING_TRANSLATION_MASK
 
   codepoints.push({
     codepoint,
-    translation:
-      integer >= STRING_TRANSLATION_MASK
-        ? getTranslation(integer, secondByte)
-        : String.fromCharCode((integer >> 20) & 0x7f),
-    rangeSize: secondByte & 0x7f,
-    syncedTranslation: secondByte >= 0x80
+    translation: isStringTranslation
+      ? getTranslation(integer, secondByte)
+      : String.fromCharCode((integer >> 20) & 0x7f),
+    rangeSize: isStringTranslation ? 0 : secondByte & 0x7f,
+    syncedTranslation: !isStringTranslation && secondByte >= 0x80
   })
 }
 
