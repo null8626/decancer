@@ -2,7 +2,7 @@
 use crate::Options;
 use crate::{
   bidi::{IsolatingRunSequence, Paragraph},
-  Class, CuredString, Level, Matcher,
+  Class, Level,
 };
 use proptest::prelude::*;
 use std::ops::Range;
@@ -21,100 +21,87 @@ proptest! {
   }
 }
 
-macro_rules! make_cmp_fn {
-  ($($fn_name:ident($s_ident:ident, $o_ident:ident) -> $cmp_expr:expr,)*) => {
-    $(
-      fn $fn_name($s_ident: &str, $o_ident: &str) -> bool {
-        let $s_ident = CuredString(String::from($s_ident));
+macro_rules! assert_matches {
+  ($input:literal,$find:literal,$expected:expr) => {{
+    let cured = $crate::cure!($input).unwrap();
+    let matches = cured.find($find).collect::<Vec<_>>();
 
-        $cmp_expr
-      }
-    )*
-  };
+    assert_eq!(matches, $expected);
+  }};
 }
 
-make_cmp_fn! {
-  is_contains(this, other) -> this.contains(other),
-  is_starts_with(this, other) -> this.starts_with(other),
-  is_ends_with(this, other) -> this.ends_with(other),
-  is_equal(this, other) -> this == other,
+macro_rules! assert_no_matches {
+  ($input:literal,$find:literal) => {{
+    let cured = $crate::cure!($input).unwrap();
+    let matches = cured.find($find).collect::<Vec<_>>();
+
+    assert!(matches.is_empty());
+  }};
 }
 
 #[test]
+#[allow(clippy::single_range_in_vec_init)]
 fn similar_equal() {
-  assert!(is_equal("hello", "hello"));
-  assert!(is_equal("hhheeeeelllloo", "hello"));
-  assert!(is_equal("hh-he  e ee!e!ll/l/lo//o", "hello"));
-  assert!(is_equal("shhhiii/iiiiitttttt/ttttt", "shit"));
+  assert_matches!("h", "h", [0..1]);
+  assert_matches!("he", "he", [0..2]);
+  assert_matches!("h3", "he", [0..2]);
 
-  assert!(!is_equal("-", "hello"));
-  assert!(!is_equal("- !?", "hello"));
-  assert!(!is_equal("hello-", "hello"));
-  assert!(!is_equal("---hello", "hello"));
-  assert!(!is_equal("shhhiii/iiiiitttttt/ttttt/", "shit"));
-}
+  assert_matches!("hello", "hello", [0..5]);
+  assert_matches!("hhheeeeelllloo", "hello", [0..14]);
+  assert_matches!("hh-he  e eeell/l/lo//o", "hello", [0..22]);
+  assert_matches!(" shhhiii/iiiiitttttt/ttttt ", "shit", [1..26]);
+  assert_matches!("hh-he  e eeell/l/lo-?", "hello", [0..19]);
+  assert_matches!("?asdf-hhheeeeelllloo", "hello", [6..20]);
 
-#[test]
-fn similar_beginning() {
-  assert!(is_starts_with("hello", "hello"));
-  assert!(is_starts_with("hello?", "hello"));
-  assert!(is_starts_with("hhheeeeelllloo!!", "hello"));
-  assert!(is_starts_with("hh-he  e ee!e!ll/l/lo//o-?", "hello"));
+  assert_matches!("-hello", "hello", [1..6]);
+  assert_matches!("hello-", "hello", [0..5]);
+  assert_matches!("---hello", "hello", [3..8]);
+  assert_matches!("---hello-", "hello", [3..8]);
+  assert_matches!("shhhiii/iiiiitttttt/ttttt/", "shit", [0..25]);
 
-  assert!(!is_starts_with("---hello-", "hello"));
-}
+  assert_matches!("hhheeeeelllloo!!", "hello", [0..14]);
+  assert_matches!("hh-he  e ee,e ll/l/lo//o-?", "hello", [0..24]);
 
-#[test]
-fn similar_ending() {
-  assert!(is_ends_with("hello", "hello"));
-  assert!(is_ends_with("?hello", "hello"));
-  assert!(is_ends_with("?asdf-hhheeeeelllloo", "hello"));
-}
+  assert_matches!("-!?hel$2-hello?", "hello", [9..14]);
+  assert_matches!("-!?hel$2-hhheeeeelllloo!!", "hello", [9..23]);
+  assert_matches!("-!?hel$2-hh-he  e ee,e,ll/l/lo//o-?", "hello", [9..33]);
 
-#[test]
-fn similar_contains() {
-  assert!(is_contains("hello", "hello"));
-  assert!(is_contains("hello?", "hello"));
-  assert!(is_contains("hhheeeeelllloo!!", "hello"));
-  assert!(is_contains("hh-he  e ee!e!ll/l/lo//o-?", "hello"));
+  assert_matches!("wow hell  wow heellllo", "hello", [14..22]);
+  assert_matches!("wow hell  wow heellllo!", "hello", [14..22]);
 
-  assert!(is_contains("-!?hel$2-hello?", "hello"));
-  assert!(is_contains("-!?hel$2-hhheeeeelllloo!!", "hello"));
-  assert!(is_contains("-!?hel$2-hh-he  e ee!e!ll/l/lo//o-?", "hello"));
-
-  assert!(!is_contains("eel", "ell"));
-  assert!(!is_contains("ell", "eel"));
-  assert!(!is_contains("-!?hel", "hell"));
-  assert!(!is_contains("ello?", "hello"));
-}
-
-#[test]
-fn similar_find() {
-  macro_rules! test_find {
-    ($(($self_str:expr, $other_str:expr) {$($expected_range:expr,)*})*) => {$({
-      let mut mat = Matcher::new($self_str, $other_str);
-
-      $(assert_eq!(mat.next(), Some($expected_range));)*
-      assert_eq!(mat.next(), None);
-    })*};
+  #[cfg(feature = "leetspeak")]
+  {
+    assert_matches!("|-|3|_I_0", "hello", [0..9]);
+    assert_matches!("|--|3e33|__|_I_I_0()O[]", "hello", [0..23]);
   }
 
-  test_find! {
-    ("wow hell  wow heellllo", "hello") {
-      14..22,
-    }
-
-    ("wow hell  wow heellllo!", "hello") {
-      14..22,
-    }
-  }
+  assert_no_matches!("", "");
+  assert_no_matches!("h", "");
+  assert_no_matches!("", "h");
+  assert_no_matches!("", "he");
+  assert_no_matches!("h", "he");
+  assert_no_matches!("-", "hello");
+  assert_no_matches!("- !?", "hello");
+  assert_no_matches!("ello", "hello");
+  assert_no_matches!("eel", "ell");
+  assert_no_matches!("ell", "eel");
+  assert_no_matches!("-!?hel", "hell");
+  assert_no_matches!("ello?", "hello");
 }
 
 #[test]
-#[cfg(feature = "leetspeak")]
-fn similar_leetspeak() {
-  assert!(is_equal("|-|3|_I_0", "hello"));
-  assert!(is_equal("|--|3e33|__|_I_I_0()O[]", "hello"));
+fn censor() {
+  let mut cured = crate::cure!("word word this is a word").unwrap();
+
+  cured.censor("word", '*');
+
+  assert_eq!(cured, "**** **** this is a ****");
+
+  let mut cured2 = crate::cure!("wordword this is a word").unwrap();
+
+  cured2.censor("word", '*');
+
+  assert_eq!(cured2, "******** this is a ****");
 }
 
 #[test]
