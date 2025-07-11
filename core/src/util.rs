@@ -1,4 +1,4 @@
-use std::ops::Range;
+use std::{ops::Range, str::Chars};
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
@@ -144,3 +144,93 @@ macro_rules! numbered_enum {
 }
 
 pub(crate) use numbered_enum;
+
+pub(crate) struct Cached<'a> {
+  iterator: Chars<'a>,
+  pub(crate) cache: Vec<char>,
+  index: usize,
+}
+
+impl<'a> Cached<'a> {
+  #[inline(always)]
+  pub(crate) fn new(iterator: Chars<'a>) -> Self {
+    Self {
+      iterator,
+      cache: Vec::new(),
+      index: 0,
+    }
+  }
+
+  #[inline(always)]
+  pub(crate) fn set_index(&mut self, index: usize) {
+    self.index = index;
+  }
+
+  pub(crate) const fn index(&self) -> usize {
+    self.index
+  }
+
+  fn get(&mut self, index: usize) -> Option<char> {
+    self.cache.get(index).copied().or_else(|| {
+      self.iterator.next().map(|value| {
+        self.cache.push(value);
+        value
+      })
+    })
+  }
+}
+
+impl Iterator for Cached<'_> {
+  type Item = char;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    let current = self.get(self.index)?;
+
+    self.index += 1;
+
+    Some(current)
+  }
+}
+
+pub(crate) struct CachedPeek<'a> {
+  iterator: Chars<'a>,
+  cache: Vec<char>,
+  index: usize,
+}
+
+impl<'a> CachedPeek<'a> {
+  #[inline(always)]
+  pub(crate) fn new(iterator: Chars<'a>) -> Self {
+    Self {
+      iterator,
+      cache: Vec::new(),
+      index: 0,
+    }
+  }
+
+  #[inline(always)]
+  pub(crate) fn restart(&mut self) {
+    self.index = 0;
+  }
+
+  fn get(&mut self, index: usize) -> Option<char> {
+    self.cache.get(index).copied().or_else(|| {
+      self.iterator.next().map(|value| {
+        self.cache.push(value);
+        value
+      })
+    })
+  }
+}
+
+impl Iterator for CachedPeek<'_> {
+  type Item = (char, Option<char>);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    let current = self.get(self.index)?;
+
+    self.index += 1;
+
+    Some((current, self.get(self.index)))
+  }
+}

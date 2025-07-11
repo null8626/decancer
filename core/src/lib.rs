@@ -305,12 +305,16 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
       }
 
       for j in 0..levels.len() {
-        match (levels[j].is_rtl(), processing_classes[j]) {
-          (false, Class::AN | Class::EN) => levels[j].raise(2)?,
-          (false, Class::R) | (true, Class::L | Class::EN | Class::AN) => {
-            levels[j].raise(1)?;
-          },
-          _ => {},
+        {
+          let level = &mut levels[j];
+
+          match (level.is_rtl(), processing_classes[j]) {
+            (false, Class::AN | Class::EN) => level.raise(2)?,
+            (false, Class::R) | (true, Class::L | Class::EN | Class::AN) => {
+              level.raise(1)?;
+            },
+            _ => {},
+          }
         }
 
         if original_classes[j].removed_by_x9() {

@@ -1,10 +1,21 @@
-use crate::codepoints::CODEPOINTS;
 #[cfg(feature = "leetspeak")]
 use crate::leetspeak;
-use std::{char, iter::FusedIterator, ops::Range, str::Chars};
+use crate::{
+  codepoints::CODEPOINTS,
+  util::{Cached, CachedPeek},
+};
+use std::{char, iter::FusedIterator, ops::Range};
 
 pub(crate) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
 pub(crate) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
+
+#[cfg(feature = "separators")]
+fn is_exact(self_char: char, other_char: char) -> bool {
+  let self_char = self_char.to_lowercase().next().unwrap_or(self_char) as u32;
+  let other_char = other_char.to_lowercase().next().unwrap_or(other_char) as u32;
+
+  self_char == other_char
+}
 
 pub(crate) fn is(self_char: char, other_char: char) -> bool {
   let self_char = self_char.to_lowercase().next().unwrap_or(self_char) as u32;
@@ -36,70 +47,18 @@ pub(crate) fn is(self_char: char, other_char: char) -> bool {
   false
 }
 
-struct CachedPeek<'a> {
-  iterator: Chars<'a>,
-  cache: Vec<char>,
+struct ExplicitStartingPosition {
   index: usize,
-  ended: bool,
-}
-
-impl<'a> CachedPeek<'a> {
-  #[inline(always)]
-  pub(crate) fn new(iterator: Chars<'a>, first: char) -> Self {
-    Self {
-      iterator,
-      cache: vec![first],
-      index: 0,
-      ended: false,
-    }
-  }
-
-  fn next_value(&mut self) -> Option<char> {
-    self.index += 1;
-
-    match self.cache.get(self.index) {
-      Some(&value) => Some(value),
-
-      None => {
-        let value = self.iterator.next()?;
-        self.cache.push(value);
-
-        Some(value)
-      },
-    }
-  }
-
-  #[inline(always)]
-  fn restart(&mut self) {
-    self.index = 0;
-    self.ended = false;
-  }
-}
-
-impl Iterator for CachedPeek<'_> {
-  type Item = (char, Option<char>);
-
-  fn next(&mut self) -> Option<Self::Item> {
-    if self.ended {
-      return None;
-    }
-
-    let current = self.cache[self.index];
-    let next_element = self.next_value();
-
-    if next_element.is_none() {
-      self.ended = true;
-    }
-
-    Some((current, next_element))
-  }
+  start_index: usize,
+  size: usize,
 }
 
 /// A matcher iterator around a string that yields a non-inclusive [`Range`] whenever it detects a similar match.
 pub struct Matcher<'a, 'b> {
-  self_iterator: Chars<'a>,
+  self_iterator: Cached<'a>,
   #[cfg(feature = "leetspeak")]
   self_str: &'a str,
+  explicit_starting_position: Option<ExplicitStartingPosition>,
   self_index: usize,
   start_index: usize,
   other_iterator: CachedPeek<'b>,
@@ -107,20 +66,18 @@ pub struct Matcher<'a, 'b> {
 
 impl<'a, 'b> Matcher<'a, 'b> {
   pub(crate) fn new(mut self_str: &'a str, other_str: &'b str) -> Self {
-    let mut other_chars = other_str.chars();
-    let other_first = other_chars.next();
-
-    if other_first.is_none() || self_str.len() < other_str.len() {
+    if other_str.is_empty() || self_str.len() < other_str.len() {
       self_str = "";
     }
 
     Self {
-      self_iterator: self_str.chars(),
+      self_iterator: Cached::new(self_str.chars()),
       #[cfg(feature = "leetspeak")]
       self_str,
+      explicit_starting_position: None,
       self_index: 0,
       start_index: 0,
-      other_iterator: CachedPeek::new(other_chars, other_first.unwrap()),
+      other_iterator: CachedPeek::new(other_str.chars()),
     }
   }
 
@@ -129,7 +86,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     let haystack = &self.self_str[self.self_index..];
     let matched_len = leetspeak::find(haystack.as_bytes(), other_char as _)?;
 
-    self.self_iterator = haystack[matched_len..].chars();
+    self.self_iterator = Cached::new(haystack[matched_len..].chars());
 
     Some(matched_len)
   }
@@ -169,23 +126,29 @@ impl<'a, 'b> Matcher<'a, 'b> {
 
     let current_other = self.other_iterator.next()?;
     let mut skipped = 0;
-    let matched_skip;
+
+    if let Some(explicit_starting_position) = self.explicit_starting_position.take() {
+      self
+        .self_iterator
+        .set_index(explicit_starting_position.index);
+      self.start_index = explicit_starting_position.start_index;
+      self.self_index = self.start_index + explicit_starting_position.size;
+
+      return Some(current_other);
+    }
 
     loop {
       let next_self_char = self.self_iterator.next()?;
 
-      if let Some(matched_skip_inner) = self.matches(next_self_char, current_other.0) {
-        matched_skip = matched_skip_inner;
-        break;
+      if let Some(matched_skip) = self.matches(next_self_char, current_other.0) {
+        self.start_index = self.self_index + skipped;
+        self.self_index = self.start_index + matched_skip;
+
+        return Some(current_other);
       }
 
       skipped += next_self_char.len_utf8();
     }
-
-    self.start_index = self.self_index + skipped;
-    self.self_index = self.start_index + matched_skip;
-
-    Some(current_other)
   }
 }
 
@@ -194,7 +157,9 @@ impl Iterator for Matcher<'_, '_> {
 
   fn next(&mut self) -> Option<Self::Item> {
     let mut current_other = self.restart()?;
-    let mut last_match_end = self.start_index;
+    let mut last_match_end = self.self_index;
+    let first_other = current_other.0;
+    let mut completed = current_other.1.is_none();
 
     #[cfg(feature = "separators")]
     let mut current_separator: Option<char> = None;
@@ -206,13 +171,21 @@ impl Iterator for Matcher<'_, '_> {
       {
         self.self_index += matched_skip;
         last_match_end = self.self_index;
+
         #[cfg(feature = "separators")]
         {
           current_separator = None;
         }
 
         match self.other_iterator.next() {
-          Some(new) => current_other = new,
+          Some(new) => {
+            current_other = new;
+
+            if current_other.1.is_none() {
+              completed = true;
+            }
+          },
+
           None => return Some(self.start_index..last_match_end),
         }
 
@@ -222,18 +195,40 @@ impl Iterator for Matcher<'_, '_> {
       if let Some(matched_skip) = self.matches(next_self_char, current_other.0) {
         self.self_index += matched_skip;
         last_match_end = self.self_index;
+
+        if current_other.1.is_none() {
+          completed = true;
+        }
+
         #[cfg(feature = "separators")]
         {
           current_separator = None;
         }
       } else {
+        if let Some(matched_skip) = self.matches(next_self_char, first_other) {
+          self
+            .explicit_starting_position
+            .replace(ExplicitStartingPosition {
+              index: self.self_iterator.index(),
+              start_index: self.self_index,
+              size: matched_skip,
+            });
+
+          if completed {
+            return Some(self.start_index..last_match_end);
+          }
+
+          current_other = self.restart()?;
+          continue;
+        }
+
         self.self_index += next_self_char.len_utf8();
 
         #[cfg(feature = "separators")]
         match current_separator {
           Some(separator) => {
-            if !is(next_self_char, separator) {
-              if current_other.1.is_none() {
+            if !is_exact(next_self_char, separator) {
+              if completed {
                 return Some(self.start_index..last_match_end);
               }
 
@@ -243,13 +238,21 @@ impl Iterator for Matcher<'_, '_> {
           },
 
           None => {
-            current_separator.replace(next_self_char);
+            if next_self_char.is_ascii_alphabetic() {
+              if completed {
+                return Some(self.start_index..last_match_end);
+              }
+
+              current_other = self.restart()?;
+            } else {
+              current_separator.replace(next_self_char);
+            }
           },
         }
 
         #[cfg(not(feature = "separators"))]
         {
-          if current_other.1.is_none() {
+          if completed {
             return Some(self.start_index..last_match_end);
           }
 
@@ -258,7 +261,7 @@ impl Iterator for Matcher<'_, '_> {
       }
     }
 
-    if current_other.1.is_none() {
+    if completed {
       Some(self.start_index..last_match_end)
     } else {
       None
