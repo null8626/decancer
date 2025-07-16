@@ -180,10 +180,7 @@ impl Iterator for Matcher<'_, '_> {
         match self.other_iterator.next() {
           Some(new) => {
             current_other = new;
-
-            if current_other.1.is_none() {
-              completed = true;
-            }
+            completed = current_other.1.is_none();
           },
 
           None => return Some(self.start_index..last_match_end),
@@ -196,9 +193,7 @@ impl Iterator for Matcher<'_, '_> {
         self.self_index += matched_skip;
         last_match_end = self.self_index;
 
-        if current_other.1.is_none() {
-          completed = true;
-        }
+        completed = current_other.1.is_none();
 
         #[cfg(feature = "separators")]
         {

@@ -48,26 +48,30 @@ fn similar_equal() {
 
   assert_matches!("hello", "hello", [0..5]);
   assert_matches!("hhheeeeelllloo", "hello", [0..14]);
-  assert_matches!("hh-he  e eeell/l/lo//o", "hello", [0..22]);
-  assert_matches!(" shhhiii/iiiiitttttt/ttttt ", "shit", [1..26]);
-  assert_matches!("hh-he  e eeell/l/lo-?", "hello", [0..19]);
   assert_matches!("?asdf-hhheeeeelllloo", "hello", [6..20]);
 
   assert_matches!("-hello", "hello", [1..6]);
   assert_matches!("hello-", "hello", [0..5]);
   assert_matches!("---hello", "hello", [3..8]);
   assert_matches!("---hello-", "hello", [3..8]);
-  assert_matches!("shhhiii/iiiiitttttt/ttttt/", "shit", [0..25]);
 
   assert_matches!("hhheeeeelllloo!!", "hello", [0..14]);
-  assert_matches!("hh-he  e ee,e ll/l/lo//o-?", "hello", [0..24]);
 
   assert_matches!("-!?hel$2-hello?", "hello", [9..14]);
   assert_matches!("-!?hel$2-hhheeeeelllloo!!", "hello", [9..23]);
-  assert_matches!("-!?hel$2-hh-he  e ee,e,ll/l/lo//o-?", "hello", [9..33]);
 
   assert_matches!("wow hell  wow heellllo", "hello", [14..22]);
   assert_matches!("wow hell  wow heellllo!", "hello", [14..22]);
+
+  #[cfg(feature = "separators")]
+  {
+    assert_matches!("hh-he  e eeell/l/lo//o", "hello", [0..22]);
+    assert_matches!(" shhhiii/iiiiitttttt/ttttt ", "shit", [1..26]);
+    assert_matches!("hh-he  e eeell/l/lo-?", "hello", [0..19]);
+    assert_matches!("shhhiii/iiiiitttttt/ttttt/", "shit", [0..25]);
+    assert_matches!("hh-he  e ee,e ll/l/lo//o-?", "hello", [0..24]);
+    assert_matches!("-!?hel$2-hh-he  e ee,e,ll/l/lo//o-?", "hello", [9..33]);
+  }
 
   #[cfg(feature = "leetspeak")]
   {
