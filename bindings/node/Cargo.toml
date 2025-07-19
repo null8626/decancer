@@ -8,7 +8,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "2", default-features = false }
+napi = { version = "3", default-features = false }
 napi-derive = { version = "3", default-features = false }
 decancer = { path = "../../core" }
 
