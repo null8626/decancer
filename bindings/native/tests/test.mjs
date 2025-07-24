@@ -90,7 +90,7 @@ let testFile = `
 
 ${functions.map(f => `int ${f}_test(void);`).join('\n')}
 
-int main(void) {
+int main() {
 `
 
 for (const func of functions) {

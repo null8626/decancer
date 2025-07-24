@@ -90,7 +90,7 @@ UTF-8 example:
     goto END;                                                  \
   }
 
-int main(void) {
+int main() {
   int ret = 0;
 
   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -130,7 +130,7 @@ UTF-16 example:
     goto END;                                                  \
   }
 
-int main(void) {
+int main() {
   int ret = 0;
 
   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"

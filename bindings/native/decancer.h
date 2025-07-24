@@ -589,7 +589,7 @@ extern "C" {
    * #include <stdlib.h>
    * #include <stdio.h>
    *
-   * int main(void) {
+   * int main() {
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
    *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
@@ -637,7 +637,7 @@ extern "C" {
    * #include <stdlib.h>
    * #include <stdio.h>
    *
-   * int main(void) {
+   * int main() {
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
    *   uint16_t input[] = {
    *     0x0076, 0xff25, 0x24e1,
@@ -697,7 +697,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *   decancer_translation_t translation;
    *   decancer_translation_init(&translation);
@@ -757,7 +757,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -817,7 +817,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -891,7 +891,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -978,7 +978,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1060,7 +1060,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1155,7 +1155,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1253,7 +1253,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1365,7 +1365,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1442,7 +1442,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1531,7 +1531,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1597,7 +1597,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1680,7 +1680,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1746,7 +1746,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1833,7 +1833,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1905,7 +1905,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -1997,7 +1997,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2069,7 +2069,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2163,7 +2163,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2218,7 +2218,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2282,7 +2282,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2337,7 +2337,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2401,7 +2401,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2456,7 +2456,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2520,7 +2520,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2575,7 +2575,7 @@ extern "C" {
    *     goto END;                                                  \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2661,7 +2661,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
@@ -2749,7 +2749,7 @@ extern "C" {
    *     goto label;                                                \
    *   }
    *
-   * int main(void) {
+   * int main() {
    *   int ret = 0;
    *
    *   // UTF-16 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
