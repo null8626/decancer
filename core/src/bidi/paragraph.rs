@@ -562,20 +562,21 @@ impl Paragraph {
                 valid_isolate_count += 1;
               } else {
                 levels[idx] = new_level;
+                processing_classes[idx] = Class::BN;
               }
             },
 
             _ => {
               if is_isolate {
                 overflow_isolate_count += 1;
-              } else if overflow_isolate_count == 0 {
-                overflow_embedding_count += 1;
+              } else {
+                if overflow_isolate_count == 0 {
+                  overflow_embedding_count += 1;
+                }
+
+                processing_classes[idx] = Class::BN;
               }
             },
-          }
-
-          if !is_isolate {
-            processing_classes[idx] = Class::BN;
           }
         },
 

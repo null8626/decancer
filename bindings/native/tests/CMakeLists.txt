@@ -17,7 +17,7 @@ if(WIN32)
 find_file(
   DECANCER_DLL
   NAME "decancer.dll"
-  HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug"
+  HINTS "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../target/release" "${CMAKE_CURRENT_SOURCE_DIR}/../target/debug"
   REQUIRED
 )
 endif()
@@ -25,11 +25,11 @@ endif()
 find_library(
   DECANCER_LIBRARY
   NAMES "decancer.dll.lib" "libdecancer.dylib" "libdecancer.so"
-  HINTS "${CMAKE_SOURCE_DIR}/.." "${CMAKE_SOURCE_DIR}/../target/release" "${CMAKE_SOURCE_DIR}/../target/debug"
+  HINTS "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../target/release" "${CMAKE_CURRENT_SOURCE_DIR}/../target/debug"
   REQUIRED
 )
 
-target_include_directories(decancer_native_test PUBLIC "${CMAKE_SOURCE_DIR}/..")
+target_include_directories(decancer_native_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
 target_link_libraries(decancer_native_test ${DECANCER_LIBRARY})
 
 if(WIN32)

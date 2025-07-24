@@ -1,5 +1,7 @@
 mod ptr;
+#[cfg(feature = "utf16")]
 mod utf16;
+#[cfg(feature = "utf8")]
 mod utf8;
 
 use std::{
@@ -26,15 +28,20 @@ pub struct Translation {
 }
 
 #[repr(C)]
+#[cfg(feature = "utf16")]
 pub struct MatcherUtf16 {
   other: Vec<u8>,
   matcher: Option<decancer::Matcher<'static, 'static>>,
 }
 
+#[cfg(feature = "utf8")]
 const INVALID_UTF8_MESSAGE: &str = "Invalid UTF-8 bytes.";
+
+#[cfg(feature = "utf16")]
 const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_cure(
   input_str: *const u8,
   input_length: usize,
@@ -64,6 +71,7 @@ pub unsafe extern "C" fn decancer_cure(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_cure_utf16(
   input_str: *const u16,
   input_length: usize,
@@ -135,6 +143,7 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_find(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -147,6 +156,7 @@ pub unsafe extern "C" fn decancer_find(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_find_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -170,6 +180,7 @@ pub unsafe extern "C" fn decancer_find_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_find_multiple(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -182,6 +193,7 @@ pub unsafe extern "C" fn decancer_find_multiple(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_find_multiple_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -203,6 +215,7 @@ pub unsafe extern "C" fn decancer_matches_raw(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_matcher_next(
   matcher: *mut decancer::Matcher<'static, 'static>,
   output: *mut Range<usize>,
@@ -218,6 +231,7 @@ pub unsafe extern "C" fn decancer_matcher_next(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_matcher_utf16_next(
   matcher: *mut MatcherUtf16,
   output: *mut Range<usize>,
@@ -233,6 +247,7 @@ pub unsafe extern "C" fn decancer_matcher_utf16_next(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_censor(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -253,6 +268,7 @@ pub unsafe extern "C" fn decancer_censor(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_censor_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -273,6 +289,7 @@ pub unsafe extern "C" fn decancer_censor_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_censor_multiple(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -293,6 +310,7 @@ pub unsafe extern "C" fn decancer_censor_multiple(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_censor_multiple_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -313,6 +331,7 @@ pub unsafe extern "C" fn decancer_censor_multiple_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_replace(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -334,6 +353,7 @@ pub unsafe extern "C" fn decancer_replace(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_replace_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -358,6 +378,7 @@ pub unsafe extern "C" fn decancer_replace_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_replace_multiple(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -379,6 +400,7 @@ pub unsafe extern "C" fn decancer_replace_multiple(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_replace_multiple_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -400,6 +422,7 @@ pub unsafe extern "C" fn decancer_replace_multiple_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_equals(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -409,6 +432,7 @@ pub unsafe extern "C" fn decancer_equals(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_equals_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -419,6 +443,7 @@ pub unsafe extern "C" fn decancer_equals_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_starts_with(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -428,6 +453,7 @@ pub unsafe extern "C" fn decancer_starts_with(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_starts_with_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -439,6 +465,7 @@ pub unsafe extern "C" fn decancer_starts_with_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_ends_with(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -448,6 +475,7 @@ pub unsafe extern "C" fn decancer_ends_with(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_ends_with_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -459,6 +487,7 @@ pub unsafe extern "C" fn decancer_ends_with_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_contains(
   cured: *mut decancer::CuredString,
   other_str: *const u8,
@@ -468,6 +497,7 @@ pub unsafe extern "C" fn decancer_contains(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_contains_utf16(
   cured: *mut decancer::CuredString,
   other_str: *const u16,
@@ -479,6 +509,7 @@ pub unsafe extern "C" fn decancer_contains_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_cured_raw(
   cured: *mut decancer::CuredString,
   mat: *const Range<usize>,
@@ -498,6 +529,7 @@ pub unsafe extern "C" fn decancer_cured_raw(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_cured_raw_utf16(
   cured: *mut decancer::CuredString,
   mat: *const Range<usize>,
@@ -519,6 +551,7 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_cured_raw_utf16_clone(
   raw_utf16_handle: *mut Vec<u16>,
 ) -> *mut Vec<u16> {
@@ -526,11 +559,13 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16_clone(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_cured_raw_utf16_free(raw_utf16_handle: *mut Vec<u16>) {
   let _ = Box::from_raw(raw_utf16_handle);
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_matcher_consume(
   matcher: *mut decancer::Matcher<'static, 'static>,
 ) -> *mut Vec<Range<usize>> {
@@ -541,11 +576,13 @@ pub unsafe extern "C" fn decancer_matcher_consume(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_matcher_free(matcher: *mut decancer::Matcher<'static, 'static>) {
   let _ = Box::from_raw(matcher);
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_matcher_utf16_consume(
   matcher: *mut MatcherUtf16,
 ) -> *mut Vec<Range<usize>> {
@@ -560,6 +597,7 @@ pub unsafe extern "C" fn decancer_matcher_utf16_consume(
 }
 
 #[no_mangle]
+#[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_matcher_utf16_free(matcher: *mut MatcherUtf16) {
   let _ = Box::from_raw(matcher);
 }

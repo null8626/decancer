@@ -3,8 +3,8 @@
 'use strict'
 
 import { readdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
-import { dirname, join, sep } from 'node:path'
 import { execSync } from 'node:child_process'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { rm } from 'node:fs/promises'
 

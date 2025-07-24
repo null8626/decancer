@@ -36,17 +36,20 @@ where
   }
 }
 
+#[cfg(feature = "utf16")]
 pub(crate) struct SizedPointer<T> {
   ptr: *const T,
   size: usize,
 }
 
+#[cfg(feature = "utf16")]
 impl<T> SizedPointer<T> {
   pub(crate) const fn new(ptr: *const T, size: usize) -> Self {
     Self { ptr, size }
   }
 }
 
+#[cfg(feature = "utf16")]
 impl<T> Iterator for SizedPointer<T>
 where
   T: Copy,

@@ -300,6 +300,7 @@ typedef struct {
   uint8_t message_length;
 } decancer_error_t;
 
+#ifndef DECANCER_UTF16_ONLY
 /**
  * @brief Represents a UTF-8 encoded keyword. This struct is often used inside an array.
  *
@@ -328,7 +329,9 @@ typedef struct {
    */
   size_t size;
 } decancer_keyword_t;
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
 /**
  * @brief Represents a UTF-16 encoded keyword. This struct is often used inside an array.
  *
@@ -368,7 +371,9 @@ typedef struct {
  * @since 3.2.2
  */
 typedef void* decancer_cured_raw_utf16_t;
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
 /**
  * @brief Represents a UTF-8 matcher iterator object returned from decancer_find.
  *
@@ -382,7 +387,9 @@ typedef void* decancer_cured_raw_utf16_t;
  * @since 3.1.0
  */
 typedef void* decancer_matcher_t;
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
 /**
  * @brief Represents a UTF-16 matcher iterator object returned from decancer_find_utf16.
  *
@@ -396,6 +403,7 @@ typedef void* decancer_matcher_t;
  * @since 3.2.2
  */
 typedef void* decancer_matcher_utf16_t;
+#endif
 
 /**
  * @brief Represents a matcher iterator object returned from decancer_find_multiple and decancer_find_multiple_utf16.
@@ -568,6 +576,7 @@ typedef uint32_t decancer_options_t;
 extern "C" {
 #endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Cures a UTF-8 encoded string.
    *
@@ -613,7 +622,9 @@ extern "C" {
    * @since 1.5.3
    */
   DECANCER_EXPORT decancer_cured_t decancer_cure(const uint8_t* input_str, const size_t input_size, const decancer_options_t options, decancer_error_t* error);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Cures a UTF-16 encoded string.
    *
@@ -665,6 +676,7 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT decancer_cured_t decancer_cure_utf16(const uint16_t* input_str, const size_t input_length, const decancer_options_t options, decancer_error_t* error);
+#endif
 
   /**
    * @brief Cures a single unicode codepoint.
@@ -725,6 +737,7 @@ extern "C" {
    */
   DECANCER_EXPORT void decancer_cure_char(const uint32_t input, const decancer_options_t options, decancer_translation_t* translation);
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Retrieves the raw UTF-8 bytes from a cured string object.
    *
@@ -782,7 +795,9 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT const uint8_t* decancer_cured_raw(decancer_cured_t cured, const decancer_match_t* match, size_t* output_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Retrieves the raw UTF-16 bytes from a cured string object.
    *
@@ -855,6 +870,7 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT decancer_cured_raw_utf16_t decancer_cured_raw_utf16(decancer_cured_t cured, const decancer_match_t* match, uint16_t** output_ptr, size_t* output_length);
+#endif
 
   /**
    * @brief Returns the raw list of every similar-looking match from a decancer_matches_t object.
@@ -942,6 +958,7 @@ extern "C" {
    */
   DECANCER_EXPORT const decancer_match_t* decancer_matches_raw(decancer_matches_t matches, size_t* output_size);
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Finds every similar-looking match of a UTF-8 encoded string in the cured string.
    *
@@ -1021,7 +1038,9 @@ extern "C" {
    * @since 3.1.0
    */
   DECANCER_EXPORT decancer_matcher_t decancer_find(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Finds every similar-looking match of a UTF-16 encoded string in the cured string.
    *
@@ -1113,7 +1132,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matcher_utf16_t decancer_find_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Finds every similar-looking match from a list of UTF-8 keywords in the cured string.
    * Unlike decancer_find, this function also takes note of overlapping matches and merges them together.
@@ -1209,7 +1230,9 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT decancer_matches_t decancer_find_multiple(decancer_cured_t cured, const decancer_keyword_t* other, const size_t other_length);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Finds every similar-looking match from a list of UTF-16 keywords in the cured string.
    * Unlike decancer_find_utf16, this function also takes note of overlapping matches and merges them together.
@@ -1320,7 +1343,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT decancer_matches_t decancer_find_multiple_utf16(decancer_cured_t cured, const decancer_keyword_utf16_t* other, const size_t other_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Iterates to the next element of a UTF-8 matcher iterator.
    *
@@ -1395,7 +1420,9 @@ extern "C" {
    * @since 3.1.0
    */
   DECANCER_EXPORT bool decancer_matcher_next(decancer_matcher_t matcher, decancer_match_t* match);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Iterates to the next element of a UTF-16 matcher iterator.
    *
@@ -1482,7 +1509,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_matcher_utf16_next(decancer_matcher_utf16_t matcher, decancer_match_t* match);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Censors every similar-looking match of the specified UTF-8 encoded string.
    *
@@ -1546,7 +1575,9 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_censor(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size, const uint32_t replacement_char);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Censors every similar-looking match of the specified UTF-16 encoded string.
    *
@@ -1627,7 +1658,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_censor_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length, const uint32_t replacement_char);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Replaces every similar-looking match of the specified UTF-8 encoded string with another UTF-8 encoded string.
    *
@@ -1691,7 +1724,9 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_replace(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size, const uint8_t* replacement_str, const size_t replacement_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Replaces every similar-looking match of the specified UTF-16 encoded string with another UTF-16 encoded string.
    *
@@ -1775,7 +1810,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_replace_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Censors every similar-looking match of the specified list of UTF-8 keywords.
    * Unlike decancer_censor, this function also takes note of overlapping matches.
@@ -1845,7 +1882,9 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_censor_multiple(decancer_cured_t cured, const decancer_keyword_t* other, const size_t other_length, const uint32_t replacement_char);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Censors every similar-looking match of the specified list of UTF-16 keywords.
    * Unlike decancer_censor_utf16, this function also takes note of overlapping matches.
@@ -1935,7 +1974,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_censor_multiple_utf16(decancer_cured_t cured, const decancer_keyword_utf16_t* other, const size_t other_length, const uint32_t replacement_char);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Replaces every similar-looking match of the specified list of UTF-8 keywords with another UTF-8 encoded string.
    * Unlike decancer_replace, this function also takes note of overlapping matches.
@@ -2005,7 +2046,9 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT bool decancer_replace_multiple(decancer_cured_t cured, const decancer_keyword_t* other, const size_t other_length, const uint8_t* replacement_str, const size_t replacement_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Replaces every similar-looking match of the specified list of UTF-16 keywords with another UTF-16 encoded string.
    * Unlike decancer_replace_utf16, this function also takes note of overlapping matches.
@@ -2098,7 +2141,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_replace_multiple_utf16(decancer_cured_t cured, const decancer_keyword_utf16_t* other, const size_t other_length, const uint16_t* replacement_str, const size_t replacement_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Checks if the cured string similarly contains the specified UTF-8 encoded string.
    *
@@ -2151,7 +2196,9 @@ extern "C" {
    * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_contains(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Checks if the cured string similarly contains the specified UTF-16 encoded string.
    *
@@ -2213,7 +2260,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_contains_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Checks if the cured string similarly starts with the specified UTF-8 encoded string.
    *
@@ -2266,7 +2315,9 @@ extern "C" {
    * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_starts_with(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Checks if the cured string similarly starts with the specified UTF-16 encoded string.
    *
@@ -2328,7 +2379,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_starts_with_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Checks if the cured string similarly ends with the specified UTF-8 encoded string.
    *
@@ -2381,7 +2434,9 @@ extern "C" {
    * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_ends_with(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Checks if the cured string similarly ends with the specified UTF-16 encoded string.
    *
@@ -2443,7 +2498,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT bool decancer_ends_with_utf16(decancer_cured_t cured, const uint16_t* other_str, const size_t other_length);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Checks if the cured string is similar with the specified UTF-8 encoded string.
    *
@@ -2496,7 +2553,9 @@ extern "C" {
    * @since 1.5.3
    */
   DECANCER_EXPORT bool decancer_equals(decancer_cured_t cured, const uint8_t* other_str, const size_t other_size);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Checks if the cured string is similar with the specified UTF-16 encoded string.
    *
@@ -2580,7 +2639,9 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT void decancer_cured_raw_utf16_free(decancer_cured_raw_utf16_t raw_utf16_handle);
+#endif
 
+#ifndef DECANCER_UTF16_ONLY
   /**
    * @brief Consumes the UTF-8 matcher iterator object created by decancer_find and returns a matches object.
    *
@@ -2666,7 +2727,9 @@ extern "C" {
    * @since 3.1.0
    */
   DECANCER_EXPORT void decancer_matcher_free(decancer_matcher_t matcher);
+#endif
 
+#ifndef DECANCER_UTF8_ONLY
   /**
    * @brief Consumes the UTF-16 matcher iterator object created by decancer_find_utf16 and returns a matches object.
    *
@@ -2760,6 +2823,7 @@ extern "C" {
    * @since 3.2.2
    */
   DECANCER_EXPORT void decancer_matcher_utf16_free(decancer_matcher_utf16_t matcher);
+#endif
 
   /**
    * @brief Clones the matches object created by decancer_find_multiple and decancer_find_multiple_utf16.
