@@ -17,6 +17,7 @@
 .yarnrc.yml
 wasm_example.html
 native_docs/
+bindings/go/libdecancer.a
 bindings/java/.gradle/
 bindings/java/build/
 bindings/java/gradle.properties

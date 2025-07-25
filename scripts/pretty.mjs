@@ -167,6 +167,12 @@ void (await Promise.all([
   cargo(join(BINDINGS_DIR, 'wasm'), 'wasm'),
   cargo(join(BINDINGS_DIR, 'native'), 'native'),
   clangFormat(),
+  execute('go fmt setup_go_binding.go', {
+    cwd: join(ROOT_DIR, 'scripts')
+  }),
+  execute('go fmt', {
+    cwd: join(BINDINGS_DIR, 'go')
+  }),
   prettier(),
   updateReadme()
 ]))

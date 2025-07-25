@@ -35,6 +35,6 @@ for (const artifact of artifacts) {
 }
 
 if (expectedJavaTargets.length !== 0) {
-  console.error('error: found missing targets. exiting.')
+  console.error('error: found missing targets')
   process.exit(1)
 }

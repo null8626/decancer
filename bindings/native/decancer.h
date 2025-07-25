@@ -15,7 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(DECANCER_STATIC)
 #define DECANCER_EXPORT __declspec(dllimport)
 #else
 #define DECANCER_EXPORT

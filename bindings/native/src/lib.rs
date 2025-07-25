@@ -515,10 +515,11 @@ pub unsafe extern "C" fn decancer_cured_raw(
   mat: *const Range<usize>,
   output_size: *mut usize,
 ) -> *const u8 {
-  let ptr = (*cured).as_ptr();
+  let cured_ref = &(*cured);
+  let ptr = cured_ref.as_ptr();
 
   if mat.is_null() {
-    *output_size = (*cured).len();
+    *output_size = cured_ref.len();
 
     ptr
   } else {

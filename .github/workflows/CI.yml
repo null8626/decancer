@@ -46,9 +46,10 @@ jobs:
       core_affected: ${{ steps.setup.outputs.core_affected }}
       node_affected: ${{ steps.setup.outputs.node_affected }}
       wasm_affected: ${{ steps.setup.outputs.wasm_affected }}
+      java_affected: ${{ steps.setup.outputs.java_affected }}
       native_affected: ${{ steps.setup.outputs.native_affected }}
       native_docs_affected: ${{ steps.setup.outputs.native_docs_affected }}
-      java_affected: ${{ steps.setup.outputs.java_affected }}
+      go_affected: ${{ steps.setup.outputs.go_affected }}
   core:
     name: Test core
     runs-on: ubuntu-latest
@@ -57,9 +58,13 @@ jobs:
     if: ${{ needs.setup.outputs.release != 'null' || needs.setup.outputs.core_affected == 'true' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
+          override: true
           toolchain: stable
+          components: clippy
       - uses: actions/setup-node@v4
         if: ${{ !matrix.settings.docker }}
         with:
@@ -124,7 +129,7 @@ jobs:
       - setup
       - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Build native java bindings on ${{ matrix.settings.target }}
+    name: Build native Java bindings on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
@@ -176,7 +181,7 @@ jobs:
       - setup
       - java-native
     if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.release != 'null' || needs.setup.outputs.java_affected == 'true') }}
-    name: Test java bindings
+    name: Test Java bindings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -290,7 +295,7 @@ jobs:
       - setup
       - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.native_affected == 'true') }}
-    name: Build native bindings on ${{ matrix.settings.target }}
+    name: Build native binding on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
@@ -338,7 +343,7 @@ jobs:
           path: ./artifacts/**
           if-no-files-found: error
   native-test:
-    name: Test native bindings
+    name: Test native binding
     needs:
       - setup
       - native
@@ -359,6 +364,30 @@ jobs:
       - name: Compile and run tests
         working-directory: bindings/native/tests
         run: node test.mjs
+  go-test:
+    name: Test Go binding
+    needs:
+      - setup
+      - core
+    if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.release != 'null' || needs.setup.outputs.go_affected == 'true') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.17.0'
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+          toolchain: stable
+      - name: Run tests
+        working-directory: bindings/go
+        run: |
+          sudo -E "PATH=$PATH" go generate
+          go test
+        shell: bash
   node:
     strategy:
       fail-fast: true
@@ -414,7 +443,7 @@ jobs:
       - setup
       - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
-    name: Build node bindings on ${{ matrix.settings.target }}
+    name: Build Node.js binding on ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
@@ -476,7 +505,7 @@ jobs:
       - setup
       - core
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.node_affected == 'true') }}
-    name: Build node bindings on FreeBSD
+    name: Build Node.js binding on FreeBSD
     steps:
       - uses: actions/checkout@v4
       - name: Build
@@ -514,7 +543,7 @@ jobs:
           path: decancer.freebsd-x64.node
           if-no-files-found: error
   node-test:
-    name: Test node bindings
+    name: Test node binding
     needs:
       - setup
       - node
@@ -538,7 +567,7 @@ jobs:
         working-directory: bindings/node
         run: yarn test
   wasm:
-    name: Build and test wasm
+    name: Build and test wasm binding
     runs-on: ubuntu-22.04
     needs:
       - setup
@@ -546,8 +575,11 @@ jobs:
     if: ${{ always() && (needs.setup.outputs.release != 'null' || needs.setup.outputs.wasm_affected == 'true') }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@v1
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
+          override: true
           toolchain: stable
       - uses: actions/setup-node@v4
         with:
@@ -560,11 +592,13 @@ jobs:
           wasm-pack build --no-typescript --release -t web
           mv -f ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
           cp ./bin/decancer.wasm ../..
+        shell: bash
       - name: Test wasm
         working-directory: bindings/wasm/tests
         run: |
           npm i
           timeout 180 node .
+        shell: bash
       - name: Upload artifact
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v4
@@ -587,9 +621,13 @@ jobs:
       - name: Pull previous commit
         run: git reset --soft HEAD~1
         shell: bash
-      - uses: dtolnay/rust-toolchain@v1
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
+          override: true
           toolchain: stable
+          components: rustfmt
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
@@ -600,6 +638,9 @@ jobs:
           chmod u+x llvm.sh
           sudo ./llvm.sh 18 all
         shell: bash
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.17.0'
       - name: Prettier files
         run: node scripts/pretty.mjs --clang-format=clang-format-18
         env:
@@ -610,6 +651,7 @@ jobs:
           node scripts/ci_readme.mjs ./core/README.md DECANCER_RUST
           node scripts/ci_readme.mjs ./bindings/node/README.md DECANCER_JS
           node scripts/ci_readme.mjs ./bindings/native/README.md DECANCER_NATIVE
+          node scripts/ci_readme.mjs ./bindings/go/README.md DECANCER_GO
         shell: bash
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
@@ -709,6 +751,7 @@ jobs:
       - node-test
       - node-freebsd
       - native-test
+      - go-test
       - commit
       - pages
       - java
@@ -750,7 +793,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Prepare java binding
+      - name: Prepare Java binding
         working-directory: bindings/java
         run: |
           unzip ./bin/bindings.zip -d ./bin
@@ -758,7 +801,7 @@ jobs:
           ./gradlew jreleaserConfig
           ./gradlew clean build publish -x test
         shell: bash
-      - name: Publish java binding
+      - name: Publish Java binding
         working-directory: bindings/java
         run: ./gradlew jreleaserFullRelease
         continue-on-error: true

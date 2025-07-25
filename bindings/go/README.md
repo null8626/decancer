@@ -28,46 +28,85 @@ A library that removes common unicode confusables/homoglyphs from strings.
 - Its behavior is also highly customizable to your liking!
 
 ## Installation
+Building in Windows requires MinGW to be installed.
+
 In your shell:
 
 ```console
-$ npm install decancer
+$ git clone https://github.com/null8626/decancer.git
+$ cd decancer
+$ git checkout v3.3.3
+$ cd bindings/go
+$ sudo -E "PATH=$PATH" go generate
+$ go install
 ```
 
-In your code (CommonJS):
-
-```js
-const decancer = require('decancer')
-```
-
-In your code (ESM):
-
-```js
-import decancer from 'decancer'
-```
+For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to system libraries.
 ## Examples
-```js
-const assert = require('assert')
-const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<')
+```go
+package main
 
-assert(cured.equals('very funny text with leetspeak'))
+import (
+  "os"
+  "fmt"
+  "strconv"
+  "github.com/null8626/decancer/bindings/go"
+)
 
-// WARNING: it's NOT recommended to coerce this output to a JavaScript string
-//          and process it manually from there, as decancer has its own
-//          custom comparison measures, including leetspeak matching!
-assert(cured.toString() !== 'very funny text with leetspeak')
-console.log(cured.toString())
-// => very funny text wwiiiiitthh l133t5p3/-\|<
+func main() {
+  cured, err := decancer.Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", decancer.Default)
 
-assert(cured.contains('funny'))
+  if err != nil {
+    fmt.Fprintln(os.Stderr, "error:", err)
+    os.Exit(1)
+  }
 
-cured.censor('funny', '*')
-console.log(cured.toString())
-// => very ***** text wwiiiiitthh l133t5p3/-\|<
+  defer cured.Close()
 
-cured.censorMultiple(['very', 'text'], '-')
-console.log(cured.toString())
-// => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
+  fmt.Println(cured.String())
+
+  if cured.Equals("very funny text") {
+    fmt.Println("it is indeed a very funny text")
+  }
+
+  if cured.StartsWith("very") {
+    fmt.Println("it starts with 'very'")
+  }
+  
+  if cured.EndsWith("text") {
+    fmt.Println("it ends with 'text'")
+  }
+
+  if cured.Contains("funny") {
+    fmt.Println("it has the funny")
+  }
+
+  funnyMatches := cured.Find("funny")
+
+  fmt.Println("funny counter:")
+
+  for i, match := range funnyMatches {
+    fmt.Println("Match " + strconv.Itoa(i) + ":")
+    fmt.Println("  - start: " + strconv.Itoa(match.Start))
+    fmt.Println("  - end: " + strconv.Itoa(match.End))
+  }
+
+  keywords := []string{"very", "funny"}
+  veryFunnyMatches, err := cured.FindMultiple(keywords)
+
+  if err != nil {
+    fmt.Fprintln(os.Stderr, "error:", err)
+    os.Exit(1)
+  }
+
+  fmt.Println("very funny counter:")
+
+  for i, match := range veryFunnyMatches {
+    fmt.Println("Match " + strconv.Itoa(i) + ":")
+    fmt.Println("  - start: " + strconv.Itoa(match.Start))
+    fmt.Println("  - end: " + strconv.Itoa(match.End))
+  }
+}
 ```
 ## Donations
 

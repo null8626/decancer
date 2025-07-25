@@ -109,6 +109,6 @@ void (await Promise.all(
 ))
 
 if (expectedNodeTargets.length !== 0) {
-  console.error('error: found missing targets. exiting.')
+  console.error('error: found missing targets')
   process.exit(1)
 }

@@ -27,8 +27,9 @@ A library that removes common unicode confusables/homoglyphs from strings.
 - And it's available in the following languages:
   - [Rust](https://crates.io/crates/decancer)
   - JavaScript ([Node.js](https://www.npmjs.com/package/decancer)/Browser)
-  - C/C++
   - [Java](https://central.sonatype.com/artifact/io.github.null8626/decancer/overview)
+  - C/C++
+  - Go
   - [Python](https://pypi.org/project/decancer-py) (unofficial)
 <!---[ end ]--->
 
@@ -53,8 +54,8 @@ decancer = "3.3.3"
 
 In your shell:
 
-```sh
-npm install decancer
+```console
+$ npm install decancer
 ```
 
 In your code (CommonJS):
@@ -135,20 +136,24 @@ In your `pom.xml`:
 Windows:
 
 ```bat
-git clone https://github.com/null8626/decancer.git --depth 1
-cd .\decancer\bindings\java
-powershell -NoLogo -NoProfile -NonInteractive -Command "Expand-Archive -Path .\bin\bindings.zip -DestinationPath .\bin -Force"
-gradle build -x test
+> git clone https://github.com/null8626/decancer.git
+> cd decancer
+> git checkout v3.3.3
+> cd bindings/java
+> powershell -NoLogo -NoProfile -NonInteractive -Command "Expand-Archive -Path .\bin\bindings.zip -DestinationPath .\bin -Force"
+> gradle build -x test
 ```
 
 macOS/Linux:
 
-```sh
-git clone https://github.com/null8626/decancer.git --depth 1
-cd ./decancer/bindings/java
-unzip ./bin/bindings.zip -d ./bin
-chmod +x ./gradlew
-./gradlew build -x test
+```console
+$ git clone https://github.com/null8626/decancer.git
+$ cd decancer
+$ git checkout v3.3.3
+$ cd bindings/java
+$ unzip ./bin/bindings.zip -d ./bin
+$ chmod +x ./gradlew
+$ ./gradlew build -x test
 ```
 
 Tip: You can shrink the size of the resulting JAR file by removing binaries in the `bin` directory for the platforms you don't want to support.
@@ -194,13 +199,36 @@ Tip: You can shrink the size of the resulting JAR file by removing binaries in t
 
 Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
-```sh
-git clone https://github.com/null8626/decancer.git --depth 1
-cd decancer/bindings/native
-cargo build --release
+```console
+$ git clone https://github.com/null8626/decancer.git
+$ cd decancer
+$ git checkout v3.3.3
+$ cd bindings/native
+$ cargo build --release
 ```
 
 And the binary files should be generated in the `target/release` directory.
+
+<!---[ end, begin DECANCER_GLOBAL ]--->
+</details>
+<details>
+<summary><b>Go (v1.17 or later)</b></summary>
+<!---[ end, begin DECANCER_GO ]--->
+
+Building in Windows requires MinGW to be installed.
+
+In your shell:
+
+```console
+$ git clone https://github.com/null8626/decancer.git
+$ cd decancer
+$ git checkout v3.3.3
+$ cd bindings/go
+$ sudo -E "PATH=$PATH" go generate
+$ go install
+```
+
+For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to system libraries.
 
 <!---[ end, begin DECANCER_GLOBAL ]--->
 </details>
@@ -441,6 +469,78 @@ int main() {
 END:
   decancer_cured_free(cured);
   return ret;
+}
+```
+
+<!---[ end, begin DECANCER_GLOBAL ]--->
+</details>
+<details>
+<summary><b>Go</b></summary>
+<!---[ end, begin DECANCER_GO ]--->
+
+```go
+package main
+
+import (
+  "os"
+  "fmt"
+  "strconv"
+  "github.com/null8626/decancer/bindings/go"
+)
+
+func main() {
+  cured, err := decancer.Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", decancer.Default)
+
+  if err != nil {
+    fmt.Fprintln(os.Stderr, "error:", err)
+    os.Exit(1)
+  }
+
+  defer cured.Close()
+
+  fmt.Println(cured.String())
+
+  if cured.Equals("very funny text") {
+    fmt.Println("it is indeed a very funny text")
+  }
+
+  if cured.StartsWith("very") {
+    fmt.Println("it starts with 'very'")
+  }
+  
+  if cured.EndsWith("text") {
+    fmt.Println("it ends with 'text'")
+  }
+
+  if cured.Contains("funny") {
+    fmt.Println("it has the funny")
+  }
+
+  funnyMatches := cured.Find("funny")
+
+  fmt.Println("funny counter:")
+
+  for i, match := range funnyMatches {
+    fmt.Println("Match " + strconv.Itoa(i) + ":")
+    fmt.Println("  - start: " + strconv.Itoa(match.Start))
+    fmt.Println("  - end: " + strconv.Itoa(match.End))
+  }
+
+  keywords := []string{"very", "funny"}
+  veryFunnyMatches, err := cured.FindMultiple(keywords)
+
+  if err != nil {
+    fmt.Fprintln(os.Stderr, "error:", err)
+    os.Exit(1)
+  }
+
+  fmt.Println("very funny counter:")
+
+  for i, match := range veryFunnyMatches {
+    fmt.Println("Match " + strconv.Itoa(i) + ":")
+    fmt.Println("  - start: " + strconv.Itoa(match.Start))
+    fmt.Println("  - end: " + strconv.Itoa(match.End))
+  }
 }
 ```
 

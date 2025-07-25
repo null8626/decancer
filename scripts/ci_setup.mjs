@@ -37,6 +37,9 @@ appendFileSync(
     wasm_affected:
       coreAffected ||
       files.some(({ filename }) => filename.startsWith('bindings/wasm/')),
+    java_affected:
+      coreAffected ||
+      files.some(({ filename }) => filename.startsWith('bindings/java/src')),
     native_affected: files.some(
       ({ filename }) =>
         filename.startsWith('bindings/native/src') ||
@@ -47,8 +50,9 @@ appendFileSync(
         filename.startsWith('bindings/native/docs') ||
         filename === 'bindings/native/decancer.h'
     ),
-    java_affected:
-      coreAffected ||
-      files.some(({ filename }) => filename.startsWith('bindings/java/src'))
+    go_affected: files.some(
+      ({ filename }) =>
+        filename.startsWith('bindings/go') && filename.endsWith('.go')
+    )
   }).reduce((a, [k, v]) => `${a}${k}=${v}${EOL}`, '')
 )

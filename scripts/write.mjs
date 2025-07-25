@@ -34,7 +34,7 @@ const { blocks, diacritics, expected, emojis } = deserialize(
 )
 
 if (typeof process.argv[2] !== 'string') {
-  console.error('error: missing json file path.')
+  console.error('error: missing json file path')
   process.exit(1)
 }
 
