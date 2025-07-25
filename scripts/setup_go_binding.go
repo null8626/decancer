@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,6 +15,30 @@ func isDir(dir string) bool {
 	libDirStat, err := os.Stat(dir)
 
 	return err == nil && libDirStat.IsDir()
+}
+
+func move(source, destination string) error {
+	input, err := os.Open(source)
+
+	if err != nil {
+		return err
+	}
+
+	defer input.Close()
+
+	output, err := os.Create(destination)
+
+	if err != nil {
+		return err
+	}
+
+	defer output.Close()
+
+	if _, err = io.Copy(output, input); err != nil {
+		return err
+	}
+
+	return os.Remove(destination)
 }
 
 func getSystemLibrariesPath() (string, error) {
@@ -158,9 +183,13 @@ func build() error {
 		}
 	}
 
-	if err := os.Rename(filepath.Join(nativeBinaryPath...), filepath.Join(nativeBinaryDestinationPath, "libdecancer.a")); err != nil {
-		return errors.New("unable to move built native binding binary to \"" + nativeBinaryDestinationPath + "\": " + err.Error())
+	if err := os.MkdirAll(nativeBinaryDestinationPath, 0755); err != nil {
+		return errors.New("unable to create new directory \"" + nativeBinaryDestinationPath + "\": " + err.Error())
+	} else if err := move(filepath.Join(nativeBinaryPath...), filepath.Join(nativeBinaryDestinationPath, "libdecancer.a")); err != nil {
+		return errors.New("unable to move native binding binary to \"" + nativeBinaryDestinationPath + "\": " + err.Error())
 	}
+
+	fmt.Println("\"libdecancer.a\" has been added to \"" + nativeBinaryDestinationPath + "\"")
 
 	return nil
 }
