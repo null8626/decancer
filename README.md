@@ -136,10 +136,8 @@ In your `pom.xml`:
 Windows:
 
 ```bat
-> git clone https://github.com/null8626/decancer.git
-> cd decancer
-> git checkout v3.3.3
-> cd bindings/java
+> git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+> cd decancer/bindings/java
 > powershell -NoLogo -NoProfile -NonInteractive -Command "Expand-Archive -Path .\bin\bindings.zip -DestinationPath .\bin -Force"
 > gradle build -x test
 ```
@@ -147,10 +145,8 @@ Windows:
 macOS/Linux:
 
 ```console
-$ git clone https://github.com/null8626/decancer.git
-$ cd decancer
-$ git checkout v3.3.3
-$ cd bindings/java
+$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+$ cd decancer/bindings/java
 $ unzip ./bin/bindings.zip -d ./bin
 $ chmod +x ./gradlew
 $ ./gradlew build -x test
@@ -200,10 +196,8 @@ Tip: You can shrink the size of the resulting JAR file by removing binaries in t
 Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
 ```console
-$ git clone https://github.com/null8626/decancer.git
-$ cd decancer
-$ git checkout v3.3.3
-$ cd bindings/native
+$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+$ cd decancer/bindings/native
 $ cargo build --release
 ```
 
@@ -215,20 +209,18 @@ And the binary files should be generated in the `target/release` directory.
 <summary><b>Go (v1.17 or later)</b></summary>
 <!---[ end, begin DECANCER_GO ]--->
 
-Building in Windows requires MinGW to be installed.
+Building requires Rust v1.65 or later. Windows systems also require a MinGW compiler to be readily available.
 
 In your shell:
 
 ```console
-$ git clone https://github.com/null8626/decancer.git
-$ cd decancer
-$ git checkout v3.3.3
-$ cd bindings/go
+$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+$ cd decancer/bindings/go
 $ sudo -E "PATH=$PATH" go generate
 $ go install
 ```
 
-For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to system libraries.
+For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to your system's libraries for convenience.
 
 <!---[ end, begin DECANCER_GLOBAL ]--->
 </details>

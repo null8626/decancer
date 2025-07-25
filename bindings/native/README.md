@@ -65,10 +65,8 @@ A library that removes common unicode confusables/homoglyphs from strings.
 Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
 ```console
-$ git clone https://github.com/null8626/decancer.git
-$ cd decancer
-$ git checkout v3.3.3
-$ cd bindings/native
+$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+$ cd decancer/bindings/native
 $ cargo build --release
 ```
 

@@ -28,20 +28,18 @@ A library that removes common unicode confusables/homoglyphs from strings.
 - Its behavior is also highly customizable to your liking!
 
 ## Installation
-Building in Windows requires MinGW to be installed.
+Building requires Rust v1.65 or later. Windows systems also require a MinGW compiler to be readily available.
 
 In your shell:
 
 ```console
-$ git clone https://github.com/null8626/decancer.git
-$ cd decancer
-$ git checkout v3.3.3
-$ cd bindings/go
+$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+$ cd decancer/bindings/go
 $ sudo -E "PATH=$PATH" go generate
 $ go install
 ```
 
-For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to system libraries.
+For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to your system's libraries for convenience.
 ## Examples
 ```go
 package main
