@@ -65,7 +65,7 @@ type Match struct {
 
 func Cure(text string, options Option) (*CuredString, error) {
 	if text == "" {
-		return nil, errors.New("unable to cure empty string")
+		return nil, errors.New("unable to cure an empty string")
 	}
 
 	textBytes := []byte(text)

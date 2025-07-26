@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 func isDir(dir string) bool {
@@ -19,12 +20,17 @@ func isDir(dir string) bool {
 
 func move(source, destination string) error {
 	input, err := os.Open(source)
+	inputClosed := false
 
 	if err != nil {
 		return err
 	}
 
-	defer input.Close()
+	defer func() {
+		if !inputClosed {
+			input.Close()
+		}
+	}()
 
 	output, err := os.Create(destination)
 
@@ -38,7 +44,10 @@ func move(source, destination string) error {
 		return err
 	}
 
-	return os.Remove(destination)
+	inputClosed = true
+	input.Close()
+
+	return os.Remove(source)
 }
 
 func getSystemLibrariesPath() (string, error) {
@@ -75,11 +84,24 @@ func getSystemLibrariesPath() (string, error) {
 				mingwDir = parentMingwDir
 			}
 		}
-	case "linux", "darwin", "freebsd", "dragonfly", "openbsd":
+	case "linux":
+		{
+			osRelease, err := os.ReadFile("/etc/os-release")
+			systemLibrariesPath := "/usr/local/lib"
+
+			if err == nil {
+				osReleaseString := string(osRelease)
+
+				if strings.Contains(osReleaseString, "ID=debian") || strings.Contains(osReleaseString, "ID_LIKE=debian") {
+					systemLibrariesPath = "/usr/lib"
+				}
+			}
+
+			return systemLibrariesPath, nil
+		}
+	case "darwin", "freebsd", "dragonfly", "netbsd", "openbsd", "illumos", "solaris":
 		return "/usr/local/lib", nil
-	case "netbsd":
-		return "/usr/pkg/lib", nil
-	case "illumos", "solaris", "aix", "hurd":
+	case "aix", "hurd":
 		return "/usr/lib", nil
 	case "plan9":
 		return "/sys/lib", nil
@@ -169,10 +191,6 @@ func build() error {
 	} else if nativeBinaryDestinationPath == "" {
 		nativeBinaryDestinationPath = goBindingPath
 	} else {
-		if !isDir(nativeBinaryDestinationPath) {
-			return errors.New("unable to locate \"" + nativeBinaryDestinationPath + "\"")
-		}
-
 		decancerGoPath := filepath.Join(goBindingPath, "decancer.go")
 		originalDecancerGo, err := os.ReadFile(decancerGoPath)
 

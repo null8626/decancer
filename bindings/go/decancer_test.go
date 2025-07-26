@@ -43,8 +43,9 @@ func TestCensor(t *testing.T) {
 
 	defer cured.Close()
 
-	cured.Censor("funny", '*')
+	err = cured.Censor("funny", '*')
 
+	assert.Nil(t, err, "Censor should not fail")
 	assert.True(t, cured.Equals("very ***** text"), "Censor should actually censor")
 }
 
@@ -56,8 +57,9 @@ func TestCensorMultiple(t *testing.T) {
 	defer cured.Close()
 
 	keywords := []string{"very", "funny"}
-	cured.CensorMultiple(keywords, '*')
+	err = cured.CensorMultiple(keywords, '*')
 
+	assert.Nil(t, err, "CensorMultiple should not fail")
 	assert.True(t, cured.Equals("**** ***** text"), "CensorMultiple should actually censor multiple")
 }
 
@@ -68,8 +70,9 @@ func TestReplace(t *testing.T) {
 
 	defer cured.Close()
 
-	cured.Replace("very", "not")
+	err = cured.Replace("very", "not")
 
+	assert.Nil(t, err, "Replace should not fail")
 	assert.True(t, cured.Equals("not funny text"), "Replace should actually replace")
 }
 
@@ -81,7 +84,8 @@ func TestReplaceMultiple(t *testing.T) {
 	defer cured.Close()
 
 	keywords := []string{"very", "funny"}
-	cured.ReplaceMultiple(keywords, "sussy")
+	err = cured.ReplaceMultiple(keywords, "sussy")
 
+	assert.Nil(t, err, "ReplaceMultiple should not fail")
 	assert.True(t, cured.Equals("sussy sussy text"), "ReplaceMultiple should actually replace multiple")
 }
