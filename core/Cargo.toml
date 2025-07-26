@@ -42,7 +42,7 @@ leetspeak = ["regex", "lazy_static"]
 
 [dev-dependencies]
 proptest = { version = "1", default-features = false, features = ["std"] }
-criterion = { version = "0.6", default-features = false }
+criterion = { version = "0.7", default-features = false }
 rand = "0.9"
 censor = "0.3"
 
