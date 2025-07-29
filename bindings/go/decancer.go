@@ -63,6 +63,33 @@ type Match struct {
 	End   int
 }
 
+func CureChar(character rune, options Option) string {
+	var translation C.decancer_translation_t
+
+	C.decancer_translation_init(&translation)
+
+	C.decancer_cure_char(C.uint32_t(character), C.decancer_options_t(options), &translation)
+
+	switch translation.kind {
+	case C.DECANCER_TRANSLATION_KIND_NONE:
+		return ""
+	case C.DECANCER_TRANSLATION_KIND_CHARACTER:
+		return string(rune(*(*uint32)(unsafe.Pointer(&translation.contents))))
+	default:
+		{
+			defer C.decancer_translation_free(&translation)
+
+			str := (*struct {
+				contents *C.uint8_t
+				size     C.size_t
+				heap     unsafe.Pointer
+			})(unsafe.Pointer(&translation.contents))
+
+			return string(C.GoBytes(unsafe.Pointer(str.contents), C.int(str.size)))
+		}
+	}
+}
+
 func Cure(text string, options Option) (*CuredString, error) {
 	if text == "" {
 		return nil, errors.New("unable to cure an empty string")

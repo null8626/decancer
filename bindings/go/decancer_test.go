@@ -6,7 +6,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBasicCure(t *testing.T) {
+func TestCureChar(t *testing.T) {
+	cured := CureChar('\uFF25', Default)
+
+	assert.Equal(t, "e", cured, "CureChar should return \"e\"")
+
+	cured = CureChar('\u04D5', Default)
+
+	assert.Equal(t, "ae", cured, "CureChar should return \"ae\"")
+
+	cured = CureChar('\u0000', Default)
+
+	assert.Equal(t, "", cured, "CureChar should return an empty string")
+}
+
+func TestCure(t *testing.T) {
 	cured, err := Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", Default)
 
 	assert.Nil(t, err, "curing should not fail")
