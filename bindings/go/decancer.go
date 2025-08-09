@@ -108,7 +108,7 @@ func Cure(text string, options Option) (*CuredString, error) {
 }
 
 func (cured *CuredString) Find(other string) []Match {
-	matches := []Match{}
+	var matches []Match
 
 	if other == "" {
 		return matches

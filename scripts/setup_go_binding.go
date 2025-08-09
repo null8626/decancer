@@ -18,19 +18,8 @@ func isDir(dir string) bool {
 	return err == nil && libDirStat.IsDir()
 }
 
-func move(source, destination string) error {
-	input, err := os.Open(source)
-	inputClosed := false
-
-	if err != nil {
-		return err
-	}
-
-	defer func() {
-		if !inputClosed {
-			input.Close()
-		}
-	}()
+func copy(input *os.File, destination string) error {
+	defer input.Close()
 
 	output, err := os.Create(destination)
 
@@ -44,8 +33,17 @@ func move(source, destination string) error {
 		return err
 	}
 
-	inputClosed = true
-	input.Close()
+	return nil
+}
+
+func move(source, destination string) error {
+	input, err := os.Open(source)
+
+	if err != nil {
+		return err
+	} else if err = copy(input, destination); err != nil {
+		return err
+	}
 
 	return os.Remove(source)
 }
@@ -140,7 +138,7 @@ func build() error {
 		case "arm64":
 			rustArch = "aarch64"
 		default:
-			return errors.New("unsupported architecture: " + arch)
+			return fmt.Errorf("unsupported architecture: %s", arch)
 		}
 
 		rustTarget := rustArch + "-pc-windows-gnu"
@@ -153,7 +151,7 @@ func build() error {
 		cargoBuildArgs = append(cargoBuildArgs, "--target", rustTarget)
 
 		if err := addRustTargetCommand.Run(); err != nil {
-			return errors.New("unable to add rust target: " + err.Error())
+			return fmt.Errorf("unable to add rust target: %s", err.Error())
 		}
 	}
 
@@ -162,13 +160,13 @@ func build() error {
 	originalCargoToml, err := os.ReadFile(cargoTomlPath)
 
 	if err != nil {
-		return errors.New("unable to read \"" + cargoTomlPath + "\": " + err.Error())
+		return fmt.Errorf("unable to read \"%s\": %s", cargoTomlPath, err.Error())
 	}
 
 	modifiedCargoToml := bytes.Replace(originalCargoToml, []byte(`"cdylib"`), []byte(`"staticlib"`), 1)
 
 	if err := os.WriteFile(cargoTomlPath, modifiedCargoToml, 0644); err != nil {
-		return errors.New("unable to write \"" + cargoTomlPath + "\": " + err.Error())
+		return fmt.Errorf("unable to write \"%s\": %s", cargoTomlPath, err.Error())
 	}
 
 	defer func() {
@@ -181,7 +179,7 @@ func build() error {
 	cargoBuildCommand.Stderr = os.Stderr
 
 	if err := cargoBuildCommand.Run(); err != nil {
-		return errors.New("unable to build native binding: " + err.Error())
+		return fmt.Errorf("unable to build native binding: %s", err.Error())
 	}
 
 	nativeBinaryDestinationPath, err := getSystemLibrariesPath()
@@ -195,19 +193,19 @@ func build() error {
 		originalDecancerGo, err := os.ReadFile(decancerGoPath)
 
 		if err != nil {
-			return errors.New("unable to read \"" + decancerGoPath + "\": " + err.Error())
+			return fmt.Errorf("unable to read \"%s\": %s", decancerGoPath, err.Error())
 		} else if err := os.WriteFile(decancerGoPath, bytes.Replace(originalDecancerGo, []byte(`-L${SRCDIR} `), []byte{}, 1), 0644); err != nil {
-			return errors.New("unable to write \"" + decancerGoPath + "\": " + err.Error())
+			return fmt.Errorf("unable to write \"%s\": %s", decancerGoPath, err.Error())
 		}
 	}
 
 	if err := os.MkdirAll(nativeBinaryDestinationPath, 0755); err != nil {
-		return errors.New("unable to create new directory \"" + nativeBinaryDestinationPath + "\": " + err.Error())
+		return fmt.Errorf("unable to create new directory \"%s\": %s", nativeBinaryDestinationPath, err.Error())
 	} else if err := move(filepath.Join(nativeBinaryPath...), filepath.Join(nativeBinaryDestinationPath, "libdecancer.a")); err != nil {
-		return errors.New("unable to move native binding binary to \"" + nativeBinaryDestinationPath + "\": " + err.Error())
+		return fmt.Errorf("unable to move native binding binary to \"%s\": %s", nativeBinaryDestinationPath, err.Error())
 	}
 
-	fmt.Println("\"libdecancer.a\" has been added to \"" + nativeBinaryDestinationPath + "\"")
+	fmt.Printf("\"libdecancer.a\" has been added to \"%s\"\n", nativeBinaryDestinationPath)
 
 	return nil
 }
