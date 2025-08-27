@@ -66,8 +66,6 @@ const expectedNodeTargets = [
   'freebsd-x64'
 ]
 
-let foundJavaJar = false
-
 void (await Promise.all(
   artifacts.map(async artifact => {
     if (artifact.startsWith('native-')) {

@@ -1,8 +1,4 @@
-#![allow(
-  clippy::missing_safety_doc,
-  clippy::unused_unit,
-  clippy::missing_transmute_annotations
-)]
+#![allow(clippy::missing_safety_doc, clippy::unused_unit)]
 
 use jni::{
   errors::Result,
@@ -11,7 +7,6 @@ use jni::{
   sys::{jboolean, jchar, jint, jlong, jobject, jstring},
   JNIEnv,
 };
-use std::mem::transmute;
 
 const CUREDSTRING_CLASS: &str = "io/github/null8626/decancer/CuredString";
 const MATCH_CLASS: &str = "io/github/null8626/decancer/Match";
@@ -111,7 +106,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<
 ) -> jlong {
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  match decancer::cure(&input, transmute(options)) {
+  match decancer::cure(&input, (options as u32).into()) {
     Ok(output) => Box::into_raw(Box::new(output)) as _,
 
     Err(error) => {
@@ -132,9 +127,11 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_find<
   input: JString<'local>,
 ) -> jobject {
   let inner = get_inner!(env, this);
+  let inner_ref = unsafe { &*inner };
+
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  let matches = (*inner).find(&input).collect::<Vec<_>>();
+  let matches = inner_ref.find(&input).collect::<Vec<_>>();
   let array = jni_unwrap!(
     env,
     env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())
@@ -149,7 +146,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_find<
         &[
           JValueGen::Long(result.start as _),
           JValueGen::Long(result.end as _),
-          JValueGen::Object(&jni_unwrap!(env, env.new_string(unsafe { &(*inner)[result] })).into()),
+          JValueGen::Object(&jni_unwrap!(env, env.new_string(&inner_ref[result])).into()),
         ]
       )
     );
@@ -167,8 +164,9 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_findM
   input: JObjectArray<'local>,
 ) -> jobject {
   let inner = get_inner!(env, this);
+  let inner_ref = unsafe { &*inner };
 
-  let matches = (*inner).find_multiple(get_string_array!(env, input));
+  let matches = inner_ref.find_multiple(get_string_array!(env, input));
   let array = jni_unwrap!(
     env,
     env.new_object_array(matches.len() as _, MATCH_CLASS, JObject::null())
@@ -183,7 +181,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_findM
         &[
           JValueGen::Long(result.start as _),
           JValueGen::Long(result.end as _),
-          JValueGen::Object(&jni_unwrap!(env, env.new_string(unsafe { &(*inner)[result] })).into()),
+          JValueGen::Object(&jni_unwrap!(env, env.new_string(&inner_ref[result])).into()),
         ]
       )
     );
@@ -281,7 +279,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_equal
   let inner = get_inner!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  transmute((*inner) == input)
+  ((*inner) == input).into()
 }
 
 #[no_mangle]
@@ -293,7 +291,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_start
   let inner = get_inner!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  transmute((*inner).starts_with(&input))
+  (*inner).starts_with(&input).into()
 }
 
 #[no_mangle]
@@ -305,7 +303,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_endsW
   let inner = get_inner!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  transmute((*inner).ends_with(&input))
+  (*inner).ends_with(&input).into()
 }
 
 #[no_mangle]
@@ -317,7 +315,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_conta
   let inner = get_inner!(env, this);
   let input: String = jni_unwrap!(env, env.get_string(&input)).into();
 
-  transmute((*inner).contains(&input))
+  (*inner).contains(&input).into()
 }
 
 #[no_mangle]

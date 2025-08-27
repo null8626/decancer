@@ -26,7 +26,7 @@ class Codepoints {
       ? input.translation.charCodeAt()
       : input.translation
 
-    for (let i = 0; i <= input.rangeSize; i++)
+    for (let i = 0; i <= input.rangeSize; i++) {
       this.#inner.push({
         codepoint: input.codepoint + i,
         translation:
@@ -34,6 +34,7 @@ class Codepoints {
             ? String.fromCharCode(ogTranslationCode + i)
             : ogTranslationCode
       })
+    }
   }
 
   get inner() {

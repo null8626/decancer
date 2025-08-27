@@ -9,6 +9,7 @@ use std::cmp::Ordering;
 
 pub(crate) const CODEPOINTS: Binary = Binary::new(include_bytes!("../bin/codepoints.bin"));
 
+// - 1 because we're only using them in binary search
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 6) - 1;
 pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);

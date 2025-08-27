@@ -7,8 +7,7 @@ import {
   containsInclusive,
   isCaseSensitive,
   mergeArray,
-  removeFromSet,
-  SortedSet
+  removeFromSet
 } from './util.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
@@ -17,6 +16,7 @@ import { fileURLToPath } from 'node:url'
 import { deserialize } from 'node:v8'
 import { inspect } from 'node:util'
 import assert from 'node:assert'
+
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
 const STRING_TRANSLATION_MASK = 0x10000000n
@@ -230,14 +230,15 @@ assert(
     'en-US'
   )} case-sensitive collisions. at codepoints: ${inspect(
     caseSensitiveCollisions,
-
     {
       maxArrayLength: Infinity
     }
   )}`
 )
 
-const grandTotal = new SortedSet(x => x.codepoint)
+expanded = expanded.sort((a, b) => a.codepoint - b.codepoint)
+
+let grandTotal = []
 
 for (i = 0; i < expanded.length; i++) {
   const [codepoint, translation] = expanded[i]
@@ -245,7 +246,7 @@ for (i = 0; i < expanded.length; i++) {
   const attributes = getAttributes(codepoint)
 
   if (translation.length === 1 && grandTotal.length > 0) {
-    const previous = grandTotal.array[grandTotal.length - 1]
+    const previous = grandTotal[grandTotal.length - 1]
 
     if (
       previous.rangeSize < 0x7f &&
@@ -287,14 +288,14 @@ for (i = 0; i < expanded.length; i++) {
   })
 }
 
+grandTotal = grandTotal.sort((a, b) => a.codepoint - b.codepoint)
+
 console.log(
-  `- condensed down from ${expanded.length.toLocaleString('en-US')} to ${grandTotal.array.length.toLocaleString('en-US')} (${(
-    (grandTotal.array.length / expanded.length) *
+  `- condensed down from ${expanded.length.toLocaleString('en-US')} to ${grandTotal.length.toLocaleString('en-US')} (${(
+    (grandTotal.length / expanded.length) *
     100
   ).toFixed(2)}%).`
 )
-
-writeFileSync('./wtf.json', JSON.stringify(grandTotal.array, null, 2))
 
 const similarBytes = Buffer.from(
   similar.reduce(
@@ -309,9 +310,9 @@ const similarBytes = Buffer.from(
 
 const strings = mergeArray([
   ...new Set(
-    grandTotal.array
-      .filter(({ translation }) => translation.length !== 1)
+    grandTotal
       .map(({ translation }) => translation)
+      .filter(translation => translation.length !== 1)
   )
 ])
 
@@ -325,7 +326,7 @@ for (const {
   rangeSize,
   syncedTranslation,
   attributes
-} of grandTotal.array) {
+} of grandTotal) {
   const buf = Buffer.alloc(6)
   let firstBytes = BigInt(codepoint)
   let middleByte = 0

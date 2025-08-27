@@ -1,12 +1,9 @@
-#![forbid(unsafe_code)]
+#![allow(dead_code, clippy::inherent_to_string)]
 
 #[macro_use]
 extern crate napi_derive;
 
-use napi::{
-  bindgen_prelude::{Error, FromNapiValue},
-  Env, JsNumber, JsString, JsUnknown, Result, Status, ValueType,
-};
+use napi::{bindgen_prelude::Error, Either, Result, Status};
 use std::ops::Range;
 
 macro_rules! options {
@@ -88,18 +85,18 @@ pub struct Match {
 #[napi]
 impl Match {
   #[napi(getter)]
-  pub fn start(&self, env: Env) -> Result<JsNumber> {
-    env.create_int64(self.range.start as _)
+  pub fn start(&self) -> i64 {
+    self.range.start as _
   }
 
   #[napi(getter)]
-  pub fn end(&self, env: Env) -> Result<JsNumber> {
-    env.create_int64(self.range.end as _)
+  pub fn end(&self) -> i64 {
+    self.range.end as _
   }
 
   #[napi]
-  pub fn to_string(&self, env: Env) -> Result<JsString> {
-    env.create_string(&self.portion)
+  pub fn to_string(&self) -> String {
+    self.portion.clone()
   }
 }
 
@@ -194,8 +191,8 @@ impl CuredString {
   }
 
   #[napi]
-  pub fn to_string(&self, env: Env) -> Result<JsString> {
-    env.create_string(&self.0)
+  pub fn to_string(&self) -> String {
+    self.0.to_string()
   }
 }
 
@@ -205,14 +202,12 @@ fn options(options: Option<Options>) -> u32 {
 }
 
 #[napi]
-fn cure(input: String, maybe_options: JsUnknown) -> Result<CuredString> {
-  let options = if maybe_options.get_type()? == ValueType::Number {
-    maybe_options
-      .coerce_to_number()
-      .and_then(|idx| idx.get_uint32())
-  } else {
-    <Option<Options> as FromNapiValue>::from_unknown(maybe_options).map(options)
-  }?;
+fn cure(input: String, maybe_options: Option<Either<u32, Options>>) -> Result<CuredString> {
+  let options = match maybe_options {
+    Some(Either::A(number)) => number,
+    Some(Either::B(opt)) => opt.into(),
+    None => 0,
+  };
 
   match decancer::cure(&input, options.into()) {
     Ok(output) => Ok(CuredString(output)),

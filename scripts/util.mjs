@@ -136,13 +136,11 @@ export function binarySearchExists(arr, val) {
   return false
 }
 
-const RETURNS_ITSELF = x => x
-
 export class SortedSet {
   #mapFn
   #array
 
-  constructor(mapFn = RETURNS_ITSELF) {
+  constructor(mapFn) {
     this.#mapFn = mapFn
     this.#array = []
   }

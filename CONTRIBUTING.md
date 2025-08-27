@@ -59,6 +59,14 @@ interface JsonContents {
 
 Other useful scripts have been added as a utility for maintaining `decancer`.
 
+### Update README files for bindings
+
+Run this every time you modify the root README file.
+
+```console
+node scripts/readme.mjs
+```
+
 ### Pretty source code files
 
 Prerequisites:
