@@ -209,7 +209,6 @@ jobs:
           chmod +x ./gradlew
           ./gradlew test javadoc -DDECANCER_TESTING=1
         working-directory: bindings/java
-        shell: bash
   native:
     strategy:
       fail-fast: true
@@ -402,7 +401,6 @@ jobs:
         run: |
           sudo -E "PATH=$PATH" go generate
           go test
-        shell: bash
   node:
     strategy:
       fail-fast: true
@@ -517,7 +515,7 @@ jobs:
           path: decancer.*.node
           if-no-files-found: error
   node-freebsd:
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     needs:
       - setup
       - core
@@ -529,7 +527,7 @@ jobs:
           fetch-depth: 1
       - name: Build
         id: build
-        uses: cross-platform-actions/action@v0.28.0
+        uses: cross-platform-actions/action@v0.29.0
         timeout-minutes: 30
         env:
           DEBUG: napi:*
@@ -615,13 +613,11 @@ jobs:
           wasm-pack build --no-typescript --release -t web
           mv -f ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
           cp ./bin/decancer.wasm ../..
-        shell: bash
       - name: Test wasm
         working-directory: bindings/wasm/tests
         run: |
           npm i
           timeout 180 node .
-        shell: bash
       - name: Upload artifact
         if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v4
@@ -643,7 +639,6 @@ jobs:
           fetch-depth: 2
       - name: Pull previous commit
         run: git reset --soft HEAD~1
-        shell: bash
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -660,7 +655,6 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod u+x llvm.sh
           sudo ./llvm.sh 18 all
-        shell: bash
       - uses: actions/setup-go@v5
         with:
           go-version: '>=1.17.0'
@@ -669,15 +663,12 @@ jobs:
         run: |
           go vet
           go mod tidy
-        shell: bash
       - name: Prettier files
         run: node scripts/pretty.mjs --clang-format=clang-format-18
         env:
           DECANCER_SETUP_OUTPUTS: ${{ toJSON(needs.setup.outputs) }}
-        shell: bash
       - name: Update README files for bindings
         run: node scripts/readme.mjs
-        shell: bash
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.release != 'null' }}
         uses: actions/download-artifact@v5
@@ -696,7 +687,6 @@ jobs:
           node scripts/ci_validate_java_artifacts.mjs
           mv ./java-artifacts/**/*.{dll,so,dylib} .
           zip -FSr ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
-        shell: bash
       - name: Import Actions GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
@@ -740,13 +730,11 @@ jobs:
           path: bindings/wasm/bin
       - name: Move wasm example file
         run: mv ./bindings/wasm/example.html ./wasm_example.html
-        shell: bash
       - name: Generate native library documentation
         working-directory: bindings/native/docs
         run: |
           node ./docgen.mjs
           mv ./html ../../../native_docs
-        shell: bash
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
       - name: Delete GitHub Pages deployment history
@@ -759,7 +747,6 @@ jobs:
         run: |
           node ./scripts/ci_setup_pages.mjs
           rm -rf ./scripts
-        shell: bash
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
@@ -827,16 +814,13 @@ jobs:
           chmod +x ./gradlew
           ./gradlew jreleaserConfig
           ./gradlew clean build publish -x test
-        shell: bash
       - name: Publish Java binding
         working-directory: bindings/java
         run: ./gradlew jreleaserFullRelease
         continue-on-error: true
-        shell: bash
       - name: Move jar file
         working-directory: bindings/java
         run: mv ./build/libs/decancer-${{ needs.setup.outputs.release }}.jar ../../decancer.jar
-        shell: bash
       - name: Import Actions GPG key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
