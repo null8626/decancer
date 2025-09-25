@@ -356,8 +356,9 @@ impl IsolatingRunSequence {
     (self.runs[level_run_index].start..pos).rev().chain(
       self.runs[..level_run_index]
         .iter()
+        .cloned()
         .rev()
-        .flat_map(Clone::clone),
+        .flat_map(Iterator::rev),
     )
   }
 }
