@@ -145,8 +145,13 @@ pub fn cure_char<C: Into<u32>>(code: C, options: Options) -> Translation {
 ///
 /// This macro expands to:
 ///
-/// ```rust,ignore
+/// ```rust
+/// # let code = 0xFF25u32;
+/// #
+/// # let cured =
 /// decancer::cure_char(code, decancer::Options::default());
+/// #
+/// # assert_eq!(cured, decancer::cure_char!(code));
 /// ```
 ///
 /// For more information, see [the `cure_char` function][cure_char()].
@@ -388,8 +393,13 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
 ///
 /// This macro expands to:
 ///
-/// ```rust,ignore
+/// ```rust
+/// # let string = "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣";
+/// #
+/// # let cured =
 /// decancer::cure(string, decancer::Options::default());
+/// #
+/// # assert_eq!(cured.unwrap(), decancer::cure!(string).unwrap());
 /// ```
 ///
 /// For more information, see [the `cure` function][cure()].
