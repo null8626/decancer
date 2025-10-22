@@ -2,11 +2,11 @@ html {
   --font-family: 'Inter';
   --font-family-monospace: 'Roboto Mono';
   --top-height: 150px;
-  --searchbar-border-radius: 0px;
+  --searchbar-border-radius: 0;
 }
 
 #MSearchField {
-  padding: 0px 10px;
+  padding: 0 10px;
 }
 
 #projectname a,
@@ -17,7 +17,7 @@ h2.groupheader {
 }
 
 div.contents {
-  margin: 0px auto var(--spacing-medium) auto;
+  margin: 0 auto var(--spacing-medium) auto;
   padding-bottom: var(--spacing-large);
 }
 
@@ -73,7 +73,7 @@ h2.groupheader {
 }
 
 dl.section dd {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 #apitype {
@@ -106,7 +106,7 @@ dl.section dd {
 }
 
 #MSearchBox {
-  right: 0px;
+  right: 0;
 }
 
 @media screen and (max-width: 1169px) {
@@ -124,7 +124,7 @@ dl.section dd {
 @media screen and (max-width: 767px) {
   #MSearchBox {
     width: calc(100% - var(--spacing-medium) + var(--spacing-small));
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   div.memproto {
@@ -172,16 +172,15 @@ dl.section dd {
   }
 
   #top {
-    position: -webkit-sticky;
     position: sticky;
-    top: 0px;
+    top: 0;
     height: 100%;
   }
 
   #doc-content {
     position: relative;
     top: calc(var(--top-height) - 17px - 100%);
-    padding-top: 0px;
+    padding-top: 0;
     height: 100% !important;
   }
 

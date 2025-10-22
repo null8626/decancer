@@ -24,7 +24,7 @@ dark-mode-toggle {
   white-space: nowrap;
   background: black;
   border-radius: 0.65em;
-  box-shadow: inset 0.5px 0.5px 3px 0px #2f436c;
+  box-shadow: inset 0.5px 0.5px 3px 0 #2f436c;
   z-index: 102;
 }
 
@@ -66,8 +66,8 @@ dark-mode-toggle {
   color: #c5c5c5;
   outline: none;
   font-family: Arial, Verdana, sans-serif;
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
+  -webkit-border-radius: 0;
+  border-radius: 0;
   background: none;
 }
 
@@ -116,6 +116,12 @@ dark-mode-toggle {
   z-index: 10001;
   padding-top: 4px;
   padding-bottom: 4px;
+  border-radius: 4px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.15);
   -moz-border-radius: 4px;
   -webkit-border-top-left-radius: 4px;
   -webkit-border-top-right-radius: 4px;
@@ -131,7 +137,7 @@ dark-mode-toggle {
     sans-serif;
   padding-left: 2px;
   padding-right: 12px;
-  border: 0px;
+  border: 0;
 }
 
 span.SelectionMark {

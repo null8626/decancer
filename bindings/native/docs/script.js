@@ -273,11 +273,15 @@ window.addEventListener('load', () => {
 
   try {
     document.querySelector('#doc-content #MSearchSelectWindow').remove()
-  } catch {}
+  } catch {
+    /* empty */
+  }
 
   try {
     document.querySelector('#doc-content #MSearchResultsWindow').remove()
-  } catch {}
+  } catch {
+    /* empty */
+  }
 
   for (const stfu of [...document.querySelectorAll('.summary')]) {
     stfu.remove()
@@ -323,13 +327,9 @@ window.addEventListener('load', () => {
 
   document.querySelector('html').style.visibility = 'visible'
 
-  while (true) {
-    const elem = elementsToScrollInto.shift()
+  let elem
 
-    if (!elem) {
-      break
-    }
-
+  while ((elem = elementsToScrollInto.shift())) {
     elem.scrollIntoView()
   }
 })
