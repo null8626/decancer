@@ -55,7 +55,7 @@ decancer = "3.3.3"
 In your shell:
 
 ```console
-$ npm install decancer
+npm install decancer
 ```
 
 In your code (CommonJS):
@@ -145,11 +145,11 @@ Windows:
 macOS/Linux:
 
 ```console
-$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
-$ cd decancer/bindings/java
-$ unzip ./bin/bindings.zip -d ./bin
-$ chmod +x ./gradlew
-$ ./gradlew build -x test
+git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+cd decancer/bindings/java
+unzip ./bin/bindings.zip -d ./bin
+chmod +x ./gradlew
+./gradlew build -x test
 ```
 
 Tip: You can shrink the size of the resulting JAR file by removing binaries in the `bin` directory for the platforms you don't want to support.
@@ -196,9 +196,9 @@ Tip: You can shrink the size of the resulting JAR file by removing binaries in t
 Building from source requires [Rust v1.65 or later](https://rustup.rs/).
 
 ```console
-$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
-$ cd decancer/bindings/native
-$ cargo build --release
+git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+cd decancer/bindings/native
+cargo build --release
 ```
 
 And the binary files should be generated in the `target/release` directory.
@@ -214,10 +214,10 @@ Building requires Rust v1.65 or later. Windows systems also require a MinGW comp
 In your shell:
 
 ```console
-$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
-$ cd decancer/bindings/go
-$ sudo -E "PATH=$PATH" go generate
-$ go install
+git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+cd decancer/bindings/go
+sudo -E "PATH=$PATH" go generate
+go install
 ```
 
 For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to your system's libraries for convenience.

@@ -18,7 +18,7 @@
 A library that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of [**Binary Search**](https://en.wikipedia.org/wiki/Binary_search_algorithm) to ensure speed!
-- By default, it's capable of filtering **222,518 (19.97%) different unicode codepoints** like:
+- By default, it's capable of filtering **222,557 (19.98%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
@@ -33,10 +33,10 @@ Building requires Rust v1.65 or later. Windows systems also require a MinGW comp
 In your shell:
 
 ```console
-$ git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
-$ cd decancer/bindings/go
-$ sudo -E "PATH=$PATH" go generate
-$ go install
+git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+cd decancer/bindings/go
+sudo -E "PATH=$PATH" go generate
+go install
 ```
 
 For most platforms, `go generate` will require elevated administrator permissions as decancer's native binding will be added to your system's libraries for convenience.
