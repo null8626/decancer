@@ -606,7 +606,9 @@ jobs:
         with:
           node-version: 22.x
       - name: Setup wasm-pack
-        run: cargo install wasm-pack
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall wasm-pack
       - name: Build wasm
         working-directory: bindings/wasm
         run: |
