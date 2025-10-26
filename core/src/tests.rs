@@ -76,7 +76,11 @@ fn similar_equal() {
   #[cfg(feature = "leetspeak")]
   {
     assert_matches!("|-|3|_I_0", "hello", [0..9]);
+    assert_matches!("|-|3|aI_0", "helalo", [0..9]);
+    assert_matches!("|-|3|_|_0", "he|_lo", [0..9]);
     assert_matches!("|--|3e33|__|_I_I_0()O[]", "hello", [0..23]);
+
+    assert_no_matches!("|-|3|_|_0", "he+lo");
   }
 
   assert_no_matches!("", "");
@@ -146,10 +150,6 @@ fn bidi_class() {
 
 fn level_runs(levels: &[Level], original_classes: &[Class]) -> Vec<Range<usize>> {
   let mut runs = Vec::new();
-
-  if levels.is_empty() {
-    return runs;
-  }
 
   let mut current_run_level = levels[0];
   let mut current_run_start = 0;
@@ -296,6 +296,15 @@ fn isolating_run_sequences() {
       [[4..5], L, L],
       [[9..10], R, R],
     },
+  );
+}
+
+#[test]
+#[cfg(feature = "options")]
+fn retain_capitalization() {
+  assert_eq!(
+    crate::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
+    "decAncer"
   );
 }
 
