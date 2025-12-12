@@ -639,8 +639,6 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 2
-      - name: Pull previous commit
-        run: git reset --soft HEAD~1
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
@@ -699,9 +697,8 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          commit: -S
-          message: ${{ github.event.head_commit.message }}
-          push: --force
+          commit: -S --amend --no-edit
+          push: --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   pages:
