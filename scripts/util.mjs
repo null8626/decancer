@@ -8,8 +8,7 @@ const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS
 
 export function isAffected(value) {
   return SETUP_OUTPUTS !== null
-    ? SETUP_OUTPUTS.release !== 'null' ||
-        SETUP_OUTPUTS[`${value}_affected`] === 'true'
+    ? SETUP_OUTPUTS[`${value}_affected`] === 'true'
     : true
 }
 
