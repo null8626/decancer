@@ -79,7 +79,7 @@ jreleaser {
     longDescription = 'A library that removes common unicode confusables/homoglyphs from strings. By default, the library supports filtering over 220,000 unicode codepoints and reordering right-to-left text as it were to be rendered graphically.'
     license = 'MIT'
     inceptionYear = '2021'
-    copyright = 'Copyright (c) 2021-2025 null8626'
+    copyright = 'Copyright (c) 2021-2026 null8626'
   }
 
   signing {
