@@ -1,9 +1,12 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use crate::ptr::{Element, NullTerminatedPointer};
 use std::{slice, str};
 
 pub(crate) fn get(input_ptr: *const u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
-    let mut input_ptr = NullTerminatedPointer::new(input_ptr);
+    let mut input_ptr = NullTerminatedPointer::from(input_ptr);
 
     while let Some(value) = input_ptr.next() {
       if (0xA0..=0xBF).contains(&value)

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use lazy_static::lazy_static;
 use regex::bytes::{Regex, RegexBuilder};
 
@@ -55,7 +58,9 @@ lazy_static! {
 pub(crate) fn find(haystack: &[u8], character: u32) -> Option<usize> {
   let idx = match character {
     65..=90 => character - 65,
+
     97..=122 => character - 97,
+
     _ => return None,
   };
 

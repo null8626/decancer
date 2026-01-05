@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #![allow(dead_code, clippy::inherent_to_string)]
 
 #[macro_use]
@@ -9,11 +12,11 @@ use std::ops::Range;
 macro_rules! options {
   (
     keys {
-      $($key_idx:literal: $key_name:ident,)*
+      $($key_idx:literal: $key_name:ident),*
     }
 
     overrides {
-      $($override_name:ident: $override_value:expr,)*
+      $($override_name:ident: $override_value:expr),*
     }
   ) => {
     #[napi(object)]
@@ -67,12 +70,12 @@ options! {
     21: retain_emojis,
     22: retain_turkish,
     23: ascii_only,
-    24: alphanumeric_only,
+    24: alphanumeric_only
   }
 
   overrides {
     all: 0x1ffffff,
-    pure_homoglyph: 0x3ffffc,
+    pure_homoglyph: 0x3ffffc
   }
 }
 
@@ -205,12 +208,15 @@ fn options(options: Option<Options>) -> u32 {
 fn cure(input: String, maybe_options: Option<Either<u32, Options>>) -> Result<CuredString> {
   let options = match maybe_options {
     Some(Either::A(number)) => number,
+
     Some(Either::B(opt)) => opt.into(),
+
     None => 0,
   };
 
   match decancer::cure(&input, options.into()) {
     Ok(output) => Ok(CuredString(output)),
+
     Err(err) => Err(Error::new(Status::InvalidArg, err)),
   }
 }

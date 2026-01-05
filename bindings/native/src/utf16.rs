@@ -1,16 +1,15 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use crate::ptr::{Element, NullTerminatedPointer, SizedPointer};
 
 fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
-  let mut output: Vec<u8> = Vec::new();
-  let mut next: Option<u16> = None;
+  let mut output = vec![];
+  let mut next = None;
 
   loop {
-    let c = match next.take() {
-      Some(res) => res,
-      None => match iter.next() {
-        Some(res) => res,
-        None => return Some(output),
-      },
+    let Some(c) = next.take().or_else(|| iter.next()) else {
+      return Some(output);
     };
 
     if c <= 0x7f {
@@ -44,7 +43,7 @@ fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
 
 pub(crate) unsafe fn get(input_ptr: *const u16, input_size: usize) -> Option<Vec<u8>> {
   if input_size == 0 {
-    let mut input_ptr = NullTerminatedPointer::new(input_ptr);
+    let mut input_ptr = NullTerminatedPointer::from(input_ptr);
 
     get_inner(&mut input_ptr)
   } else {

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #[cfg(feature = "leetspeak")]
 use crate::leetspeak;
 use crate::{
@@ -71,13 +74,13 @@ impl<'a, 'b> Matcher<'a, 'b> {
     }
 
     Self {
-      self_iterator: Cached::new(self_str.chars()),
+      self_iterator: self_str.chars().into(),
       #[cfg(feature = "leetspeak")]
       self_str,
       explicit_starting_position: None,
       self_index: 0,
       start_index: 0,
-      other_iterator: CachedPeek::new(other_str.chars()),
+      other_iterator: other_str.chars().into(),
     }
   }
 
@@ -86,7 +89,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     let haystack = &self.self_str[self.self_index..];
     let matched_len = leetspeak::find(haystack.as_bytes(), other_char as _)?;
 
-    self.self_iterator = Cached::new(haystack[matched_len..].chars());
+    self.self_iterator = haystack[matched_len..].chars().into();
 
     Some(matched_len)
   }
@@ -162,7 +165,7 @@ impl Iterator for Matcher<'_, '_> {
     let mut completed = current_other.1.is_none();
 
     #[cfg(feature = "separators")]
-    let mut current_separator: Option<char> = None;
+    let mut current_separator = None;
 
     while let Some(next_self_char) = self.self_iterator.next() {
       if let Some(matched_skip) = current_other

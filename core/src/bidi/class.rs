@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
 use crate::util::{numbered_enum, CODEPOINT_MASK};
 
@@ -27,7 +30,7 @@ numbered_enum! {
     LRI = 18,
     RLI = 19,
     FSI = 20,
-    PDI = 21,
+    PDI = 21
   }
 }
 
@@ -70,8 +73,11 @@ impl Class {
   pub(crate) const fn override_status(self) -> OverrideStatus {
     match self {
       Self::RLO => OverrideStatus::RTL,
+
       Self::LRO => OverrideStatus::LTR,
+
       Self::RLI | Self::LRI | Self::FSI => OverrideStatus::Isolate,
+
       _ => OverrideStatus::Neutral,
     }
   }

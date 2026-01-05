@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #![doc = include_str!("../README.md")]
 #![allow(clippy::upper_case_acronyms)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
@@ -105,6 +108,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   #[cfg(feature = "options")]
   match options.translate(code_lowercased, 6, CODEPOINTS_COUNT as _) {
     Some(translation) => translation.ensure_stripped_if(ascii_only, alphanumeric_only),
+
     None => {
       if ascii_only || alphanumeric_only {
         Translation::None
@@ -131,7 +135,9 @@ pub fn cure_char<C: Into<u32>>(code: C, options: Options) -> Translation {
   } else {
     match Class::new(code) {
       Some(Class::WS) => Translation::character(if code > 0x7f { 0x20 } else { code }),
+
       None => Translation::None,
+
       _ => cure_char_inner(code, options),
     }
   }
@@ -165,11 +171,11 @@ macro_rules! cure_char {
 fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   let mut refined_input = String::with_capacity(input.len());
   let mut original_classes = Vec::with_capacity(input.len());
-  let mut isolate_stack = Vec::new();
+  let mut isolate_stack = vec![];
 
-  let mut paragraphs = Vec::new();
+  let mut paragraphs = vec![];
   let mut paragraph_start = 0;
-  let mut paragraph_level: Option<Level> = None;
+  let mut paragraph_level = None;
   let mut pure_ltr = true;
   let mut has_isolate_controls = false;
 
@@ -278,10 +284,10 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
   let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
 
   let mut levels = Vec::with_capacity(refined_input.len());
-  let mut level_runs = Vec::new();
+  let mut level_runs = vec![];
   let mut processing_classes = original_classes.clone();
   let mut output = String::with_capacity(refined_input.len());
-  let mut sequences = Vec::new();
+  let mut sequences = vec![];
 
   for paragraph in &paragraphs {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
@@ -315,9 +321,11 @@ pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Er
 
           match (level.is_rtl(), processing_classes[j]) {
             (false, Class::AN | Class::EN) => level.raise(2)?,
+
             (false, Class::R) | (true, Class::L | Class::EN | Class::AN) => {
               level.raise(1)?;
             },
+
             _ => {},
           }
         }

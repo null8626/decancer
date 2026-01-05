@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 package io.github.null8626.decancer;
 
 import com.fizzed.jne.NativeTarget;
@@ -57,13 +60,13 @@ public class CuredString implements AutoCloseable {
     } catch (final Throwable err) {
       throw new RuntimeException(
         "[" +
-        rustTarget +
-        "] this operating system (" +
-        osName +
-        ") and/or architecture (" +
-        archName +
-        ") is not supported.\noriginal error:\n" +
-        err.getMessage()
+          rustTarget +
+          "] this operating system (" +
+          osName +
+          ") and/or architecture (" +
+          archName +
+          ") is not supported.\noriginal error:\n" +
+          err.getMessage()
       );
     }
   }

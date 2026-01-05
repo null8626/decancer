@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #![allow(clippy::missing_safety_doc, clippy::unused_unit)]
 
 use jni::{
@@ -15,6 +18,7 @@ macro_rules! jni_unwrap {
   ($env:ident, $value:expr, $return_value:expr) => {
     match $value {
       Ok(output) => output,
+
       Err(error) => {
         let _ = $env.throw_new("java/lang/RuntimeException", error.to_string());
 

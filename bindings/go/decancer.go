@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 //go:generate go run ../../scripts/setup_go_binding.go
 
 package decancer

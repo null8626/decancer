@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #[cfg(feature = "options")]
 use crate::util::is_alphanumeric;
 use crate::{
@@ -46,7 +49,9 @@ impl Translation {
   pub(crate) fn make_uppercase(&mut self) {
     match self {
       Self::Character(c) => *c = c.to_uppercase().next().unwrap_or(*c),
+
       Self::String(s) => s.to_mut().make_ascii_uppercase(),
+
       Self::None => {},
     }
   }
@@ -55,7 +60,9 @@ impl Translation {
   fn is_ascii(&self) -> bool {
     match self {
       Self::Character(c) => (*c as u32) <= 0x7f,
+
       Self::String(s) => s.is_ascii(),
+
       Self::None => false,
     }
   }
@@ -64,7 +71,9 @@ impl Translation {
   fn is_alphanumeric(&self) -> bool {
     match self {
       Self::Character(c) => is_alphanumeric(*c as _),
+
       Self::String(s) => s.bytes().all(|b| is_alphanumeric(b as _)),
+
       Self::None => false,
     }
   }
@@ -83,7 +92,9 @@ impl From<Translation> for Cow<'static, str> {
   fn from(translation: Translation) -> Self {
     match translation {
       Translation::Character(c) => Self::Owned(String::from(c)),
+
       Translation::String(s) => s,
+
       Translation::None => Self::Borrowed(""),
     }
   }
@@ -103,7 +114,9 @@ impl AddAssign<Translation> for String {
   fn add_assign(&mut self, translation: Translation) {
     match translation {
       Translation::Character(ch) => self.push(ch),
+
       Translation::String(s) => self.push_str(&s),
+
       Translation::None => {},
     }
   }
@@ -139,7 +152,9 @@ impl Display for Translation {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       Self::Character(ch) => Display::fmt(ch, f),
+
       Self::String(s) => Display::fmt(s, f),
+
       Self::None => Ok(()),
     }
   }
@@ -154,7 +169,9 @@ impl Serialize for Translation {
   {
     match self {
       Self::Character(ch) => serializer.serialize_char(*ch),
+
       Self::String(s) => serializer.serialize_str(s),
+
       Self::None => serializer.serialize_unit(),
     }
   }

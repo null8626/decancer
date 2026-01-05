@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #[repr(C)]
 pub(crate) struct Element<T> {
   pub(crate) string: *const T,
@@ -9,8 +12,9 @@ pub(crate) struct NullTerminatedPointer<T> {
   pub(crate) size: usize,
 }
 
-impl<T> NullTerminatedPointer<T> {
-  pub(crate) const fn new(ptr: *const T) -> Self {
+impl<T> From<*const T> for NullTerminatedPointer<T> {
+  #[inline(always)]
+  fn from(ptr: *const T) -> Self {
     Self { ptr, size: 0 }
   }
 }

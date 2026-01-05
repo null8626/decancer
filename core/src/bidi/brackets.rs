@@ -1,16 +1,19 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use super::{BIDI, BIDI_BRACKETS_COUNT};
 use crate::util::CODEPOINT_MASK;
 
-pub(crate) struct BracketPair {
-  pub(crate) start: usize,
-  pub(crate) end: usize,
-  pub(crate) start_run: usize,
-  pub(crate) end_run: usize,
+pub(in super::super) struct BracketPair {
+  pub(in super::super) start: usize,
+  pub(in super::super) end: usize,
+  pub(in super::super) start_run: usize,
+  pub(in super::super) end_run: usize,
 }
 
-pub(crate) struct OpeningBracket {
-  pub(crate) opening: u32,
-  pub(crate) is_open: bool,
+pub(in super::super) struct OpeningBracket {
+  pub(in super::super) opening: u32,
+  pub(in super::super) is_open: bool,
 }
 
 // std::cmp::{max, min}; functions are not const because they have generics that prevent it from doing so
@@ -24,7 +27,7 @@ const fn min_max(a: u32, b: u32) -> (u32, u32) {
 }
 
 impl OpeningBracket {
-  pub(crate) const fn new(code: u32) -> Option<Self> {
+  pub(in super::super) const fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_BRACKETS_COUNT as i32;
 

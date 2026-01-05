@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 mod ptr;
 #[cfg(feature = "utf16")]
 mod utf16;
@@ -57,6 +60,7 @@ pub unsafe extern "C" fn decancer_cure(
 
   match decancer::cure(input, transmute(options)) {
     Ok(res) => Box::into_raw(Box::new(res)),
+
     Err(err) => {
       if !error.is_null() {
         let message = <decancer::Error as AsRef<str>>::as_ref(&err);
@@ -89,6 +93,7 @@ pub unsafe extern "C" fn decancer_cure_utf16(
 
   match decancer::cure(input_str, transmute(options)) {
     Ok(res) => Box::into_raw(Box::new(res)),
+
     Err(err) => {
       if !error.is_null() {
         let message = <decancer::Error as AsRef<str>>::as_ref(&err);
@@ -151,6 +156,7 @@ pub unsafe extern "C" fn decancer_find(
 ) -> *mut decancer::Matcher<'static, 'static> {
   match utf8::get(other_str, other_length) {
     Some(result) => Box::into_raw(Box::new(transmute((*cured).find(result)))),
+
     None => 0 as _,
   }
 }
@@ -188,6 +194,7 @@ pub unsafe extern "C" fn decancer_find_multiple(
 ) -> *mut Vec<Range<usize>> {
   match utf8::get_array(other_str.cast(), other_length) {
     Some(result) => Box::into_raw(Box::new((*cured).find_multiple(result))),
+
     None => 0 as _,
   }
 }
@@ -201,6 +208,7 @@ pub unsafe extern "C" fn decancer_find_multiple_utf16(
 ) -> *mut Vec<Range<usize>> {
   match utf16::get_array(other_str.cast(), other_length) {
     Some(result) => Box::into_raw(Box::new((*cured).find_multiple(result))),
+
     None => 0 as _,
   }
 }

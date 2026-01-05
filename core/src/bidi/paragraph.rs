@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use super::{BracketPair, Class, Level, OpeningBracket};
 use crate::Error;
 use std::{
@@ -32,8 +35,8 @@ impl IsolatingRunSequence {
 
     let mut last_strong_is_al = false;
 
-    let mut et_run_indices = Vec::new();
-    let mut bn_run_indices = Vec::new();
+    let mut et_run_indices = vec![];
+    let mut bn_run_indices = vec![];
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
       for i in level_run.clone() {
@@ -50,13 +53,17 @@ impl IsolatingRunSequence {
               processing_classes[i] = Class::AN;
             }
           },
+
           Class::AL => processing_classes[i] = Class::R,
+
           _ => {},
         }
 
         match w2_processing_class {
           Class::L | Class::R => last_strong_is_al = false,
+
           Class::AL => last_strong_is_al = true,
+
           _ => {},
         }
 
@@ -86,7 +93,9 @@ impl IsolatingRunSequence {
               processing_classes[i] =
                 match (prev_class_before_w4, processing_classes[i], next_class) {
                   (Class::EN, Class::ES | Class::CS, Class::EN) => Class::EN,
+
                   (Class::AN, Class::CS, Class::AN) => Class::AN,
+
                   _ => Class::ON,
                 };
 
@@ -116,6 +125,7 @@ impl IsolatingRunSequence {
 
           Class::ET => match prev_class_before_w5 {
             Class::EN => processing_classes[i] = Class::EN,
+
             _ => {
               et_run_indices.extend(&bn_run_indices);
               et_run_indices.push(i);
@@ -146,8 +156,11 @@ impl IsolatingRunSequence {
     for i in self.runs.iter().cloned().flatten() {
       match processing_classes[i] {
         Class::EN if last_strong_is_l => processing_classes[i] = Class::L,
+
         Class::L => last_strong_is_l = true,
+
         Class::R | Class::AL => last_strong_is_l = false,
+
         _ => {},
       }
     }
@@ -159,7 +172,7 @@ impl IsolatingRunSequence {
     original_classes: &[Class],
     bracket_pairs: &mut Vec<BracketPair>,
   ) {
-    let mut stack = Vec::new();
+    let mut stack = vec![];
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
       for (i, ch) in text[level_run.clone()].char_indices() {
@@ -207,7 +220,7 @@ impl IsolatingRunSequence {
     let e = levels[self.runs[0].start].class();
 
     let not_e = if e == Class::L { Class::R } else { Class::L };
-    let mut bracket_pairs = Vec::new();
+    let mut bracket_pairs = vec![];
 
     self.identify_bracket_pairs(text, processing_classes, &mut bracket_pairs);
 
@@ -297,7 +310,7 @@ impl IsolatingRunSequence {
     let mut prev_class = self.start_class;
 
     while let Some(mut i) = indices.next() {
-      let mut ni_run = Vec::new();
+      let mut ni_run = vec![];
 
       if processing_classes[i].is_neutral_or_isolate() || processing_classes[i] == Class::BN {
         ni_run.push(i);
@@ -325,7 +338,9 @@ impl IsolatingRunSequence {
 
         let new_class = match (prev_class, next_class) {
           (Class::L, Class::L) => Class::L,
+
           (Class::R | Class::AN | Class::EN, Class::R | Class::AN | Class::EN) => Class::R,
+
           _ => e,
         };
 
@@ -395,8 +410,8 @@ impl Paragraph {
   ) -> Result<(Vec<Level>, Vec<Range<usize>>), Error> {
     let mut levels = Vec::from(levels);
 
-    let mut reset_from: Option<usize> = Some(0);
-    let mut reset_to: Option<usize> = None;
+    let mut reset_from = Some(0);
+    let mut reset_to = None;
     let mut prev_level = self.level;
 
     for (i, c) in text.char_indices() {
@@ -541,7 +556,9 @@ impl Paragraph {
           if is_isolate {
             match last.status {
               OverrideStatus::RTL => processing_classes[idx] = Class::R,
+
               OverrideStatus::LTR => processing_classes[idx] = Class::L,
+
               _ => {},
             }
           }
@@ -607,7 +624,9 @@ impl Paragraph {
 
           match last.status {
             OverrideStatus::RTL => processing_classes[idx] = Class::R,
+
             OverrideStatus::LTR => processing_classes[idx] = Class::L,
+
             _ => {},
           }
         },
@@ -647,7 +666,9 @@ impl Paragraph {
           if current_class != Class::BN {
             match last.status {
               OverrideStatus::RTL => processing_classes[idx] = Class::R,
+
               OverrideStatus::LTR => processing_classes[idx] = Class::L,
+
               _ => {},
             }
           }
@@ -683,7 +704,7 @@ impl Paragraph {
     irs: &mut Vec<IsolatingRunSequence>,
   ) -> Result<(), Error> {
     if self.has_isolate_controls {
-      let mut runs = Vec::new();
+      let mut runs = vec![];
 
       if let Some(&(mut current_run_level)) = levels.first() {
         let mut current_run_start = 0;
@@ -761,6 +782,7 @@ impl Paragraph {
           .rposition(|x| !x.removed_by_x9())
         {
           Some(idx) => levels[idx],
+
           None => self.level,
         };
 
@@ -779,6 +801,7 @@ impl Paragraph {
             .position(|x| !x.removed_by_x9())
           {
             Some(idx) => levels[sequence_end + idx],
+
             None => self.level,
           }
         };
@@ -791,7 +814,7 @@ impl Paragraph {
     } else {
       irs.reserve_exact(level_runs.len());
 
-      for run in level_runs {
+      irs.extend(level_runs.iter().map(|run| {
         let run_levels = &levels[run.clone()];
         let run_classes = &original_classes[run.clone()];
         let seq_level = run_levels[run_classes
@@ -809,6 +832,7 @@ impl Paragraph {
           .rposition(|c| !c.removed_by_x9())
         {
           Some(idx) => levels[idx],
+
           None => self.level,
         };
 
@@ -817,15 +841,16 @@ impl Paragraph {
           .position(|c| !c.removed_by_x9())
         {
           Some(idx) => levels[run.end + idx],
+
           None => self.level,
         };
 
-        irs.push(IsolatingRunSequence {
+        IsolatingRunSequence {
           runs: vec![run.clone()],
           start_class: max(seq_level, pred_level).class(),
           end_class: max(end_level, succ_level).class(),
-        });
-      }
+        }
+      }));
     }
 
     Ok(())

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #[cfg(feature = "options")]
 use crate::Options;
 use crate::{
@@ -149,7 +152,7 @@ fn bidi_class() {
 }
 
 fn level_runs(levels: &[Level], original_classes: &[Class]) -> Vec<Range<usize>> {
-  let mut runs = Vec::new();
+  let mut runs = vec![];
 
   let mut current_run_level = levels[0];
   let mut current_run_start = 0;
@@ -172,7 +175,7 @@ fn irs_sorted(
   classes: &[Class],
 ) -> Vec<IsolatingRunSequence> {
   let level_runs = level_runs(levels, classes);
-  let mut sequences = Vec::new();
+  let mut sequences = vec![];
 
   paragraph
     .isolating_run_sequences(levels, &level_runs, classes, &mut sequences)
@@ -235,13 +238,13 @@ fn isolating_run_sequences() {
 
   macro_rules! irs {
     ($(
-      [[$($start:literal..$end:literal),*],$sos:ident,$eos:ident],
-    )*) => {
+      [[$($start:literal..$end:literal),*],$sos:ident,$eos:ident]
+    ),*) => {
       &[$(IsolatingRunSequence {
         runs: vec![$($start..$end),*],
         start_class: Class::$sos,
         end_class: Class::$eos,
-      },)*]
+      }),*]
     }
   }
 
@@ -282,7 +285,7 @@ fn isolating_run_sequences() {
       [[2..4], R, L],
       [[4..6], L, L],
       [[6..11], L, R],
-      [[11..12], R, L],
+      [[11..12], R, L]
     },
   );
 
@@ -294,7 +297,7 @@ fn isolating_run_sequences() {
       [[0..2, 7..9, 10..12], L, L],
       [[2..4, 5..7], R, R],
       [[4..5], L, L],
-      [[9..10], R, R],
+      [[9..10], R, R]
     },
   );
 }

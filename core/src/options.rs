@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use crate::{codepoints::Codepoint, Translation};
 use std::cmp::Ordering;
 
@@ -19,8 +22,8 @@ pub struct Options(pub(crate) u32);
 macro_rules! options {
   ($(
     $(#[$extra_meta:meta])*
-    $idx:literal: $name:ident,
-  )*) => {
+    $idx:literal: $name:ident
+  ),*) => {
     $(
       $(#[$extra_meta])*
       #[cfg_attr(not(feature = "options"), cold)]
@@ -151,7 +154,7 @@ impl Options {
     23: ascii_only,
 
     /// Removes all non-alphanumeric characters from the result.
-    24: alphanumeric_only,
+    24: alphanumeric_only
   }
 
   #[cfg(feature = "options")]
@@ -182,7 +185,9 @@ impl Options {
 
       match ord {
         Ordering::Equal => return Some(codepoint.translation(code)),
+
         Ordering::Greater => start = mid + 1,
+
         Ordering::Less => end = mid - 1,
       }
     }

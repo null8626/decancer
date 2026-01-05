@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 use std::{ops::Range, str::Chars};
 
 pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
@@ -99,9 +102,7 @@ macro_rules! error_enum {
     impl std::convert::AsRef<str> for $enum_name {
       fn as_ref(&self) -> &str {
         match self {
-          $(
-            Self::$prop_name => stringify!($prop_doc),
-          )*
+          $(Self::$prop_name => stringify!($prop_doc)),*
         }
       }
     }
@@ -123,19 +124,20 @@ macro_rules! numbered_enum {
   (
     $(#[$enum_meta:meta])*
     $enum_vis:vis enum $enum_name:ident: $enum_type:ty {
-      $($enum_prop:ident = $enum_prop_value:literal,)*
+      $($enum_prop:ident = $enum_prop_value:literal),*
     }
   ) => {
     $(#[$enum_meta])*
     #[repr($enum_type)]
     $enum_vis enum $enum_name {
-      $($enum_prop = $enum_prop_value,)*
+      $($enum_prop = $enum_prop_value),*
     }
 
     impl $enum_name {
       const fn from_number(value: $enum_type) -> Self {
         match value {
           $($enum_prop_value => Self::$enum_prop,)*
+
           _ => unreachable!(),
         }
       }
@@ -145,22 +147,13 @@ macro_rules! numbered_enum {
 
 pub(crate) use numbered_enum;
 
-pub(crate) struct Cached<'a> {
-  iterator: Chars<'a>,
+pub(crate) struct Cached<'c> {
+  iterator: Chars<'c>,
   pub(crate) cache: Vec<char>,
   index: usize,
 }
 
-impl<'a> Cached<'a> {
-  #[inline(always)]
-  pub(crate) fn new(iterator: Chars<'a>) -> Self {
-    Self {
-      iterator,
-      cache: Vec::new(),
-      index: 0,
-    }
-  }
-
+impl Cached<'_> {
   #[inline(always)]
   pub(crate) fn set_index(&mut self, index: usize) {
     self.index = index;
@@ -180,6 +173,17 @@ impl<'a> Cached<'a> {
   }
 }
 
+impl<'c> From<Chars<'c>> for Cached<'c> {
+  #[inline(always)]
+  fn from(iterator: Chars<'c>) -> Self {
+    Self {
+      iterator,
+      cache: vec![],
+      index: 0,
+    }
+  }
+}
+
 impl Iterator for Cached<'_> {
   type Item = char;
 
@@ -192,22 +196,13 @@ impl Iterator for Cached<'_> {
   }
 }
 
-pub(crate) struct CachedPeek<'a> {
-  iterator: Chars<'a>,
+pub(crate) struct CachedPeek<'c> {
+  iterator: Chars<'c>,
   cache: Vec<char>,
   index: usize,
 }
 
-impl<'a> CachedPeek<'a> {
-  #[inline(always)]
-  pub(crate) fn new(iterator: Chars<'a>) -> Self {
-    Self {
-      iterator,
-      cache: Vec::new(),
-      index: 0,
-    }
-  }
-
+impl CachedPeek<'_> {
   #[inline(always)]
   pub(crate) fn restart(&mut self) {
     self.index = 0;
@@ -220,6 +215,17 @@ impl<'a> CachedPeek<'a> {
         value
       })
     })
+  }
+}
+
+impl<'c> From<Chars<'c>> for CachedPeek<'c> {
+  #[inline(always)]
+  fn from(iterator: Chars<'c>) -> Self {
+    Self {
+      iterator,
+      cache: vec![],
+      index: 0,
+    }
   }
 }
 

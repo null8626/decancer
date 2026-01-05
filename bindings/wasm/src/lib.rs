@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 #![allow(non_snake_case)]
 #![forbid(unsafe_code)]
 
@@ -88,6 +91,7 @@ pub fn cure(input: &str, options: u32) -> Result<CuredString, JsError> {
 
   match decancer::cure(input, options.into()) {
     Ok(output) => Ok(CuredString(output)),
+
     Err(err) => Err(JsError::new(<decancer::Error as AsRef<str>>::as_ref(&err))),
   }
 }
