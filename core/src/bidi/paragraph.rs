@@ -1,15 +1,14 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::{BracketPair, Class, Level, OpeningBracket};
-use crate::Error;
+use super::{super::Error, BracketPair, Class, Level, OpeningBracket};
 use std::{
   cmp::{max, min},
   ops::{Index, IndexMut, Range},
 };
 
 #[derive(PartialEq)]
-pub(crate) enum OverrideStatus {
+pub(in super::super) enum OverrideStatus {
   Neutral,
   RTL,
   LTR,
@@ -22,14 +21,18 @@ struct Status {
 }
 
 #[cfg_attr(test, derive(Debug, PartialEq))]
-pub(crate) struct IsolatingRunSequence {
-  pub(crate) runs: Vec<Range<usize>>,
-  pub(crate) start_class: Class,
-  pub(crate) end_class: Class,
+pub(in super::super) struct IsolatingRunSequence {
+  pub(in super::super) runs: Vec<Range<usize>>,
+  pub(in super::super) start_class: Class,
+  pub(in super::super) end_class: Class,
 }
 
 impl IsolatingRunSequence {
-  pub(crate) fn resolve_implicit_weak(&self, text: &str, processing_classes: &mut [Class]) {
+  pub(in super::super) fn resolve_implicit_weak(
+    &self,
+    text: &str,
+    processing_classes: &mut [Class],
+  ) {
     let mut prev_class_before_w4 = self.start_class;
     let mut prev_class_before_w5 = self.start_class;
 
@@ -166,7 +169,7 @@ impl IsolatingRunSequence {
     }
   }
 
-  pub(crate) fn identify_bracket_pairs(
+  pub(in super::super) fn identify_bracket_pairs(
     &self,
     text: &str,
     original_classes: &[Class],
@@ -211,7 +214,7 @@ impl IsolatingRunSequence {
     bracket_pairs.sort_by_key(|r| r.start);
   }
 
-  pub(crate) fn resolve_implicit_neutral(
+  pub(in super::super) fn resolve_implicit_neutral(
     &self,
     text: &str,
     processing_classes: &mut [Class],
@@ -378,16 +381,16 @@ impl IsolatingRunSequence {
   }
 }
 
-pub(crate) struct Paragraph {
-  pub(crate) range: Range<usize>,
-  pub(crate) level: Level,
-  pub(crate) pure_ltr: bool,
-  pub(crate) has_isolate_controls: bool,
+pub(in super::super) struct Paragraph {
+  pub(in super::super) range: Range<usize>,
+  pub(in super::super) level: Level,
+  pub(in super::super) pure_ltr: bool,
+  pub(in super::super) has_isolate_controls: bool,
 }
 
 impl Paragraph {
   #[inline(always)]
-  pub(crate) fn sliced<'a, T: Index<Range<usize>> + ?Sized>(
+  pub(in super::super) fn sliced<'a, T: Index<Range<usize>> + ?Sized>(
     &'a self,
     slicable: &'a T,
   ) -> &'a <T as Index<Range<usize>>>::Output {
@@ -395,14 +398,14 @@ impl Paragraph {
   }
 
   #[inline(always)]
-  pub(crate) fn sliced_mut<'a, T: IndexMut<Range<usize>> + ?Sized>(
+  pub(in super::super) fn sliced_mut<'a, T: IndexMut<Range<usize>> + ?Sized>(
     &'a self,
     slicable: &'a mut T,
   ) -> &'a mut <T as Index<Range<usize>>>::Output {
     &mut slicable[self.range.clone()]
   }
 
-  pub(crate) fn visual_runs(
+  pub(in super::super) fn visual_runs(
     &self,
     text: &str,
     original_classes: &[Class],
@@ -514,7 +517,7 @@ impl Paragraph {
     Ok((levels, runs))
   }
 
-  pub(crate) fn compute_explicit(
+  pub(in super::super) fn compute_explicit(
     &self,
     input: &str,
     original_classes: &[Class],
@@ -545,9 +548,7 @@ impl Paragraph {
         | Class::RLI
         | Class::LRI
         | Class::FSI => {
-          let Some(last) = stack.last() else {
-            return Err(Error::MalformedOverrideStatusStack);
-          };
+          let last = stack.last().ok_or(Error::MalformedOverrideStatusStack)?;
 
           levels[idx] = last.level;
 
@@ -616,9 +617,7 @@ impl Paragraph {
             valid_isolate_count -= 1;
           }
 
-          let Some(last) = stack.last() else {
-            return Err(Error::MalformedOverrideStatusStack);
-          };
+          let last = stack.last().ok_or(Error::MalformedOverrideStatusStack)?;
 
           levels[idx] = last.level;
 
@@ -636,9 +635,7 @@ impl Paragraph {
             if overflow_embedding_count > 0 {
               overflow_embedding_count -= 1;
             } else {
-              let Some(last) = stack.last() else {
-                return Err(Error::MalformedOverrideStatusStack);
-              };
+              let last = stack.last().ok_or(Error::MalformedOverrideStatusStack)?;
 
               if stack.len() >= 2 && last.status != OverrideStatus::Isolate {
                 stack.pop();
@@ -646,9 +643,7 @@ impl Paragraph {
             }
           }
 
-          let Some(last) = stack.last() else {
-            return Err(Error::MalformedOverrideStatusStack);
-          };
+          let last = stack.last().ok_or(Error::MalformedOverrideStatusStack)?;
 
           levels[idx] = last.level;
           processing_classes[idx] = Class::BN;
@@ -657,9 +652,7 @@ impl Paragraph {
         Class::B => {},
 
         _ => {
-          let Some(last) = stack.last() else {
-            return Err(Error::MalformedOverrideStatusStack);
-          };
+          let last = stack.last().ok_or(Error::MalformedOverrideStatusStack)?;
 
           levels[idx] = last.level;
 
@@ -696,7 +689,7 @@ impl Paragraph {
     Ok(())
   }
 
-  pub(crate) fn isolating_run_sequences(
+  pub(in super::super) fn isolating_run_sequences(
     &self,
     levels: &[Level],
     level_runs: &[Range<usize>],

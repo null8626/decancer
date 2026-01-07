@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use crate::ptr::{Element, NullTerminatedPointer};
+use super::ptr::{Element, NullTerminatedPointer};
 use std::{slice, str};
 
-pub(crate) fn get(input_ptr: *const u8, mut input_size: usize) -> Option<&'static str> {
+pub(super) fn get(input_ptr: *const u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
     let mut input_ptr = NullTerminatedPointer::from(input_ptr);
 
@@ -27,7 +27,7 @@ pub(crate) fn get(input_ptr: *const u8, mut input_size: usize) -> Option<&'stati
   str::from_utf8(unsafe { slice::from_raw_parts(input_ptr, input_size) }).ok()
 }
 
-pub(crate) unsafe fn get_array(
+pub(super) unsafe fn get_array(
   input_ptr: *const Element<u8>,
   input_length: usize,
 ) -> Option<Vec<&'static str>> {

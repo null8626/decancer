@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::{OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET};
-use crate::util::{numbered_enum, CODEPOINT_MASK};
+use super::{
+  super::util::{numbered_enum, CODEPOINT_MASK},
+  OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET,
+};
 
 numbered_enum! {
   #[allow(dead_code)]
   #[cfg_attr(test, derive(Debug))]
   #[derive(Copy, Clone, PartialEq)]
-  pub(crate) enum Class: u8 {
+  pub(in super::super) enum Class: u8 {
     B = 0,
     S = 1,
     WS = 2,
@@ -35,7 +37,7 @@ numbered_enum! {
 }
 
 impl Class {
-  pub(crate) const fn new(code: u32) -> Option<Self> {
+  pub(in super::super) const fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_DICTIONARY_COUNT as i32;
 
@@ -58,19 +60,19 @@ impl Class {
     None
   }
 
-  pub(crate) const fn is_neutral_or_isolate(self) -> bool {
+  pub(in super::super) const fn is_neutral_or_isolate(self) -> bool {
     matches!(self, Self::B | Self::S | Self::WS | Self::ON | Self::PDI) || self.is_isolate()
   }
 
-  pub(crate) const fn is_rtl(self) -> bool {
+  pub(in super::super) const fn is_rtl(self) -> bool {
     matches!(self, Self::RLE | Self::RLO | Self::RLI)
   }
 
-  pub(crate) const fn is_isolate(self) -> bool {
+  pub(in super::super) const fn is_isolate(self) -> bool {
     matches!(self, Self::RLI | Self::LRI | Self::FSI)
   }
 
-  pub(crate) const fn override_status(self) -> OverrideStatus {
+  pub(in super::super) const fn override_status(self) -> OverrideStatus {
     match self {
       Self::RLO => OverrideStatus::RTL,
 
@@ -82,7 +84,7 @@ impl Class {
     }
   }
 
-  pub(crate) const fn removed_by_x9(self) -> bool {
+  pub(in super::super) const fn removed_by_x9(self) -> bool {
     matches!(
       self,
       Self::RLE | Self::LRE | Self::RLO | Self::LRO | Self::PDF | Self::BN

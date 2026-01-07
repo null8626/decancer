@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
+use super::util::Binary;
+
 mod class;
 
-use crate::util::Binary;
-pub(crate) use class::Class;
+pub(super) use class::Class;
 
 const BIDI: Binary = Binary::new(include_bytes!("../../bin/bidi.bin"));
 
@@ -19,7 +20,7 @@ mod paragraph;
 use brackets::{BracketPair, OpeningBracket};
 use paragraph::OverrideStatus;
 
-pub(crate) use level::Level;
+pub(super) use level::Level;
 #[cfg(test)]
-pub(crate) use paragraph::IsolatingRunSequence;
-pub(crate) use paragraph::Paragraph;
+pub(super) use paragraph::IsolatingRunSequence;
+pub(super) use paragraph::Paragraph;

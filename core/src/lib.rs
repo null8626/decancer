@@ -280,7 +280,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   (refined_input, original_classes, paragraphs)
 }
 
-pub(crate) fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
+fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
   let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
 
   let mut levels = Vec::with_capacity(refined_input.len());

@@ -734,14 +734,24 @@ jobs:
           passphrase: ${{ secrets.CI_GPG_PASS }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-      - name: Configure Git
-        run: |
-          git config user.name "null"
-          git config user.email "60427892+null8626@users.noreply.github.com"
-      - name: Commit changes
+      - name: Push new commit
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: EndBug/add-and-commit@v9
         with:
-          commit: -S --amend --no-reset-author --no-edit
+          committer_name: GitHub Actions
+          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit: -S
+          message: 'chore: update decancer from manually invoked CI'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Override HEAD commit
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        uses: EndBug/add-and-commit@v9
+        with:
+          committer_name: GitHub Actions
+          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit: -S --amend --no-edit --no-reset-author
+          message: ${{ github.event.head_commit.message }}
           push: --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

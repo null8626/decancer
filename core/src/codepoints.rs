@@ -2,27 +2,27 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 #[cfg(feature = "options")]
-use crate::Options;
-use crate::{
+use super::Options;
+use super::{
   similar::SIMILAR_START,
   translation::Translation,
   util::{Binary, CODEPOINT_MASK},
 };
 use std::cmp::Ordering;
 
-pub(crate) const CODEPOINTS: Binary = Binary::new(include_bytes!("../bin/codepoints.bin"));
+pub(super) const CODEPOINTS: Binary = Binary::new(include_bytes!("../bin/codepoints.bin"));
 
 // - 1 because we're only using them in binary search
-pub(crate) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
+pub(super) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 6) - 1;
-pub(crate) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);
-pub(crate) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 6) - 1;
+pub(super) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);
+pub(super) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 6) - 1;
 
 const STRING_TRANSLATION_MASK: u32 = 0x10000000;
 
 #[derive(Copy, Clone)]
 #[cfg_attr(not(feature = "options"), allow(dead_code))]
-pub(crate) struct Codepoint(u32, u8, u8);
+pub(super) struct Codepoint(u32, u8, u8);
 
 impl Codepoint {
   const fn get_codepoint(self) -> u32 {
@@ -49,7 +49,7 @@ impl Codepoint {
     self.1 >= 0x80
   }
 
-  pub(crate) const fn at(offset: i32) -> Self {
+  pub(super) const fn at(offset: i32) -> Self {
     Self(
       CODEPOINTS.u32_at(offset as _),
       CODEPOINTS.at((4 + offset) as _),
@@ -57,7 +57,7 @@ impl Codepoint {
     )
   }
 
-  pub(crate) const fn matches(
+  pub(super) const fn matches(
     self,
     other: u32,
     #[cfg(feature = "options")] options: Options,
@@ -82,7 +82,7 @@ impl Codepoint {
     Some(Ordering::Equal)
   }
 
-  pub(crate) fn translation(self, other: u32) -> Translation {
+  pub(super) fn translation(self, other: u32) -> Translation {
     if self.is_string_translation() {
       Translation::string(self.0, self.1)
     } else {

@@ -2,15 +2,15 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 #[cfg(feature = "leetspeak")]
-use crate::leetspeak;
-use crate::{
+use super::leetspeak;
+use super::{
   codepoints::CODEPOINTS,
   util::{Cached, CachedPeek},
 };
 use std::{char, iter::FusedIterator, ops::Range};
 
-pub(crate) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
-pub(crate) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
+pub(super) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
+pub(super) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
 
 #[cfg(feature = "separators")]
 fn is_exact(self_char: char, other_char: char) -> bool {
@@ -20,7 +20,7 @@ fn is_exact(self_char: char, other_char: char) -> bool {
   self_char == other_char
 }
 
-pub(crate) fn is(self_char: char, other_char: char) -> bool {
+pub(super) fn is(self_char: char, other_char: char) -> bool {
   let self_char = self_char.to_lowercase().next().unwrap_or(self_char) as u32;
   let other_char = other_char.to_lowercase().next().unwrap_or(other_char) as u32;
 
@@ -68,7 +68,7 @@ pub struct Matcher<'a, 'b> {
 }
 
 impl<'a, 'b> Matcher<'a, 'b> {
-  pub(crate) fn new(mut self_str: &'a str, other_str: &'b str) -> Self {
+  pub(super) fn new(mut self_str: &'a str, other_str: &'b str) -> Self {
     if other_str.is_empty() || self_str.len() < other_str.len() {
       self_str = "";
     }
@@ -115,7 +115,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     }
   }
 
-  pub(crate) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
+  pub(super) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
     let mut iter = Self::new(self_str, other_str);
     let Some(mat) = iter.next() else {
       return false;

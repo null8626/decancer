@@ -2,13 +2,14 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 #[cfg(feature = "options")]
-use crate::Options;
-use crate::{
+use super::Options;
+use super::{
   bidi::{IsolatingRunSequence, Paragraph},
   Class, Level,
 };
-use proptest::prelude::*;
 use std::ops::Range;
+
+use proptest::prelude::*;
 
 proptest! {
   #![proptest_config(ProptestConfig::with_cases(2000))]

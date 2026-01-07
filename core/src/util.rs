@@ -3,46 +3,46 @@
 
 use std::{ops::Range, str::Chars};
 
-pub(crate) const CODEPOINT_MASK: u32 = 0x000f_ffff;
+pub(super) const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
-pub(crate) const fn is_none(code: u32) -> bool {
+pub(super) const fn is_none(code: u32) -> bool {
   matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
 }
 
 #[cfg(feature = "options")]
-pub(crate) const fn is_special_rtl(code: u32) -> bool {
+pub(super) const fn is_special_rtl(code: u32) -> bool {
   matches!(code, 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069)
 }
 
 #[cfg(feature = "options")]
-pub(crate) const fn is_alphanumeric(code: u32) -> bool {
+pub(super) const fn is_alphanumeric(code: u32) -> bool {
   matches!(code, 48..=57 | 97..=122 | 65..=90 | 32)
 }
 
 #[derive(Copy, Clone)]
-pub(crate) struct Binary {
+pub(super) struct Binary {
   bytes: &'static [u8],
 }
 
 impl Binary {
-  pub(crate) const fn new(bytes: &'static [u8]) -> Self {
+  pub(super) const fn new(bytes: &'static [u8]) -> Self {
     Self { bytes }
   }
 
-  pub(crate) const fn at(self, offset: usize) -> u8 {
+  pub(super) const fn at(self, offset: usize) -> u8 {
     self.bytes[offset]
   }
 
   #[inline(always)]
-  pub(crate) fn sliced(self, offset: usize, size: usize) -> &'static [u8] {
+  pub(super) fn sliced(self, offset: usize, size: usize) -> &'static [u8] {
     &self.bytes[offset..offset + size]
   }
 
-  pub(crate) const fn u16_at(self, offset: usize) -> u16 {
+  pub(super) const fn u16_at(self, offset: usize) -> u16 {
     u16::from_le_bytes([self.at(offset), self.at(offset + 1)])
   }
 
-  pub(crate) const fn u32_at(self, offset: usize) -> u32 {
+  pub(super) const fn u32_at(self, offset: usize) -> u32 {
     u32::from_le_bytes([
       self.at(offset),
       self.at(offset + 1),
@@ -54,7 +54,7 @@ impl Binary {
 
 // special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
 // except i've improved upon it :)
-pub(crate) fn merge_ranges<T>(ranges: &mut Vec<Range<T>>)
+pub(super) fn merge_ranges<T>(ranges: &mut Vec<Range<T>>)
 where
   T: Ord + Copy,
 {
@@ -118,7 +118,7 @@ macro_rules! error_enum {
   }
 }
 
-pub(crate) use error_enum;
+pub(super) use error_enum;
 
 macro_rules! numbered_enum {
   (
@@ -145,21 +145,21 @@ macro_rules! numbered_enum {
   }
 }
 
-pub(crate) use numbered_enum;
+pub(super) use numbered_enum;
 
-pub(crate) struct Cached<'c> {
+pub(super) struct Cached<'c> {
   iterator: Chars<'c>,
-  pub(crate) cache: Vec<char>,
+  pub(super) cache: Vec<char>,
   index: usize,
 }
 
 impl Cached<'_> {
   #[inline(always)]
-  pub(crate) fn set_index(&mut self, index: usize) {
+  pub(super) fn set_index(&mut self, index: usize) {
     self.index = index;
   }
 
-  pub(crate) const fn index(&self) -> usize {
+  pub(super) const fn index(&self) -> usize {
     self.index
   }
 
@@ -196,7 +196,7 @@ impl Iterator for Cached<'_> {
   }
 }
 
-pub(crate) struct CachedPeek<'c> {
+pub(super) struct CachedPeek<'c> {
   iterator: Chars<'c>,
   cache: Vec<char>,
   index: usize,
@@ -204,7 +204,7 @@ pub(crate) struct CachedPeek<'c> {
 
 impl CachedPeek<'_> {
   #[inline(always)]
-  pub(crate) fn restart(&mut self) {
+  pub(super) fn restart(&mut self) {
     self.index = 0;
   }
 

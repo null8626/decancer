@@ -2,14 +2,12 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 #[cfg(feature = "options")]
-use crate::util::is_alphanumeric;
-use crate::{
+use super::util::is_alphanumeric;
+use super::{
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
   Matcher,
 };
-#[cfg(feature = "serde")]
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::{
   borrow::Cow,
   cmp::PartialEq,
@@ -17,6 +15,9 @@ use std::{
   ops::{Add, AddAssign},
   str,
 };
+
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// The translation for a single character/codepoint.
 #[derive(Clone, Debug, PartialEq, Hash)]
@@ -30,7 +31,7 @@ pub enum Translation {
 }
 
 impl Translation {
-  pub(crate) fn string(integer: u32, second_byte: u8) -> Self {
+  pub(super) fn string(integer: u32, second_byte: u8) -> Self {
     Self::String(Cow::Borrowed(
       str::from_utf8(CODEPOINTS.sliced(
         (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
@@ -41,12 +42,12 @@ impl Translation {
   }
 
   #[inline(always)]
-  pub(crate) fn character(code: u32) -> Self {
+  pub(super) fn character(code: u32) -> Self {
     Self::Character(char::from_u32(code).unwrap())
   }
 
   #[cfg(feature = "options")]
-  pub(crate) fn make_uppercase(&mut self) {
+  pub(super) fn make_uppercase(&mut self) {
     match self {
       Self::Character(c) => *c = c.to_uppercase().next().unwrap_or(*c),
 
@@ -79,7 +80,7 @@ impl Translation {
   }
 
   #[cfg(feature = "options")]
-  pub(crate) fn ensure_stripped_if(self, ascii_only: bool, alphanumeric_only: bool) -> Self {
+  pub(super) fn ensure_stripped_if(self, ascii_only: bool, alphanumeric_only: bool) -> Self {
     if (ascii_only && !self.is_ascii()) || (alphanumeric_only && !self.is_alphanumeric()) {
       Self::None
     } else {

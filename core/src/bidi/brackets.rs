@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::{BIDI, BIDI_BRACKETS_COUNT};
-use crate::util::CODEPOINT_MASK;
+use super::{super::util::CODEPOINT_MASK, BIDI, BIDI_BRACKETS_COUNT};
 
 pub(in super::super) struct BracketPair {
   pub(in super::super) start: usize,

@@ -2,14 +2,14 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 #[repr(C)]
-pub(crate) struct Element<T> {
-  pub(crate) string: *const T,
-  pub(crate) size: usize,
+pub(super) struct Element<T> {
+  pub(super) string: *const T,
+  pub(super) size: usize,
 }
 
-pub(crate) struct NullTerminatedPointer<T> {
+pub(super) struct NullTerminatedPointer<T> {
   ptr: *const T,
-  pub(crate) size: usize,
+  pub(super) size: usize,
 }
 
 impl<T> From<*const T> for NullTerminatedPointer<T> {
@@ -41,14 +41,14 @@ where
 }
 
 #[cfg(feature = "utf16")]
-pub(crate) struct SizedPointer<T> {
+pub(super) struct SizedPointer<T> {
   ptr: *const T,
   size: usize,
 }
 
 #[cfg(feature = "utf16")]
 impl<T> SizedPointer<T> {
-  pub(crate) const fn new(ptr: *const T, size: usize) -> Self {
+  pub(super) const fn new(ptr: *const T, size: usize) -> Self {
     Self { ptr, size }
   }
 }

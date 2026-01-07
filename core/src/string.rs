@@ -1,19 +1,20 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use crate::{util::merge_ranges, Matcher};
-#[cfg(feature = "serde")]
-use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use super::{util::merge_ranges, Matcher};
 use std::{
   fmt::{self, Debug, Display, Formatter},
   ops::{Deref, Range},
 };
 
+#[cfg(feature = "serde")]
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+
 /// A small wrapper around the [`String`] data type for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone, Eq, Hash)]
-pub struct CuredString(pub(crate) String);
+pub struct CuredString(pub(super) String);
 
 impl CuredString {
   /// Iterates throughout this string and yields every similar-looking match.
@@ -214,22 +215,23 @@ impl CuredString {
   /// This comparison is case-insensitive.
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = self.find(other);
-    let Some(mat) = iter.next() else {
-      return false;
-    };
 
-    mat.start == 0
+    match iter.next() {
+      Some(mat) => mat.start == 0,
+
+      None => false,
+    }
   }
 
   /// Checks if this cured string similarly ends with another string.
   ///
   /// This comparison is case-insensitive.
   pub fn ends_with(&self, other: &str) -> bool {
-    let Some(last) = self.find(other).last() else {
-      return false;
-    };
+    match self.find(other).last() {
+      Some(last) => last.end == self.len(),
 
-    last.end == self.len()
+      None => false,
+    }
   }
 
   /// Checks if this cured string similarly contains another string.

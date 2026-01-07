@@ -55,7 +55,7 @@ lazy_static! {
   ];
 }
 
-pub(crate) fn find(haystack: &[u8], character: u32) -> Option<usize> {
+pub(super) fn find(haystack: &[u8], character: u32) -> Option<usize> {
   let idx = match character {
     65..=90 => character - 65,
 

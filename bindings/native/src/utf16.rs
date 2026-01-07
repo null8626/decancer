@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use crate::ptr::{Element, NullTerminatedPointer, SizedPointer};
+use super::ptr::{Element, NullTerminatedPointer, SizedPointer};
 
 fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
   let mut output = vec![];
@@ -41,7 +41,7 @@ fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
   }
 }
 
-pub(crate) unsafe fn get(input_ptr: *const u16, input_size: usize) -> Option<Vec<u8>> {
+pub(super) unsafe fn get(input_ptr: *const u16, input_size: usize) -> Option<Vec<u8>> {
   if input_size == 0 {
     let mut input_ptr = NullTerminatedPointer::from(input_ptr);
 
@@ -53,7 +53,7 @@ pub(crate) unsafe fn get(input_ptr: *const u16, input_size: usize) -> Option<Vec
   }
 }
 
-pub(crate) unsafe fn get_array(
+pub(super) unsafe fn get_array(
   input_ptr: *const Element<u16>,
   input_length: usize,
 ) -> Option<Vec<String>> {

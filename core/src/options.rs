@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use crate::{codepoints::Codepoint, Translation};
+use super::{codepoints::Codepoint, Translation};
 use std::cmp::Ordering;
 
 /// A configuration struct where you can customize decancer's behavior.
@@ -17,7 +17,7 @@ use std::cmp::Ordering;
 /// let _options = Options::default();
 /// ```
 #[derive(Copy, Clone, Eq, PartialEq, Default, Hash)]
-pub struct Options(pub(crate) u32);
+pub struct Options(pub(super) u32);
 
 macro_rules! options {
   ($(
@@ -158,12 +158,12 @@ impl Options {
   }
 
   #[cfg(feature = "options")]
-  pub(crate) const fn is(self, attribute_idx: u8) -> bool {
+  pub(super) const fn is(self, attribute_idx: u8) -> bool {
     (self.0 & (1 << attribute_idx as u32)) != 0
   }
 
   #[cfg(feature = "options")]
-  pub(crate) const fn refuse_cure(self, attributes: u8) -> bool {
+  pub(super) const fn refuse_cure(self, attributes: u8) -> bool {
     let locale = attributes >> 2;
 
     ((attributes & 1) != 0 && self.is(2))
@@ -171,7 +171,7 @@ impl Options {
       || locale > 2 && self.is(locale)
   }
 
-  pub(crate) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
+  pub(super) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
     let mut start = 0;
 
     while start <= end {
