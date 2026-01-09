@@ -56,15 +56,13 @@ lazy_static! {
 }
 
 pub(super) fn find(haystack: &[u8], character: u32) -> Option<usize> {
-  let idx = match character {
+  REGEXES[match character {
     65..=90 => character - 65,
 
     97..=122 => character - 97,
 
     _ => return None,
-  };
-
-  REGEXES[idx as usize]
+  } as usize]
     .as_ref()?
     .find(haystack)
     .map(|mat| mat.len())
