@@ -12,17 +12,18 @@ use std::{char, iter::FusedIterator, ops::Range};
 pub(super) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
 pub(super) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
 
+fn to_lowercase(c: char) -> char {
+  c.to_lowercase().next().unwrap_or(c)
+}
+
 #[cfg(feature = "separators")]
 fn is_exact(self_char: char, other_char: char) -> bool {
-  let self_char = self_char.to_lowercase().next().unwrap_or(self_char) as u32;
-  let other_char = other_char.to_lowercase().next().unwrap_or(other_char) as u32;
-
-  self_char == other_char
+  to_lowercase(self_char) == to_lowercase(other_char)
 }
 
 pub(super) fn is(self_char: char, other_char: char) -> bool {
-  let self_char = self_char.to_lowercase().next().unwrap_or(self_char) as u32;
-  let other_char = other_char.to_lowercase().next().unwrap_or(other_char) as u32;
+  let self_char = to_lowercase(self_char) as u32;
+  let other_char = to_lowercase(other_char) as u32;
 
   if self_char == other_char {
     return true;
