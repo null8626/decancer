@@ -1,55 +1,23 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::ptr::{Element, NullTerminatedPointer, SizedPointer};
+use super::util::{Element, null_terminated, sized};
 
-fn get_inner(iter: &mut impl Iterator<Item = u16>) -> Option<Vec<u8>> {
-  let mut output = vec![];
-  let mut next = None;
+fn get_inner(iter: impl Iterator<Item = u16>) -> Option<String> {
+  let mut output = String::with_capacity(iter.size_hint().0);
 
-  loop {
-    let Some(c) = next.take().or_else(|| iter.next()) else {
-      return Some(output);
-    };
-
-    if c <= 0x7f {
-      output.push(c as _);
-    } else if c <= 0x7ff {
-      output.extend([((c >> 6) as u8) | 0xc0, ((c & 0x3f) as u8) | 0x80]);
-    } else if !(0xd800..0xe000).contains(&c) {
-      output.extend([
-        ((c >> 12) as u8) | 0xe0,
-        (((c >> 6) & 0x3f) as u8) | 0x80,
-        ((c & 0x3f) as u8) | 0x80,
-      ]);
-    } else {
-      let n = iter.next()?;
-
-      if (0xdc00..0xe000).contains(&n) {
-        let c = 0x10000 + (((c - 0xd800) as u32) << 10) + ((n as u32) - 0xdc00);
-
-        output.extend([
-          ((c >> 18) as u8) | 0xf0,
-          (((c >> 12) & 0x3f) as u8) | 0x80,
-          (((c >> 6) & 0x3f) as u8) | 0x80,
-          ((c & 0x3f) as u8) | 0x80,
-        ]);
-      } else {
-        next.replace(n);
-      }
-    }
+  for c in char::decode_utf16(iter) {
+    output.push(c.ok()?);
   }
+
+  Some(output)
 }
 
-pub(super) unsafe fn get(input_ptr: *const u16, input_size: usize) -> Option<Vec<u8>> {
+pub(super) fn get(input_ptr: *const u16, input_size: usize) -> Option<String> {
   if input_size == 0 {
-    let mut input_ptr = NullTerminatedPointer::from(input_ptr);
-
-    get_inner(&mut input_ptr)
+    get_inner(null_terminated(input_ptr))
   } else {
-    let mut input_ptr = SizedPointer::new(input_ptr, input_size);
-
-    get_inner(&mut input_ptr)
+    get_inner(sized(input_ptr, input_size))
   }
 }
 
@@ -62,8 +30,7 @@ pub(super) unsafe fn get_array(
   for i in 0..input_length {
     output.push(unsafe {
       let s = input_ptr.add(i);
-
-      String::from_utf8(get((*s).string, (*s).size)?).unwrap()
+      get((*s).string, (*s).size)?
     });
   }
 

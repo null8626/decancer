@@ -31,7 +31,7 @@ A library that removes common unicode confusables/homoglyphs from strings.
 In your `Cargo.toml`:
 
 ```toml
-decancer = "4.0.0"
+decancer = "3.3.3"
 ```
 ## Examples
 For more information, please read the [documentation](https://docs.rs/decancer).

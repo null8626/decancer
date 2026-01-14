@@ -1,27 +1,12 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::ptr::{Element, NullTerminatedPointer};
+use super::util::{Element, null_terminated};
 use std::{slice, str};
 
 pub(super) fn get(input_ptr: *const u8, mut input_size: usize) -> Option<&'static str> {
   if input_size == 0 {
-    let mut input_ptr = NullTerminatedPointer::from(input_ptr);
-
-    while let Some(value) = input_ptr.next() {
-      if (0xA0..=0xBF).contains(&value)
-        || value >= 0xF8
-        || (value >= 0xC0
-          && ((input_ptr.next()? >> 6) != 0x02
-            || (value >= 0xE0
-              && ((input_ptr.next()? >> 6) != 0x02
-                || (value >= 0xF0 && (input_ptr.next()? >> 6) != 0x02)))))
-      {
-        return None;
-      }
-    }
-
-    input_size = input_ptr.size;
+    input_size = null_terminated(input_ptr).count();
   }
 
   str::from_utf8(unsafe { slice::from_raw_parts(input_ptr, input_size) }).ok()

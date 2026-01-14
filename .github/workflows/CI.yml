@@ -154,6 +154,7 @@ jobs:
             host: ubuntu-latest
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
+              rustup update
               rustup target add aarch64-unknown-linux-musl
               cargo build --target aarch64-unknown-linux-musl --release
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/libdecancer.so
@@ -186,6 +187,7 @@ jobs:
             host: ubuntu-latest
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
+              rustup update
               cargo build --release
               strip ./target/release/libdecancer.so
               mv ./target/release/libdecancer.so ../../artifacts/libdecancer-x86_64-unknown-linux-musl.so
@@ -290,6 +292,7 @@ jobs:
             host: ubuntu-latest
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
+              rustup update
               rustup target add aarch64-unknown-linux-musl
               cargo build --target aarch64-unknown-linux-musl --release
               /aarch64-linux-musl-cross/bin/aarch64-linux-musl-strip ./target/aarch64-unknown-linux-musl/release/*.so
@@ -347,6 +350,7 @@ jobs:
             host: ubuntu-latest
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             build: |
+              rustup update
               cargo build --release
               strip ./target/release/*.so
               mv ./target/release/*.so ../../artifacts
