@@ -216,22 +216,17 @@ impl CuredString {
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = self.find(other);
 
-    match iter.next() {
-      Some(mat) => mat.start == 0,
-
-      None => false,
-    }
+    iter.next().is_some_and(|mat| mat.start == 0)
   }
 
   /// Checks if this cured string similarly ends with another string.
   ///
   /// This comparison is case-insensitive.
   pub fn ends_with(&self, other: &str) -> bool {
-    match self.find(other).last() {
-      Some(last) => last.end == self.len(),
-
-      None => false,
-    }
+    self
+      .find(other)
+      .last()
+      .is_some_and(|last| last.end == self.len())
   }
 
   /// Checks if this cured string similarly contains another string.

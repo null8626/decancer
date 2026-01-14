@@ -119,11 +119,9 @@ impl<'a, 'b> Matcher<'a, 'b> {
   pub(super) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
     let mut iter = Self::new(self_str, other_str);
 
-    match iter.next() {
-      Some(mat) => mat.start == 0 && mat.end == self_str.len(),
-
-      None => false,
-    }
+    iter
+      .next()
+      .is_some_and(|mat| mat.start == 0 && mat.end == self_str.len())
   }
 
   fn restart(&mut self) -> Option<(char, Option<char>)> {
