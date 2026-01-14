@@ -47,12 +47,12 @@ impl Level {
   }
 
   pub(in super::super) fn raise(&mut self, amount: u8) -> Result<(), Error> {
-    if let Some(number) = self.0.checked_add(amount) {
-      if number <= MAX_IMPLICIT_DEPTH {
-        self.0 = number;
+    if let Some(number) = self.0.checked_add(amount)
+      && number <= MAX_IMPLICIT_DEPTH
+    {
+      self.0 = number;
 
-        return Ok(());
-      }
+      return Ok(());
     }
 
     Err(Error::LevelModificationOverflow)
@@ -63,11 +63,7 @@ impl Level {
   }
 
   pub(in super::super) const fn class(self) -> Class {
-    if self.is_rtl() {
-      Class::R
-    } else {
-      Class::L
-    }
+    if self.is_rtl() { Class::R } else { Class::L }
   }
 
   pub(in super::super) const fn new_explicit_next_ltr(self) -> Result<Self, Error> {

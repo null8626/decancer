@@ -4,8 +4,8 @@
 #[cfg(feature = "options")]
 use super::Options;
 use super::{
-  bidi::{IsolatingRunSequence, Paragraph},
   Class, Level,
+  bidi::{IsolatingRunSequence, Paragraph},
 };
 use std::ops::Range;
 

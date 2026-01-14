@@ -4,9 +4,9 @@
 #[cfg(feature = "options")]
 use super::util::is_alphanumeric;
 use super::{
+  Matcher,
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
-  Matcher,
 };
 use std::{
   borrow::Cow,

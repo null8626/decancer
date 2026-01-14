@@ -1,7 +1,7 @@
 [package]
 name = "decancer_wasm"
 version = "3.3.3"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [lib]

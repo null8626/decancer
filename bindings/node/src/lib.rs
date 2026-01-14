@@ -3,11 +3,12 @@
 
 #![allow(dead_code, clippy::inherent_to_string)]
 
-#[macro_use]
-extern crate napi_derive;
+use std::ops::Range;
 
 use napi::{bindgen_prelude::Error, Either, Result, Status};
-use std::ops::Range;
+
+#[macro_use]
+extern crate napi_derive;
 
 macro_rules! options {
   (

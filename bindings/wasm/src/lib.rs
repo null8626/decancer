@@ -5,6 +5,7 @@
 #![forbid(unsafe_code)]
 
 use std::{convert::AsRef, ops::Range};
+
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

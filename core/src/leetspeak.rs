@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use lazy_static::lazy_static;
+use std::sync::LazyLock;
+
 use regex::bytes::{Regex, RegexBuilder};
 
 macro_rules! re {
@@ -16,8 +17,8 @@ macro_rules! re {
   }};
 }
 
-lazy_static! {
-  static ref REGEXES: [Option<Regex>; 26] = [
+static REGEXES: LazyLock<[Option<Regex>; 26]> = LazyLock::new(|| {
+  [
     re!(r"^(?:\/-*\\|[\[\(\{<]L)"),
     re!(r"^[\\\/\[\]\{\}\(\)\:\|iIljJ17T!](?:3|\-*[\]\)\}>])"),
     None,
@@ -52,8 +53,8 @@ lazy_static! {
     re!(r"^[>\}\)\]][<\{\(\[]"),
     re!(r"^`\/"),
     re!(r"^(?:([~\-][\\\/])|[7>])_+"),
-  ];
-}
+  ]
+});
 
 pub(super) fn find(haystack: &[u8], character: u32) -> Option<usize> {
   REGEXES[match character {

@@ -165,10 +165,10 @@ impl Cached<'_> {
 
   fn get(&mut self, index: usize) -> Option<char> {
     self.cache.get(index).copied().or_else(|| {
-      self.iterator.next().map(|value| {
-        self.cache.push(value);
-        value
-      })
+      self
+        .iterator
+        .next()
+        .inspect(|&value| self.cache.push(value))
     })
   }
 }
@@ -210,10 +210,10 @@ impl CachedPeek<'_> {
 
   fn get(&mut self, index: usize) -> Option<char> {
     self.cache.get(index).copied().or_else(|| {
-      self.iterator.next().map(|value| {
-        self.cache.push(value);
-        value
-      })
+      self
+        .iterator
+        .next()
+        .inspect(|&value| self.cache.push(value))
     })
   }
 }

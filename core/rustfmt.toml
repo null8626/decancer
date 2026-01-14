@@ -1,4 +1,4 @@
-edition = "2021"
+edition = "2024"
 match_block_trailing_comma = true
 newline_style = "Unix"
 tab_spaces = 2

@@ -2,8 +2,8 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 use super::{
-  super::util::{numbered_enum, CODEPOINT_MASK},
-  OverrideStatus, BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET,
+  super::util::{CODEPOINT_MASK, numbered_enum},
+  BIDI, BIDI_DICTIONARY_COUNT, BIDI_DICTIONARY_OFFSET, OverrideStatus,
 };
 
 numbered_enum! {

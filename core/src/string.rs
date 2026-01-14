@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::{util::merge_ranges, Matcher};
+use super::{Matcher, util::merge_ranges};
 use std::{
   fmt::{self, Debug, Display, Formatter},
   ops::{Deref, Range},
 };
 
 #[cfg(feature = "serde")]
-use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 
 /// A small wrapper around the [`String`] data type for comparison purposes.
 ///

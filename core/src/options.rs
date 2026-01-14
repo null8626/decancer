@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::{codepoints::Codepoint, Translation};
+use super::{Translation, codepoints::Codepoint};
 use std::cmp::Ordering;
 
 /// A configuration struct where you can customize decancer's behavior.

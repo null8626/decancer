@@ -18,11 +18,7 @@ pub(in super::super) struct OpeningBracket {
 // std::cmp::{max, min}; functions are not const because they have generics that prevent it from doing so
 
 const fn min_max(a: u32, b: u32) -> (u32, u32) {
-  if a > b {
-    (b, a)
-  } else {
-    (a, b)
-  }
+  if a > b { (b, a) } else { (a, b) }
 }
 
 impl OpeningBracket {
