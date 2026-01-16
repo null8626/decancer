@@ -26,38 +26,22 @@ macro_rules! options {
   ),*) => {
     $(
       $(#[$extra_meta])*
-      #[cfg_attr(not(feature = "options"), cold)]
+      #[cfg(feature = "options")]
       pub const fn $name(self) -> Self {
-        #[cfg(feature = "options")]
-        return Self(self.0 | (1 << $idx));
-
-        #[cfg(not(feature = "options"))]
-        return self;
+        Self(self.0 | (1 << $idx))
       }
     )*
   };
 }
 
 impl Options {
-  /// Creates a new configuration where every option is enabled.
-  #[cfg_attr(not(feature = "options"), cold)]
-  pub const fn all() -> Self {
-    #[cfg(feature = "options")]
-    return Self(0x1ffffff);
+  /// A configuration where every option is enabled.
+  #[cfg(feature = "options")]
+  pub const ALL: Self = Self(0x1ffffff);
 
-    #[cfg(not(feature = "options"))]
-    return Self(0);
-  }
-
-  /// Creates a new configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
-  #[cfg_attr(not(feature = "options"), cold)]
-  pub const fn pure_homoglyph() -> Self {
-    #[cfg(feature = "options")]
-    return Self(0x3ffffc);
-
-    #[cfg(not(feature = "options"))]
-    return Self(0);
-  }
+  /// A configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
+  #[cfg(feature = "options")]
+  pub const PURE_HOMOGLYPH: Self = Self(0x3ffffc);
 
   options! {
     /// Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.

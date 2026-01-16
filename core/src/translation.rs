@@ -19,7 +19,7 @@ use std::{
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-/// The translation for a single character/codepoint.
+/// A translation for a single character/codepoint.
 #[derive(Clone, Debug, PartialEq, Hash)]
 pub enum Translation {
   /// A single unicode character.
