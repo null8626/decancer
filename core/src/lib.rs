@@ -39,14 +39,19 @@ error_enum! {
   pub enum Error {
     /// Attempted to create a unicode bidi level that exceeds `MAX_EXPLICIT_DEPTH` (125).
     LevelExplicitOverflow,
+
     /// Attempted to create a unicode bidi level that exceeds `MAX_IMPLICIT_DEPTH` (126).
     LevelImplicitOverflow,
+
     /// Attempted to lower a unicode bidi level that is already zero.
     LevelModificationUnderflow,
+
     /// Attempted to raise a unicode bidi level that is already at `MAX_IMPLICIT_DEPTH` (126).
     LevelModificationOverflow,
+
     /// Got a malformed isolating run sequence structure.
     MalformedIsolatingRunSequence,
+
     /// Got a malformed bidi level override status stack.
     MalformedOverrideStatusStack,
   }

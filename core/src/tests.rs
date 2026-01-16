@@ -16,12 +16,12 @@ proptest! {
 
   #[test]
   fn character_crash(c in any::<char>()) {
-    let _ = crate::cure_char!(c);
+    let _ = super::cure_char!(c);
   }
 
   #[test]
   fn string_crash(s in "\\PC*") {
-    let _ = crate::cure!(&s);
+    let _ = super::cure!(&s);
   }
 }
 
@@ -103,13 +103,13 @@ fn similar_equal() {
 
 #[test]
 fn censor() {
-  let mut cured = crate::cure!("word word this is a word").unwrap();
+  let mut cured = super::cure!("word word this is a word").unwrap();
 
   cured.censor("word", '*');
 
   assert_eq!(cured, "**** **** this is a ****");
 
-  let mut cured2 = crate::cure!("wordword this is a word").unwrap();
+  let mut cured2 = super::cure!("wordword this is a word").unwrap();
 
   cured2.censor("word", '*');
 
@@ -307,7 +307,7 @@ fn isolating_run_sequences() {
 #[cfg(feature = "options")]
 fn retain_capitalization() {
   assert_eq!(
-    crate::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
+    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
     "decAncer"
   );
 }
@@ -315,7 +315,7 @@ fn retain_capitalization() {
 #[cfg(feature = "options")]
 fn test_reorder(input: &str, expected: &str) {
   assert_eq!(
-    crate::cure(input, Options::default().retain_hebrew().retain_arabic()).unwrap(),
+    super::cure(input, Options::default().retain_hebrew().retain_arabic()).unwrap(),
     expected
   );
 }
