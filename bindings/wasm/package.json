@@ -1,0 +1,47 @@
+{
+  "name": "decancer-wasm",
+  "private": true,
+  "version": "3.3.3",
+  "description": "A library that removes common unicode confusables/homoglyphs from strings.",
+  "author": "null8626",
+  "keywords": [
+    "security",
+    "unicode",
+    "homoglyphs",
+    "string",
+    "moderation",
+    "sanitizer",
+    "confusables",
+    "wasm",
+    "webassembly"
+  ],
+  "homepage": "https://github.com/null8626/decancer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/null8626/decancer"
+  },
+  "bugs": {
+    "url": "https://github.com/null8626/decancer/issues"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@fastify/static": "^9.0.0",
+    "fastify": "^5.0.0",
+    "puppeteer": "^24.0.0",
+    "terser": "^5.46.0",
+    "vite": "^7.3.1",
+    "vite-plugin-static-copy": "^3.1.5",
+    "vite-plugin-top-level-await": "^1.6.0"
+  },
+  "engines": {
+    "node": ">= 16.3"
+  },
+  "scripts": {
+    "build": "wasm-pack build --out-name decancer --no-typescript --no-pack --release -t bundler && npx vite build",
+    "test": "node tests/index.mjs"
+  },
+  "funding": [
+    "https://github.com/sponsors/null8626",
+    "https://ko-fi.com/null8626"
+  ]
+}

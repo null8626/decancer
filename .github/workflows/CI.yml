@@ -650,22 +650,18 @@ jobs:
           cargo binstall wasm-pack
       - name: Build wasm
         run: |
-          wasm-pack build --no-typescript --release -t web
-          mv -f ./pkg/decancer_wasm_bg.wasm ./bin/decancer.wasm
-          rm -rf ./pkg
-          cp ./bin/decancer.wasm ../..
+          npm i
+          npm run build
         working-directory: bindings/wasm
       - name: Test wasm
-        run: |
-          npm i
-          timeout 180 node .
-        working-directory: bindings/wasm/tests
+        run: timeout 180 npm test
+        working-directory: bindings/wasm
       - name: Upload artifact
         if: ${{ github.event_name != 'pull_request' && needs.setup.outputs.release_version == 'null' }}
         uses: actions/upload-artifact@v6
         with:
           name: wasm
-          path: decancer.wasm
+          path: bindings/wasm/bin
           if-no-files-found: error
   commit:
     name: Commit changes

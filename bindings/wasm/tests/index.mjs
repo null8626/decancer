@@ -1,10 +1,9 @@
 import { Worker } from 'node:worker_threads'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { promisify } from 'node:util'
 import puppeteer from 'puppeteer'
 
-const CURRENT_DIR = join(dirname(fileURLToPath(import.meta.url)))
+const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
 
 function error(message) {
   process.exitCode = 1
@@ -30,9 +29,7 @@ server.on('message', async message => {
 
           break
         } catch (err) {
-          console.log(
-            `- [client] failed to launch brower after ${tries} tries.`
-          )
+          error(`- [client] failed to launch brower after ${tries} tries.`)
 
           if (tries === 5) {
             error(
@@ -46,6 +43,13 @@ server.on('message', async message => {
 
       console.log('- [client] launching browser page...')
       const page = await browser.newPage()
+
+      page.on('console', msg =>
+        console.log(`- [client] console: ${msg.text()}`)
+      )
+      page.on('pageerror', err =>
+        error(`- [client] error while testing wasm binding:\n${err.stack}`)
+      )
 
       console.log('- [client] requesting to localhost:8080...')
       await page.goto('http://localhost:8080', {
@@ -178,7 +182,7 @@ server.on('message', async message => {
       if (err !== null) {
         if (typeof err === 'string') {
           error(
-            `- [client] error while loading wasm binary:\n${decodeURIComponent(
+            `- [client] error while testing wasm binding:\n${decodeURIComponent(
               err
             )}`
           )

@@ -15,10 +15,13 @@ app.register(fastifyStatic, {
   root: join(CURRENT_DIR, '..', 'bin')
 })
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   console.log('- [server] received a request.')
+
   res.type('text/html').send(createReadStream(join(CURRENT_DIR, 'index.html')))
 })
+
+app.get('/favicon.ico', (_, res) => res.status(204).send())
 
 app.listen(
   {
