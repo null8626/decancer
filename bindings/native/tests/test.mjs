@@ -108,12 +108,7 @@ testFile += '\n  return 0;\n}'
 writeFileSync(join(TESTS_DIR, 'test.c'), testFile)
 
 try {
-  execSync('cmake -B build .', {
-    cwd: TESTS_DIR,
-    stdio: 'inherit'
-  })
-
-  execSync('cmake --build build --config Debug', {
+  execSync('cmake -B build . && cmake --build build --config Debug', {
     cwd: TESTS_DIR,
     stdio: 'inherit'
   })
