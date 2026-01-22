@@ -5,6 +5,7 @@ package io.github.null8626.decancer;
 
 import com.fizzed.jne.NativeTarget;
 import com.fizzed.jne.OperatingSystem;
+
 import cz.adamh.utils.NativeUtils;
 
 /**
@@ -40,14 +41,20 @@ public class CuredString implements AutoCloseable {
       rustTarget = target.toRustTarget();
 
       switch (os) {
-        case WINDOWS:
+        case WINDOWS: {
           libPrefix = "";
           fileExtension = "dll";
+          
           break;
-        case MACOS:
+        }
+
+        case MACOS: {
           fileExtension = "dylib";
-        default:
+        }
+
+        default: {
           break;
+        }
       }
 
       if (System.getProperty("DECANCER_TESTING", "0").equals("1")) {

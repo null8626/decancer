@@ -7,7 +7,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import { defineConfig } from 'vite'
 
-const CURRENT_DIR = join(dirname(fileURLToPath(import.meta.url)))
+const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [

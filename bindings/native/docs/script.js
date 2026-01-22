@@ -80,7 +80,7 @@ let searchIsEmpty = true
 const API = []
 const elementsToScrollInto = []
 
-function resolveSearch(event) {
+function resolveSearch() {
   const search = document.querySelector('input').value.toLowerCase()
   searchIsEmpty = search.length === 0
 
@@ -150,10 +150,13 @@ window.addEventListener('load', () => {
 
   for (const APIElement of document.getElementById('apis').children) {
     switch (APIElement.id) {
-      case 'apitype':
+      case 'apitype': {
         API.push(new ToggleableGroup(APIElement))
+
         break
-      case 'apilist':
+      }
+      
+      case 'apilist': {
         const currentAPIIndex = API.length - 1
 
         API[currentAPIIndex].setGroupElement(APIElement)
@@ -161,7 +164,7 @@ window.addEventListener('load', () => {
         for (const APIElementChild of APIElement.children) {
           API[currentAPIIndex].push(APIElementChild)
         }
-        break
+      }
     }
   }
 
@@ -188,6 +191,7 @@ window.addEventListener('load', () => {
               .nodeValue.replace(/\(\)?/, '')
           )
           elementsToScrollInto.push(previousChild)
+
           break
         }
       }
@@ -254,6 +258,7 @@ window.addEventListener('load', () => {
         const currentContents = document.querySelector('.contents')
 
         currentContents.insertBefore(child, currentContents.firstChild)
+        
         break
       }
     }

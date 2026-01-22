@@ -78,16 +78,21 @@ for (const compound of index.doxygenindex.compound) {
       }
 
       switch (member['@_kind']) {
-        case 'define':
+        case 'define': {
           macros.push(data)
-          break
 
-        case 'typedef':
+          break
+        }
+
+        case 'typedef': {
           typeDefinitions.push(data)
+          
           break
+        }
 
-        case 'function':
+        case 'function': {
           functions.push(data)
+        }
       }
     }
   }

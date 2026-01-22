@@ -109,19 +109,19 @@ dl.section dd {
   right: 0;
 }
 
-@media screen and (max-width: 1169px) {
+@media (width <= 1169px) {
   div.contents .textblock h1 a {
     display: none;
   }
 }
 
-@media screen and (min-width: 1170px) {
+@media (width >= 1170px) {
   div.contents .textblock h1 a {
     display: inline-block;
   }
 }
 
-@media screen and (max-width: 767px) {
+@media (width <= 767px) {
   #MSearchBox {
     width: calc(100% - var(--spacing-medium) + var(--spacing-small));
     margin-top: 0;
@@ -158,7 +158,7 @@ dl.section dd {
   }
 }
 
-@media screen and (min-width: 768px) {
+@media (width >= 768px) {
   html,
   body {
     overflow: auto;

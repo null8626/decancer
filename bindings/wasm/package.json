@@ -1,5 +1,5 @@
 {
-  "name": "decancer-wasm",
+  "name": "decancer",
   "private": true,
   "version": "3.3.3",
   "description": "A library that removes common unicode confusables/homoglyphs from strings.",

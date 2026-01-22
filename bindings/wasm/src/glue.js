@@ -33,7 +33,7 @@ const OPTIONS = {
     'asciiOnly',
     'alphanumericOnly'
   ],
-  overrides: { all: 33554431, pureHomoglyph: 4194300 }
+  overrides: { all: 0x1ffffff, pureHomoglyph: 0x3ffffc }
 }
 
 function options(opt = {}) {

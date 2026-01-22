@@ -27,7 +27,7 @@ updates:
   - package-ecosystem: "cargo"
     directory: "/bindings/wasm"
     commit-message:
-      prefix: "deps[cargo: wasm]: "
+      prefix: "deps[cargo:wasm]: "
     schedule:
       day: "saturday"
       interval: "weekly"
@@ -35,7 +35,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/bindings/wasm"
     commit-message:
-      prefix: "deps[node: wasm]: "
+      prefix: "deps[node:wasm]: "
     schedule:
       day: "saturday"
       interval: "weekly"

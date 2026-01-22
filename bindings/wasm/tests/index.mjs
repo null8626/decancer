@@ -16,7 +16,7 @@ const server = new Worker(join(CURRENT_DIR, 'server.mjs'))
 
 server.on('message', async message => {
   switch (message.code) {
-    case 'ready':
+    case 'ready': {
       console.log('- [client] launching browser...')
       let browser = null
 
@@ -201,13 +201,16 @@ server.on('message', async message => {
       server.postMessage(null)
 
       break
+    }
 
-    case 'error':
+    case 'error': {
       error(`- [client] error while starting server:\n${message.stack}`)
 
       break
+    }
 
-    case 'close':
+    case 'close': {
       server.terminate()
+    }
   }
 })
