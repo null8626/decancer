@@ -41,13 +41,10 @@ const INVALID_UTF8_MESSAGE: &str = "Invalid UTF-8 bytes.";
 #[cfg(feature = "utf16")]
 const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
-util::native_cure_functions! {
-  #[cfg(feature = "utf8")]
-  decancer_cure(u8, INVALID_UTF8_MESSAGE),
-
-  #[cfg(feature = "utf16")]
-  decancer_cure_utf16(u16, INVALID_UTF16_MESSAGE)
-}
+util::native_cure_functions!(
+  decancer_cure(INVALID_UTF8_MESSAGE),
+  decancer_cure_utf16(INVALID_UTF16_MESSAGE)
+);
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn decancer_translation_init(output: *mut Translation) {
@@ -126,13 +123,7 @@ pub unsafe extern "C" fn decancer_find_utf16(
   })
 }
 
-util::native_find_multiple_functions! {
-  #[cfg(feature = "utf8")]
-  decancer_find_multiple: u8,
-
-  #[cfg(feature = "utf16")]
-  decancer_find_multiple_utf16: u16
-}
+util::native_find_multiple_methods!(decancer_find_multiple, decancer_find_multiple_utf16);
 
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn decancer_matches_raw(
@@ -168,88 +159,22 @@ pub unsafe extern "C" fn decancer_matcher_utf16_next(
     .is_some()
 }
 
-util::native_censor_functions! {
-  #[cfg(feature = "utf8")]
-  decancer_censor: u8,
+util::native_methods! {
+  dual(decancer_censor | decancer_censor_utf16) => censor(string(other), char(with)),
 
-  #[cfg(feature = "utf16")]
-  decancer_censor_utf16: u16
-}
+  dual(decancer_censor_multiple | decancer_censor_multiple_utf16) => censor_multiple(array(other), char(with)),
 
-util::native_censor_multiple_functions! {
-  #[cfg(feature = "utf8")]
-  decancer_censor_multiple: u8,
+  dual(decancer_replace | decancer_replace_utf16) => replace(string(other), string(with)),
 
-  #[cfg(feature = "utf16")]
-  decancer_censor_multiple_utf16: u16
-}
+  dual(decancer_replace_multiple | decancer_replace_multiple_utf16) => replace_multiple(array(other), string(with)),
 
-util::native_replace_functions! {
-  #[cfg(feature = "utf8")]
-  decancer_replace: u8,
+  dual(decancer_equals | decancer_equals_utf16) => eq(string(other)) -> compare(true),
 
-  #[cfg(feature = "utf8")]
-  decancer_replace_utf16: u16
-}
+  dual(decancer_starts_with | decancer_starts_with_utf16) => starts_with(string(other)) -> compare(true),
 
-#[unsafe(no_mangle)]
-#[cfg(feature = "utf8")]
-pub unsafe extern "C" fn decancer_replace_multiple(
-  cured: *mut decancer::CuredString,
-  other_str: *const u8,
-  other_length: usize,
-  with_str: *const u8,
-  with_length: usize,
-) -> bool {
-  match (
-    u8::parse_array(other_str, other_length),
-    u8::parse(with_str, with_length),
-  ) {
-    (Some(result), Some(with_str)) => {
-      unsafe {
-        (*cured).replace_multiple(result, &with_str);
-      }
+  dual(decancer_ends_with | decancer_ends_with_utf16) => ends_with(string(other)) -> compare(true),
 
-      true
-    },
-
-    _ => false,
-  }
-}
-
-#[unsafe(no_mangle)]
-#[cfg(feature = "utf16")]
-pub unsafe extern "C" fn decancer_replace_multiple_utf16(
-  cured: *mut decancer::CuredString,
-  other_str: *const u8,
-  other_length: usize,
-  with_str: *const u16,
-  with_length: usize,
-) -> bool {
-  match (
-    u16::parse_array(other_str, other_length),
-    u16::parse(with_str, with_length),
-  ) {
-    (Some(result), Some(with_str)) => {
-      unsafe {
-        (*cured).replace_multiple(result, &with_str);
-      }
-
-      true
-    },
-
-    _ => false,
-  }
-}
-
-util::native_comparison_methods! {
-  (decancer_equals | decancer_equals_utf16) => |cured, s| (*cured) == s,
-
-  (decancer_starts_with | decancer_starts_with_utf16) => |cured, s| (*cured).starts_with(s),
-
-  (decancer_ends_with | decancer_ends_with_utf16) => |cured, s| (*cured).ends_with(s),
-
-  (decancer_contains | decancer_contains_utf16) => |cured, s| (*cured).contains(s)
+  dual(decancer_contains | decancer_contains_utf16) => contains(string(other)) -> compare(true)
 }
 
 #[unsafe(no_mangle)]
@@ -314,10 +239,7 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16_clone(
 pub unsafe extern "C" fn decancer_matcher_consume(
   matcher: *mut decancer::Matcher<'static, 'static>,
 ) -> *mut Vec<Range<usize>> {
-  let output = unsafe { (*matcher).by_ref() }.collect::<Vec<_>>();
-
-  let _ = unsafe { Box::from_raw(matcher) };
-  Box::into_raw(Box::new(output))
+  util::consume_iterator!(|matcher| (*matcher).by_ref())
 }
 
 #[unsafe(no_mangle)]
@@ -325,10 +247,7 @@ pub unsafe extern "C" fn decancer_matcher_consume(
 pub unsafe extern "C" fn decancer_matcher_utf16_consume(
   matcher: *mut MatcherUtf16,
 ) -> *mut Vec<Range<usize>> {
-  let output = unsafe { (*matcher).matcher.as_mut().unwrap_unchecked() }.collect::<Vec<_>>();
-
-  let _ = unsafe { Box::from_raw(matcher) };
-  Box::into_raw(Box::new(output))
+  util::consume_iterator!(|matcher| (*matcher).matcher.as_mut().unwrap_unchecked())
 }
 
 #[unsafe(no_mangle)]
@@ -371,7 +290,7 @@ pub unsafe extern "C" fn decancer_cured_clone(
   Box::into_raw(Box::new(unsafe { (*cured).clone() }))
 }
 
-util::native_free_box_functions! {
+util::native_free_box_methods! {
   #[cfg(feature = "utf8")]
   decancer_matcher_free: decancer::Matcher<'static, 'static>,
 
