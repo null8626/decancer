@@ -159,7 +159,12 @@ impl Cached<'_> {
     self.index = index;
   }
 
-  pub(super) const fn index(&self) -> usize {
+  #[inline(always)]
+  pub(super) fn restart(&mut self) {
+    self.set_index(0);
+  }
+
+  pub(super) const fn get_index(&self) -> usize {
     self.index
   }
 
@@ -171,6 +176,22 @@ impl Cached<'_> {
         .inspect(|&value| self.cache.push(value))
     })
   }
+
+  pub(super) fn next(&mut self) -> Option<char> {
+    let current = self.get(self.index)?;
+
+    self.index += 1;
+
+    Some(current)
+  }
+
+  pub(super) fn next_peek(&mut self) -> Option<(char, Option<char>)> {
+    let current = self.get(self.index)?;
+
+    self.index += 1;
+
+    Some((current, self.get(self.index)))
+  }
 }
 
 impl<'c> From<Chars<'c>> for Cached<'c> {
@@ -181,62 +202,5 @@ impl<'c> From<Chars<'c>> for Cached<'c> {
       cache: vec![],
       index: 0,
     }
-  }
-}
-
-impl Iterator for Cached<'_> {
-  type Item = char;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    let current = self.get(self.index)?;
-
-    self.index += 1;
-
-    Some(current)
-  }
-}
-
-pub(super) struct CachedPeek<'c> {
-  iterator: Chars<'c>,
-  cache: Vec<char>,
-  index: usize,
-}
-
-impl CachedPeek<'_> {
-  #[inline(always)]
-  pub(super) fn restart(&mut self) {
-    self.index = 0;
-  }
-
-  fn get(&mut self, index: usize) -> Option<char> {
-    self.cache.get(index).copied().or_else(|| {
-      self
-        .iterator
-        .next()
-        .inspect(|&value| self.cache.push(value))
-    })
-  }
-}
-
-impl<'c> From<Chars<'c>> for CachedPeek<'c> {
-  #[inline(always)]
-  fn from(iterator: Chars<'c>) -> Self {
-    Self {
-      iterator,
-      cache: vec![],
-      index: 0,
-    }
-  }
-}
-
-impl Iterator for CachedPeek<'_> {
-  type Item = (char, Option<char>);
-
-  fn next(&mut self) -> Option<Self::Item> {
-    let current = self.get(self.index)?;
-
-    self.index += 1;
-
-    Some((current, self.get(self.index)))
   }
 }

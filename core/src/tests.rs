@@ -152,30 +152,12 @@ fn bidi_class() {
   assert_eq!(Class::new(0x30000), Some(Class::L));
 }
 
-fn level_runs(levels: &[Level], original_classes: &[Class]) -> Vec<Range<usize>> {
-  let mut runs = vec![];
-
-  let mut current_run_level = levels[0];
-  let mut current_run_start = 0;
-
-  for i in 1..levels.len() {
-    if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
-      runs.push(current_run_start..i);
-      current_run_level = levels[i];
-      current_run_start = i;
-    }
-  }
-
-  runs.push(current_run_start..levels.len());
-  runs
-}
-
 fn irs_sorted(
   paragraph: &Paragraph,
   levels: &[Level],
   classes: &[Class],
 ) -> Vec<IsolatingRunSequence> {
-  let level_runs = level_runs(levels, classes);
+  let level_runs = Paragraph::get_level_runs(levels, classes);
   let mut sequences = vec![];
 
   paragraph

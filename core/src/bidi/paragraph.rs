@@ -15,6 +15,18 @@ pub(in super::super) enum OverrideStatus {
   Isolate,
 }
 
+impl OverrideStatus {
+  pub(in super::super) fn apply(&self, class: &mut Class) {
+    match self {
+      Self::RTL => *class = Class::R,
+
+      Self::LTR => *class = Class::L,
+
+      _ => {},
+    }
+  }
+}
+
 struct Status {
   level: Level,
   status: OverrideStatus,
@@ -555,13 +567,7 @@ impl Paragraph {
           let is_isolate = current_class.is_isolate();
 
           if is_isolate {
-            match last.status {
-              OverrideStatus::RTL => processing_classes[idx] = Class::R,
-
-              OverrideStatus::LTR => processing_classes[idx] = Class::L,
-
-              _ => {},
-            }
+            last.status.apply(&mut processing_classes[idx]);
           }
 
           let new_level = if current_class.is_rtl() {
@@ -621,13 +627,7 @@ impl Paragraph {
 
           levels[idx] = last.level;
 
-          match last.status {
-            OverrideStatus::RTL => processing_classes[idx] = Class::R,
-
-            OverrideStatus::LTR => processing_classes[idx] = Class::L,
-
-            _ => {},
-          }
+          last.status.apply(&mut processing_classes[idx]);
         },
 
         Class::PDF => {
@@ -657,13 +657,7 @@ impl Paragraph {
           levels[idx] = last.level;
 
           if current_class != Class::BN {
-            match last.status {
-              OverrideStatus::RTL => processing_classes[idx] = Class::R,
-
-              OverrideStatus::LTR => processing_classes[idx] = Class::L,
-
-              _ => {},
-            }
+            last.status.apply(&mut processing_classes[idx]);
           }
         },
       }
@@ -689,6 +683,30 @@ impl Paragraph {
     Ok(())
   }
 
+  pub(in super::super) fn get_level_runs(
+    levels: &[Level],
+    original_classes: &[Class],
+  ) -> Vec<Range<usize>> {
+    let mut runs = vec![];
+
+    let mut current_run_start = 0;
+    let Some(&(mut current_run_level)) = levels.first() else {
+      return runs;
+    };
+
+    for i in 1..levels.len() {
+      if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
+        runs.push(current_run_start..i);
+
+        current_run_level = levels[i];
+        current_run_start = i;
+      }
+    }
+
+    runs.push(current_run_start..levels.len());
+    runs
+  }
+
   pub(in super::super) fn isolating_run_sequences(
     &self,
     levels: &[Level],
@@ -697,22 +715,7 @@ impl Paragraph {
     irs: &mut Vec<IsolatingRunSequence>,
   ) -> Result<(), Error> {
     if self.has_isolate_controls {
-      let mut runs = vec![];
-
-      if let Some(&(mut current_run_level)) = levels.first() {
-        let mut current_run_start = 0;
-
-        for i in 1..levels.len() {
-          if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
-            runs.push(current_run_start..i);
-
-            current_run_level = levels[i];
-            current_run_start = i;
-          }
-        }
-
-        runs.push(current_run_start..levels.len());
-      }
+      let runs = Self::get_level_runs(levels, original_classes);
 
       let mut sequences = Vec::with_capacity(runs.len());
       let mut stack = vec![vec![]];

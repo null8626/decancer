@@ -3,10 +3,7 @@
 
 #[cfg(feature = "leetspeak")]
 use super::leetspeak;
-use super::{
-  codepoints::CODEPOINTS,
-  util::{Cached, CachedPeek},
-};
+use super::{codepoints::CODEPOINTS, util::Cached};
 use std::{char, iter::FusedIterator, ops::Range};
 
 pub(super) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
@@ -65,7 +62,7 @@ pub struct Matcher<'a, 'b> {
   explicit_starting_position: Option<ExplicitStartingPosition>,
   self_index: usize,
   start_index: usize,
-  other_iterator: CachedPeek<'b>,
+  other_iterator: Cached<'b>,
 }
 
 impl<'a, 'b> Matcher<'a, 'b> {
@@ -127,7 +124,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
   fn restart(&mut self) -> Option<(char, Option<char>)> {
     self.other_iterator.restart();
 
-    let current_other = self.other_iterator.next()?;
+    let current_other = self.other_iterator.next_peek()?;
     let mut skipped = 0;
 
     if let Some(explicit_starting_position) = self.explicit_starting_position.take() {
@@ -180,7 +177,7 @@ impl Iterator for Matcher<'_, '_> {
           current_separator = None;
         }
 
-        match self.other_iterator.next() {
+        match self.other_iterator.next_peek() {
           Some(new) => {
             current_other = new;
             completed = current_other.1.is_none();
@@ -207,7 +204,7 @@ impl Iterator for Matcher<'_, '_> {
           self
             .explicit_starting_position
             .replace(ExplicitStartingPosition {
-              index: self.self_iterator.index(),
+              index: self.self_iterator.get_index(),
               start_index: self.self_index,
               size: matched_skip,
             });

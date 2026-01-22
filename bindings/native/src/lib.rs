@@ -9,11 +9,10 @@ use std::{
   str,
 };
 
-#[cfg(feature = "utf16")]
-mod utf16;
-#[cfg(feature = "utf8")]
-mod utf8;
+mod unicode;
 mod util;
+
+use unicode::UnicodeUnit;
 
 #[repr(C)]
 pub struct Error {
@@ -44,10 +43,10 @@ const INVALID_UTF16_MESSAGE: &str = "Invalid UTF-16 bytes.";
 
 util::native_cure_functions! {
   #[cfg(feature = "utf8")]
-  decancer_cure => (u8, utf8, INVALID_UTF8_MESSAGE),
+  decancer_cure(u8, INVALID_UTF8_MESSAGE),
 
   #[cfg(feature = "utf16")]
-  decancer_cure_utf16 => (u16, utf16, INVALID_UTF16_MESSAGE)
+  decancer_cure_utf16(u16, INVALID_UTF16_MESSAGE)
 }
 
 #[unsafe(no_mangle)]
@@ -101,7 +100,7 @@ pub unsafe extern "C" fn decancer_find(
   other_str: *const u8,
   other_length: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
-  utf8::get(other_str, other_length).map_or(0 as _, |result| {
+  u8::parse(other_str, other_length).map_or(0 as _, |result| {
     Box::into_raw(Box::new(unsafe { transmute((*cured).find(&result)) }))
   })
 }
@@ -113,7 +112,7 @@ pub unsafe extern "C" fn decancer_find_utf16(
   other_str: *const u16,
   other_length: usize,
 ) -> *mut MatcherUtf16 {
-  utf16::get(other_str, other_length).map_or(0 as _, |result| {
+  u16::parse(other_str, other_length).map_or(0 as _, |result| {
     let mut output = Box::new(MatcherUtf16 {
       other: result.into_owned(),
       matcher: None,
@@ -129,10 +128,10 @@ pub unsafe extern "C" fn decancer_find_utf16(
 
 util::native_find_multiple_functions! {
   #[cfg(feature = "utf8")]
-  decancer_find_multiple => (u8, utf8),
+  decancer_find_multiple: u8,
 
   #[cfg(feature = "utf16")]
-  decancer_find_multiple_utf16 => (u16, utf16)
+  decancer_find_multiple_utf16: u16
 }
 
 #[unsafe(no_mangle)]
@@ -171,68 +170,26 @@ pub unsafe extern "C" fn decancer_matcher_utf16_next(
 
 util::native_censor_functions! {
   #[cfg(feature = "utf8")]
-  decancer_censor => (u8, utf8),
+  decancer_censor: u8,
 
   #[cfg(feature = "utf16")]
-  decancer_censor_utf16 => (u16, utf16)
+  decancer_censor_utf16: u16
 }
 
 util::native_censor_multiple_functions! {
   #[cfg(feature = "utf8")]
-  decancer_censor_multiple => utf8,
+  decancer_censor_multiple: u8,
 
   #[cfg(feature = "utf16")]
-  decancer_censor_multiple_utf16 => utf16
+  decancer_censor_multiple_utf16: u16
 }
 
-#[unsafe(no_mangle)]
-#[cfg(feature = "utf8")]
-pub unsafe extern "C" fn decancer_replace(
-  cured: *mut decancer::CuredString,
-  other_str: *const u8,
-  other_length: usize,
-  with_str: *const u8,
-  with_length: usize,
-) -> bool {
-  match (
-    utf8::get(other_str, other_length),
-    utf8::get(with_str, with_length),
-  ) {
-    (Some(other_str), Some(with_str)) => {
-      unsafe {
-        (*cured).replace(&other_str, &with_str);
-      }
+util::native_replace_functions! {
+  #[cfg(feature = "utf8")]
+  decancer_replace: u8,
 
-      true
-    },
-
-    _ => false,
-  }
-}
-
-#[unsafe(no_mangle)]
-#[cfg(feature = "utf16")]
-pub unsafe extern "C" fn decancer_replace_utf16(
-  cured: *mut decancer::CuredString,
-  other_str: *const u16,
-  other_length: usize,
-  with_str: *const u16,
-  with_length: usize,
-) -> bool {
-  match (
-    utf16::get(other_str, other_length),
-    utf16::get(with_str, with_length),
-  ) {
-    (Some(other_str), Some(with_str)) => {
-      unsafe {
-        (*cured).replace(&other_str, &with_str);
-      }
-
-      true
-    },
-
-    _ => false,
-  }
+  #[cfg(feature = "utf8")]
+  decancer_replace_utf16: u16
 }
 
 #[unsafe(no_mangle)]
@@ -245,8 +202,8 @@ pub unsafe extern "C" fn decancer_replace_multiple(
   with_length: usize,
 ) -> bool {
   match (
-    unsafe { utf8::get_array(other_str.cast(), other_length) },
-    utf8::get(with_str, with_length),
+    u8::parse_array(other_str, other_length),
+    u8::parse(with_str, with_length),
   ) {
     (Some(result), Some(with_str)) => {
       unsafe {
@@ -264,17 +221,15 @@ pub unsafe extern "C" fn decancer_replace_multiple(
 #[cfg(feature = "utf16")]
 pub unsafe extern "C" fn decancer_replace_multiple_utf16(
   cured: *mut decancer::CuredString,
-  other_str: *const u16,
+  other_str: *const u8,
   other_length: usize,
   with_str: *const u16,
   with_length: usize,
 ) -> bool {
-  match unsafe {
-    (
-      utf16::get_array(other_str.cast(), other_length),
-      utf16::get(with_str, with_length),
-    )
-  } {
+  match (
+    u16::parse_array(other_str, other_length),
+    u16::parse(with_str, with_length),
+  ) {
     (Some(result), Some(with_str)) => {
       unsafe {
         (*cured).replace_multiple(result, &with_str);

@@ -3,12 +3,6 @@
 
 use std::{borrow::Cow, mem::transmute, ops::Range};
 
-#[repr(C)]
-pub(super) struct Element<T> {
-  pub(super) string: *const T,
-  pub(super) size: usize,
-}
-
 pub(super) fn null_terminated<T>(ptr: *const T) -> impl Iterator<Item = T>
 where
   T: Copy + Default + PartialEq<T>,
@@ -32,7 +26,7 @@ macro_rules! native_comparison_methods {
       #[unsafe(no_mangle)]
       #[cfg(feature = "utf8")]
       pub unsafe extern "C" fn $method_name_utf8($cured: *mut decancer::CuredString, other_str: *const u8, other_length: usize) -> bool {
-        utf8::get(other_str, other_length).is_some_and(|$string| {
+        u8::parse(other_str, other_length).is_some_and(|$string| {
           let $string = &$string;
 
           unsafe { $process }
@@ -42,7 +36,7 @@ macro_rules! native_comparison_methods {
       #[unsafe(no_mangle)]
       #[cfg(feature = "utf16")]
       pub unsafe extern "C" fn $method_name_utf16($cured: *mut decancer::CuredString, other_str: *const u16, other_length: usize) -> bool {
-        utf16::get(other_str, other_length).is_some_and(|$string| {
+        u16::parse(other_str, other_length).is_some_and(|$string| {
           let $string = &$string;
 
           unsafe { $process }
@@ -75,7 +69,7 @@ pub(super) fn native_cure(
   input: Option<Cow<'static, str>>,
   options: u32,
   invalid_input_error_message: &'static str,
-  error: *mut crate::Error,
+  error: *mut super::Error,
 ) -> *mut decancer::CuredString {
   let Some(input) = input else {
     unsafe {
@@ -107,7 +101,7 @@ pub(super) fn native_cure(
 macro_rules! native_cure_functions {
   ($(
     $(#[$additional_meta:meta])*
-    $method_name:ident => ($type:ty, $namespace:ident, $invalid_input_error_message:ident)
+    $method_name:ident($type:ty, $invalid_input_error_message:ident)
   ),*) => {
     $(
       #[unsafe(no_mangle)]
@@ -118,7 +112,7 @@ macro_rules! native_cure_functions {
         options: u32,
         error: *mut $crate::Error,
       ) -> *mut decancer::CuredString {
-        $crate::util::native_cure($namespace::get(input_str, input_length), options, $invalid_input_error_message, error)
+        $crate::util::native_cure(<$type>::parse(input_str, input_length), options, $invalid_input_error_message, error)
       }
     )*
   }
@@ -138,17 +132,17 @@ pub(super) fn native_find_multiple(
 macro_rules! native_find_multiple_functions {
   ($(
     $(#[$additional_meta:meta])*
-    $method_name:ident => ($type:ty, $namespace:ident)
+    $method_name:ident: $type:ty
   ),*) => {
     $(
       #[unsafe(no_mangle)]
       $(#[$additional_meta])*
       pub unsafe extern "C" fn $method_name(
         cured: *mut decancer::CuredString,
-        other_str: *const $type,
+        other_str: *const u8,
         other_length: usize,
       ) -> *mut Vec<Range<usize>> {
-        $crate::util::native_find_multiple(cured, unsafe { $namespace::get_array(other_str.cast(), other_length) })
+        $crate::util::native_find_multiple(cured, <$type>::parse_array(other_str, other_length))
       }
     )*
   }
@@ -177,7 +171,7 @@ pub(super) fn native_censor(
 macro_rules! native_censor_functions {
   ($(
     $(#[$additional_meta:meta])*
-    $method_name:ident => ($type:ty, $namespace:ident)
+    $method_name:ident: $type:ty
   ),*) => {
     $(
       #[unsafe(no_mangle)]
@@ -188,7 +182,7 @@ macro_rules! native_censor_functions {
         other_length: usize,
         with_char: u32,
       ) -> bool {
-        $crate::util::native_censor(cured, $namespace::get(other_str, other_length), with_char)
+        $crate::util::native_censor(cured, <$type>::parse(other_str, other_length), with_char)
       }
     )*
   }
@@ -217,7 +211,7 @@ pub(super) fn native_censor_multiple(
 macro_rules! native_censor_multiple_functions {
   ($(
     $(#[$additional_meta:meta])*
-    $method_name:ident => $namespace:ident
+    $method_name:ident: $type:ty
   ),*) => {
     $(
       #[unsafe(no_mangle)]
@@ -228,10 +222,51 @@ macro_rules! native_censor_multiple_functions {
         other_length: usize,
         with_char: u32,
       ) -> bool {
-        $crate::util::native_censor_multiple(cured, unsafe { $namespace::get_array(other_str.cast(), other_length) }, with_char)
+        $crate::util::native_censor_multiple(cured, <$type>::parse_array(other_str, other_length), with_char)
       }
     )*
   }
 }
 
 pub(super) use native_censor_multiple_functions;
+
+pub(super) fn native_replace(
+  cured: *mut decancer::CuredString,
+  other: Option<Cow<'static, str>>,
+  with: Option<Cow<'static, str>>,
+) -> bool {
+  match (other, with) {
+    (Some(other_str), Some(with_str)) => {
+      unsafe {
+        (*cured).replace(&other_str, &with_str);
+      }
+
+      true
+    },
+
+    _ => false,
+  }
+}
+
+macro_rules! native_replace_functions {
+  ($(
+    $(#[$additional_meta:meta])*
+    $method_name:ident: $type:ty
+  ),*) => {
+    $(
+      #[unsafe(no_mangle)]
+      $(#[$additional_meta])*
+      pub unsafe extern "C" fn $method_name(
+        cured: *mut decancer::CuredString,
+        other_str: *const $type,
+        other_length: usize,
+        with_str: *const $type,
+        with_length: usize,
+      ) -> bool {
+        $crate::util::native_replace(cured, <$type>::parse(other_str, other_length), <$type>::parse(with_str, with_length))
+      }
+    )*
+  }
+}
+
+pub(super) use native_replace_functions;
