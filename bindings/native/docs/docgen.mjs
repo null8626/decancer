@@ -86,7 +86,7 @@ for (const compound of index.doxygenindex.compound) {
 
         case 'typedef': {
           typeDefinitions.push(data)
-          
+
           break
         }
 

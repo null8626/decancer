@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import topLevelAwait from 'vite-plugin-top-level-await'
+import license from 'rollup-plugin-license'
 import { defineConfig } from 'vite'
 
 const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
@@ -20,6 +21,13 @@ export default defineConfig({
           rename: 'decancer.wasm'
         }
       ]
+    }),
+    license({
+      banner: {
+        commentStyle: 'ignored',
+        content:
+          'SPDX-License-Identifier: MIT\nSPDX-FileCopyrightText: 2021-2026 null8626'
+      }
     })
   ],
   build: {

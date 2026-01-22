@@ -155,7 +155,7 @@ window.addEventListener('load', () => {
 
         break
       }
-      
+
       case 'apilist': {
         const currentAPIIndex = API.length - 1
 
@@ -258,7 +258,7 @@ window.addEventListener('load', () => {
         const currentContents = document.querySelector('.contents')
 
         currentContents.insertBefore(child, currentContents.firstChild)
-        
+
         break
       }
     }
