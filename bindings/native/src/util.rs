@@ -18,6 +18,7 @@ where
     .take_while(|&x| x != Default::default())
 }
 
+#[cfg(feature = "utf16")]
 pub(super) fn sized<T>(ptr: *const T, size: usize) -> impl Iterator<Item = T>
 where
   T: Copy,

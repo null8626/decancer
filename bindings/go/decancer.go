@@ -93,15 +93,44 @@ func CureChar(character rune, options Option) string {
 	}
 }
 
+type processedString struct {
+	bytes []byte
+	size  int
+}
+
+func processString(text string) *processedString {
+	var bytes []byte
+
+	size := 0
+
+	if text != "" {
+		bytes = []byte(text)
+		size = len(bytes)
+	}
+
+	return &processedString{
+		bytes: bytes,
+		size:  size,
+	}
+}
+
+func (pString *processedString) Len() int {
+	return len(pString.bytes)
+}
+
+func (pString *processedString) Pointer() *C.uint8_t {
+	return (*C.uint8_t)(unsafe.Pointer(&pString.bytes[0]))
+}
+
 func Cure(text string, options Option) (*CuredString, error) {
 	if text == "" {
 		return nil, errors.New("unable to cure an empty string")
 	}
 
-	textBytes := []byte(text)
+	pText := processString(text)
 	var err C.decancer_error_t
 
-	ptr := C.decancer_cure((*C.uint8_t)(unsafe.Pointer(&textBytes[0])), C.size_t(len(textBytes)), C.decancer_options_t(options), &err)
+	ptr := C.decancer_cure(pText.Pointer(), C.size_t(pText.Len()), C.decancer_options_t(options), &err)
 
 	if ptr == nil {
 		return nil, errors.New(C.GoStringN(err.message, C.int(err.message_length)))
@@ -117,8 +146,8 @@ func (cured *CuredString) Find(other string) []Match {
 		return matches
 	}
 
-	otherBytes := []byte(other)
-	matcher := C.decancer_find(cured.ptr, (*C.uint8_t)(unsafe.Pointer(&otherBytes[0])), C.size_t(len(otherBytes)))
+	pOther := processString(other)
+	matcher := C.decancer_find(cured.ptr, pOther.Pointer(), C.size_t(pOther.Len()))
 
 	if matcher == nil {
 		return matches
@@ -138,15 +167,16 @@ func (cured *CuredString) Find(other string) []Match {
 	return matches
 }
 
-func (cured *CuredString) FindMultiple(keywords []string) ([]Match, error) {
-	rawKeywords := []C.decancer_keyword_t{}
-	keywordsPtrs := make([]unsafe.Pointer, 0, len(keywords))
+type processedKeywords struct {
+	structs []C.decancer_keyword_t
+	ptrs    []unsafe.Pointer
+}
 
-	defer func() {
-		for _, keywordPtr := range keywordsPtrs {
-			C.free(keywordPtr)
-		}
-	}()
+func processKeywords(keywords []string) (*processedKeywords, error) {
+	output := &processedKeywords{
+		structs: []C.decancer_keyword_t{},
+		ptrs:    make([]unsafe.Pointer, 0, len(keywords)),
+	}
 
 	for _, keyword := range keywords {
 		if keyword != "" {
@@ -155,28 +185,55 @@ func (cured *CuredString) FindMultiple(keywords []string) ([]Match, error) {
 			keywordPtr := C.malloc(keywordSize)
 
 			if keywordPtr == nil {
+				output.Close()
+
 				return nil, errors.New("out of memory")
 			}
 
 			C.memcpy(keywordPtr, unsafe.Pointer(&keywordBytes[0]), keywordSize)
 
-			keywordsPtrs = append(keywordsPtrs, keywordPtr)
-			rawKeywords = append(rawKeywords, C.decancer_keyword_t{
+			output.ptrs = append(output.ptrs, keywordPtr)
+			output.structs = append(output.structs, C.decancer_keyword_t{
 				string: (*C.uint8_t)(keywordPtr),
 				size:   keywordSize,
 			})
 		}
 	}
 
-	rawKeywordsSize := len(rawKeywords)
+	return output, nil
+}
+
+func (keywords *processedKeywords) Len() int {
+	return len(keywords.structs)
+}
+
+func (keywords *processedKeywords) Pointer() *C.decancer_keyword_t {
+	return (*C.decancer_keyword_t)(unsafe.Pointer(&keywords.structs[0]))
+}
+
+func (keywords *processedKeywords) Close() {
+	for _, ptr := range keywords.ptrs {
+		C.free(ptr)
+	}
+}
+
+func (cured *CuredString) FindMultiple(keywords []string) ([]Match, error) {
+	pKeywords, err := processKeywords(keywords)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer pKeywords.Close()
+
+	rawKeywordsSize := pKeywords.Len()
 	matches := []Match{}
 
 	if rawKeywordsSize == 0 {
 		return matches, nil
 	}
 
-	rawKeywordsPtr := (*C.decancer_keyword_t)(unsafe.Pointer(&rawKeywords[0]))
-	rawMatchesWrapped := C.decancer_find_multiple(cured.ptr, rawKeywordsPtr, C.size_t(rawKeywordsSize))
+	rawMatchesWrapped := C.decancer_find_multiple(cured.ptr, pKeywords.Pointer(), C.size_t(rawKeywordsSize))
 
 	if rawMatchesWrapped == nil {
 		return nil, errors.New("got an invalid keywords array")
@@ -206,9 +263,9 @@ func (cured *CuredString) Equals(other string) bool {
 		return bool(C.decancer_equals(cured.ptr, nil, 0))
 	}
 
-	otherBytes := []byte(other)
+	pOther := processString(other)
 
-	return bool(C.decancer_equals(cured.ptr, (*C.uint8_t)(unsafe.Pointer(&otherBytes[0])), C.size_t(len(otherBytes))))
+	return bool(C.decancer_equals(cured.ptr, pOther.Pointer(), C.size_t(pOther.Len())))
 }
 
 func (cured *CuredString) StartsWith(other string) bool {
@@ -216,9 +273,9 @@ func (cured *CuredString) StartsWith(other string) bool {
 		return true
 	}
 
-	otherBytes := []byte(other)
+	pOther := processString(other)
 
-	return bool(C.decancer_starts_with(cured.ptr, (*C.uint8_t)(unsafe.Pointer(&otherBytes[0])), C.size_t(len(otherBytes))))
+	return bool(C.decancer_starts_with(cured.ptr, pOther.Pointer(), C.size_t(pOther.Len())))
 }
 
 func (cured *CuredString) EndsWith(other string) bool {
@@ -226,9 +283,9 @@ func (cured *CuredString) EndsWith(other string) bool {
 		return true
 	}
 
-	otherBytes := []byte(other)
+	pOther := processString(other)
 
-	return bool(C.decancer_ends_with(cured.ptr, (*C.uint8_t)(unsafe.Pointer(&otherBytes[0])), C.size_t(len(otherBytes))))
+	return bool(C.decancer_ends_with(cured.ptr, pOther.Pointer(), C.size_t(pOther.Len())))
 }
 
 func (cured *CuredString) Contains(other string) bool {
@@ -236,9 +293,9 @@ func (cured *CuredString) Contains(other string) bool {
 		return true
 	}
 
-	otherBytes := []byte(other)
+	pOther := processString(other)
 
-	return bool(C.decancer_contains(cured.ptr, (*C.uint8_t)(unsafe.Pointer(&otherBytes[0])), C.size_t(len(otherBytes))))
+	return bool(C.decancer_contains(cured.ptr, pOther.Pointer(), C.size_t(pOther.Len())))
 }
 
 func (cured *CuredString) Censor(other string, replacement rune) error {
@@ -246,9 +303,9 @@ func (cured *CuredString) Censor(other string, replacement rune) error {
 		return nil
 	}
 
-	otherBytes := []byte(other)
+	pOther := processString(other)
 
-	if C.decancer_censor(cured.ptr, (*C.uint8_t)(unsafe.Pointer(&otherBytes[0])), C.size_t(len(otherBytes)), C.uint32_t(replacement)) {
+	if C.decancer_censor(cured.ptr, pOther.Pointer(), C.size_t(pOther.Len()), C.uint32_t(replacement)) {
 		return nil
 	} else {
 		return errors.New("got a malformed encoding")
@@ -256,44 +313,17 @@ func (cured *CuredString) Censor(other string, replacement rune) error {
 }
 
 func (cured *CuredString) CensorMultiple(keywords []string, replacement rune) error {
-	rawKeywords := []C.decancer_keyword_t{}
-	keywordsPtrs := make([]unsafe.Pointer, 0, len(keywords))
+	pKeywords, err := processKeywords(keywords)
 
-	defer func() {
-		for _, keywordPtr := range keywordsPtrs {
-			C.free(keywordPtr)
-		}
-	}()
-
-	for _, keyword := range keywords {
-		if keyword != "" {
-			keywordBytes := []byte(keyword)
-			keywordSize := C.size_t(len(keywordBytes))
-			keywordPtr := C.malloc(keywordSize)
-
-			if keywordPtr == nil {
-				return errors.New("out of memory")
-			}
-
-			C.memcpy(keywordPtr, unsafe.Pointer(&keywordBytes[0]), keywordSize)
-
-			keywordsPtrs = append(keywordsPtrs, keywordPtr)
-			rawKeywords = append(rawKeywords, C.decancer_keyword_t{
-				string: (*C.uint8_t)(keywordPtr),
-				size:   keywordSize,
-			})
-		}
+	if err != nil {
+		return err
 	}
 
-	rawKeywordsSize := len(rawKeywords)
+	defer pKeywords.Close()
 
-	if rawKeywordsSize == 0 {
-		return nil
-	}
+	rawKeywordsSize := pKeywords.Len()
 
-	rawKeywordsPtr := (*C.decancer_keyword_t)(unsafe.Pointer(&rawKeywords[0]))
-
-	if C.decancer_censor_multiple(cured.ptr, rawKeywordsPtr, C.size_t(rawKeywordsSize), C.uint32_t(replacement)) {
+	if rawKeywordsSize == 0 || C.decancer_censor_multiple(cured.ptr, pKeywords.Pointer(), C.size_t(rawKeywordsSize), C.uint32_t(replacement)) {
 		return nil
 	} else {
 		return errors.New("got a malformed encoding")
@@ -305,22 +335,10 @@ func (cured *CuredString) Replace(other string, replacement string) error {
 		return nil
 	}
 
-	otherBytes := []byte(other)
-	otherPtr := (*C.uint8_t)(unsafe.Pointer(&otherBytes[0]))
-	otherSize := C.size_t(len(otherBytes))
+	pOther := processString(other)
+	pReplacement := processString(replacement)
 
-	var replacementPtr *C.uint8_t
-	var replacementBytes []byte
-
-	replacementSize := 0
-
-	if replacement != "" {
-		replacementBytes = []byte(replacement)
-		replacementPtr = (*C.uint8_t)(unsafe.Pointer(&replacementBytes[0]))
-		replacementSize = len(replacementBytes)
-	}
-
-	if C.decancer_replace(cured.ptr, otherPtr, otherSize, replacementPtr, C.size_t(replacementSize)) {
+	if C.decancer_replace(cured.ptr, pOther.Pointer(), C.size_t(pOther.size), pReplacement.Pointer(), C.size_t(pReplacement.size)) {
 		return nil
 	} else {
 		return errors.New("got a malformed encoding")
@@ -328,53 +346,23 @@ func (cured *CuredString) Replace(other string, replacement string) error {
 }
 
 func (cured *CuredString) ReplaceMultiple(keywords []string, replacement string) error {
-	rawKeywords := []C.decancer_keyword_t{}
-	keywordsPtrs := make([]unsafe.Pointer, 0, len(keywords))
+	pKeywords, err := processKeywords(keywords)
 
-	defer func() {
-		for _, keywordPtr := range keywordsPtrs {
-			C.free(keywordPtr)
-		}
-	}()
-
-	for _, keyword := range keywords {
-		if keyword != "" {
-			keywordBytes := []byte(keyword)
-			keywordSize := C.size_t(len(keywordBytes))
-			keywordPtr := C.malloc(keywordSize)
-
-			if keywordPtr == nil {
-				return errors.New("out of memory")
-			}
-
-			C.memcpy(keywordPtr, unsafe.Pointer(&keywordBytes[0]), keywordSize)
-
-			keywordsPtrs = append(keywordsPtrs, keywordPtr)
-			rawKeywords = append(rawKeywords, C.decancer_keyword_t{
-				string: (*C.uint8_t)(keywordPtr),
-				size:   keywordSize,
-			})
-		}
+	if err != nil {
+		return err
 	}
 
-	rawKeywordsSize := len(rawKeywords)
+	defer pKeywords.Close()
+
+	rawKeywordsSize := pKeywords.Len()
 
 	if rawKeywordsSize == 0 {
 		return nil
 	}
 
-	var replacementPtr *C.uint8_t
-	var replacementBytes []byte
+	pReplacement := processString(replacement)
 
-	replacementSize := 0
-
-	if replacement != "" {
-		replacementBytes = []byte(replacement)
-		replacementPtr = (*C.uint8_t)(unsafe.Pointer(&replacementBytes[0]))
-		replacementSize = len(replacementBytes)
-	}
-
-	if C.decancer_replace_multiple(cured.ptr, (*C.decancer_keyword_t)(unsafe.Pointer(&rawKeywords[0])), C.size_t(rawKeywordsSize), replacementPtr, C.size_t(replacementSize)) {
+	if C.decancer_replace_multiple(cured.ptr, pKeywords.Pointer(), C.size_t(rawKeywordsSize), pReplacement.Pointer(), C.size_t(pReplacement.Len())) {
 		return nil
 	} else {
 		return errors.New("got a malformed encoding")

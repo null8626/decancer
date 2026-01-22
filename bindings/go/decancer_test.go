@@ -23,10 +23,16 @@ func TestCureChar(t *testing.T) {
 	assert.Equal(t, "", cured, "CureChar should return an empty string")
 }
 
-func TestCure(t *testing.T) {
+func newCuredStringSample(t *testing.T) *CuredString {
 	cured, err := Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", Default)
 
 	assert.Nil(t, err, "curing should not fail")
+
+	return cured
+}
+
+func TestCure(t *testing.T) {
+	cured := newCuredStringSample(t)
 
 	defer cured.Close()
 
@@ -43,7 +49,7 @@ func TestCure(t *testing.T) {
 	assert.Equal(t, 10, matches[0].End, "Find match end should be 10")
 
 	keywords := []string{"very", "funny"}
-	matches, err = cured.FindMultiple(keywords)
+	matches, err := cured.FindMultiple(keywords)
 
 	assert.Nil(t, err, "FindMultiple should not fail")
 	assert.Equal(t, 2, len(matches), "FindMultiple matches should be 2")
@@ -54,55 +60,37 @@ func TestCure(t *testing.T) {
 }
 
 func TestCensor(t *testing.T) {
-	cured, err := Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", Default)
-
-	assert.Nil(t, err, "curing should not fail")
+	cured := newCuredStringSample(t)
 
 	defer cured.Close()
 
-	err = cured.Censor("funny", '*')
-
-	assert.Nil(t, err, "Censor should not fail")
+	assert.Nil(t, cured.Censor("funny", '*'), "Censor should not fail")
 	assert.True(t, cured.Equals("very ***** text"), "Censor should actually censor")
 }
 
 func TestCensorMultiple(t *testing.T) {
-	cured, err := Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", Default)
-
-	assert.Nil(t, err, "curing should not fail")
+	cured := newCuredStringSample(t)
 
 	defer cured.Close()
 
-	keywords := []string{"very", "funny"}
-	err = cured.CensorMultiple(keywords, '*')
-
-	assert.Nil(t, err, "CensorMultiple should not fail")
+	assert.Nil(t, cured.CensorMultiple([]string{"very", "funny"}, '*'), "CensorMultiple should not fail")
 	assert.True(t, cured.Equals("**** ***** text"), "CensorMultiple should actually censor multiple")
 }
 
 func TestReplace(t *testing.T) {
-	cured, err := Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", Default)
-
-	assert.Nil(t, err, "curing should not fail")
+	cured := newCuredStringSample(t)
 
 	defer cured.Close()
 
-	err = cured.Replace("very", "not")
-
-	assert.Nil(t, err, "Replace should not fail")
+	assert.Nil(t, cured.Replace("very", "not"), "Replace should not fail")
 	assert.True(t, cured.Equals("not funny text"), "Replace should actually replace")
 }
 
 func TestReplaceMultiple(t *testing.T) {
-	cured, err := Cure("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣", Default)
-
-	assert.Nil(t, err, "curing should not fail")
+	cured := newCuredStringSample(t)
 
 	defer cured.Close()
 
-	keywords := []string{"very", "funny"}
-	err = cured.ReplaceMultiple(keywords, "sussy")
-
-	assert.Nil(t, err, "ReplaceMultiple should not fail")
+	assert.Nil(t, cured.ReplaceMultiple([]string{"very", "funny"}, "sussy"), "ReplaceMultiple should not fail")
 	assert.True(t, cured.Equals("sussy sussy text"), "ReplaceMultiple should actually replace multiple")
 }
