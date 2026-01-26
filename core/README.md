@@ -44,7 +44,7 @@ assert_eq!(cured, "very funny text with leetspeak");
 // WARNING: it's NOT recommended to coerce this output to a Rust string
 //          and process it manually from there, as decancer has its own
 //          custom comparison measures, including leetspeak matching!
-assert_ne!(cured.as_str(), "very funny text with leetspeak");
+assert_ne!(&*cured, "very funny text with leetspeak");
 
 assert!(cured.contains("funny"));
 

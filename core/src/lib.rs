@@ -376,26 +376,29 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
 ///
 /// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
 pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
-  Ok(CuredString({
-    #[cfg(feature = "options")]
-    if options.is(1) {
-      input
-        .chars()
-        .filter(|&character| !is_special_rtl(character as _))
-        .fold(
-          String::with_capacity(input.len()),
-          |mut output, character| {
-            output += cure_char(character, options);
-            output
-          },
-        )
-    } else {
+  Ok(CuredString(
+    {
+      #[cfg(feature = "options")]
+      if options.is(1) {
+        input
+          .chars()
+          .filter(|&character| !is_special_rtl(character as _))
+          .fold(
+            String::with_capacity(input.len()),
+            |mut output, character| {
+              output += cure_char(character, options);
+              output
+            },
+          )
+      } else {
+        cure_reordered(input, options)?
+      }
+
+      #[cfg(not(feature = "options"))]
       cure_reordered(input, options)?
     }
-
-    #[cfg(not(feature = "options"))]
-    cure_reordered(input, options)?
-  }))
+    .into(),
+  ))
 }
 
 /// Cures a string with decancer's default options.

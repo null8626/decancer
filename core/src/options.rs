@@ -16,7 +16,7 @@ use std::cmp::Ordering;
 /// // by default, all options are disabled
 /// let _options = Options::default();
 /// ```
-#[derive(Copy, Clone, Eq, PartialEq, Default, Hash)]
+#[derive(Copy, Clone, Default, Eq, Hash, PartialEq)]
 pub struct Options(pub(super) u32);
 
 macro_rules! options {
@@ -56,7 +56,12 @@ impl Options {
     ///   .retain_capitalization();
     ///
     /// assert_eq!('🆐'.to_lowercase().collect::<String>(), '🆐'.to_uppercase().collect::<String>());
-    /// assert_eq!(decancer::cure_char('🆐', options), Translation::String(Cow::Borrowed("dj")));
+    ///
+    /// match decancer::cure_char('🆐', options) {
+    ///   Translation::String(dj) => assert_eq!(dj, "dj"),
+    ///
+    ///   _ => unreachable!("cure_char 🆐 should always return a Translation::String")
+    /// }
     /// ```
     0: retain_capitalization,
 
@@ -159,7 +164,7 @@ impl Options {
     let mut start = 0;
 
     while start <= end {
-      let mid = (start + end) / 2;
+      let mid = start.midpoint(end);
       let codepoint = Codepoint::at(offset + (mid * 6));
       #[cfg(feature = "options")]
       let ord = codepoint.matches(code, self)?;

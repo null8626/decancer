@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use std::{
-  borrow::Cow,
-  mem::transmute,
-  ops::{Deref, Range},
-  ptr::copy_nonoverlapping,
-  str,
-};
+use std::{borrow::Cow, mem::transmute, ops::Range, ptr::copy_nonoverlapping, str};
 
 mod unicode;
 mod util;
@@ -66,6 +60,8 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
     },
 
     decancer::Translation::String(s) => unsafe {
+      let s: Cow<'_, str> = s.into();
+
       (*output).kind = 1;
       (*output).slot_b = s.len();
 
@@ -78,7 +74,7 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
         Cow::Owned(s) => {
           let s = Box::new(s);
 
-          (*output).slot_a = s.deref().as_ptr() as _;
+          (*output).slot_a = s.as_ptr() as _;
           (*output).slot_c = Box::into_raw(Box::new(s)).cast::<u8>() as _;
         },
       }
@@ -210,7 +206,7 @@ pub unsafe extern "C" fn decancer_cured_raw_utf16(
 ) -> *mut Vec<u16> {
   let s = unsafe {
     if mat.is_null() {
-      (*cured).as_str()
+      &**cured
     } else {
       (*cured).get_unchecked((*mat).clone())
     }

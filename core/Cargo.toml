@@ -10,7 +10,7 @@ license = "MIT"
 keywords = ["security", "unicode", "homoglyphs", "moderation", "confusables"]
 categories = ["parsing", "text-processing", "value-formatting"]
 exclude = ["rustfmt.toml"]
-rust-version = "1.85.0"
+rust-version = "1.87.0"
 
 [dependencies]
 serde = { version = "1", default-features = false, optional = true }

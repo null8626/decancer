@@ -27,7 +27,7 @@ impl OpeningBracket {
     let mut end = BIDI_BRACKETS_COUNT as i32;
 
     while start <= end {
-      let mid = (start + end) / 2;
+      let mid = start.midpoint(end);
       let offset = (4 + (mid * 5)) as _;
 
       let first = BIDI.u32_at(offset);

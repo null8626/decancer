@@ -3,6 +3,7 @@
 
 use super::{Matcher, util::merge_ranges};
 use std::{
+  borrow::Cow,
   fmt::{self, Debug, Display, Formatter},
   ops::{Deref, Range},
 };
@@ -10,11 +11,11 @@ use std::{
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 
-/// A small wrapper around the [`String`] data type for comparison purposes.
+/// A small wrapper around a [`Cow<'static, str>`] for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone, Eq, Hash)]
-pub struct CuredString(pub(super) String);
+pub struct CuredString(pub(super) Cow<'static, str>);
 
 impl CuredString {
   /// Iterates throughout this string and yields every similar-looking match.
@@ -77,6 +78,7 @@ impl CuredString {
   where
     I: IntoIterator<Item = Range<usize>>,
   {
+    let self_str = self.0.to_mut();
     let mut with_str = String::new();
     let mut char_diff = 0isize;
 
@@ -89,7 +91,7 @@ impl CuredString {
         with_str.push(with);
       }
 
-      self.0.replace_range(
+      self_str.replace_range(
         (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
         &with_str[..cap],
       );
@@ -151,10 +153,11 @@ impl CuredString {
   where
     I: IntoIterator<Item = Range<usize>>,
   {
+    let self_str = self.0.to_mut();
     let mut char_diff = 0isize;
 
     for mat in matches {
-      self.0.replace_range(
+      self_str.replace_range(
         (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
         with,
       );
@@ -226,7 +229,7 @@ impl CuredString {
     self
       .find(other)
       .last()
-      .is_some_and(|last| last.end == self.len())
+      .is_some_and(|last| last.end == self.0.len())
   }
 
   /// Checks if this cured string similarly contains another string.
@@ -239,30 +242,55 @@ impl CuredString {
   }
 }
 
-/// Coerces this cured string to a [`String`].
-///
-/// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
-impl From<CuredString> for String {
-  #[inline(always)]
-  fn from(val: CuredString) -> Self {
-    val.0
-  }
-}
-
 impl AsRef<str> for CuredString {
+  /// Coerces this cured string to a [`str`].
+  ///
+  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
   #[inline(always)]
   fn as_ref(&self) -> &str {
     &self.0
   }
 }
 
-/// Checks if this cured string is similar with another string.
-///
-/// This comparison is case-insensitive.
+impl Deref for CuredString {
+  type Target = str;
+
+  /// Coerces this cured string to a [`str`].
+  ///
+  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
+  #[inline(always)]
+  fn deref(&self) -> &Self::Target {
+    self.as_ref()
+  }
+}
+
+impl From<CuredString> for Cow<'static, str> {
+  /// Coerces this cured string to a [`Cow<'static, str>`].
+  ///
+  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
+  #[inline(always)]
+  fn from(string: CuredString) -> Self {
+    string.0
+  }
+}
+
+impl From<CuredString> for String {
+  /// Coerces this cured string to a [`String`].
+  ///
+  /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
+  #[inline(always)]
+  fn from(string: CuredString) -> Self {
+    string.0.into_owned()
+  }
+}
+
 impl<S> PartialEq<S> for CuredString
 where
   S: AsRef<str> + ?Sized,
 {
+  /// Checks if this cured string is similar with another string.
+  ///
+  /// This comparison is case-insensitive.
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
     Matcher::is_equal(self, other.as_ref())
@@ -272,23 +300,14 @@ where
 impl Debug for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-    Debug::fmt(&self.0, f)
+    Debug::fmt(&self, f)
   }
 }
 
 impl Display for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-    Display::fmt(&self.0, f)
-  }
-}
-
-impl Deref for CuredString {
-  type Target = String;
-
-  #[inline(always)]
-  fn deref(&self) -> &Self::Target {
-    &self.0
+    Display::fmt(&self, f)
   }
 }
 

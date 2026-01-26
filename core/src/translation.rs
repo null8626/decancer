@@ -4,7 +4,7 @@
 #[cfg(feature = "options")]
 use super::util::is_alphanumeric;
 use super::{
-  Matcher,
+  CuredString, Matcher,
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
@@ -20,13 +20,13 @@ use std::{
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// A translation for a single character/codepoint.
-#[derive(Clone, Debug, PartialEq, Hash)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Translation {
   /// A single unicode character.
   Character(char),
 
   /// A string.
-  String(Cow<'static, str>),
+  String(CuredString),
 
   /// This suggests that the translation is an empty string. You can get this when the input character is a [control character](https://en.wikipedia.org/wiki/Control_character), [surrogate](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates), [combining character](https://en.wikipedia.org/wiki/Script_(Unicode)#Special_script_property_values) (e.g diacritics), [private use character](https://en.wikipedia.org/wiki/Private_Use_Areas), [byte order character](https://en.wikipedia.org/wiki/Byte_order_mark), or any invalid unicode value (e.g beyond [`char::MAX`]).
   None,
@@ -34,13 +34,13 @@ pub enum Translation {
 
 impl Translation {
   pub(super) fn string(integer: u32, second_byte: u8) -> Self {
-    Self::String(Cow::Borrowed(
+    Self::String(CuredString(Cow::Borrowed(
       str::from_utf8(CODEPOINTS.sliced(
         (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
         ((integer >> 23) & 0x1f) as _,
       ))
       .unwrap(),
-    ))
+    )))
   }
 
   #[inline(always)]
@@ -53,7 +53,7 @@ impl Translation {
     match self {
       Self::Character(c) => *c = c.to_uppercase().next().unwrap_or(*c),
 
-      Self::String(s) => s.to_mut().make_ascii_uppercase(),
+      Self::String(s) => s.0.to_mut().make_ascii_uppercase(),
 
       Self::None => {},
     }
@@ -64,7 +64,7 @@ impl Translation {
     match self {
       Self::Character(c) => (*c as u32) <= 0x7f,
 
-      Self::String(s) => s.is_ascii(),
+      Self::String(s) => s.0.is_ascii(),
 
       Self::None => false,
     }
@@ -75,7 +75,7 @@ impl Translation {
     match self {
       Self::Character(c) => is_alphanumeric(*c as _),
 
-      Self::String(s) => s.bytes().all(|b| is_alphanumeric(b as _)),
+      Self::String(s) => s.0.bytes().all(|b| is_alphanumeric(b as _)),
 
       Self::None => false,
     }
@@ -96,7 +96,7 @@ impl From<Translation> for Cow<'static, str> {
     match translation {
       Translation::Character(c) => Self::Owned(String::from(c)),
 
-      Translation::String(s) => s,
+      Translation::String(s) => s.0,
 
       Translation::None => Self::Borrowed(""),
     }
@@ -174,7 +174,7 @@ impl Serialize for Translation {
     match self {
       Self::Character(ch) => serializer.serialize_char(*ch),
 
-      Self::String(s) => serializer.serialize_str(s),
+      Self::String(s) => serializer.serialize_str(&s),
 
       Self::None => serializer.serialize_unit(),
     }

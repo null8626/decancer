@@ -9,7 +9,7 @@ use super::{
 numbered_enum! {
   #[allow(dead_code)]
   #[cfg_attr(test, derive(Debug))]
-  #[derive(Copy, Clone, PartialEq)]
+  #[derive(Copy, Clone, Eq, PartialEq)]
   pub(in super::super) enum Class: u8 {
     B = 0,
     S = 1,
@@ -42,7 +42,7 @@ impl Class {
     let mut end = BIDI_DICTIONARY_COUNT as i32;
 
     while start <= end {
-      let mid = (start + end) / 2;
+      let mid = start.midpoint(end);
       let offset = ((BIDI_DICTIONARY_OFFSET as i32) + (mid * 6)) as _;
       let kv = BIDI.u32_at(offset);
 

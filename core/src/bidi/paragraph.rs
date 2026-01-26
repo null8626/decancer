@@ -32,7 +32,7 @@ struct Status {
   status: OverrideStatus,
 }
 
-#[cfg_attr(test, derive(Debug, PartialEq))]
+#[cfg_attr(test, derive(Debug, Eq, PartialEq))]
 pub(in super::super) struct IsolatingRunSequence {
   pub(in super::super) runs: Vec<Range<usize>>,
   pub(in super::super) start_class: Class,
