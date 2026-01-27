@@ -63,10 +63,16 @@ pub struct Matcher<'a, 'b> {
   self_index: usize,
   start_index: usize,
   other_iterator: Cached<'b>,
+  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  disable_leetspeak: bool,
 }
 
 impl<'a, 'b> Matcher<'a, 'b> {
-  pub(super) fn new(mut self_str: &'a str, other_str: &'b str) -> Self {
+  pub(super) fn new(
+    mut self_str: &'a str,
+    other_str: &'b str,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+  ) -> Self {
     if other_str.is_empty() || self_str.len() < other_str.len() {
       self_str = "";
     }
@@ -79,6 +85,8 @@ impl<'a, 'b> Matcher<'a, 'b> {
       self_index: 0,
       start_index: 0,
       other_iterator: other_str.chars().into(),
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      disable_leetspeak,
     }
   }
 
@@ -104,7 +112,17 @@ impl<'a, 'b> Matcher<'a, 'b> {
   fn matches(&mut self, self_char: char, other_char: char) -> Option<usize> {
     #[cfg(feature = "leetspeak")]
     {
-      Self::matches_character(self_char, other_char).or_else(|| self.matches_leetspeak(other_char))
+      let result = Self::matches_character(self_char, other_char);
+
+      #[cfg(feature = "options")]
+      if self.disable_leetspeak {
+        result
+      } else {
+        result.or_else(|| self.matches_leetspeak(other_char))
+      }
+
+      #[cfg(not(feature = "options"))]
+      result
     }
 
     #[cfg(not(feature = "leetspeak"))]
@@ -113,8 +131,17 @@ impl<'a, 'b> Matcher<'a, 'b> {
     }
   }
 
-  pub(super) fn is_equal(self_str: &'a str, other_str: &'b str) -> bool {
-    let mut iter = Self::new(self_str, other_str);
+  pub(super) fn is_equal(
+    self_str: &'a str,
+    other_str: &'b str,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+  ) -> bool {
+    let mut iter = Self::new(
+      self_str,
+      other_str,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      disable_leetspeak,
+    );
 
     iter
       .next()

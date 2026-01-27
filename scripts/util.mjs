@@ -12,12 +12,6 @@ export function isAffected(value) {
     : true
 }
 
-export function options(argv) {
-  return Object.fromEntries(
-    argv.map(x => x.match(/^\-\-([\w\-]+)=(.*)/)?.slice(1)).filter(x => x)
-  )
-}
-
 export async function request(url) {
   console.log(`- requesting to ${url}...`)
 
@@ -111,7 +105,9 @@ export function mergeArray(arr, recurse = true) {
 }
 
 export function removeFromSet(array, set) {
-  for (const part of set) array.splice(array.indexOf(part), 1)
+  for (const part of set) {
+    array.splice(array.indexOf(part), 1)
+  }
 
   return array
 }

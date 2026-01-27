@@ -10,16 +10,19 @@ import {
   removeFromSet
 } from './util.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import {
+  CACHE_FILE,
+  CORE_DIR,
+  RETAINABLE_SCRIPTS,
+  ROOT_DIR,
+  STRING_TRANSLATION_MASK,
+  TURKISH_CHARACTERS
+} from './constants.mjs'
 import { execSync } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { deserialize } from 'node:v8'
 import { inspect } from 'node:util'
+import { join } from 'node:path'
 import assert from 'node:assert'
-
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
-const STRING_TRANSLATION_MASK = 0x10000000n
 
 console.log('- fetching unicode data...')
 
@@ -38,63 +41,21 @@ if (typeof process.argv[2] !== 'string') {
   process.exit(1)
 }
 
-const RETAINABLE_SCRIPTS = Object.entries({
-  greek: {
-    shift: 3,
-    check: name => name.includes('greek') && !name.includes('ancient')
-  },
-  cyrillic: 4,
-  hebrew: 5,
-  arabic: 6,
-  devanagari: 7,
-  bengali: 8,
-  armenian: 9,
-  gujarati: 10,
-  tamil: 11,
-  thai: 12,
-  lao: 13,
-  burmese: {
-    shift: 14,
-    check: name => name.includes('myanmar')
-  },
-  khmer: 15,
-  mongolian: 16,
-  chinese: {
-    shift: 17,
-    check: name => name.includes('cjk') || name.includes('kangxi')
-  },
-  japanese: {
-    shift: 18,
-    check: name => name.includes('katakana') || name.includes('hiragana')
-  },
-  korean: {
-    shift: 19,
-    check: name => name.includes('hangul')
-  },
-  braille: 20
-})
-
-const TURKISH_CHARACTERS = ['ç', 'ğ', 'ı', 'ö', 'ş', 'ü'] // İ is omitted from here because it's lowercase form is just a normal i
-
 function getAttributes(codepoint) {
   const { name } = blocks.find(({ start, end }) =>
     containsInclusive(codepoint, start, end)
   )
 
-  const retainableScript = RETAINABLE_SCRIPTS.find(([n, data]) => {
-    if (typeof data === 'number') {
-      return name.includes(n)
-    } else {
-      return data.check(name)
-    }
-  })
+  const retainableScript = RETAINABLE_SCRIPTS.find(([n, data]) =>
+    typeof data === 'number' ? name.includes(n) : data.check(name)
+  )
 
   let retainableScriptShift = 0
 
   if (retainableScript) {
     retainableScriptShift = retainableScript[1].shift ?? retainableScript[1]
   } else if (binarySearchExists(emojis, codepoint)) {
-    retainableScriptShift = 21
+    retainableScriptShift = 22
   }
 
   return (
@@ -334,9 +295,10 @@ for (const {
   if (translation.length > 1) {
     const offset = strings.indexOf(translation)
 
-    firstBytes |=
+    firstBytes |= BigInt(
       STRING_TRANSLATION_MASK |
-      BigInt(((translation.length << 3) | (offset >> 8)) << 20)
+        (((translation.length << 3) | (offset >> 8)) << 20)
+    )
     middleByte = offset & 0xff
   } else {
     if (syncedTranslation) middleByte = 0x80
@@ -370,7 +332,7 @@ headers.writeUint16LE(
 headers.writeUint16LE(headers.readUint16LE(2) + similarBytes.length, 4)
 
 writeFileSync(
-  join(ROOT_DIR, 'core', 'bin', 'codepoints.bin'),
+  join(CORE_DIR, 'bin', 'codepoints.bin'),
   Buffer.concat([
     headers,
     Buffer.concat(codepointsBuffers),

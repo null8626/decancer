@@ -37,11 +37,11 @@ macro_rules! options {
 impl Options {
   /// A configuration where every option is enabled.
   #[cfg(feature = "options")]
-  pub const ALL: Self = Self(0x1ffffff);
+  pub const ALL: Self = Self(0x3ffffff);
 
   /// A configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
   #[cfg(feature = "options")]
-  pub const PURE_HOMOGLYPH: Self = Self(0x3ffffc);
+  pub const PURE_HOMOGLYPH: Self = Self(0x7ffff8);
 
   options! {
     /// Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
@@ -70,80 +70,84 @@ impl Options {
     /// **NOTE:** This speeds up the function call, but **can break [right-to-left characters](https://en.wikipedia.org/wiki/Bidirectional_text)**. It's highly recommended to also use [`retain_arabic`][Options::retain_arabic] and [`retain_hebrew`][Options::retain_hebrew].
     1: disable_bidi,
 
+    /// Prevents decancer from applying leetspeak comparisons in [`CuredString`][super::CuredString]'s comparison methods.
+    #[cfg(feature = "leetspeak")]
+    2: disable_leetspeak,
+
     /// Prevents decancer from curing characters *with* diacritics or accents.
     ///
     /// **NOTE:** Decancer can still cure standalone diacritic characters, which is used in [Zalgo texts](https://en.wikipedia.org/wiki/Zalgo_text).
-    2: retain_diacritics,
+    3: retain_diacritics,
 
     /// Prevents decancer from curing all greek characters.
-    3: retain_greek,
+    4: retain_greek,
 
     /// Prevents decancer from curing all cyrillic characters.
-    4: retain_cyrillic,
+    5: retain_cyrillic,
 
     /// Prevents decancer from curing all hebrew characters.
-    5: retain_hebrew,
+    6: retain_hebrew,
 
     /// Prevents decancer from curing all arabic characters.
-    6: retain_arabic,
+    7: retain_arabic,
 
     /// Prevents decancer from curing all devanagari characters.
-    7: retain_devanagari,
+    8: retain_devanagari,
 
     /// Prevents decancer from curing all bengali characters.
-    8: retain_bengali,
+    9: retain_bengali,
 
     /// Prevents decancer from curing all armenian characters.
-    9: retain_armenian,
+    10: retain_armenian,
 
     /// Prevents decancer from curing all gujarati characters.
-    10: retain_gujarati,
+    11: retain_gujarati,
 
     /// Prevents decancer from curing all tamil characters.
-    11: retain_tamil,
+    12: retain_tamil,
 
     /// Prevents decancer from curing all thai characters.
-    12: retain_thai,
+    13: retain_thai,
 
     /// Prevents decancer from curing all lao characters.
-    13: retain_lao,
+    14: retain_lao,
 
     /// Prevents decancer from curing all burmese characters.
-    14: retain_burmese,
+    15: retain_burmese,
 
     /// Prevents decancer from curing all khmer characters.
-    15: retain_khmer,
+    16: retain_khmer,
 
     /// Prevents decancer from curing all mongolian characters.
-    16: retain_mongolian,
+    17: retain_mongolian,
 
     /// Prevents decancer from curing all chinese characters.
-    17: retain_chinese,
+    18: retain_chinese,
 
     /// Prevents decancer from curing all katakana and hiragana characters.
     ///
     /// **NOTE:** To also prevent decancer from curing kanji characters, use [`retain_chinese`][Options::retain_chinese].
-    18: retain_japanese,
+    19: retain_japanese,
 
     /// Prevents decancer from curing all korean characters.
-    19: retain_korean,
+    20: retain_korean,
 
     /// Prevents decancer from curing all braille characters.
-    20: retain_braille,
+    21: retain_braille,
 
     /// Prevents decancer from curing all emojis.
-    21: retain_emojis,
+    22: retain_emojis,
 
     /// Prevents decancer from curing all turkish characters.
     ///
     /// **NOTE:** To also prevent decancer from curing [the uppercase dotted i character](https://en.wikipedia.org/wiki/İ) (`İ`), use [`retain_capitalization`][Options::retain_capitalization].
-    22: retain_turkish,
+    23: retain_turkish,
 
     /// Removes all non-ASCII characters from the result.
-    23: ascii_only,
+    24: ascii_only,
 
     /// Removes all non-alphanumeric characters from the result.
-    24: alphanumeric_only
+    25: alphanumeric_only
   }
 
   #[cfg(feature = "options")]
@@ -155,9 +159,9 @@ impl Options {
   pub(super) const fn refuse_cure(self, attributes: u8) -> bool {
     let locale = attributes >> 2;
 
-    ((attributes & 1) != 0 && self.is(2))
-      || ((attributes & 2) != 0 && self.is(22))
-      || locale > 2 && self.is(locale)
+    ((attributes & 1) != 0 && self.is(3))
+      || ((attributes & 2) != 0 && self.is(23))
+      || locale > 3 && self.is(locale)
   }
 
   pub(super) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
@@ -173,7 +177,13 @@ impl Options {
       let ord = codepoint.matches(code)?;
 
       match ord {
-        Ordering::Equal => return Some(codepoint.translation(code)),
+        Ordering::Equal => {
+          return Some(codepoint.translation(
+            code,
+            #[cfg(all(feature = "leetspeak", feature = "options"))]
+            self.is(2),
+          ));
+        },
 
         Ordering::Greater => start = mid + 1,
 

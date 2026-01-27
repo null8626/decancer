@@ -28,14 +28,14 @@ public final class Options {
    *
    * @since 3.2.0
    */
-  public static Options ALL = new Options(0x1ffffff);
+  public static Options ALL = new Options(0x3ffffff);
 
   /**
    * Predefined configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
    *
    * @since 3.0.0
    */
-  public static Options PURE_HOMOGLYPH = new Options(0x3ffffc);
+  public static Options PURE_HOMOGLYPH = new Options(0x7ffff8);
 
   /**
    * Creates a new Options object with decancer's default options.
@@ -89,6 +89,17 @@ public final class Options {
   }
 
   /**
+   * Prevents decancer from applying leetspeak comparisons in comparison methods.
+   *
+   * @return Options A reference to this object to allow for method chaining.
+   * @since 4.0.0
+   */
+  public Options disableLeetspeak() {
+    this.inner |= (1 << 2);
+    return this;
+  }
+
+  /**
    * Prevents decancer from curing characters *with* diacritics or accents.
    *
    * <p>
@@ -99,7 +110,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainDiacritics() {
-    this.inner |= (1 << 2);
+    this.inner |= (1 << 3);
     return this;
   }
 
@@ -110,7 +121,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainGreek() {
-    this.inner |= (1 << 3);
+    this.inner |= (1 << 4);
     return this;
   }
 
@@ -121,7 +132,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainCyrillic() {
-    this.inner |= (1 << 4);
+    this.inner |= (1 << 5);
     return this;
   }
 
@@ -132,7 +143,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainHebrew() {
-    this.inner |= (1 << 5);
+    this.inner |= (1 << 6);
     return this;
   }
 
@@ -143,7 +154,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainArabic() {
-    this.inner |= (1 << 6);
+    this.inner |= (1 << 7);
     return this;
   }
 
@@ -154,7 +165,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainDevanagari() {
-    this.inner |= (1 << 7);
+    this.inner |= (1 << 8);
     return this;
   }
 
@@ -165,7 +176,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBengali() {
-    this.inner |= (1 << 8);
+    this.inner |= (1 << 9);
     return this;
   }
 
@@ -176,7 +187,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainArmenian() {
-    this.inner |= (1 << 9);
+    this.inner |= (1 << 10);
     return this;
   }
 
@@ -187,7 +198,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainGujarati() {
-    this.inner |= (1 << 10);
+    this.inner |= (1 << 11);
     return this;
   }
 
@@ -198,7 +209,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainTamil() {
-    this.inner |= (1 << 11);
+    this.inner |= (1 << 12);
     return this;
   }
 
@@ -209,7 +220,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainThai() {
-    this.inner |= (1 << 12);
+    this.inner |= (1 << 13);
     return this;
   }
 
@@ -220,7 +231,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainLao() {
-    this.inner |= (1 << 13);
+    this.inner |= (1 << 14);
     return this;
   }
 
@@ -231,7 +242,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBurmese() {
-    this.inner |= (1 << 14);
+    this.inner |= (1 << 15);
     return this;
   }
 
@@ -242,7 +253,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainKhmer() {
-    this.inner |= (1 << 15);
+    this.inner |= (1 << 16);
     return this;
   }
 
@@ -253,7 +264,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainMongolian() {
-    this.inner |= (1 << 16);
+    this.inner |= (1 << 17);
     return this;
   }
 
@@ -264,7 +275,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainChinese() {
-    this.inner |= (1 << 17);
+    this.inner |= (1 << 18);
     return this;
   }
 
@@ -280,7 +291,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainJapanese() {
-    this.inner |= (1 << 18);
+    this.inner |= (1 << 19);
     return this;
   }
 
@@ -291,7 +302,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainKorean() {
-    this.inner |= (1 << 19);
+    this.inner |= (1 << 20);
     return this;
   }
 
@@ -302,7 +313,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBraille() {
-    this.inner |= (1 << 20);
+    this.inner |= (1 << 21);
     return this;
   }
 
@@ -313,7 +324,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainEmojis() {
-    this.inner |= (1 << 21);
+    this.inner |= (1 << 22);
     return this;
   }
 
@@ -329,7 +340,7 @@ public final class Options {
    * @since 3.2.4
    */
   public Options retainTurkish() {
-    this.inner |= (1 << 22);
+    this.inner |= (1 << 23);
     return this;
   }
 
@@ -341,7 +352,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options asciiOnly() {
-    this.inner |= (1 << 23);
+    this.inner |= (1 << 24);
     return this;
   }
 
@@ -353,7 +364,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options alphanumericOnly() {
-    this.inner |= (1 << 24);
+    this.inner |= (1 << 25);
     return this;
   }
 }

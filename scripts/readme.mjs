@@ -2,26 +2,21 @@
 
 'use strict'
 
+import {
+  BINDINGS_DIR,
+  CACHE_FILE,
+  CODEPOINT_MASK,
+  CORE_DIR,
+  MODIFIED_README_WARNING,
+  NONE_CODEPOINTS_COUNT,
+  ROOT_DIR,
+  STRING_TRANSLATION_MASK
+} from './constants.mjs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { existsSync, readFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { deserialize } from 'node:v8'
-
-const CODEPOINT_MASK = 0xfffff
-const STRING_TRANSLATION_MASK = 0x10000000
-
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const CORE_DIR = join(ROOT_DIR, 'core')
-const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
-const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
-
-const MODIFIED_WARNING =
-  '<!-- WARNING: this markdown file is computer generated.\n     please modify the README.md file in the root directory instead. -->\n\n'
-
-// 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..=0x10ffff
-const NONE_CODEPOINTS_COUNT = 10 + 18 + 1 + 8448 + 196112
+import { join } from 'node:path'
 
 function addCodepoint(set, binary, offset) {
   const integer = binary.readUint32LE(offset)
@@ -64,7 +59,8 @@ async function preprocess(readmePath, inputDefinitions) {
 
   await writeFile(
     readmePath,
-    MODIFIED_WARNING + preprocessedLines.join('\n').replaceAll(/\n{3,}/g, '\n')
+    MODIFIED_README_WARNING +
+      preprocessedLines.join('\n').replaceAll(/\n{3,}/g, '\n')
   )
 }
 

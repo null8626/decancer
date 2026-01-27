@@ -3,13 +3,12 @@
 'use strict'
 
 import { readdir, rename } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { ROOT_DIR } from './constants.mjs'
+import { join } from 'node:path'
 
 const TARGET = process.argv[2]
 const IS_JAVA = process.argv.slice(3).some(argv => argv === '--java')
 
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGET_DIR = join(
   ROOT_DIR,
   'bindings',

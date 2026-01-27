@@ -29,6 +29,7 @@ type Option uint32
 const (
 	RetainCapitalization Option = 1 << iota
 	DisableBidi
+	DisableLeetspeak
 	RetainDiacritics
 	RetainGreek
 	RetainCyrillic
@@ -53,8 +54,8 @@ const (
 	AsciiOnly
 	AlphanumericOnly
 	Default       = 0
-	All           = 0x1ffffff
-	PureHomoglyph = 0x3ffffc
+	All           = 0x3ffffff
+	PureHomoglyph = 0x7ffff8
 )
 
 type CuredString struct {

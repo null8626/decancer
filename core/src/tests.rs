@@ -25,80 +25,102 @@ proptest! {
   }
 }
 
-macro_rules! assert_matches {
-  ($input:literal,$find:literal,$expected:expr) => {{
-    let cured = $crate::cure!($input).unwrap();
-    let matches = cured.find($find).collect::<Vec<_>>();
+fn assert_matches(input: &str, find: &str, expected: Range<usize>, options: Options) {
+  let cured = super::cure(input, options).unwrap();
 
-    assert_eq!(matches, $expected);
-  }};
+  assert_eq!(cured.find(find).next(), Some(expected));
 }
 
-macro_rules! assert_no_matches {
-  ($input:literal,$find:literal) => {{
-    let cured = $crate::cure!($input).unwrap();
-    let matches = cured.find($find).collect::<Vec<_>>();
+fn assert_no_matches(input: &str, find: &str, options: Options) {
+  let cured = super::cure(input, options).unwrap();
+  let matches = cured.find(find).collect::<Vec<_>>();
 
-    assert!(matches.is_empty());
-  }};
+  assert!(matches.is_empty());
 }
 
 #[test]
 #[allow(clippy::single_range_in_vec_init)]
 fn similar_equal() {
-  assert_matches!("h", "h", [0..1]);
-  assert_matches!("he", "he", [0..2]);
-  assert_matches!("h3", "he", [0..2]);
+  let default_options = Options::default();
 
-  assert_matches!("hello", "hello", [0..5]);
-  assert_matches!("hhheeeeelllloo", "hello", [0..14]);
-  assert_matches!("?asdf-hhheeeeelllloo", "hello", [6..20]);
+  assert_matches("h", "h", 0..1, default_options);
+  assert_matches("he", "he", 0..2, default_options);
+  assert_matches("h3", "he", 0..2, default_options);
 
-  assert_matches!("-hello", "hello", [1..6]);
-  assert_matches!("hello-", "hello", [0..5]);
-  assert_matches!("---hello", "hello", [3..8]);
-  assert_matches!("---hello-", "hello", [3..8]);
+  assert_matches("hello", "hello", 0..5, default_options);
+  assert_matches("hhheeeeelllloo", "hello", 0..14, default_options);
+  assert_matches("?asdf-hhheeeeelllloo", "hello", 6..20, default_options);
 
-  assert_matches!("hhheeeeelllloo!!", "hello", [0..14]);
+  assert_matches("-hello", "hello", 1..6, default_options);
+  assert_matches("hello-", "hello", 0..5, default_options);
+  assert_matches("---hello", "hello", 3..8, default_options);
+  assert_matches("---hello-", "hello", 3..8, default_options);
 
-  assert_matches!("-!?hel$2-hello?", "hello", [9..14]);
-  assert_matches!("-!?hel$2-hhheeeeelllloo!!", "hello", [9..23]);
+  assert_matches("hhheeeeelllloo!!", "hello", 0..14, default_options);
 
-  assert_matches!("wow hell  wow heellllo", "hello", [14..22]);
-  assert_matches!("wow hell  wow heellllo!", "hello", [14..22]);
+  assert_matches("-!?hel$2-hello?", "hello", 9..14, default_options);
+  assert_matches("-!?hel$2-hhheeeeelllloo!!", "hello", 9..23, default_options);
+
+  assert_matches("wow hell  wow heellllo", "hello", 14..22, default_options);
+  assert_matches("wow hell  wow heellllo!", "hello", 14..22, default_options);
 
   #[cfg(feature = "separators")]
   {
-    assert_matches!("hh-he  e eeell/l/lo//o", "hello", [0..22]);
-    assert_matches!(" shhhiii/iiiiitttttt/ttttt ", "shit", [1..26]);
-    assert_matches!("hh-he  e eeell/l/lo-?", "hello", [0..19]);
-    assert_matches!("shhhiii/iiiiitttttt/ttttt/", "shit", [0..25]);
-    assert_matches!("hh-he  e ee,e ll/l/lo//o-?", "hello", [0..24]);
-    assert_matches!("-!?hel$2-hh-he  e ee,e,ll/l/lo//o-?", "hello", [9..33]);
+    assert_matches("hh-he  e eeell/l/lo//o", "hello", 0..22, default_options);
+    assert_matches(
+      " shhhiii/iiiiitttttt/ttttt ",
+      "shit",
+      1..26,
+      default_options,
+    );
+    assert_matches("hh-he  e eeell/l/lo-?", "hello", 0..19, default_options);
+    assert_matches("shhhiii/iiiiitttttt/ttttt/", "shit", 0..25, default_options);
+    assert_matches(
+      "hh-he  e ee,e ll/l/lo//o-?",
+      "hello",
+      0..24,
+      default_options,
+    );
+    assert_matches(
+      "-!?hel$2-hh-he  e ee,e,ll/l/lo//o-?",
+      "hello",
+      9..33,
+      default_options,
+    );
   }
 
   #[cfg(feature = "leetspeak")]
   {
-    assert_matches!("|-|3|_I_0", "hello", [0..9]);
-    assert_matches!("|-|3|aI_0", "helalo", [0..9]);
-    assert_matches!("|-|3|_|_0", "he|_lo", [0..9]);
-    assert_matches!("|--|3e33|__|_I_I_0()O[]", "hello", [0..23]);
+    assert_matches("|-|3|_I_0", "hello", 0..9, default_options);
+    assert_matches("|-|3|aI_0", "helalo", 0..9, default_options);
+    assert_matches("|-|3|_|_0", "he|_lo", 0..9, default_options);
+    assert_matches("|--|3e33|__|_I_I_0()O[]", "hello", 0..23, default_options);
 
-    assert_no_matches!("|-|3|_|_0", "he+lo");
+    assert_no_matches("|-|3|_|_0", "he+lo", default_options);
+
+    #[cfg(feature = "options")]
+    {
+      let disabled_options = default_options.disable_leetspeak();
+
+      assert_no_matches("|-|3|_I_0", "hello", disabled_options);
+      assert_no_matches("|-|3|aI_0", "helalo", disabled_options);
+      assert_no_matches("|-|3|_|_0", "he|_lo", disabled_options);
+      assert_no_matches("|--|3e33|__|_I_I_0()O[]", "hello", disabled_options);
+    }
   }
 
-  assert_no_matches!("", "");
-  assert_no_matches!("h", "");
-  assert_no_matches!("", "h");
-  assert_no_matches!("", "he");
-  assert_no_matches!("h", "he");
-  assert_no_matches!("-", "hello");
-  assert_no_matches!("- !?", "hello");
-  assert_no_matches!("ello", "hello");
-  assert_no_matches!("eel", "ell");
-  assert_no_matches!("ell", "eel");
-  assert_no_matches!("-!?hel", "hell");
-  assert_no_matches!("ello?", "hello");
+  assert_no_matches("", "", default_options);
+  assert_no_matches("h", "", default_options);
+  assert_no_matches("", "h", default_options);
+  assert_no_matches("", "he", default_options);
+  assert_no_matches("h", "he", default_options);
+  assert_no_matches("-", "hello", default_options);
+  assert_no_matches("- !?", "hello", default_options);
+  assert_no_matches("ello", "hello", default_options);
+  assert_no_matches("eel", "ell", default_options);
+  assert_no_matches("ell", "eel", default_options);
+  assert_no_matches("-!?hel", "hell", default_options);
+  assert_no_matches("ello?", "hello", default_options);
 }
 
 #[test]
@@ -293,6 +315,8 @@ fn retain_capitalization() {
     "decAncer"
   );
 }
+
+include!("./retain_tests.rs");
 
 #[cfg(feature = "options")]
 fn test_reorder(input: &str, expected: &str) {

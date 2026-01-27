@@ -2,16 +2,18 @@
 
 'use strict'
 
+import {
+  BINDINGS_DIR,
+  CORE_DIR,
+  JRELEASER_VERSION,
+  ROOT_DIR
+} from './constants.mjs'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const CORE_DIR = join(ROOT_DIR, 'core')
-const NODE_DIR = join(ROOT_DIR, 'bindings', 'node')
+const NODE_DIR = join(BINDINGS_DIR, 'node')
 const JAVA_SOURCES_DIR = join(
-  ROOT_DIR,
-  'bindings',
+  BINDINGS_DIR,
   'java',
   'src',
   'main',
@@ -21,7 +23,6 @@ const JAVA_SOURCES_DIR = join(
   'null8626',
   'decancer'
 )
-const JRELEASER_VERSION = '1.18.0'
 
 async function update(filename, callback) {
   await writeFile(filename, callback(await readFile(filename, 'utf-8')))
@@ -72,28 +73,22 @@ function updateNativeHeaderFunc(x) {
 void (await Promise.all([
   update(join(CORE_DIR, 'Cargo.toml'), updateTomlFunc),
   update(join(NODE_DIR, 'Cargo.toml'), updateTomlFunc),
-  update(join(ROOT_DIR, 'bindings', 'wasm', 'Cargo.toml'), updateTomlFunc),
-  update(join(ROOT_DIR, 'bindings', 'native', 'Cargo.toml'), updateTomlFunc),
+  update(join(BINDINGS_DIR, 'wasm', 'Cargo.toml'), updateTomlFunc),
+  update(join(BINDINGS_DIR, 'native', 'Cargo.toml'), updateTomlFunc),
   update(join(NODE_DIR, 'package.json'), updateJsonFunc),
   update(
-    join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js'),
+    join(BINDINGS_DIR, 'wasm', 'bin', 'decancer.min.js'),
     directUpdateFunc
   ),
-  update(join(ROOT_DIR, 'bindings', 'wasm', 'example.html'), directUpdateFunc),
+  update(join(BINDINGS_DIR, 'wasm', 'example.html'), directUpdateFunc),
   update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
-  update(
-    join(ROOT_DIR, 'bindings', 'native', 'decancer.h'),
-    updateNativeHeaderFunc
-  ),
-  update(
-    join(ROOT_DIR, 'bindings', 'native', 'docs', 'Doxyfile'),
-    directUpdateFunc
-  ),
-  update(join(ROOT_DIR, 'bindings', 'node', 'README.md'), directUpdateFunc),
+  update(join(BINDINGS_DIR, 'native', 'decancer.h'), updateNativeHeaderFunc),
+  update(join(BINDINGS_DIR, 'native', 'docs', 'Doxyfile'), directUpdateFunc),
+  update(join(BINDINGS_DIR, 'node', 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
-  update(join(ROOT_DIR, 'bindings', 'java', 'build.gradle'), updateGradleFunc),
+  update(join(BINDINGS_DIR, 'java', 'build.gradle'), updateGradleFunc),
   new Promise(resolve => {
     readdir(join(NODE_DIR, 'npm')).then(files => {
       Promise.all(

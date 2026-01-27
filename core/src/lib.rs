@@ -68,10 +68,10 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   let retain_capitalization = options.is(0);
 
   #[cfg(feature = "options")]
-  let ascii_only = options.is(23);
+  let ascii_only = options.is(24);
 
   #[cfg(feature = "options")]
-  let alphanumeric_only = options.is(24);
+  let alphanumeric_only = options.is(25);
 
   #[cfg(feature = "options")]
   let default_output = if is_case_sensitive && retain_capitalization {
@@ -376,8 +376,8 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
 ///
 /// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
 pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
-  Ok(CuredString(
-    {
+  Ok(CuredString {
+    string: {
       #[cfg(feature = "options")]
       if options.is(1) {
         input
@@ -398,7 +398,9 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
       cure_reordered(input, options)?
     }
     .into(),
-  ))
+    #[cfg(all(feature = "leetspeak", feature = "options"))]
+    disable_leetspeak: options.is(2),
+  })
 }
 
 /// Cures a string with decancer's default options.

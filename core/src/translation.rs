@@ -4,7 +4,7 @@
 #[cfg(feature = "options")]
 use super::util::is_alphanumeric;
 use super::{
-  CuredString, Matcher,
+  CuredString,
   codepoints::CODEPOINTS,
   similar::{self, SIMILAR_END as STRINGS_OFFSET},
 };
@@ -33,14 +33,22 @@ pub enum Translation {
 }
 
 impl Translation {
-  pub(super) fn string(integer: u32, second_byte: u8) -> Self {
-    Self::String(CuredString(Cow::Borrowed(
-      str::from_utf8(CODEPOINTS.sliced(
-        (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
-        ((integer >> 23) & 0x1f) as _,
-      ))
-      .unwrap(),
-    )))
+  pub(super) fn string(
+    integer: u32,
+    second_byte: u8,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+  ) -> Self {
+    Self::String(CuredString {
+      string: Cow::Borrowed(
+        str::from_utf8(CODEPOINTS.sliced(
+          (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
+          ((integer >> 23) & 0x1f) as _,
+        ))
+        .unwrap(),
+      ),
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      disable_leetspeak,
+    })
   }
 
   #[inline(always)]
@@ -53,7 +61,7 @@ impl Translation {
     match self {
       Self::Character(c) => *c = c.to_uppercase().next().unwrap_or(*c),
 
-      Self::String(s) => s.0.to_mut().make_ascii_uppercase(),
+      Self::String(s) => s.string.to_mut().make_ascii_uppercase(),
 
       Self::None => {},
     }
@@ -64,7 +72,7 @@ impl Translation {
     match self {
       Self::Character(c) => (*c as u32) <= 0x7f,
 
-      Self::String(s) => s.0.is_ascii(),
+      Self::String(s) => s.string.is_ascii(),
 
       Self::None => false,
     }
@@ -75,7 +83,7 @@ impl Translation {
     match self {
       Self::Character(c) => is_alphanumeric(*c as _),
 
-      Self::String(s) => s.0.bytes().all(|b| is_alphanumeric(b as _)),
+      Self::String(s) => s.string.bytes().all(|b| is_alphanumeric(b as _)),
 
       Self::None => false,
     }
@@ -96,7 +104,7 @@ impl From<Translation> for Cow<'static, str> {
     match translation {
       Translation::Character(c) => Self::Owned(String::from(c)),
 
-      Translation::String(s) => s.0,
+      Translation::String(s) => s.string,
 
       Translation::None => Self::Borrowed(""),
     }
@@ -144,7 +152,7 @@ where
           .is_some_and(|next_char| chars.next().is_none() && similar::is(*ch as _, next_char))
       },
 
-      Self::String(s) => Matcher::is_equal(s, o),
+      Self::String(s) => s == o,
 
       Self::None => o.is_empty(),
     }

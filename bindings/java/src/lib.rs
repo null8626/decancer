@@ -3,8 +3,6 @@
 
 #![allow(clippy::missing_safety_doc, clippy::unused_unit)]
 
-use std::ops::Deref;
-
 use jni::{
   JNIEnv,
   objects::{JClass, JObject, JObjectArray, JString, JValue},
@@ -174,7 +172,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_toStr
 ) -> jstring {
   let inner = util::get_inner!(env, this);
 
-  util::jni_unwrap!(env, env.new_string(unsafe { (*inner).deref() })).into_raw()
+  util::jni_unwrap!(env, env.new_string(unsafe { &**inner })).into_raw()
 }
 
 #[unsafe(no_mangle)]

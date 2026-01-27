@@ -15,7 +15,11 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone, Eq, Hash)]
-pub struct CuredString(pub(super) Cow<'static, str>);
+pub struct CuredString {
+  pub(super) string: Cow<'static, str>,
+  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  pub(super) disable_leetspeak: bool,
+}
 
 impl CuredString {
   /// Iterates throughout this string and yields every similar-looking match.
@@ -34,7 +38,12 @@ impl CuredString {
   /// ```
   #[inline(always)]
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Matcher<'a, 'b> {
-    Matcher::new(self, other)
+    Matcher::new(
+      self,
+      other,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      self.disable_leetspeak,
+    )
   }
 
   /// Iterates throughout this string and returns a [`Vec`] of every similar-looking match. Unlike [`find`][CuredString::find], this method also takes note of overlapping matches and merges them together.
@@ -78,7 +87,7 @@ impl CuredString {
   where
     I: IntoIterator<Item = Range<usize>>,
   {
-    let self_str = self.0.to_mut();
+    let self_str = self.string.to_mut();
     let mut with_str = String::new();
     let mut char_diff = 0isize;
 
@@ -153,7 +162,7 @@ impl CuredString {
   where
     I: IntoIterator<Item = Range<usize>>,
   {
-    let self_str = self.0.to_mut();
+    let self_str = self.string.to_mut();
     let mut char_diff = 0isize;
 
     for mat in matches {
@@ -229,7 +238,7 @@ impl CuredString {
     self
       .find(other)
       .last()
-      .is_some_and(|last| last.end == self.0.len())
+      .is_some_and(|last| last.end == self.string.len())
   }
 
   /// Checks if this cured string similarly contains another string.
@@ -240,6 +249,13 @@ impl CuredString {
 
     iter.next().is_some()
   }
+
+  /// Prevents decancer from applying leetspeak comparisons in comparison methods.
+  #[inline(always)]
+  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  pub fn disable_leetspeak(&mut self, switch: bool) {
+    self.disable_leetspeak = switch;
+  }
 }
 
 impl AsRef<str> for CuredString {
@@ -248,7 +264,7 @@ impl AsRef<str> for CuredString {
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
   #[inline(always)]
   fn as_ref(&self) -> &str {
-    &self.0
+    &self.string
   }
 }
 
@@ -269,8 +285,8 @@ impl From<CuredString> for Cow<'static, str> {
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
   #[inline(always)]
-  fn from(string: CuredString) -> Self {
-    string.0
+  fn from(s: CuredString) -> Self {
+    s.string
   }
 }
 
@@ -279,8 +295,8 @@ impl From<CuredString> for String {
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
   #[inline(always)]
-  fn from(string: CuredString) -> Self {
-    string.0.into_owned()
+  fn from(s: CuredString) -> Self {
+    s.string.into_owned()
   }
 }
 
@@ -293,21 +309,26 @@ where
   /// This comparison is case-insensitive.
   #[inline(always)]
   fn eq(&self, other: &S) -> bool {
-    Matcher::is_equal(self, other.as_ref())
+    Matcher::is_equal(
+      self,
+      other.as_ref(),
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      self.disable_leetspeak,
+    )
   }
 }
 
 impl Debug for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-    Debug::fmt(&self, f)
+    Debug::fmt(&**self, f)
   }
 }
 
 impl Display for CuredString {
   #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-    Display::fmt(&self, f)
+    Display::fmt(&**self, f)
   }
 }
 

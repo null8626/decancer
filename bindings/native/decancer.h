@@ -114,102 +114,109 @@
 #define DECANCER_OPTION_DISABLE_BIDI (1 << 1)
 
 /**
+ * @brief Prevents decancer from applying leetspeak comparisons in comparison methods.
+ *
+ * @since 4.0.0
+ */
+#define DECANCER_OPTION_DISABLE_LEETSPEAK (1 << 2)
+
+/**
  * @brief Prevents decancer from curing characters WITH diacritics or accents.
  *
  * @note Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_DIACRITICS (1 << 2)
+#define DECANCER_OPTION_RETAIN_DIACRITICS (1 << 3)
 
 /**
  * @brief Prevents decancer from curing all greek characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_GREEK (1 << 3)
+#define DECANCER_OPTION_RETAIN_GREEK (1 << 4)
 
 /**
  * @brief Prevents decancer from curing all cyrillic characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_CYRILLIC (1 << 4)
+#define DECANCER_OPTION_RETAIN_CYRILLIC (1 << 5)
 
 /**
  * @brief Prevents decancer from curing all hebrew characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_HEBREW (1 << 5)
+#define DECANCER_OPTION_RETAIN_HEBREW (1 << 6)
 
 /**
  * @brief Prevents decancer from curing all arabic characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_ARABIC (1 << 6)
+#define DECANCER_OPTION_RETAIN_ARABIC (1 << 7)
 
 /**
  * @brief Prevents decancer from curing all devanagari characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_DEVANAGARI (1 << 7)
+#define DECANCER_OPTION_RETAIN_DEVANAGARI (1 << 8)
 
 /**
  * @brief Prevents decancer from curing all bengali characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_BENGALI (1 << 8)
+#define DECANCER_OPTION_RETAIN_BENGALI (1 << 9)
 
 /**
  * @brief Prevents decancer from curing all armenian characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_ARMENIAN (1 << 9)
+#define DECANCER_OPTION_RETAIN_ARMENIAN (1 << 10)
 
 /**
  * @brief Prevents decancer from curing all gujarati characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_GUJARATI (1 << 10)
+#define DECANCER_OPTION_RETAIN_GUJARATI (1 << 11)
 
 /**
  * @brief Prevents decancer from curing all tamil characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_TAMIL (1 << 11)
+#define DECANCER_OPTION_RETAIN_TAMIL (1 << 12)
 
 /**
  * @brief Prevents decancer from curing all thai characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_THAI (1 << 12)
+#define DECANCER_OPTION_RETAIN_THAI (1 << 13)
 
 /**
  * @brief Prevents decancer from curing all lao characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_LAO (1 << 13)
+#define DECANCER_OPTION_RETAIN_LAO (1 << 14)
 
 /**
  * @brief Prevents decancer from curing all burmese characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_BURMESE (1 << 14)
+#define DECANCER_OPTION_RETAIN_BURMESE (1 << 15)
 
 /**
  * @brief Prevents decancer from curing all khmer characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_KHMER (1 << 15)
+#define DECANCER_OPTION_RETAIN_KHMER (1 << 16)
 
 /**
  * @brief Prevents decancer from curing all mongolian characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_MONGOLIAN (1 << 16)
+#define DECANCER_OPTION_RETAIN_MONGOLIAN (1 << 17)
 
 /**
  * @brief Prevents decancer from curing all chinese characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_CHINESE (1 << 17)
+#define DECANCER_OPTION_RETAIN_CHINESE (1 << 18)
 
 /**
  * @brief Prevents decancer from curing all katakana and hiragana characters.
@@ -218,25 +225,25 @@
  * @note To also prevent decancer from curing kanji characters, use DECANCER_OPTION_RETAIN_CHINESE.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_JAPANESE (1 << 18)
+#define DECANCER_OPTION_RETAIN_JAPANESE (1 << 19)
 
 /**
  * @brief Prevents decancer from curing all korean characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_KOREAN (1 << 19)
+#define DECANCER_OPTION_RETAIN_KOREAN (1 << 20)
 
 /**
  * @brief Prevents decancer from curing all braille characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_BRAILLE (1 << 20)
+#define DECANCER_OPTION_RETAIN_BRAILLE (1 << 21)
 
 /**
  * @brief Prevents decancer from curing all emojis.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_EMOJIS (1 << 21)
+#define DECANCER_OPTION_RETAIN_EMOJIS (1 << 22)
 
 /**
  * @brief Prevents decancer from curing all turkish characters.
@@ -245,7 +252,7 @@
  * @note To also prevent decancer from curing the uppercase dotted i character (İ), use DECANCER_RETAIN_CAPITALIZATION.
  * @since 3.2.4
  */
-#define DECANCER_OPTION_RETAIN_TURKISH (1 << 22)
+#define DECANCER_OPTION_RETAIN_TURKISH (1 << 23)
 
 /**
  * @brief Removes all non-ASCII characters from the result.
@@ -253,7 +260,7 @@
  * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ASCII_ONLY (1 << 23)
+#define DECANCER_OPTION_ASCII_ONLY (1 << 24)
 
 /**
  * @brief Removes all non-alphanumeric characters from the result.
@@ -261,19 +268,19 @@
  * @see DECANCER_OPTION_ASCII_ONLY
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 24)
+#define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 25)
 
 /**
  * @brief A configuration where every option is enabled.
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ALL 0x1ffffff
+#define DECANCER_OPTION_ALL 0x3ffffff
 
 /**
  * @brief Prevents decancer from curing characters from major foreign writing systems, including diacritics.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_PURE_HOMOGLYPH 0x3ffffc
+#define DECANCER_OPTION_PURE_HOMOGLYPH 0x7ffff8
 
 /**
  * @brief Represents an error caused by decancer not being able to cure a string.

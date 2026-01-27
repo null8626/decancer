@@ -2,19 +2,11 @@
 
 'use strict'
 
+import { BINDINGS_DIR, GITHUB_PAGES_IGNORE, ROOT_DIR } from './constants.mjs'
 import { readFile, writeFile, readdir, stat, rm } from 'node:fs/promises'
-import { dirname, join, sep } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join, sep } from 'node:path'
 
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const MINIFIED_JS = join(ROOT_DIR, 'bindings', 'wasm', 'bin', 'decancer.min.js')
-const EXCLUDED = [
-  'wasm_example.html',
-  ['bindings', 'wasm', 'bin'],
-  ['native_docs'],
-  ['scripts'],
-  ['.git']
-]
+const MINIFIED_JS = join(BINDINGS_DIR, 'wasm', 'bin', 'decancer.min.js')
 
 const editedMinifiedJsContents = (await readFile(MINIFIED_JS))
   .toString()
@@ -25,7 +17,7 @@ const editedMinifiedJsContents = (await readFile(MINIFIED_JS))
 await writeFile(MINIFIED_JS, editedMinifiedJsContents)
 
 function lookInside(fullPath) {
-  for (const ne of EXCLUDED) {
+  for (const ne of GITHUB_PAGES_IGNORE) {
     if (typeof ne === 'string') {
       if (fullPath === join(ROOT_DIR, ne)) {
         return false
@@ -56,7 +48,7 @@ function lookInside(fullPath) {
 }
 
 function isExcluded(fullPath) {
-  for (const ne of EXCLUDED) {
+  for (const ne of GITHUB_PAGES_IGNORE) {
     if (typeof ne === 'string') {
       if (fullPath === join(ROOT_DIR, ne)) {
         return false

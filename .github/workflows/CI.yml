@@ -704,6 +704,9 @@ jobs:
           go vet
           go mod tidy
         working-directory: bindings/go
+      - name: Update retain tests
+        if: ${{ needs.setup.outputs.core_affected == 'true' }}
+        run: node scripts/ci_retain_tests.mjs
       - name: Prettier files
         run: node scripts/pretty.mjs --clang-format=clang-format-18
         env:

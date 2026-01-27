@@ -1,4 +1,4 @@
-<!-- WARNING: this markdown file is computer generated.
+<!-- WARNING: This file is computer generated.
      please modify the README.md file in the root directory instead. -->
 
 # decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]

@@ -2,24 +2,18 @@
 
 'use strict'
 
-import { isAffected, options } from './util.mjs'
-import { dirname, join } from 'node:path'
+import { BINDINGS_DIR, CORE_DIR, OPTIONS, ROOT_DIR } from './constants.mjs'
 import { exec } from 'node:child_process'
-import { fileURLToPath } from 'node:url'
+import { isAffected } from './util.mjs'
 import { promisify } from 'node:util'
-
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const CORE_DIR = join(ROOT_DIR, 'core')
-const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
-
-const OPTIONS = options(process.argv.slice(2))
+import { join } from 'node:path'
 
 const execute = promisify(exec)
 
 async function prettier() {
-  const extensions = ['css', 'js', 'ts', 'mjs', 'cjs', 'json']
-
   await execute('npm i -g prettier')
+
+  const extensions = ['css', 'js', 'ts', 'mjs', 'cjs', 'json']
 
   if (isAffected('java')) {
     await execute('npm i prettier-plugin-java --save-dev')
@@ -61,7 +55,7 @@ async function clangFormat() {
 }
 
 void (await Promise.all([
-  cargo(join(CORE_DIR), 'core'),
+  cargo(CORE_DIR, 'core'),
   cargo(join(BINDINGS_DIR, 'java'), 'java'),
   cargo(join(BINDINGS_DIR, 'node'), 'node'),
   cargo(join(BINDINGS_DIR, 'wasm'), 'wasm'),

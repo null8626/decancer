@@ -24,6 +24,7 @@ export interface Options {
   all?: boolean
   retainCapitalization?: boolean
   disableBidi?: boolean
+  disableLeetspeak?: boolean
   retainDiacritics?: boolean
   retainGreek?: boolean
   retainCyrillic?: boolean

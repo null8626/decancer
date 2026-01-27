@@ -2,48 +2,18 @@
 
 'use strict'
 
+import {
+  BIDI_CLASSES,
+  BLACKLISTED_CODEPOINTS,
+  CORE_DIR,
+  ROOT_DIR
+} from './constants.mjs'
 import { containsInclusive, request, strongAssert, SortedSet } from './util.mjs'
 import { writeFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
-import { existsSync } from 'node:fs'
 import { serialize } from 'node:v8'
-
-const BIDI_CLASSES = [
-  'B',
-  'S',
-  'WS',
-  'ON',
-  'ET',
-  'ES',
-  'CS',
-  'EN',
-  'L',
-  'BN',
-  'R',
-  'AN',
-  'AL',
-  'LRE',
-  'RLE',
-  'PDF',
-  'LRO',
-  'RLO',
-  'LRI',
-  'RLI',
-  'FSI',
-  'PDI'
-]
-
-const BLACKLISTED_RANGES = [
-  [0, 0x7f],
-  [0x200e, 0x200f],
-  [0x202a, 0x202e],
-  [0x2066, 0x2069]
-]
-
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+import { join } from 'node:path'
 
 const execute = promisify(exec)
 
@@ -133,7 +103,7 @@ for (const data of unicodeIter(unicode)) {
     notHandled = BIDI_CLASSES[bidiIndex] !== 'WS'
 
     if (
-      !BLACKLISTED_RANGES.some(([start, end]) =>
+      !BLACKLISTED_CODEPOINTS.some(([start, end]) =>
         containsInclusive(codepoint, start, end)
       ) &&
       notHandled
@@ -342,7 +312,7 @@ void (await Promise.all([
     console.log('- writing to bidi.bin...')
 
     await writeFile(
-      join(ROOT_DIR, 'core', 'bin', 'bidi.bin'),
+      join(CORE_DIR, 'bin', 'bidi.bin'),
       Buffer.concat([
         bidiBufferHeader,
         bidiBracketsBuffer,

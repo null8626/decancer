@@ -82,9 +82,18 @@ impl Codepoint {
     Some(Ordering::Equal)
   }
 
-  pub(super) fn translation(self, other: u32) -> Translation {
+  pub(super) fn translation(
+    self,
+    other: u32,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+  ) -> Translation {
     if self.is_string_translation() {
-      Translation::string(self.0, self.1)
+      Translation::string(
+        self.0,
+        self.1,
+        #[cfg(all(feature = "leetspeak", feature = "options"))]
+        disable_leetspeak,
+      )
     } else {
       let mut code = self.ascii_translation();
 

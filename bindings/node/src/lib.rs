@@ -5,7 +5,7 @@
 
 use std::ops::Range;
 
-use napi::{bindgen_prelude::Error, Either, Result, Status};
+use napi::{Either, Result, Status, bindgen_prelude::Error};
 
 #[macro_use]
 extern crate napi_derive;
@@ -49,34 +49,35 @@ options! {
   keys {
     0: retain_capitalization,
     1: disable_bidi,
-    2: retain_diacritics,
-    3: retain_greek,
-    4: retain_cyrillic,
-    5: retain_hebrew,
-    6: retain_arabic,
-    7: retain_devanagari,
-    8: retain_bengali,
-    9: retain_armenian,
-    10: retain_gujarati,
-    11: retain_tamil,
-    12: retain_thai,
-    13: retain_lao,
-    14: retain_burmese,
-    15: retain_khmer,
-    16: retain_mongolian,
-    17: retain_chinese,
-    18: retain_japanese,
-    19: retain_korean,
-    20: retain_braille,
-    21: retain_emojis,
-    22: retain_turkish,
-    23: ascii_only,
-    24: alphanumeric_only
+    2: disable_leetspeak,
+    3: retain_diacritics,
+    4: retain_greek,
+    5: retain_cyrillic,
+    6: retain_hebrew,
+    7: retain_arabic,
+    8: retain_devanagari,
+    9: retain_bengali,
+    10: retain_armenian,
+    11: retain_gujarati,
+    12: retain_tamil,
+    13: retain_thai,
+    14: retain_lao,
+    15: retain_burmese,
+    16: retain_khmer,
+    17: retain_mongolian,
+    18: retain_chinese,
+    19: retain_japanese,
+    20: retain_korean,
+    21: retain_braille,
+    22: retain_emojis,
+    23: retain_turkish,
+    24: ascii_only,
+    25: alphanumeric_only
   }
 
   overrides {
-    all: 0x1ffffff,
-    pure_homoglyph: 0x3ffffc
+    all: 0x3ffffff,
+    pure_homoglyph: 0x7ffff8
   }
 }
 

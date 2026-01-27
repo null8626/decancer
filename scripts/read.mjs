@@ -2,13 +2,13 @@
 
 'use strict'
 
+import {
+  CODEPOINT_MASK,
+  CORE_DIR,
+  STRING_TRANSLATION_MASK
+} from './constants.mjs'
 import { readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
-
-const CODEPOINT_MASK = 0xfffff
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const STRING_TRANSLATION_MASK = 0x10000000
+import { join } from 'node:path'
 
 class Codepoints {
   #inner
@@ -42,7 +42,7 @@ class Codepoints {
   }
 }
 
-const binary = readFileSync(join(ROOT_DIR, 'core', 'bin', 'codepoints.bin'))
+const binary = readFileSync(join(CORE_DIR, 'bin', 'codepoints.bin'))
 
 const similar = []
 let currentSimilar = []
