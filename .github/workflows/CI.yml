@@ -742,8 +742,6 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: EndBug/add-and-commit@v9
         with:
-          committer_name: GitHub Actions
-          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
           commit: -S
           message: 'chore: update decancer from manually invoked CI'
         env:
@@ -752,8 +750,6 @@ jobs:
         if: ${{ github.event_name != 'workflow_dispatch' }}
         uses: EndBug/add-and-commit@v9
         with:
-          committer_name: GitHub Actions
-          committer_email: 41898282+github-actions[bot]@users.noreply.github.com
           commit: -S --amend --no-edit --no-reset-author
           message: ${{ github.event.head_commit.message }}
           push: --force-with-lease
