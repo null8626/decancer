@@ -36,24 +36,22 @@
     "test": "node test.cjs"
   },
   "napi": {
-    "name": "decancer",
+    "binaryName": "decancer",
     "package": {
       "name": "@vierofernando/decancer"
     },
-    "triples": {
-      "additional": [
-        "aarch64-apple-darwin",
-        "aarch64-linux-android",
-        "aarch64-unknown-linux-gnu",
-        "aarch64-unknown-linux-musl",
-        "aarch64-pc-windows-msvc",
-        "armv7-unknown-linux-gnueabihf",
-        "x86_64-unknown-linux-musl",
-        "i686-pc-windows-msvc",
-        "armv7-linux-androideabi",
-        "x86_64-unknown-freebsd"
-      ]
-    }
+    "targets": [
+      "aarch64-apple-darwin",
+      "aarch64-linux-android",
+      "aarch64-unknown-linux-gnu",
+      "aarch64-unknown-linux-musl",
+      "aarch64-pc-windows-msvc",
+      "armv7-unknown-linux-gnueabihf",
+      "x86_64-unknown-linux-musl",
+      "i686-pc-windows-msvc",
+      "armv7-linux-androideabi",
+      "x86_64-unknown-freebsd"
+    ]
   },
   "funding": [
     "https://github.com/sponsors/null8626",
