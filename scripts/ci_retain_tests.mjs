@@ -10,7 +10,8 @@ import {
   RETAIN_TESTS_SAMPLE_SIZE,
   RETAINABLE_SCRIPTS,
   TURKISH_CHARACTERS,
-  ROOT_DIR
+  ROOT_DIR,
+  SPDX_LICENSE_COMMENTS
 } from './constants.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { binarySearchExists } from './util.mjs'
@@ -62,7 +63,9 @@ for (const { start, end, name } of blocks) {
   }
 }
 
-let testCode = `${MODIFIED_RETAIN_TESTS_WARNING}
+let testCode = `${SPDX_LICENSE_COMMENTS}
+
+${MODIFIED_RETAIN_TESTS_WARNING}
 
 #[test]
 #[cfg(feature = "options")]

@@ -91,7 +91,6 @@ public final class Options {
   /**
    * Prevents decancer from applying leetspeak comparisons in comparison methods.
    *
-   * @return Options A reference to this object to allow for method chaining.
    * @since 4.0.0
    */
   public Options disableLeetspeak() {

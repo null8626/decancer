@@ -6,7 +6,7 @@
 use jni::{
   JNIEnv,
   objects::{JClass, JObject, JObjectArray, JString, JValue},
-  sys::{jchar, jint, jlong, jobject, jstring},
+  sys::{jboolean, jchar, jint, jlong, jobject, jstring},
 };
 
 mod util;
@@ -35,6 +35,20 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<
       0 as _
     },
   }
+}
+
+#[unsafe(no_mangle)]
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_disableLeetspeak<
+  'local,
+>(
+  mut env: JNIEnv<'local>,
+  this: JObject<'local>,
+  switch: jboolean,
+) {
+  let inner = util::get_inner!(env, this, ());
+  let inner_ref = unsafe { &mut *inner };
+
+  inner_ref.disable_leetspeak(switch != 0);
 }
 
 #[unsafe(no_mangle)]

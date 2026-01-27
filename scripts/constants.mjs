@@ -99,6 +99,8 @@ export const MODIFIED_RETAIN_TESTS_WARNING =
   '// WARNING: This file is computer generated.'
 export const MODIFIED_README_WARNING =
   '<!-- WARNING: This file is computer generated.\n     please modify the README.md file in the root directory instead. -->\n\n'
+export const SPDX_LICENSE_COMMENTS = `// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626`
 
 export const RETAIN_TESTS_SAMPLE_SIZE = 5
 

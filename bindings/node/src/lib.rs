@@ -119,6 +119,11 @@ impl CuredString {
   }
 
   #[napi]
+  pub fn disable_leetspeak(&mut self, switch: bool) {
+    self.0.disable_leetspeak(switch);
+  }
+
+  #[napi]
   pub fn find(&self, other: String) -> Vec<Match> {
     self.0.find(&other).map(|mat| self.new_match(mat)).collect()
   }

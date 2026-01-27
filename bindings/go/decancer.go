@@ -140,6 +140,10 @@ func Cure(text string, options Option) (*CuredString, error) {
 	return &CuredString{ptr: ptr}, nil
 }
 
+func (cured *CuredString) DisableLeetspeak(switch_ bool) {
+	C.decancer_disable_leetspeak(cured.ptr, C.bool(switch_))
+}
+
 func (cured *CuredString) Find(other string) []Match {
 	var matches []Match
 
