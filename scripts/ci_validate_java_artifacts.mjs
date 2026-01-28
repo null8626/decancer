@@ -1,9 +1,8 @@
 /* eslint-disable */
 
-'use strict'
-
 import { EXPECTED_JAVA_TARGETS, ROOT_DIR } from './constants.mjs'
 import { readdir } from 'node:fs/promises'
+import process from 'node:process'
 import { join } from 'node:path'
 
 const artifacts = await readdir(join(ROOT_DIR, 'java-artifacts'))

@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   BIDI_CLASSES,
   BLACKLISTED_CODEPOINTS,
@@ -12,6 +10,7 @@ import { containsInclusive, request, strongAssert, SortedSet } from './util.mjs'
 import { writeFile } from 'node:fs/promises'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
+import { Buffer } from 'node:buffer'
 import { serialize } from 'node:v8'
 import { join } from 'node:path'
 
@@ -80,7 +79,7 @@ const unicode = unicodeResponse
   .split('\n')
   .map(x => x.split(';'))
 
-let cache = {
+const cache = {
   alreadyHandledCount: 0,
   blocks: [],
   diacritics: [],

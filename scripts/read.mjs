@@ -1,13 +1,12 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   CODEPOINT_MASK,
   CORE_DIR,
   STRING_TRANSLATION_MASK
 } from './constants.mjs'
 import { readFileSync, writeFileSync } from 'node:fs'
+import process from 'node:process'
 import { join } from 'node:path'
 
 class Codepoints {
@@ -71,7 +70,7 @@ function getTranslation(integer, secondByte) {
 }
 
 let codepointsEnd = binary.readUint16LE()
-let codepoints = new Codepoints()
+const codepoints = new Codepoints()
 
 for (let offset = 6; offset < codepointsEnd; offset += 6) {
   const integer = binary.readUint32LE(offset)

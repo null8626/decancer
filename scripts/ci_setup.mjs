@@ -1,8 +1,7 @@
 /* eslint-disable */
 
-'use strict'
-
 import { appendFileSync } from 'node:fs'
+import process from 'node:process'
 import { EOL } from 'node:os'
 
 let input

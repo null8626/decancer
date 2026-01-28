@@ -1,6 +1,7 @@
 import { Worker } from 'node:worker_threads'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import process from 'node:process'
 import puppeteer from 'puppeteer'
 
 const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))

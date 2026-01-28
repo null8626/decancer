@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   BINDINGS_DIR,
   CACHE_FILE,
@@ -40,7 +38,7 @@ async function preprocess(readmePath, inputDefinitions) {
       for (let instruction of line
         .slice(6, -5)
         .trim()
-        .split(/\s*\,\s*/)) {
+        .split(/\s*,\s*/)) {
         instruction = instruction.trim()
 
         if (instruction === 'end') {
@@ -107,7 +105,7 @@ await writeFile(
     .toString()
     .trim()
     .replace(
-      /\*\*[\d,\.]+ \(\d+[\.\,]\d{2}%\) different unicode codepoints\*\*/,
+      /\*\*[\d,.]+ \(\d+[.,]\d{2}%\) different unicode codepoints\*\*/,
       `**${codepointsCount.toLocaleString('en-US')} (${(
         (codepointsCount / 0x10ffff) *
         100

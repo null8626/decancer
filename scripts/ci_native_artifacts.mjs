@@ -1,17 +1,15 @@
 /* eslint-disable */
 
-'use strict'
-
+import { BINDINGS_DIR, ROOT_DIR } from './constants.mjs'
 import { readdir, rename } from 'node:fs/promises'
-import { ROOT_DIR } from './constants.mjs'
+import process from 'node:process'
 import { join } from 'node:path'
 
 const TARGET = process.argv[2]
 const IS_JAVA = process.argv.slice(3).some(argv => argv === '--java')
 
 const TARGET_DIR = join(
-  ROOT_DIR,
-  'bindings',
+  BINDINGS_DIR,
   IS_JAVA ? 'java' : 'native',
   TARGET,
   'release'
@@ -20,7 +18,7 @@ const TARGET_DIR = join(
 const artifacts = await readdir(TARGET_DIR)
 const promises = []
 
-for (let artifact of artifacts) {
+for (const artifact of artifacts) {
   try {
     const ext = artifact.match(/\.\w+$/)[0].slice(1)
 

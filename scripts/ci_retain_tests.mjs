@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   CACHE_FILE,
   CODEPOINT_MASK,
@@ -41,7 +39,7 @@ for (let offset = binary.readUint16LE(); offset < codepointsEnd; offset += 6) {
   codepoints.push(binary.readUint32LE(offset) & CODEPOINT_MASK)
 }
 
-let retain = {}
+const retain = {}
 
 for (const { start, end, name } of blocks) {
   for (let codepoint = start; codepoint <= end; codepoint++) {

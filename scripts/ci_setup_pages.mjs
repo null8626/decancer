@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import { BINDINGS_DIR, GITHUB_PAGES_IGNORE, ROOT_DIR } from './constants.mjs'
 import { readFile, writeFile, readdir, stat, rm } from 'node:fs/promises'
 import { join, sep } from 'node:path'
@@ -11,7 +9,7 @@ const MINIFIED_JS = join(BINDINGS_DIR, 'wasm', 'bin', 'decancer.min.js')
 const editedMinifiedJsContents = (await readFile(MINIFIED_JS))
   .toString()
   .replace(
-    /https\:\/\/cdn\.jsdelivr\.net\/gh\/null8626\/decancer@v[\d\.]+\/bindings\/wasm\/bin\/decancer\.wasm/,
+    /https:\/\/cdn\.jsdelivr\.net\/gh\/null8626\/decancer@v[\d.]+\/bindings\/wasm\/bin\/decancer\.wasm/,
     'https://null8626.github.io/decancer/bindings/wasm/bin/decancer.wasm'
   )
 await writeFile(MINIFIED_JS, editedMinifiedJsContents)

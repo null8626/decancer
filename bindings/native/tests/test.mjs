@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-'use strict'
-
 import { readdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { rm } from 'node:fs/promises'
+import process from 'node:process'
 
 const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 const TESTS_DIR = join(ROOT_DIR, 'tests')

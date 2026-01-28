@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   BINDINGS_DIR,
   EXPECTED_NATIVE_TARGETS,
@@ -11,6 +9,7 @@ import {
 import { readdir, rename, mkdir } from 'node:fs/promises'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
+import process from 'node:process'
 import { join } from 'node:path'
 
 const ARTIFACTS_DIR = join(ROOT_DIR, 'artifacts')
@@ -22,6 +21,8 @@ const [artifacts] = await Promise.all([
   readdir(ARTIFACTS_DIR),
   mkdir(NODE_ARTIFACTS_DIR)
 ])
+
+let foundJavaJar = false
 
 void (await Promise.all(
   artifacts.map(async artifact => {
@@ -63,7 +64,7 @@ void (await Promise.all(
   })
 ))
 
-if (expectedNodeTargets.length !== 0) {
+if (EXPECTED_NODE_TARGETS.length !== 0 || !foundJavaJar) {
   console.error('error: found missing targets')
   process.exit(1)
 }

@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   BINDINGS_DIR,
   CORE_DIR,
@@ -9,6 +7,7 @@ import {
   ROOT_DIR
 } from './constants.mjs'
 import { readdir, readFile, writeFile } from 'node:fs/promises'
+import process from 'node:process'
 import { join } from 'node:path'
 
 const NODE_DIR = join(BINDINGS_DIR, 'node')
@@ -64,8 +63,8 @@ function updateNativeHeaderFunc(x) {
         `#define DECANCER_VERSION ${versionHex}`
       )
       .replace(
-        /@date \d{4}\-\d{2}\-\d{2}/,
-        `@date ${new Date().toISOString().replace(/T[\d\:\.]+Z$/, '')}`
+        /@date \d{4}-\d{2}-\d{2}/,
+        `@date ${new Date().toISOString().replace(/T[\d:.]+Z$/, '')}`
       )
   )
 }

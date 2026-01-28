@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import {
   binarySearchExists,
   containsInclusive,
@@ -20,7 +18,9 @@ import {
 } from './constants.mjs'
 import { execSync } from 'node:child_process'
 import { deserialize } from 'node:v8'
+import { Buffer } from 'node:buffer'
 import { inspect } from 'node:util'
+import process from 'node:process'
 import { join } from 'node:path'
 import assert from 'node:assert'
 

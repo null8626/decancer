@@ -1,9 +1,8 @@
 /* eslint-disable */
 
-'use strict'
-
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import process from 'node:process'
 
 export const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -14,7 +13,7 @@ export const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
 export const OPTIONS = Object.fromEntries(
   process.argv
     .slice(2)
-    .map(x => x.match(/^\-\-([\w\-]+)=(.*)/)?.slice(1))
+    .map(x => x.match(/^--([\w-]+)=(.*)/)?.slice(1))
     .filter(x => x)
 )
 

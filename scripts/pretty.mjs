@@ -1,7 +1,5 @@
 /* eslint-disable */
 
-'use strict'
-
 import { BINDINGS_DIR, CORE_DIR, OPTIONS, ROOT_DIR } from './constants.mjs'
 import { exec } from 'node:child_process'
 import { isAffected } from './util.mjs'

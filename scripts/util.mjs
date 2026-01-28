@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-'use strict'
+import process from 'node:process'
 
 const SETUP_OUTPUTS = process.env.DECANCER_SETUP_OUTPUTS
   ? JSON.parse(process.env.DECANCER_SETUP_OUTPUTS)
@@ -97,11 +97,9 @@ export function mergeArray(arr, recurse = true) {
     mergedSections.push(section)
   }
 
-  if (recurse) {
-    return mergeArray(mergedSections, false)
-  } else {
-    return mergedSections.reduce((a, b) => a + b, '')
-  }
+  return recurse
+    ? mergeArray(mergedSections, false)
+    : mergedSections.reduce((a, b) => a + b, '')
 }
 
 export function removeFromSet(array, set) {
