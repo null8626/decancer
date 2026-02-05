@@ -1,7 +1,7 @@
 plugins {
   id 'java-library'
   id 'maven-publish'
-  id 'org.jreleaser' version '1.20.0'
+  id 'org.jreleaser' version '1.22.0'
 }
 
 group = 'io.github.null8626'
@@ -140,11 +140,11 @@ test {
 
 dependencies {
   implementation 'com.github.adamheinrich:native-utils:e6a3948'
-  implementation 'com.fizzed:jne:4.5.3'
+  implementation 'com.fizzed:jne:4.11.0'
 
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.0'
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:6.0.0"
-  testRuntimeOnly "org.junit.platform:junit-platform-launcher:6.0.0"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.2'
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:6.0.2"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:6.0.2"
 }
 
 tasks.withType(JavaCompile) {
