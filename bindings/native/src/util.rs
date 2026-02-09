@@ -42,7 +42,9 @@ pub fn native_cure(
     return 0 as _;
   };
 
-  match decancer::cure(&input, unsafe { transmute::<u32, decancer::Options>(options) }) {
+  match decancer::cure(&input, unsafe {
+    transmute::<u32, decancer::Options>(options)
+  }) {
     Ok(res) => Box::into_raw(Box::new(res)),
 
     Err(err) => {

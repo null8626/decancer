@@ -53,7 +53,9 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
     decancer_translation_free(output);
   }
 
-  match decancer::cure_char(input, unsafe { transmute::<u32, decancer::Options>(options) }) {
+  match decancer::cure_char(input, unsafe {
+    transmute::<u32, decancer::Options>(options)
+  }) {
     decancer::Translation::Character(c) => unsafe {
       (*output).kind = 0;
       (*output).slot_a = c as _;
@@ -102,7 +104,11 @@ pub unsafe extern "C" fn decancer_find(
   other_length: usize,
 ) -> *mut decancer::Matcher<'static, 'static> {
   u8::parse(other_str, other_length).map_or(0 as _, |result| {
-    Box::into_raw(Box::new(unsafe { transmute::<decancer::Matcher<'_, '_>, decancer::Matcher<'static, 'static>>((*cured).find(&result)) }))
+    Box::into_raw(Box::new(unsafe {
+      transmute::<decancer::Matcher<'_, '_>, decancer::Matcher<'static, 'static>>(
+        (*cured).find(&result),
+      )
+    }))
   })
 }
 
@@ -119,9 +125,11 @@ pub unsafe extern "C" fn decancer_find_utf16(
       matcher: None,
     });
 
-    output
-      .matcher
-      .replace(unsafe { transmute::<decancer::Matcher<'_, '_>, decancer::Matcher<'static, 'static>>((*cured).find(&output.other)) });
+    output.matcher.replace(unsafe {
+      transmute::<decancer::Matcher<'_, '_>, decancer::Matcher<'static, 'static>>(
+        (*cured).find(&output.other),
+      )
+    });
 
     Box::into_raw(output)
   })
