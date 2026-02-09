@@ -16,7 +16,7 @@ struct Element<T: ?Sized> {
   size: usize,
 }
 
-pub(super) trait UnicodeUnit {
+pub trait UnicodeUnit {
   fn parse(input_ptr: *const Self, input_size: usize) -> Option<Cow<'static, str>>;
 
   fn parse_array(input_ptr: *const u8, input_length: usize) -> Option<Vec<Cow<'static, str>>> {

@@ -8,17 +8,6 @@ publish = false
 name = "decancer"
 crate-type = ["cdylib"]
 
-[lints.clippy]
-all = { level = "warn", priority = -1 }
-pedantic = { level = "warn", priority = -1 }
-cast-lossless = "allow"
-cast-possible-truncation = "allow"
-cast-possible-wrap = "allow"
-missing-panics-doc = "allow"
-missing-safety-doc = "allow"
-missing-transmute-annotations = "allow"
-single-match-else = "allow"
-
 [dependencies]
 decancer = { path = "../../core", default-features = false }
 
@@ -35,3 +24,9 @@ leetspeak = ["decancer/leetspeak"]
 
 [profile.release]
 lto = true
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+missing_safety_doc = "allow"

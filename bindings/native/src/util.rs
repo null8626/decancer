@@ -3,7 +3,7 @@
 
 use std::{borrow::Cow, mem::transmute};
 
-pub(super) fn null_terminated<T>(ptr: *const T) -> impl Iterator<Item = T>
+pub fn null_terminated<T>(ptr: *const T) -> impl Iterator<Item = T>
 where
   T: Copy + Default + PartialEq<T>,
 {
@@ -13,7 +13,7 @@ where
 }
 
 #[cfg(feature = "utf16")]
-pub(super) fn sized<T>(ptr: *const T, size: usize) -> impl Iterator<Item = T>
+pub fn sized<T>(ptr: *const T, size: usize) -> impl Iterator<Item = T>
 where
   T: Copy,
 {
@@ -22,6 +22,7 @@ where
 
 macro_rules! write_error {
   ($error:ident, $message:ident) => {
+    #[allow(clippy::cast_possible_truncation)]
     unsafe {
       (*$error).message = $message.as_ptr() as _;
       (*$error).message_length = $message.len() as _;
@@ -29,7 +30,7 @@ macro_rules! write_error {
   };
 }
 
-pub(super) fn native_cure(
+pub fn native_cure(
   input: Option<Cow<'static, str>>,
   options: u32,
   invalid_input_error_message: &'static str,
@@ -41,7 +42,7 @@ pub(super) fn native_cure(
     return 0 as _;
   };
 
-  match decancer::cure(&input, unsafe { transmute(options) }) {
+  match decancer::cure(&input, unsafe { transmute::<u32, decancer::Options>(options) }) {
     Ok(res) => Box::into_raw(Box::new(res)),
 
     Err(err) => {
