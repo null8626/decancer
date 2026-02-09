@@ -777,7 +777,7 @@ jobs:
         with:
           node-version: 22.x
       - name: Setup Doxygen
-        uses: ssciwr/doxygen-install@v1
+        uses: ssciwr/doxygen-install@v2
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
         uses: actions/download-artifact@v7
