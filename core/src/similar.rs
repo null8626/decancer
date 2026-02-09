@@ -6,8 +6,8 @@ use super::leetspeak;
 use super::{codepoints::CODEPOINTS, util::Cached};
 use std::{char, iter::FusedIterator, ops::Range};
 
-pub(super) const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
-pub(super) const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
+pub const SIMILAR_START: u16 = CODEPOINTS.u16_at(2);
+pub const SIMILAR_END: u16 = CODEPOINTS.u16_at(4);
 
 fn to_lowercase(c: char) -> char {
   c.to_lowercase().next().unwrap_or(c)
@@ -18,7 +18,8 @@ fn is_exact(self_char: char, other_char: char) -> bool {
   to_lowercase(self_char) == to_lowercase(other_char)
 }
 
-pub(super) fn is(self_char: char, other_char: char) -> bool {
+#[allow(clippy::cast_possible_truncation)]
+pub fn is(self_char: char, other_char: char) -> bool {
   let self_char = to_lowercase(self_char) as u32;
   let other_char = to_lowercase(other_char) as u32;
 
@@ -55,6 +56,7 @@ struct ExplicitStartingPosition {
 }
 
 /// A matcher iterator around a string that yields a non-inclusive [`Range`] whenever it detects a similar match.
+#[must_use]
 pub struct Matcher<'a, 'b> {
   self_iterator: Cached<'a>,
   #[cfg(feature = "leetspeak")]

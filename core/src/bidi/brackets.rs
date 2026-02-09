@@ -3,14 +3,14 @@
 
 use super::{super::util::CODEPOINT_MASK, BIDI, BIDI_BRACKETS_COUNT};
 
-pub(in super::super) struct BracketPair {
+pub struct BracketPair {
   pub(in super::super) start: usize,
   pub(in super::super) end: usize,
   pub(in super::super) start_run: usize,
   pub(in super::super) end_run: usize,
 }
 
-pub(in super::super) struct OpeningBracket {
+pub struct OpeningBracket {
   pub(in super::super) opening: u32,
   pub(in super::super) is_open: bool,
 }
@@ -22,6 +22,7 @@ const fn min_max(a: u32, b: u32) -> (u32, u32) {
 }
 
 impl OpeningBracket {
+  #[allow(clippy::cast_sign_loss)]
   pub(in super::super) const fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_BRACKETS_COUNT as i32;
@@ -35,7 +36,7 @@ impl OpeningBracket {
 
       let diff = (first >> 28) & 7;
 
-      let closing = if first >= 0x80000000 {
+      let closing = if first >= 0x8000_0000 {
         opening - diff
       } else {
         opening + diff

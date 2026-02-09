@@ -36,7 +36,6 @@ impl CuredString {
   /// assert_eq!(matcher.next(), Some(14..22));
   /// assert_eq!(matcher.next(), None);
   /// ```
-  #[inline(always)]
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Matcher<'a, 'b> {
     Matcher::new(
       self,
@@ -101,11 +100,12 @@ impl CuredString {
       }
 
       self_str.replace_range(
-        (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
+        (mat.start.cast_signed() + char_diff).cast_unsigned()
+          ..(mat.end.cast_signed() + char_diff).cast_unsigned(),
         &with_str[..cap],
       );
 
-      char_diff += cap as isize - mat.len() as isize;
+      char_diff += cap.cast_signed() - mat.len().cast_signed();
     }
   }
 
@@ -167,11 +167,12 @@ impl CuredString {
 
     for mat in matches {
       self_str.replace_range(
-        (mat.start as isize + char_diff) as usize..(mat.end as isize + char_diff) as _,
+        (mat.start.cast_signed() + char_diff).cast_unsigned()
+          ..(mat.end.cast_signed() + char_diff).cast_unsigned(),
         with,
       );
 
-      char_diff += with.len() as isize - mat.len() as isize;
+      char_diff += with.len().cast_signed() - mat.len().cast_signed();
     }
   }
 
@@ -187,7 +188,6 @@ impl CuredString {
   ///
   /// assert_eq!(cured, "wow world wow world!");
   /// ```
-  #[inline(always)]
   pub fn replace(&mut self, other: &str, with: &str) {
     self.replace_inner(self.clone().find(other), with);
   }
@@ -213,7 +213,6 @@ impl CuredString {
   ///
   /// assert_eq!(cured, "no :)");
   /// ```
-  #[inline(always)]
   pub fn replace_multiple<S, O>(&mut self, other: O, with: &str)
   where
     S: AsRef<str>,
@@ -225,6 +224,7 @@ impl CuredString {
   /// Checks if this cured string similarly starts with another string.
   ///
   /// This comparison is case-insensitive.
+  #[must_use]
   pub fn starts_with(&self, other: &str) -> bool {
     let mut iter = self.find(other);
 
@@ -234,6 +234,7 @@ impl CuredString {
   /// Checks if this cured string similarly ends with another string.
   ///
   /// This comparison is case-insensitive.
+  #[must_use]
   pub fn ends_with(&self, other: &str) -> bool {
     self
       .find(other)
@@ -244,6 +245,7 @@ impl CuredString {
   /// Checks if this cured string similarly contains another string.
   ///
   /// This comparison is case-insensitive.
+  #[must_use]
   pub fn contains(&self, other: &str) -> bool {
     let mut iter = self.find(other);
 
@@ -251,9 +253,8 @@ impl CuredString {
   }
 
   /// Prevents decancer from applying leetspeak comparisons in comparison methods.
-  #[inline(always)]
   #[cfg(all(feature = "leetspeak", feature = "options"))]
-  pub fn disable_leetspeak(&mut self, switch: bool) {
+  pub const fn disable_leetspeak(&mut self, switch: bool) {
     self.disable_leetspeak = switch;
   }
 }
@@ -262,7 +263,6 @@ impl AsRef<str> for CuredString {
   /// Coerces this cured string to a [`str`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
-  #[inline(always)]
   fn as_ref(&self) -> &str {
     &self.string
   }
@@ -274,7 +274,6 @@ impl Deref for CuredString {
   /// Coerces this cured string to a [`str`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
-  #[inline(always)]
   fn deref(&self) -> &Self::Target {
     self.as_ref()
   }
@@ -284,7 +283,6 @@ impl From<CuredString> for Cow<'static, str> {
   /// Coerces this cured string to a [`Cow<'static, str>`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
-  #[inline(always)]
   fn from(s: CuredString) -> Self {
     s.string
   }
@@ -294,7 +292,6 @@ impl From<CuredString> for String {
   /// Coerces this cured string to a [`String`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
-  #[inline(always)]
   fn from(s: CuredString) -> Self {
     s.string.into_owned()
   }
@@ -307,7 +304,6 @@ where
   /// Checks if this cured string is similar with another string.
   ///
   /// This comparison is case-insensitive.
-  #[inline(always)]
   fn eq(&self, other: &S) -> bool {
     Matcher::is_equal(
       self,
@@ -319,14 +315,12 @@ where
 }
 
 impl Debug for CuredString {
-  #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
     Debug::fmt(&**self, f)
   }
 }
 
 impl Display for CuredString {
-  #[inline(always)]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
     Display::fmt(&**self, f)
   }

@@ -27,6 +27,7 @@ macro_rules! options {
     $(
       $(#[$extra_meta])*
       #[cfg(feature = "options")]
+      #[must_use]
       pub const fn $name(self) -> Self {
         Self(self.0 | (1 << $idx))
       }
@@ -37,11 +38,11 @@ macro_rules! options {
 impl Options {
   /// A configuration where every option is enabled.
   #[cfg(feature = "options")]
-  pub const ALL: Self = Self(0x3ffffff);
+  pub const ALL: Self = Self(0x3ff_ffff);
 
   /// A configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
   #[cfg(feature = "options")]
-  pub const PURE_HOMOGLYPH: Self = Self(0x7ffff8);
+  pub const PURE_HOMOGLYPH: Self = Self(0x7f_fff8);
 
   options! {
     /// Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
@@ -198,7 +199,6 @@ impl Options {
 #[doc(hidden)]
 #[cfg(feature = "options")]
 impl From<u32> for Options {
-  #[inline(always)]
   fn from(value: u32) -> Self {
     Self(value)
   }

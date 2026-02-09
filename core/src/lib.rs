@@ -2,9 +2,7 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 #![doc = include_str!("../README.md")]
-#![allow(clippy::upper_case_acronyms)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
-#![forbid(unsafe_code, rustdoc::broken_intra_doc_links)]
 
 mod bidi;
 mod codepoints;
@@ -94,8 +92,8 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
     #[cfg_attr(not(feature = "options"), allow(unused_mut))]
     if let Some(mut translation) = options.translate(
       code,
-      CASE_SENSITIVE_CODEPOINTS_OFFSET as _,
-      CASE_SENSITIVE_CODEPOINTS_COUNT as _,
+      CASE_SENSITIVE_CODEPOINTS_OFFSET.into(),
+      CASE_SENSITIVE_CODEPOINTS_COUNT.into(),
     ) {
       #[cfg(feature = "options")]
       if retain_capitalization {
@@ -111,17 +109,18 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   }
 
   #[cfg(feature = "options")]
-  match options.translate(code_lowercased, 6, CODEPOINTS_COUNT as _) {
-    Some(translation) => translation.ensure_stripped_if(ascii_only, alphanumeric_only),
-
-    None => {
-      if ascii_only || alphanumeric_only {
-        Translation::None
-      } else {
-        Translation::character(default_output)
-      }
-    },
-  }
+  return options
+    .translate(code_lowercased, 6, CODEPOINTS_COUNT.into())
+    .map_or_else(
+      || {
+        if ascii_only || alphanumeric_only {
+          Translation::None
+        } else {
+          Translation::character(default_output)
+        }
+      },
+      |translation| translation.ensure_stripped_if(ascii_only, alphanumeric_only),
+    );
 
   #[cfg(not(feature = "options"))]
   options
@@ -205,7 +204,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
 
             paragraphs.push(Paragraph {
               range: paragraph_start..paragraph_end,
-              level: paragraph_level.unwrap_or(Level::ltr()),
+              level: paragraph_level.unwrap_or(Level::LTR),
               pure_ltr,
               has_isolate_controls,
             });
@@ -240,9 +239,9 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
               None => {
                 if paragraph_level.is_none() {
                   paragraph_level.replace(if class == Class::L {
-                    Level::ltr()
+                    Level::LTR
                   } else {
-                    Level::rtl()
+                    Level::RTL
                   });
                 }
               },
@@ -276,7 +275,7 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   if paragraph_start < idx {
     paragraphs.push(Paragraph {
       range: paragraph_start..idx,
-      level: paragraph_level.unwrap_or(Level::ltr()),
+      level: paragraph_level.unwrap_or(Level::LTR),
       pure_ltr,
       has_isolate_controls,
     });

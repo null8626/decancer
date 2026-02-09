@@ -4,19 +4,14 @@
 use super::{super::Error, Class};
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub(in super::super) struct Level(pub(in super::super) u8);
+pub struct Level(pub(in super::super) u8);
 
-pub(in super::super) const MAX_EXPLICIT_DEPTH: u8 = 125;
-pub(in super::super) const MAX_IMPLICIT_DEPTH: u8 = MAX_EXPLICIT_DEPTH + 1;
+pub const MAX_EXPLICIT_DEPTH: u8 = 125;
+pub const MAX_IMPLICIT_DEPTH: u8 = MAX_EXPLICIT_DEPTH + 1;
 
 impl Level {
-  pub(in super::super) const fn ltr() -> Self {
-    Self(0)
-  }
-
-  pub(in super::super) const fn rtl() -> Self {
-    Self(1)
-  }
+  pub(in super::super) const LTR: Self = Self(0);
+  pub(in super::super) const RTL: Self = Self(1);
 
   pub(in super::super) const fn new_explicit(number: u8) -> Result<Self, Error> {
     if number <= MAX_EXPLICIT_DEPTH {
@@ -34,7 +29,7 @@ impl Level {
     }
   }
 
-  pub(in super::super) fn lower(&mut self, amount: u8) -> Result<(), Error> {
+  pub(in super::super) const fn lower(&mut self, amount: u8) -> Result<(), Error> {
     match self.0.checked_sub(amount) {
       Some(result) => {
         self.0 = result;
@@ -46,7 +41,7 @@ impl Level {
     }
   }
 
-  pub(in super::super) fn raise(&mut self, amount: u8) -> Result<(), Error> {
+  pub(in super::super) const fn raise(&mut self, amount: u8) -> Result<(), Error> {
     if let Some(number) = self.0.checked_add(amount)
       && number <= MAX_IMPLICIT_DEPTH
     {

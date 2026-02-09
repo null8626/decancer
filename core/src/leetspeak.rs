@@ -17,6 +17,7 @@ macro_rules! re {
   }};
 }
 
+#[allow(clippy::trivial_regex)]
 static REGEXES: LazyLock<[Option<Regex>; 26]> = LazyLock::new(|| {
   [
     re!(r"^(?:\/-*\\|[\[\(\{<]L)"),
@@ -56,7 +57,7 @@ static REGEXES: LazyLock<[Option<Regex>; 26]> = LazyLock::new(|| {
   ]
 });
 
-pub(super) fn find(haystack: &[u8], character: u32) -> Option<usize> {
+pub fn find(haystack: &[u8], character: u32) -> Option<usize> {
   REGEXES[match character {
     65..=90 => character - 65,
 

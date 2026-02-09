@@ -7,10 +7,10 @@ use super::{
 };
 
 numbered_enum! {
-  #[allow(dead_code)]
+  #[allow(clippy::upper_case_acronyms, dead_code)]
   #[cfg_attr(test, derive(Debug))]
   #[derive(Copy, Clone, Eq, PartialEq)]
-  pub(in super::super) enum Class: u8 {
+  pub enum Class: u8 {
     B = 0,
     S = 1,
     WS = 2,
@@ -37,6 +37,7 @@ numbered_enum! {
 }
 
 impl Class {
+  #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
   pub(in super::super) const fn new(code: u32) -> Option<Self> {
     let mut start = 0i32;
     let mut end = BIDI_DICTIONARY_COUNT as i32;

@@ -10,19 +10,19 @@ use super::{
 };
 use std::cmp::Ordering;
 
-pub(super) const CODEPOINTS: Binary = Binary::new(include_bytes!("../bin/codepoints.bin"));
+pub const CODEPOINTS: Binary = Binary::new(include_bytes!("../bin/codepoints.bin"));
 
 // - 1 because we're only using them in binary search
-pub(super) const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
+pub const CASE_SENSITIVE_CODEPOINTS_COUNT: u16 =
   ((SIMILAR_START - CASE_SENSITIVE_CODEPOINTS_OFFSET) / 6) - 1;
-pub(super) const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);
-pub(super) const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 6) - 1;
+pub const CASE_SENSITIVE_CODEPOINTS_OFFSET: u16 = CODEPOINTS.u16_at(0);
+pub const CODEPOINTS_COUNT: u16 = ((CASE_SENSITIVE_CODEPOINTS_OFFSET - 6) / 6) - 1;
 
-const STRING_TRANSLATION_MASK: u32 = 0x10000000;
+const STRING_TRANSLATION_MASK: u32 = 0x1000_0000;
 
 #[derive(Copy, Clone)]
 #[cfg_attr(not(feature = "options"), allow(dead_code))]
-pub(super) struct Codepoint(u32, u8, u8);
+pub struct Codepoint(u32, u8, u8);
 
 impl Codepoint {
   const fn get_codepoint(self) -> u32 {
@@ -49,6 +49,7 @@ impl Codepoint {
     self.1 >= 0x80
   }
 
+  #[allow(clippy::cast_sign_loss)]
   pub(super) const fn at(offset: i32) -> Self {
     Self(
       CODEPOINTS.u32_at(offset as _),

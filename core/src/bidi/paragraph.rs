@@ -7,8 +7,9 @@ use std::{
   ops::{Index, IndexMut, Range},
 };
 
-#[derive(PartialEq)]
-pub(in super::super) enum OverrideStatus {
+#[derive(Eq, PartialEq)]
+#[allow(clippy::upper_case_acronyms)]
+pub enum OverrideStatus {
   Neutral,
   RTL,
   LTR,
@@ -16,7 +17,7 @@ pub(in super::super) enum OverrideStatus {
 }
 
 impl OverrideStatus {
-  pub(in super::super) fn apply(&self, class: &mut Class) {
+  pub(in super::super) const fn apply(&self, class: &mut Class) {
     match self {
       Self::RTL => *class = Class::R,
 
@@ -33,13 +34,14 @@ struct Status {
 }
 
 #[cfg_attr(test, derive(Debug, Eq, PartialEq))]
-pub(in super::super) struct IsolatingRunSequence {
+pub struct IsolatingRunSequence {
   pub(in super::super) runs: Vec<Range<usize>>,
   pub(in super::super) start_class: Class,
   pub(in super::super) end_class: Class,
 }
 
 impl IsolatingRunSequence {
+  #[allow(clippy::similar_names)]
   pub(in super::super) fn resolve_implicit_weak(
     &self,
     text: &str,
@@ -138,14 +140,15 @@ impl IsolatingRunSequence {
             }
           },
 
-          Class::ET => match prev_class_before_w5 {
-            Class::EN => processing_classes[i] = Class::EN,
-
-            _ => {
+          Class::ET => {
+            if prev_class_before_w5 == Class::EN {
+              processing_classes[i] = Class::EN;
+            } else {
               et_run_indices.extend(&bn_run_indices);
               et_run_indices.push(i);
-            },
+            }
           },
+
           _ => {},
         }
 
@@ -332,22 +335,18 @@ impl IsolatingRunSequence {
         let mut next_class;
 
         loop {
-          match indices.next() {
-            Some(j) => {
-              i = j;
-              next_class = processing_classes[j];
+          if let Some(j) = indices.next() {
+            i = j;
+            next_class = processing_classes[j];
 
-              if next_class.is_neutral_or_isolate() || next_class == Class::BN {
-                ni_run.push(i);
-              } else {
-                break;
-              }
-            },
-
-            None => {
-              next_class = self.end_class;
+            if next_class.is_neutral_or_isolate() || next_class == Class::BN {
+              ni_run.push(i);
+            } else {
               break;
-            },
+            }
+          } else {
+            next_class = self.end_class;
+            break;
           }
         }
 
@@ -393,7 +392,7 @@ impl IsolatingRunSequence {
   }
 }
 
-pub(in super::super) struct Paragraph {
+pub struct Paragraph {
   pub(in super::super) range: Range<usize>,
   pub(in super::super) level: Level,
   pub(in super::super) pure_ltr: bool,
@@ -401,7 +400,6 @@ pub(in super::super) struct Paragraph {
 }
 
 impl Paragraph {
-  #[inline(always)]
   pub(in super::super) fn sliced<'a, T: Index<Range<usize>> + ?Sized>(
     &'a self,
     slicable: &'a T,
@@ -409,7 +407,6 @@ impl Paragraph {
     &slicable[self.range.clone()]
   }
 
-  #[inline(always)]
   pub(in super::super) fn sliced_mut<'a, T: IndexMut<Range<usize>> + ?Sized>(
     &'a self,
     slicable: &'a mut T,
@@ -546,7 +543,7 @@ impl Paragraph {
     let mut overflow_embedding_count = 0;
     let mut valid_isolate_count = 0;
 
-    let mut current_run_level = Level::ltr();
+    let mut current_run_level = Level::LTR;
     let mut current_run_start = 0;
 
     for (idx, character) in input.char_indices() {
@@ -773,14 +770,10 @@ impl Paragraph {
           .find(|&i| !original_classes[i].removed_by_x9())
           .unwrap_or(sequence_end - 1)];
 
-        let preceeding_level = match original_classes[..sequence_start]
+        let preceeding_level = original_classes[..sequence_start]
           .iter()
           .rposition(|x| !x.removed_by_x9())
-        {
-          Some(idx) => levels[idx],
-
-          None => self.level,
-        };
+          .map_or(self.level, |idx| levels[idx]);
 
         let last_non_removed = original_classes[..sequence_end]
           .iter()
@@ -792,14 +785,10 @@ impl Paragraph {
         let succeeding_level = if last_non_removed.is_isolate() {
           self.level
         } else {
-          match original_classes[sequence_end..]
+          original_classes[sequence_end..]
             .iter()
             .position(|x| !x.removed_by_x9())
-          {
-            Some(idx) => levels[sequence_end + idx],
-
-            None => self.level,
-          }
+            .map_or(self.level, |idx| levels[sequence_end + idx])
         };
 
         result.start_class = max(sequence_level, preceeding_level).class();
@@ -823,23 +812,15 @@ impl Paragraph {
           .rposition(|c| !c.removed_by_x9())
           .unwrap_or(run.end - run.start - 1)];
 
-        let pred_level = match original_classes[..run.start]
+        let pred_level = original_classes[..run.start]
           .iter()
           .rposition(|c| !c.removed_by_x9())
-        {
-          Some(idx) => levels[idx],
+          .map_or(self.level, |idx| levels[idx]);
 
-          None => self.level,
-        };
-
-        let succ_level = match original_classes[run.end..]
+        let succ_level = original_classes[run.end..]
           .iter()
           .position(|c| !c.removed_by_x9())
-        {
-          Some(idx) => levels[run.end + idx],
-
-          None => self.level,
-        };
+          .map_or(self.level, |idx| levels[run.end + idx]);
 
         IsolatingRunSequence {
           runs: vec![run.clone()],

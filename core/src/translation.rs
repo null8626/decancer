@@ -41,7 +41,8 @@ impl Translation {
     Self::String(CuredString {
       string: Cow::Borrowed(
         str::from_utf8(CODEPOINTS.sliced(
-          (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | (second_byte as u16))) as _,
+          (STRINGS_OFFSET + (((((integer >> 20) as u16) & 0x07) << 8) | u16::from(second_byte)))
+            as _,
           ((integer >> 23) & 0x1f) as _,
         ))
         .unwrap(),
@@ -51,8 +52,7 @@ impl Translation {
     })
   }
 
-  #[inline(always)]
-  pub(super) fn character(code: u32) -> Self {
+  pub(super) const fn character(code: u32) -> Self {
     Self::Character(char::from_u32(code).unwrap())
   }
 
@@ -83,7 +83,7 @@ impl Translation {
     match self {
       Self::Character(c) => is_alphanumeric(*c as _),
 
-      Self::String(s) => s.string.bytes().all(|b| is_alphanumeric(b as _)),
+      Self::String(s) => s.string.bytes().all(|b| is_alphanumeric(b.into())),
 
       Self::None => false,
     }
@@ -112,9 +112,8 @@ impl From<Translation> for Cow<'static, str> {
 }
 
 impl Add<Translation> for String {
-  type Output = String;
+  type Output = Self;
 
-  #[inline(always)]
   fn add(mut self, translation: Translation) -> Self::Output {
     self += translation;
     self
@@ -160,7 +159,6 @@ where
 }
 
 impl Display for Translation {
-  #[inline(always)]
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       Self::Character(ch) => Display::fmt(ch, f),

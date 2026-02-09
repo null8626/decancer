@@ -33,9 +33,8 @@ fn assert_matches(input: &str, find: &str, expected: Range<usize>, options: Opti
 
 fn assert_no_matches(input: &str, find: &str, options: Options) {
   let cured = super::cure(input, options).unwrap();
-  let matches = cured.find(find).collect::<Vec<_>>();
 
-  assert!(matches.is_empty());
+  assert!(cured.find(find).next().is_none());
 }
 
 #[test]
@@ -255,7 +254,7 @@ fn isolating_run_sequences() {
 
   let mock_paragraph = Paragraph {
     range: 0..1,
-    level: Level::ltr(),
+    level: Level::LTR,
     pure_ltr: false,
     has_isolate_controls: true,
   };

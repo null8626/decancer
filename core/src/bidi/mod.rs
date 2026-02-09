@@ -5,7 +5,7 @@ use super::util::Binary;
 
 mod class;
 
-pub(super) use class::Class;
+pub use class::Class;
 
 const BIDI: Binary = Binary::new(include_bytes!("../../bin/bidi.bin"));
 
@@ -20,7 +20,9 @@ mod paragraph;
 use brackets::{BracketPair, OpeningBracket};
 use paragraph::OverrideStatus;
 
-pub(super) use level::Level;
+pub use level::Level;
 #[cfg(test)]
+#[allow(clippy::redundant_pub_crate)]
 pub(super) use paragraph::IsolatingRunSequence;
+#[allow(clippy::redundant_pub_crate)]
 pub(super) use paragraph::Paragraph;

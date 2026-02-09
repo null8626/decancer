@@ -3,24 +3,24 @@
 
 use std::{ops::Range, str::Chars};
 
-pub(super) const CODEPOINT_MASK: u32 = 0x000f_ffff;
+pub const CODEPOINT_MASK: u32 = 0x000f_ffff;
 
-pub(super) const fn is_none(code: u32) -> bool {
+pub const fn is_none(code: u32) -> bool {
   matches!(code, 0..=9 | 14..=31 | 127 | 0xd800..=0xf8ff | 0xe01f0..)
 }
 
 #[cfg(feature = "options")]
-pub(super) const fn is_special_rtl(code: u32) -> bool {
+pub const fn is_special_rtl(code: u32) -> bool {
   matches!(code, 0x200e..=0x200f | 0x202a..=0x202e | 0x2066..=0x2069)
 }
 
 #[cfg(feature = "options")]
-pub(super) const fn is_alphanumeric(code: u32) -> bool {
+pub const fn is_alphanumeric(code: u32) -> bool {
   matches!(code, 48..=57 | 97..=122 | 65..=90 | 32)
 }
 
 #[derive(Copy, Clone)]
-pub(super) struct Binary {
+pub struct Binary {
   bytes: &'static [u8],
 }
 
@@ -33,7 +33,6 @@ impl Binary {
     self.bytes[offset]
   }
 
-  #[inline(always)]
   pub(super) fn sliced(self, offset: usize, size: usize) -> &'static [u8] {
     &self.bytes[offset..offset + size]
   }
@@ -52,9 +51,9 @@ impl Binary {
   }
 }
 
-// special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
+// Special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
 // except i've improved upon it :)
-pub(super) fn merge_ranges<T>(ranges: &mut Vec<Range<T>>)
+pub fn merge_ranges<T>(ranges: &mut Vec<Range<T>>)
 where
   T: Ord + Copy,
 {
@@ -70,6 +69,7 @@ where
     let current = ranges[i].clone();
     let previous = &mut ranges[j];
 
+    #[allow(clippy::suspicious_operation_groupings)]
     if current.start >= previous.start && current.start <= previous.end {
       previous.end = previous.end.max(current.end);
     } else {
@@ -147,20 +147,18 @@ macro_rules! numbered_enum {
 
 pub(super) use numbered_enum;
 
-pub(super) struct Cached<'c> {
+pub struct Cached<'c> {
   iterator: Chars<'c>,
   pub(super) cache: Vec<char>,
   index: usize,
 }
 
 impl Cached<'_> {
-  #[inline(always)]
-  pub(super) fn set_index(&mut self, index: usize) {
+  pub(super) const fn set_index(&mut self, index: usize) {
     self.index = index;
   }
 
-  #[inline(always)]
-  pub(super) fn restart(&mut self) {
+  pub(super) const fn restart(&mut self) {
     self.set_index(0);
   }
 
@@ -195,7 +193,6 @@ impl Cached<'_> {
 }
 
 impl<'c> From<Chars<'c>> for Cached<'c> {
-  #[inline(always)]
   fn from(iterator: Chars<'c>) -> Self {
     Self {
       iterator,
