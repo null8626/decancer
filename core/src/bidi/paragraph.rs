@@ -41,7 +41,7 @@ pub struct IsolatingRunSequence {
 }
 
 impl IsolatingRunSequence {
-  #[allow(clippy::similar_names)]
+  #[allow(clippy::similar_names, clippy::too_many_lines)]
   pub(in super::super) fn resolve_implicit_weak(
     &self,
     text: &str,
@@ -229,6 +229,7 @@ impl IsolatingRunSequence {
     bracket_pairs.sort_by_key(|r| r.start);
   }
 
+  #[allow(clippy::too_many_lines)]
   pub(in super::super) fn resolve_implicit_neutral(
     &self,
     text: &str,
@@ -526,6 +527,7 @@ impl Paragraph {
     Ok((levels, runs))
   }
 
+  #[allow(clippy::too_many_lines)]
   pub(in super::super) fn compute_explicit(
     &self,
     input: &str,
