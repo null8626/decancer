@@ -26,8 +26,8 @@ macro_rules! options {
   ),*) => {
     $(
       $(#[$extra_meta])*
-      #[cfg(feature = "options")]
       #[must_use]
+      #[cfg(feature = "options")]
       pub const fn $name(self) -> Self {
         Self(self.0 | (1 << $idx))
       }
