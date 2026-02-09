@@ -26,7 +26,7 @@ leetspeak = ["regex"]
 [dev-dependencies]
 proptest = { version = "1", default-features = false, features = ["std"] }
 criterion = { version = "0.8", default-features = false }
-rand = "0.9"
+rand = "0.10"
 censor = "0.3"
 
 [[bench]]
