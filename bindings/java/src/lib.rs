@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-#![allow(clippy::missing_safety_doc, clippy::unused_unit)]
-
 use jni::{
   JNIEnv,
   objects::{JClass, JObject, JObjectArray, JString, JValue},
@@ -23,7 +21,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<
 ) -> jlong {
   let input: String = util::jni_unwrap!(env, env.get_string(&input)).into();
 
-  match decancer::cure(&input, (options as u32).into()) {
+  match decancer::cure(&input, options.cast_unsigned().into()) {
     Ok(output) => Box::into_raw(Box::new(output)) as _,
 
     Err(error) => {
@@ -32,7 +30,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<
         <decancer::Error as AsRef<str>>::as_ref(&error),
       );
 
-      0 as _
+      0.into()
     },
   }
 }
@@ -97,7 +95,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censo
   let inner = util::get_inner!(env, this, ());
   let input: String = util::jni_unwrap!(env, env.get_string(&input), ()).into();
 
-  match char::from_u32(with as _) {
+  match char::from_u32(with.into()) {
     Some(with) => unsafe {
       (*inner).censor(&input, with);
     },
@@ -108,7 +106,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censo
         "Replacement character is a surrogate.",
       );
     },
-  };
+  }
 }
 
 #[unsafe(no_mangle)]
@@ -122,7 +120,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censo
 ) {
   let inner = util::get_inner!(env, this, ());
 
-  match char::from_u32(with as _) {
+  match char::from_u32(with.into()) {
     Some(with) => unsafe {
       (*inner).censor_multiple(util::get_string_array!(env, input, ()), with);
     },
@@ -133,7 +131,7 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censo
         "Replacement character is a surrogate.",
       );
     },
-  };
+  }
 }
 
 #[unsafe(no_mangle)]

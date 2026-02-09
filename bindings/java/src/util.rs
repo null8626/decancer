@@ -25,13 +25,16 @@ macro_rules! jni_unwrap {
   };
 
   ($env:ident, $value:expr) => {
-    $crate::util::jni_unwrap!($env, $value, 0 as _)
+    #[allow(clippy::cast_lossless, clippy::cast_possible_truncation)]
+    {
+      $crate::util::jni_unwrap!($env, $value, 0 as _)
+    }
   };
 }
 
 pub(super) use jni_unwrap;
 
-pub(super) fn get_inner_unchecked_inner<'a, 'local>(
+pub fn get_inner_unchecked_inner<'a, 'local>(
   env: &'a mut JNIEnv<'local>,
   this: &'a JObject<'local>,
 ) -> Result<*mut decancer::CuredString> {
@@ -39,7 +42,7 @@ pub(super) fn get_inner_unchecked_inner<'a, 'local>(
 
   env
     .get_field_unchecked(this, descriptor, ReturnType::Primitive(Primitive::Long))
-    .and_then(|field| field.j())
+    .and_then(JValueGen::j)
     .map(|value| value as _)
 }
 
@@ -82,12 +85,12 @@ macro_rules! get_inner {
 
 pub(super) use get_inner;
 
-pub(super) fn get_string_array_inner<'a, 'local>(
+pub fn get_string_array_inner<'a, 'local>(
   env: &'a mut JNIEnv<'local>,
   object: &'a JObjectArray<'local>,
 ) -> Result<Vec<String>> {
   let input_len = env.get_array_length(object)?;
-  let mut objects: Vec<String> = Vec::with_capacity(input_len as _);
+  let mut objects: Vec<String> = Vec::with_capacity(input_len.cast_unsigned() as _);
 
   for i in 0..input_len {
     let obj = env.get_object_array_element(object, i)?;
@@ -114,7 +117,7 @@ macro_rules! get_string_array {
 
 pub(super) use get_string_array;
 
-pub(super) fn get_matches_array<'local>(
+pub fn get_matches_array<'local>(
   env: &mut JNIEnv<'local>,
   inner: &CuredString,
   matches: Vec<Range<usize>>,
@@ -126,8 +129,8 @@ pub(super) fn get_matches_array<'local>(
       super::MATCH_CLASS,
       "(JJLjava/lang/String;)V",
       &[
-        JValueGen::Long(result.start as _),
-        JValueGen::Long(result.end as _),
+        JValueGen::Long(result.start.cast_signed() as _),
+        JValueGen::Long(result.end.cast_signed() as _),
         JValueGen::Object(&env.new_string(&inner[result])?.into()),
       ],
     )?;
@@ -142,6 +145,7 @@ macro_rules! native_comparison_methods {
   ($($method_name:ident($inner:ident, $string:ident) => $process:expr),*) => {
     $(
       #[unsafe(no_mangle)]
+      #[allow(clippy::cast_possible_truncation)]
       pub unsafe extern "system" fn $method_name<'local>(
         mut env: jni::JNIEnv<'local>,
         this: jni::objects::JObject<'local>,

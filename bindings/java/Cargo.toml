@@ -14,3 +14,10 @@ jni = "0.21"
 
 [profile.release]
 lto = true
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+missing_safety_doc = "allow"
+unused_unit = "allow"
