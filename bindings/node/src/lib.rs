@@ -76,8 +76,8 @@ options! {
   }
 
   overrides {
-    all: 0x3ffffff,
-    pure_homoglyph: 0x7ffff8
+    all: 0x3ff_ffff,
+    pure_homoglyph: 0x7f_fff8
   }
 }
 
@@ -90,13 +90,13 @@ pub struct Match {
 #[napi]
 impl Match {
   #[napi(getter)]
-  pub fn start(&self) -> i64 {
-    self.range.start as _
+  pub const fn start(&self) -> i64 {
+    self.range.start.cast_signed() as _
   }
 
   #[napi(getter)]
-  pub fn end(&self) -> i64 {
-    self.range.end as _
+  pub const fn end(&self) -> i64 {
+    self.range.end.cast_signed() as _
   }
 
   #[napi]
@@ -110,7 +110,6 @@ pub struct CuredString(decancer::CuredString);
 
 #[napi]
 impl CuredString {
-  #[inline(always)]
   fn new_match(&self, mat: Range<usize>) -> Match {
     Match {
       range: mat.clone(),
@@ -119,7 +118,7 @@ impl CuredString {
   }
 
   #[napi]
-  pub fn disable_leetspeak(&mut self, switch: bool) {
+  pub const fn disable_leetspeak(&mut self, switch: bool) {
     self.0.disable_leetspeak(switch);
   }
 
