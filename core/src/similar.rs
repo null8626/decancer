@@ -102,7 +102,6 @@ impl<'a, 'b> Matcher<'a, 'b> {
     Some(matched_len)
   }
 
-  #[cfg_attr(not(feature = "leetspeak"), inline(always))]
   fn matches_character(self_char: char, other_char: char) -> Option<usize> {
     if is(self_char, other_char) {
       Some(other_char.len_utf8())

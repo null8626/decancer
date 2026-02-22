@@ -108,7 +108,6 @@ macro_rules! error_enum {
     }
 
     impl std::fmt::Display for $enum_name {
-      #[inline(always)]
       fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", <$enum_name as std::convert::AsRef<str>>::as_ref(self))
       }
