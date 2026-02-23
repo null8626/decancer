@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
+use super::Error;
 use std::ops::Range;
 
 use decancer::CuredString;
@@ -83,8 +84,11 @@ pub fn get_matches_array<'local>(
   env: &mut Env<'local>,
   inner: &CuredString,
   matches: Vec<Range<usize>>,
-) -> Result<JObjectArray<'local>> {
-  let array = env.new_object_array(matches.len() as _, super::MATCH_CLASS, JObject::null())?;
+) -> std::result::Result<JObjectArray<'local>, Error> {
+  let array_len = i32::try_from(matches.len())
+    .map_err(|err| Error::IllegalArgument(format!("Invalid matches array: {err}")))?;
+
+  let array = env.new_object_array(array_len as _, super::MATCH_CLASS, JObject::null())?;
 
   for (idx, result) in matches.into_iter().enumerate() {
     let portion = env.new_string(&inner[result.clone()])?;
