@@ -62,9 +62,9 @@ macro_rules! jni_unwrap {
 
 pub(super) use jni_unwrap;
 
-pub fn get_inner_unchecked_inner<'a, 'local>(
-  env: &'a mut Env<'local>,
-  this: &'a JObject<'local>,
+pub fn get_inner_unchecked_inner<'env, 'local>(
+  env: &'env mut Env<'local>,
+  this: &'env JObject<'local>,
 ) -> Result<*mut decancer::CuredString> {
   let descriptor = env.get_field_id(super::CUREDSTRING_CLASS, jni_str!("inner"), jni_sig!("J"))?;
 
@@ -93,9 +93,9 @@ macro_rules! get_inner {
 
 pub(super) use get_inner;
 
-pub fn get_string_array_inner<'a, 'local>(
-  env: &'a mut Env<'local>,
-  object: &'a JObjectArray<'local>,
+pub fn get_string_array_inner<'env, 'local>(
+  env: &'env mut Env<'local>,
+  object: &'env JObjectArray<'local>,
 ) -> Result<Vec<String>> {
   let input_len = object.len(env)?;
   let mut objects: Vec<String> = Vec::with_capacity(input_len);
