@@ -693,6 +693,15 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod u+x llvm.sh
           sudo ./llvm.sh 18 all
+      - name: Setup Java
+        if: ${{ needs.setup.outputs.java_affected == 'true' }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: oracle
+          java-version: 21
+      - name: Setup Gradle
+        if: ${{ needs.setup.outputs.java_affected == 'true' }}
+        uses: gradle/actions/setup-gradle@v5
       - name: Setup Go
         if: ${{ needs.setup.outputs.go_affected == 'true' }}
         uses: actions/setup-go@v6

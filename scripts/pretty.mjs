@@ -11,15 +11,7 @@ const execute = promisify(exec)
 async function prettier() {
   await execute('npm i -g prettier')
 
-  const extensions = ['css', 'js', 'ts', 'mjs', 'cjs', 'json']
-
-  if (isAffected('java')) {
-    await execute('npm i prettier-plugin-java --save-dev')
-
-    extensions.push('java')
-  }
-
-  await execute(`npx prettier **/*.{${extensions.join(',')}} --write`, {
+  await execute(`npx prettier **/*.{css,js,ts,mjs,cjs,json} --write`, {
     cwd: ROOT_DIR
   })
 
@@ -52,6 +44,14 @@ async function clangFormat() {
   }
 }
 
+async function java() {
+  if (isAffected('java')) {
+    await execute('chmod +x ./gradlew && ./gradlew format', {
+      cwd: join(BINDINGS_DIR, 'java')
+    })
+  }
+}
+
 void (await Promise.all([
   cargo(CORE_DIR, 'core'),
   cargo(join(BINDINGS_DIR, 'java'), 'java'),
@@ -59,6 +59,7 @@ void (await Promise.all([
   cargo(join(BINDINGS_DIR, 'wasm'), 'wasm'),
   cargo(join(BINDINGS_DIR, 'native'), 'native'),
   clangFormat(),
+  java(),
   execute('go fmt setup_go_binding.go', {
     cwd: join(ROOT_DIR, 'scripts')
   }),
