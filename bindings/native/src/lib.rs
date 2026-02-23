@@ -97,6 +97,14 @@ pub unsafe extern "C" fn decancer_disable_leetspeak(
 }
 
 #[unsafe(no_mangle)]
+pub unsafe extern "C" fn decancer_disable_alphabetical_leetspeak(
+  cured: *mut decancer::CuredString,
+  switch: bool,
+) {
+  unsafe { (*cured).disable_alphabetical_leetspeak(switch) }
+}
+
+#[unsafe(no_mangle)]
 #[cfg(feature = "utf8")]
 pub unsafe extern "C" fn decancer_find(
   cured: *mut decancer::CuredString,

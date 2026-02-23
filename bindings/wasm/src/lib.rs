@@ -37,6 +37,11 @@ impl CuredString {
     self.0.disable_leetspeak(switch);
   }
 
+  #[allow(clippy::missing_const_for_fn)]
+  pub fn disableAlphabeticalLeetspeak(&mut self, switch: bool) {
+    self.0.disable_alphabetical_leetspeak(switch);
+  }
+
   pub fn find(&self, other: &str) -> Vec<Match> {
     self.0.find(other).map(|mat| self.new_match(mat)).collect()
   }

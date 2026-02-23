@@ -37,6 +37,7 @@ impl Translation {
     integer: u32,
     second_byte: u8,
     #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
   ) -> Self {
     Self::String(CuredString {
       string: Cow::Borrowed(
@@ -49,6 +50,8 @@ impl Translation {
       ),
       #[cfg(all(feature = "leetspeak", feature = "options"))]
       disable_leetspeak,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      disable_alphabetical_leetspeak,
     })
   }
 

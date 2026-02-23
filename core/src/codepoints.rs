@@ -87,6 +87,7 @@ impl Codepoint {
     self,
     other: u32,
     #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
   ) -> Translation {
     if self.is_string_translation() {
       Translation::string(
@@ -94,6 +95,8 @@ impl Codepoint {
         self.1,
         #[cfg(all(feature = "leetspeak", feature = "options"))]
         disable_leetspeak,
+        #[cfg(all(feature = "leetspeak", feature = "options"))]
+        disable_alphabetical_leetspeak,
       )
     } else {
       let mut code = self.ascii_translation();

@@ -106,6 +106,13 @@ fn similar_equal() {
       assert_no_matches("|-|3|_|_0", "he|_lo", disabled_options);
       assert_no_matches("|--|3e33|__|_I_I_0()O[]", "hello", disabled_options);
     }
+
+    #[cfg(feature = "options")]
+    {
+      let disabled_options = default_options.disable_alphabetical_leetspeak();
+
+      assert_matches("|-|3|_I_0", "helI_o", 0..9, disabled_options);
+    }
   }
 
   assert_no_matches("", "", default_options);

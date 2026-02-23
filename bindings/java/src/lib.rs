@@ -57,6 +57,26 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_disab
 }
 
 #[unsafe(no_mangle)]
+pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_disableAlphabeticalLeetspeak<
+  'local,
+>(
+  mut unowned_env: EnvUnowned<'local>,
+  this: JObject<'local>,
+  switch: jboolean,
+) {
+  let outcome = unowned_env.with_env(|env| {
+    let inner = util::get_inner!(env, this);
+    let inner_ref = unsafe { &mut *inner };
+
+    inner_ref.disable_alphabetical_leetspeak(switch);
+
+    Ok(())
+  });
+
+  outcome.resolve::<Error>();
+}
+
+#[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_find<'local>(
   mut unowned_env: EnvUnowned<'local>,
   this: JObject<'local>,

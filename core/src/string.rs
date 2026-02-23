@@ -19,6 +19,8 @@ pub struct CuredString {
   pub(super) string: Cow<'static, str>,
   #[cfg(all(feature = "leetspeak", feature = "options"))]
   pub(super) disable_leetspeak: bool,
+  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  pub(super) disable_alphabetical_leetspeak: bool,
 }
 
 impl CuredString {
@@ -42,6 +44,8 @@ impl CuredString {
       other,
       #[cfg(all(feature = "leetspeak", feature = "options"))]
       self.disable_leetspeak,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      self.disable_alphabetical_leetspeak,
     )
   }
 
@@ -257,6 +261,12 @@ impl CuredString {
   pub const fn disable_leetspeak(&mut self, switch: bool) {
     self.disable_leetspeak = switch;
   }
+
+  /// Prevents decancer from applying alphabetical leetspeak comparisons in comparison methods.
+  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  pub const fn disable_alphabetical_leetspeak(&mut self, switch: bool) {
+    self.disable_alphabetical_leetspeak = switch;
+  }
 }
 
 impl AsRef<str> for CuredString {
@@ -310,6 +320,8 @@ where
       other.as_ref(),
       #[cfg(all(feature = "leetspeak", feature = "options"))]
       self.disable_leetspeak,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      self.disable_alphabetical_leetspeak,
     )
   }
 }

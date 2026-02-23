@@ -50,34 +50,35 @@ options! {
     0: retain_capitalization,
     1: disable_bidi,
     2: disable_leetspeak,
-    3: retain_diacritics,
-    4: retain_greek,
-    5: retain_cyrillic,
-    6: retain_hebrew,
-    7: retain_arabic,
-    8: retain_devanagari,
-    9: retain_bengali,
-    10: retain_armenian,
-    11: retain_gujarati,
-    12: retain_tamil,
-    13: retain_thai,
-    14: retain_lao,
-    15: retain_burmese,
-    16: retain_khmer,
-    17: retain_mongolian,
-    18: retain_chinese,
-    19: retain_japanese,
-    20: retain_korean,
-    21: retain_braille,
-    22: retain_emojis,
-    23: retain_turkish,
-    24: ascii_only,
-    25: alphanumeric_only
+    3: disable_alphabetical_leetspeak,
+    4: retain_diacritics,
+    5: retain_greek,
+    6: retain_cyrillic,
+    7: retain_hebrew,
+    8: retain_arabic,
+    9: retain_devanagari,
+    10: retain_bengali,
+    11: retain_armenian,
+    12: retain_gujarati,
+    13: retain_tamil,
+    14: retain_thai,
+    15: retain_lao,
+    16: retain_burmese,
+    17: retain_khmer,
+    18: retain_mongolian,
+    19: retain_chinese,
+    20: retain_japanese,
+    21: retain_korean,
+    22: retain_braille,
+    23: retain_emojis,
+    24: retain_turkish,
+    25: ascii_only,
+    26: alphanumeric_only
   }
 
   overrides {
-    all: 0x3ff_ffff,
-    pure_homoglyph: 0x7f_fff8
+    all: 0x7ff_ffff,
+    pure_homoglyph: 0xff_fff0
   }
 }
 
@@ -120,6 +121,11 @@ impl CuredString {
   #[napi]
   pub const fn disable_leetspeak(&mut self, switch: bool) {
     self.0.disable_leetspeak(switch);
+  }
+
+  #[napi]
+  pub const fn disable_alphabetical_leetspeak(&mut self, switch: bool) {
+    self.0.disable_alphabetical_leetspeak(switch);
   }
 
   #[napi]

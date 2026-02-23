@@ -55,7 +55,7 @@ function getAttributes(codepoint) {
   if (retainableScript) {
     retainableScriptShift = retainableScript[1].shift ?? retainableScript[1]
   } else if (binarySearchExists(emojis, codepoint)) {
-    retainableScriptShift = 22
+    retainableScriptShift = 23
   }
 
   return (

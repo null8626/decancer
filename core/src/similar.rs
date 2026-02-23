@@ -67,6 +67,8 @@ pub struct Matcher<'a, 'b> {
   other_iterator: Cached<'b>,
   #[cfg(all(feature = "leetspeak", feature = "options"))]
   disable_leetspeak: bool,
+  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  disable_alphabetical_leetspeak: bool,
 }
 
 impl<'a, 'b> Matcher<'a, 'b> {
@@ -74,6 +76,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     mut self_str: &'a str,
     other_str: &'b str,
     #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
   ) -> Self {
     if other_str.is_empty() || self_str.len() < other_str.len() {
       self_str = "";
@@ -89,13 +92,23 @@ impl<'a, 'b> Matcher<'a, 'b> {
       other_iterator: other_str.chars().into(),
       #[cfg(all(feature = "leetspeak", feature = "options"))]
       disable_leetspeak,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      disable_alphabetical_leetspeak,
     }
   }
 
   #[cfg(feature = "leetspeak")]
   fn matches_leetspeak(&mut self, other_char: char) -> Option<usize> {
     let haystack = &self.self_str[self.self_index..];
-    let matched_len = leetspeak::find(haystack.as_bytes(), other_char as _)?;
+    let matched_len = leetspeak::find(
+      if self.disable_alphabetical_leetspeak {
+        &leetspeak::NON_ALPHABETICAL_REGEXES
+      } else {
+        &leetspeak::REGEXES
+      },
+      haystack.as_bytes(),
+      other_char as _,
+    )?;
 
     self.self_iterator = haystack[matched_len..].chars().into();
 
@@ -136,12 +149,15 @@ impl<'a, 'b> Matcher<'a, 'b> {
     self_str: &'a str,
     other_str: &'b str,
     #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
+    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
   ) -> bool {
     let mut iter = Self::new(
       self_str,
       other_str,
       #[cfg(all(feature = "leetspeak", feature = "options"))]
       disable_leetspeak,
+      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      disable_alphabetical_leetspeak,
     );
 
     iter

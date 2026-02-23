@@ -66,10 +66,10 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   let retain_capitalization = options.is(0);
 
   #[cfg(feature = "options")]
-  let ascii_only = options.is(24);
+  let ascii_only = options.is(25);
 
   #[cfg(feature = "options")]
-  let alphanumeric_only = options.is(25);
+  let alphanumeric_only = options.is(26);
 
   #[cfg(feature = "options")]
   let default_output = if is_case_sensitive && retain_capitalization {
@@ -399,6 +399,8 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
     .into(),
     #[cfg(all(feature = "leetspeak", feature = "options"))]
     disable_leetspeak: options.is(2),
+    #[cfg(all(feature = "leetspeak", feature = "options"))]
+    disable_alphabetical_leetspeak: options.is(3),
   })
 }
 

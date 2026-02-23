@@ -81,6 +81,7 @@ public class CuredString implements AutoCloseable {
    * Prevents decancer from applying leetspeak comparisons in comparison methods.
    *
    * @param switch_ The switch to prevent it.
+   * @see disableAlphabeticalLeetspeak
    * @see find
    * @see findMultiple
    * @see censor
@@ -98,6 +99,27 @@ public class CuredString implements AutoCloseable {
   public native void disableLeetspeak(boolean switch_);
 
   /**
+   * Prevents decancer from applying alphabetical leetspeak comparisons in comparison methods.
+   *
+   * @param switch_ The switch to prevent it.
+   * @see disableLeetspeak
+   * @see find
+   * @see findMultiple
+   * @see censor
+   * @see censorMultiple
+   * @see replace
+   * @see replaceMultiple
+   * @see contains
+   * @see startsWith
+   * @see endsWith
+   * @see equals
+   * @throws NullPointerException If close() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   * @since 4.0.0
+   */
+  public native void disableAlphabeticalLeetspeak(boolean switch_);
+
+  /**
    * Iterates throughout this string and yields every similar-looking match.
    *
    * <p>
@@ -107,6 +129,7 @@ public class CuredString implements AutoCloseable {
    * @param other The other string to match with.
    * @see findMultiple
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @return Match[] An array of Match objects containing every similar-looking match.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -124,6 +147,7 @@ public class CuredString implements AutoCloseable {
    * @param other The list of strings to match with.
    * @see find
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @return Match[] An array of Match objects containing every similar-looking match.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -142,6 +166,7 @@ public class CuredString implements AutoCloseable {
    * @param with The character to repeat.
    * @see censorMultiple
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -160,6 +185,7 @@ public class CuredString implements AutoCloseable {
    * @param with The character to repeat.
    * @see censor
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @throws IllegalArgumentException If the character to repeat is a UTF-16 surrogate.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -178,6 +204,7 @@ public class CuredString implements AutoCloseable {
    * @param with The other string to replace with.
    * @see replaceMultiple
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
@@ -195,6 +222,7 @@ public class CuredString implements AutoCloseable {
    * @param with The other string to replace with.
    * @see replace
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.1.1
@@ -210,6 +238,7 @@ public class CuredString implements AutoCloseable {
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @return boolean Whether this object is similar with another string.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -226,6 +255,7 @@ public class CuredString implements AutoCloseable {
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @return boolean Whether this object similarly starts with another string.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -242,6 +272,7 @@ public class CuredString implements AutoCloseable {
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @return boolean Whether this object similarly ends with another string.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.
@@ -258,6 +289,7 @@ public class CuredString implements AutoCloseable {
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
+   * @see disableAlphabeticalLeetspeak
    * @return boolean Whether this object similarly contains another string.
    * @throws NullPointerException If close() has been called prior to this.
    * @throws RuntimeException If a Rust panic occurs.

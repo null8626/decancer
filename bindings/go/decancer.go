@@ -30,6 +30,7 @@ const (
 	RetainCapitalization Option = 1 << iota
 	DisableBidi
 	DisableLeetspeak
+	DisableAlphabeticalLeetspeak
 	RetainDiacritics
 	RetainGreek
 	RetainCyrillic
@@ -54,8 +55,8 @@ const (
 	AsciiOnly
 	AlphanumericOnly
 	Default       = 0
-	All           = 0x3ffffff
-	PureHomoglyph = 0x7ffff8
+	All           = 0x7ffffff
+	PureHomoglyph = 0xfffff0
 )
 
 type CuredString struct {
@@ -142,6 +143,10 @@ func Cure(text string, options Option) (*CuredString, error) {
 
 func (cured *CuredString) DisableLeetspeak(switch_ bool) {
 	C.decancer_disable_leetspeak(cured.ptr, C.bool(switch_))
+}
+
+func (cured *CuredString) DisableAlphabeticalLeetspeak(switch_ bool) {
+	C.decancer_disable_alphabetical_leetspeak(cured.ptr, C.bool(switch_))
 }
 
 func (cured *CuredString) Find(other string) []Match {

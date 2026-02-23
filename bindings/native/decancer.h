@@ -117,9 +117,21 @@
  * @brief Prevents decancer from applying leetspeak comparisons in comparison methods.
  *
  * @see decancer_disable_leetspeak
+ * @see DECANCER_OPTION_DISABLE_ALPHABETICAL_LEETSPEAK
+ * @see decancer_disable_alphabetical_leetspeak
  * @since 4.0.0
  */
 #define DECANCER_OPTION_DISABLE_LEETSPEAK (1 << 2)
+
+/**
+ * @brief Prevents decancer from applying alphabetical leetspeak comparisons in comparison methods.
+ *
+ * @see decancer_disable_alphabetical_leetspeak
+ * @see DECANCER_OPTION_DISABLE_LEETSPEAK
+ * @see decancer_disable_leetspeak
+ * @since 4.0.0
+ */
+#define DECANCER_OPTION_DISABLE_ALPHABETICAL_LEETSPEAK (1 << 3)
 
 /**
  * @brief Prevents decancer from curing characters WITH diacritics or accents.
@@ -127,97 +139,97 @@
  * @note Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_DIACRITICS (1 << 3)
+#define DECANCER_OPTION_RETAIN_DIACRITICS (1 << 4)
 
 /**
  * @brief Prevents decancer from curing all greek characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_GREEK (1 << 4)
+#define DECANCER_OPTION_RETAIN_GREEK (1 << 5)
 
 /**
  * @brief Prevents decancer from curing all cyrillic characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_CYRILLIC (1 << 5)
+#define DECANCER_OPTION_RETAIN_CYRILLIC (1 << 6)
 
 /**
  * @brief Prevents decancer from curing all hebrew characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_HEBREW (1 << 6)
+#define DECANCER_OPTION_RETAIN_HEBREW (1 << 7)
 
 /**
  * @brief Prevents decancer from curing all arabic characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_ARABIC (1 << 7)
+#define DECANCER_OPTION_RETAIN_ARABIC (1 << 8)
 
 /**
  * @brief Prevents decancer from curing all devanagari characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_DEVANAGARI (1 << 8)
+#define DECANCER_OPTION_RETAIN_DEVANAGARI (1 << 9)
 
 /**
  * @brief Prevents decancer from curing all bengali characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_BENGALI (1 << 9)
+#define DECANCER_OPTION_RETAIN_BENGALI (1 << 10)
 
 /**
  * @brief Prevents decancer from curing all armenian characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_ARMENIAN (1 << 10)
+#define DECANCER_OPTION_RETAIN_ARMENIAN (1 << 11)
 
 /**
  * @brief Prevents decancer from curing all gujarati characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_GUJARATI (1 << 11)
+#define DECANCER_OPTION_RETAIN_GUJARATI (1 << 12)
 
 /**
  * @brief Prevents decancer from curing all tamil characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_TAMIL (1 << 12)
+#define DECANCER_OPTION_RETAIN_TAMIL (1 << 13)
 
 /**
  * @brief Prevents decancer from curing all thai characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_THAI (1 << 13)
+#define DECANCER_OPTION_RETAIN_THAI (1 << 14)
 
 /**
  * @brief Prevents decancer from curing all lao characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_LAO (1 << 14)
+#define DECANCER_OPTION_RETAIN_LAO (1 << 15)
 
 /**
  * @brief Prevents decancer from curing all burmese characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_BURMESE (1 << 15)
+#define DECANCER_OPTION_RETAIN_BURMESE (1 << 16)
 
 /**
  * @brief Prevents decancer from curing all khmer characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_KHMER (1 << 16)
+#define DECANCER_OPTION_RETAIN_KHMER (1 << 17)
 
 /**
  * @brief Prevents decancer from curing all mongolian characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_MONGOLIAN (1 << 17)
+#define DECANCER_OPTION_RETAIN_MONGOLIAN (1 << 18)
 
 /**
  * @brief Prevents decancer from curing all chinese characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_CHINESE (1 << 18)
+#define DECANCER_OPTION_RETAIN_CHINESE (1 << 19)
 
 /**
  * @brief Prevents decancer from curing all katakana and hiragana characters.
@@ -226,25 +238,25 @@
  * @note To also prevent decancer from curing kanji characters, use DECANCER_OPTION_RETAIN_CHINESE.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_JAPANESE (1 << 19)
+#define DECANCER_OPTION_RETAIN_JAPANESE (1 << 20)
 
 /**
  * @brief Prevents decancer from curing all korean characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_KOREAN (1 << 20)
+#define DECANCER_OPTION_RETAIN_KOREAN (1 << 21)
 
 /**
  * @brief Prevents decancer from curing all braille characters.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_BRAILLE (1 << 21)
+#define DECANCER_OPTION_RETAIN_BRAILLE (1 << 22)
 
 /**
  * @brief Prevents decancer from curing all emojis.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_RETAIN_EMOJIS (1 << 22)
+#define DECANCER_OPTION_RETAIN_EMOJIS (1 << 23)
 
 /**
  * @brief Prevents decancer from curing all turkish characters.
@@ -253,7 +265,7 @@
  * @note To also prevent decancer from curing the uppercase dotted i character (İ), use DECANCER_RETAIN_CAPITALIZATION.
  * @since 3.2.4
  */
-#define DECANCER_OPTION_RETAIN_TURKISH (1 << 23)
+#define DECANCER_OPTION_RETAIN_TURKISH (1 << 24)
 
 /**
  * @brief Removes all non-ASCII characters from the result.
@@ -261,7 +273,7 @@
  * @see DECANCER_OPTION_ALPHANUMERIC_ONLY
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ASCII_ONLY (1 << 24)
+#define DECANCER_OPTION_ASCII_ONLY (1 << 25)
 
 /**
  * @brief Removes all non-alphanumeric characters from the result.
@@ -269,19 +281,19 @@
  * @see DECANCER_OPTION_ASCII_ONLY
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 25)
+#define DECANCER_OPTION_ALPHANUMERIC_ONLY (1 << 26)
 
 /**
  * @brief A configuration where every option is enabled.
  * @since 3.2.0
  */
-#define DECANCER_OPTION_ALL 0x3ffffff
+#define DECANCER_OPTION_ALL 0x7ffffff
 
 /**
  * @brief Prevents decancer from curing characters from major foreign writing systems, including diacritics.
  * @since 3.0.0
  */
-#define DECANCER_OPTION_PURE_HOMOGLYPH 0x7ffff8
+#define DECANCER_OPTION_PURE_HOMOGLYPH 0xfffff0
 
 /**
  * @brief Represents an error caused by decancer not being able to cure a string.
@@ -555,6 +567,8 @@ typedef struct {
  * @see DECANCER_OPTION_DEFAULT
  * @see DECANCER_OPTION_RETAIN_CAPITALIZATION
  * @see DECANCER_OPTION_DISABLE_BIDI
+ * @see DECANCER_OPTION_DISABLE_LEETSPEAK
+ * @see DECANCER_OPTION_DISABLE_ALPHABETICAL_LEETSPEAK
  * @see DECANCER_OPTION_RETAIN_DIACRITICS
  * @see DECANCER_OPTION_RETAIN_GREEK
  * @see DECANCER_OPTION_RETAIN_CYRILLIC
@@ -754,6 +768,8 @@ extern "C" {
    * @param cured The cured string object.
    * @param switch_ The switch to prevent it.
    * @see DECANCER_OPTION_DISABLE_LEETSPEAK
+   * @see DECANCER_OPTION_DISABLE_ALPHABETICAL_LEETSPEAK
+   * @see decancer_disable_alphabetical_leetspeak
    * @see decancer_find
    * @see decancer_find_utf16
    * @see decancer_find_multiple
@@ -777,6 +793,38 @@ extern "C" {
    * @since 4.0.0
    */
   DECANCER_EXPORT void decancer_disable_leetspeak(decancer_cured_t cured, const bool switch_);
+
+  /**
+   * @brief Prevents decancer from applying alphabetical leetspeak comparisons in comparison methods.
+   *
+   * @param cured The cured string object.
+   * @param switch_ The switch to prevent it.
+   * @see DECANCER_OPTION_DISABLE_ALPHABETICAL_LEETSPEAK
+   * @see DECANCER_OPTION_DISABLE_LEETSPEAK
+   * @see decancer_disable_leetspeak
+   * @see decancer_find
+   * @see decancer_find_utf16
+   * @see decancer_find_multiple
+   * @see decancer_find_multiple_utf16
+   * @see decancer_censor
+   * @see decancer_censor_utf16
+   * @see decancer_censor_multiple
+   * @see decancer_censor_multiple_utf16
+   * @see decancer_replace
+   * @see decancer_replace_utf16
+   * @see decancer_replace_multiple
+   * @see decancer_replace_multiple_utf16
+   * @see decancer_contains
+   * @see decancer_contains_utf16
+   * @see decancer_starts_with
+   * @see decancer_starts_with_utf16
+   * @see decancer_ends_with
+   * @see decancer_ends_with_utf16
+   * @see decancer_equals
+   * @see decancer_equals_utf16
+   * @since 4.0.0
+   */
+  DECANCER_EXPORT void decancer_disable_alphabetical_leetspeak(decancer_cured_t cured, const bool switch_);
 
 #ifndef DECANCER_UTF16_ONLY
   /**
@@ -1074,6 +1122,7 @@ extern "C" {
    * @see decancer_matcher_next
    * @see decancer_matcher_free
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return decancer_matcher_t A UTF-8 matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-16 counterpart, see decancer_find_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_free.
@@ -1169,6 +1218,7 @@ extern "C" {
    * @see decancer_matcher_utf16_next
    * @see decancer_matcher_utf16_free
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return decancer_matcher_utf16_t A UTF-16 matcher iterator object or NULL if the other string is not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find.
    * @note You are responsible in freeing the returned object later by calling decancer_matcher_utf16_free.
@@ -1268,6 +1318,7 @@ extern "C" {
    * @see decancer_matches_clone
    * @see decancer_matches_free
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return decancer_matches_t A matches object or NULL if the keywords are not properly UTF-8 encoded.
    * @note For its UTF-16 counterpart, see decancer_find_multiple_utf16.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
@@ -1382,6 +1433,7 @@ extern "C" {
    * @see decancer_matches_clone
    * @see decancer_matches_free
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return decancer_matches_t A matches object or NULL if the keywords are not properly UTF-8 encoded.
    * @note For its UTF-8 counterpart, see decancer_find_multiple.
    * @note You are responsible in freeing the returned object later by calling decancer_matches_free.
@@ -1616,6 +1668,7 @@ extern "C" {
    * @see decancer_censor_multiple
    * @see decancer_censor_multiple_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_censor_utf16.
    * @since 3.1.1
@@ -1700,6 +1753,7 @@ extern "C" {
    * @see decancer_censor_multiple
    * @see decancer_censor_multiple_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_censor.
    * @since 3.2.2
@@ -1767,6 +1821,7 @@ extern "C" {
    * @see decancer_replace_multiple
    * @see decancer_replace_multiple_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_replace_utf16.
    * @since 3.1.1
@@ -1854,6 +1909,7 @@ extern "C" {
    * @see decancer_replace_multiple
    * @see decancer_replace_multiple_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_replace.
    * @since 3.2.2
@@ -1927,6 +1983,7 @@ extern "C" {
    * @see decancer_censor_utf16
    * @see decancer_censor_multiple_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_censor_multiple_utf16.
    * @since 3.1.1
@@ -2020,6 +2077,7 @@ extern "C" {
    * @see decancer_censor_utf16
    * @see decancer_censor_multiple
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_censor_multiple.
    * @since 3.2.2
@@ -2093,6 +2151,7 @@ extern "C" {
    * @see decancer_replace_utf16
    * @see decancer_replace_multiple_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-16 counterpart, see decancer_replace_multiple_utf16.
    * @since 3.1.1
@@ -2189,6 +2248,7 @@ extern "C" {
    * @see decancer_replace_utf16
    * @see decancer_replace_multiple
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true on success, or false on failure due to invalid encoding.
    * @note For its UTF-8 counterpart, see decancer_replace_multiple.
    * @since 3.2.2
@@ -2245,6 +2305,7 @@ extern "C" {
    * @param other_size UTF-8 size of the other string, in bytes.
    * @see decancer_contains_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_contains_utf16.
    * @since 1.5.3
@@ -2310,6 +2371,7 @@ extern "C" {
    * @param other_length Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_contains
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string similarly contains the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_contains.
    * @since 3.2.2
@@ -2366,6 +2428,7 @@ extern "C" {
    * @param other_size UTF-8 size of the other string, in bytes.
    * @see decancer_starts_with_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_starts_with_utf16.
    * @since 1.5.3
@@ -2431,6 +2494,7 @@ extern "C" {
    * @param other_length Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_starts_with
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string similarly starts with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_starts_with.
    * @since 3.2.2
@@ -2487,6 +2551,7 @@ extern "C" {
    * @param other_size UTF-8 size of the other string, in bytes.
    * @see decancer_ends_with_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_ends_with_utf16.
    * @since 1.5.3
@@ -2552,6 +2617,7 @@ extern "C" {
    * @param other_length Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_ends_with
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string similarly ends with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_ends_with.
    * @since 3.2.2
@@ -2608,6 +2674,7 @@ extern "C" {
    * @param other_size UTF-8 size of the other string, in bytes.
    * @see decancer_equals_utf16
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string is similar with the specified string, false otherwise.
    * @note For its UTF-16 counterpart, see decancer_equals_utf16.
    * @since 1.5.3
@@ -2673,6 +2740,7 @@ extern "C" {
    * @param other_length Length of the UTF-16 encoded string in units of uint16_t -- or sizeof(string) / sizeof(uint16_t).
    * @see decancer_equals
    * @see decancer_disable_leetspeak
+   * @see decancer_disable_alphabetical_leetspeak
    * @return bool true if the cured string is similar with the specified string, false otherwise.
    * @note For its UTF-8 counterpart, see decancer_equals.
    * @since 3.2.2

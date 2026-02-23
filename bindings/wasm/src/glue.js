@@ -10,6 +10,7 @@ const OPTIONS = {
     'retainCapitalization',
     'disableBidi',
     'disableLeetspeak',
+    'disableAlphabeticalLeetspeak',
     'retainDiacritics',
     'retainGreek',
     'retainCyrillic',
@@ -34,7 +35,7 @@ const OPTIONS = {
     'asciiOnly',
     'alphanumericOnly'
   ],
-  overrides: { all: 0x3ffffff, pureHomoglyph: 0x7ffff8 }
+  overrides: { all: 0x7ffffff, pureHomoglyph: 0xfffff0 }
 }
 
 function options(opt = {}) {

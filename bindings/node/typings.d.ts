@@ -8,6 +8,7 @@ export class Match {
 
 export class CuredString {
   disableLeetspeak(switch_: boolean)
+  disableAlphabeticalLeetspeak(switch_: boolean)
   find(other: string): Match[]
   findMultiple(other: string[]): Match[]
   censor(other: string, character: string): void
@@ -26,6 +27,7 @@ export interface Options {
   retainCapitalization?: boolean
   disableBidi?: boolean
   disableLeetspeak?: boolean
+  disableAlphabeticalLeetspeak?: boolean
   retainDiacritics?: boolean
   retainGreek?: boolean
   retainCyrillic?: boolean

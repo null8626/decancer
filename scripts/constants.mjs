@@ -111,38 +111,38 @@ export const STRING_TRANSLATION_MASK = 0x10000000
 
 export const RETAINABLE_SCRIPTS = Object.entries({
   greek: {
-    shift: 4,
+    shift: 5,
     check: name => name.includes('greek') && !name.includes('ancient')
   },
-  cyrillic: 5,
-  hebrew: 6,
-  arabic: 7,
-  devanagari: 8,
-  bengali: 9,
-  armenian: 10,
-  gujarati: 11,
-  tamil: 12,
-  thai: 13,
-  lao: 14,
+  cyrillic: 6,
+  hebrew: 7,
+  arabic: 8,
+  devanagari: 9,
+  bengali: 10,
+  armenian: 11,
+  gujarati: 12,
+  tamil: 13,
+  thai: 14,
+  lao: 15,
   burmese: {
-    shift: 15,
+    shift: 16,
     check: name => name.includes('myanmar')
   },
-  khmer: 16,
-  mongolian: 17,
+  khmer: 17,
+  mongolian: 18,
   chinese: {
-    shift: 18,
+    shift: 19,
     check: name => name.includes('cjk') || name.includes('kangxi')
   },
   japanese: {
-    shift: 19,
+    shift: 20,
     check: name => name.includes('katakana') || name.includes('hiragana')
   },
   korean: {
-    shift: 20,
+    shift: 21,
     check: name => name.includes('hangul')
   },
-  braille: 21
+  braille: 22
 })
 
 export const TURKISH_CHARACTERS = ['ç', 'ğ', 'ı', 'ö', 'ş', 'ü'] // İ is omitted here because its lowercase form is just a normal i
