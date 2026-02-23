@@ -65,8 +65,8 @@ pub fn get_string_array_inner<'a, 'local>(
   for i in 0..input_len {
     let obj = object.get_element(env, i)?;
 
-    if !obj.is_null() && matches!(env.is_instance_of(object, super::STRING_CLASS), Ok(true)) {
-      objects.push(unsafe { JString::from_raw(env, obj.into_raw()) }.to_string());
+    if !obj.is_null() {
+      objects.push(env.as_cast::<JString>(&obj)?.to_string());
     }
   }
 
@@ -109,7 +109,6 @@ macro_rules! native_comparison_methods {
   ($($method_name:ident($inner:ident, $string:ident) => $process:expr),*) => {
     $(
       #[unsafe(no_mangle)]
-      #[allow(clippy::cast_possible_truncation)]
       pub unsafe extern "system" fn $method_name<'local>(
         mut unowned_env: jni::EnvUnowned<'local>,
         this: jni::objects::JObject<'local>,

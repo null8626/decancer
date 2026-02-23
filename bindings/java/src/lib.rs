@@ -16,8 +16,6 @@ use errors::Error;
 const CUREDSTRING_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/CuredString");
 const MATCH_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/Match");
 
-const STRING_CLASS: &JNIStr = jni_str!("java/lang/String");
-
 #[unsafe(no_mangle)]
 pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<'local>(
   mut unowned_env: EnvUnowned<'local>,
