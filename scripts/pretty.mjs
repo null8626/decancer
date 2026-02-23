@@ -15,8 +15,6 @@ async function prettier() {
     cwd: ROOT_DIR
   })
 
-  await execute('git restore yarn.lock', { cwd: ROOT_DIR })
-
   console.log('- [prettier] completed prettifying files')
 }
 
