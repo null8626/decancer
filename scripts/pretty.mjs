@@ -15,7 +15,7 @@ async function prettier() {
     cwd: ROOT_DIR
   })
 
-  console.log('- [prettier] completed prettifying files')
+  console.log('- [prettier] completed')
 }
 
 async function cargo(cwd, ty) {
@@ -44,9 +44,13 @@ async function clangFormat() {
 
 async function java() {
   if (isAffected('java')) {
+    console.log('- [googlejavaformat] running...')
+
     await execute('chmod +x ./gradlew && ./gradlew format', {
       cwd: join(BINDINGS_DIR, 'java')
     })
+
+    console.log('- [googlejavaformat] completed')
   }
 }
 
