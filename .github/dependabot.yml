@@ -5,54 +5,62 @@ updates:
     commit-message:
       prefix: 'deps[core]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
+      day: saturday
+      interval: weekly
       time: '06:00'
   - package-ecosystem: cargo
     directory: '/bindings/node'
     commit-message:
       prefix: 'deps[node:cargo]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
+      day: saturday
+      interval: weekly
       time: '06:05'
   - package-ecosystem: npm
     directory: '/bindings/node'
     commit-message:
       prefix: 'deps[node:npm]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
+      day: saturday
+      interval: weekly
       time: '06:10'
   - package-ecosystem: cargo
     directory: '/bindings/wasm'
     commit-message:
       prefix: 'deps[wasm:cargo]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
+      day: saturday
+      interval: weekly
       time: '06:15'
   - package-ecosystem: npm
     directory: '/bindings/wasm'
     commit-message:
       prefix: 'deps[wasm:npm]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
+      day: saturday
+      interval: weekly
       time: '06:20'
   - package-ecosystem: cargo
     directory: '/bindings/java'
     commit-message:
-      prefix: 'deps[java]: '
+      prefix: 'deps[java:cargo]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
+      day: saturday
+      interval: weekly
       time: '06:25'
+  - package-ecosystem: gradle
+    directory: '/bindings/java'
+    commit-message:
+      prefix: 'deps[java:gradle]: '
+    schedule:
+      day: saturday
+      interval: weekly
+      time: '06:30'
   - package-ecosystem: github-actions
     directory: '/'
     commit-message:
       prefix: 'deps[ci]: '
     schedule:
-      day: 'saturday'
-      interval: 'weekly'
-      time: '06:30'
+      day: saturday
+      interval: weekly
+      time: '06:35'
