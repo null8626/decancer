@@ -13,6 +13,43 @@ use jni::{
   signature::{Primitive, ReturnType},
 };
 
+macro_rules! native_methods {
+  ($(
+    $method_name:ident($env:ident, $($argument_name:ident: $argument_type:ty),*)$(-> $return_type:ty)? $body:block
+  )*) => {$(
+    pastey::paste! {
+      #[unsafe(no_mangle)]
+      pub unsafe extern "system" fn [<Java_io_github_null8626_decancer_CuredString_ $method_name>]<'local>(
+        mut unowned_env: jni::EnvUnowned<'local>,
+        $($argument_name: $argument_type),*
+      ) $(-> $return_type)? {
+        let outcome = unowned_env.with_env(|$env| $body);
+
+        outcome.resolve::<$crate::Error>()
+      }
+    }
+  )*}
+}
+
+pub(super) use native_methods;
+
+macro_rules! native_comparison_methods {
+  ($($method_name:ident($inner:ident, $string:ident) => $process:expr),*) => {
+    $crate::util::native_methods! {
+      $(
+        $method_name(env, this: jni::objects::JObject<'local>, input: jni::objects::JString<'local>) -> jni::sys::jboolean {
+          let $inner = $crate::util::get_inner!(env, this);
+          let $string = input.to_string();
+
+          Ok(unsafe { $process })
+        }
+      )*
+    }
+  }
+}
+
+pub(super) use native_comparison_methods;
+
 macro_rules! jni_unwrap {
   ($env:ident, $value:expr) => {
     match $value {
@@ -108,27 +145,3 @@ pub fn get_matches_array<'local>(
 
   Ok(array)
 }
-
-macro_rules! native_comparison_methods {
-  ($($method_name:ident($inner:ident, $string:ident) => $process:expr),*) => {
-    $(
-      #[unsafe(no_mangle)]
-      pub unsafe extern "system" fn $method_name<'local>(
-        mut unowned_env: jni::EnvUnowned<'local>,
-        this: jni::objects::JObject<'local>,
-        input: jni::objects::JString<'local>,
-      ) -> jni::sys::jboolean {
-        let outcome = unowned_env.with_env(|env| {
-          let $inner = $crate::util::get_inner!(env, this);
-          let $string = input.to_string();
-
-          Ok(unsafe { $process })
-        });
-
-        outcome.resolve::<$crate::Error>()
-      }
-    )*
-  }
-}
-
-pub(super) use native_comparison_methods;

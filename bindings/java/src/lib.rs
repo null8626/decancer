@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
 use jni::{
-  EnvUnowned, jni_sig, jni_str,
+  jni_sig, jni_str,
   objects::{JClass, JObject, JObjectArray, JString, JValue},
   strings::JNIStr,
   sys::{jboolean, jchar, jint, jlong, jobject, jstring},
@@ -16,14 +16,8 @@ use errors::Error;
 const CUREDSTRING_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/CuredString");
 const MATCH_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/Match");
 
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  _: JClass<'local>,
-  input: JString<'local>,
-  options: jint,
-) -> jlong {
-  let outcome = unowned_env.with_env(|_| {
+util::native_methods! {
+  cure(_env, _this: JClass<'local>, input: JString<'local>, options: jint) -> jlong {
     let input = input.to_string();
 
     match decancer::cure(&input, options.cast_unsigned().into()) {
@@ -31,58 +25,27 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_cure<
 
       Err(error) => Err(Error::IllegalArgument(error.to_string())),
     }
-  });
+  }
 
-  outcome.resolve::<Error>()
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_disableLeetspeak<
-  'local,
->(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  switch: jboolean,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  disableLeetspeak(env, this: JObject<'local>, switch: jboolean) {
     let inner = util::get_inner!(env, this);
     let inner_ref = unsafe { &mut *inner };
 
     inner_ref.disable_leetspeak(switch);
 
     Ok(())
-  });
+  }
 
-  outcome.resolve::<Error>();
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_disableAlphabeticalLeetspeak<
-  'local,
->(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  switch: jboolean,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  disableAlphabeticalLeetspeak(env, this: JObject<'local>, switch: jboolean) {
     let inner = util::get_inner!(env, this);
     let inner_ref = unsafe { &mut *inner };
 
     inner_ref.disable_alphabetical_leetspeak(switch);
 
     Ok(())
-  });
+  }
 
-  outcome.resolve::<Error>();
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_find<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  input: JString<'local>,
-) -> jobject {
-  let outcome = unowned_env.with_env(|env| {
+  find(env, this: JObject<'local>, input: JString<'local>) -> jobject {
     let inner = util::get_inner!(env, this);
     let inner_ref = unsafe { &*inner };
 
@@ -95,18 +58,9 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_find<
       )
       .into_raw(),
     )
-  });
+  }
 
-  outcome.resolve::<Error>()
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_findMultiple<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  input: JObjectArray<'local>,
-) -> jobject {
-  let outcome = unowned_env.with_env(|env| {
+  findMultiple(env, this: JObject<'local>, input: JObjectArray<'local>) -> jobject {
     let inner = util::get_inner!(env, this);
     let inner_ref = unsafe { &*inner };
 
@@ -119,19 +73,9 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_findM
       )
       .into_raw(),
     )
-  });
+  }
 
-  outcome.resolve::<Error>()
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censor<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  input: JString<'local>,
-  with: jchar,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  censor(env, this: JObject<'local>, input: JString<'local>, with: jchar) {
     let inner = util::get_inner!(env, this);
     let input = input.to_string();
 
@@ -147,21 +91,9 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censo
         Ok(())
       },
     )
-  });
+  }
 
-  outcome.resolve::<Error>();
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censorMultiple<
-  'local,
->(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  input: JObjectArray<'local>,
-  with: jchar,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  censorMultiple(env, this: JObject<'local>, input: JObjectArray<'local>, with: jchar) {
     let inner = util::get_inner!(env, this);
 
     char::from_u32(with.into()).map_or_else(
@@ -178,19 +110,9 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_censo
         Ok(())
       },
     )
-  });
+  }
 
-  outcome.resolve::<Error>();
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_replace<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  input: JString<'local>,
-  with: JString<'local>,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  replace(env, this: JObject<'local>, input: JString<'local>, with: JString<'local>) {
     let inner = util::get_inner!(env, this);
 
     let input = input.to_string();
@@ -201,21 +123,9 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_repla
     }
 
     Ok(())
-  });
+  }
 
-  outcome.resolve::<Error>();
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_replaceMultiple<
-  'local,
->(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-  input: JObjectArray<'local>,
-  with: JString<'local>,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  replaceMultiple(env, this: JObject<'local>, input: JObjectArray<'local>, with: JString<'local>) {
     let inner = util::get_inner!(env, this);
     let with = with.to_string();
 
@@ -224,41 +134,15 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_repla
     }
 
     Ok(())
-  });
+  }
 
-  outcome.resolve::<Error>();
-}
-
-util::native_comparison_methods! {
-  Java_io_github_null8626_decancer_CuredString_equals(inner, input) => (*inner) == input,
-
-  Java_io_github_null8626_decancer_CuredString_startsWith(inner, input) => (*inner).starts_with(&input),
-
-  Java_io_github_null8626_decancer_CuredString_endsWith(inner, input) => (*inner).ends_with(&input),
-
-  Java_io_github_null8626_decancer_CuredString_contains(inner, input) => (*inner).contains(&input)
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_toString<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-) -> jstring {
-  let outcome = unowned_env.with_env(|env| {
+  toString(env, this: JObject<'local>) -> jstring {
     let inner = util::get_inner!(env, this);
 
     Ok(util::jni_unwrap!(env, env.new_string(unsafe { &**inner })).into_raw())
-  });
+  }
 
-  outcome.resolve::<Error>()
-}
-
-#[unsafe(no_mangle)]
-pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_close<'local>(
-  mut unowned_env: EnvUnowned<'local>,
-  this: JObject<'local>,
-) {
-  let outcome = unowned_env.with_env(|env| {
+  close(env, this: JObject<'local>) {
     let inner = util::get_inner_unchecked!(env, this);
 
     if !inner.is_null() {
@@ -274,7 +158,15 @@ pub unsafe extern "system" fn Java_io_github_null8626_decancer_CuredString_close
     }
 
     Ok(())
-  });
+  }
+}
 
-  outcome.resolve::<Error>();
+util::native_comparison_methods! {
+  equals(inner, input) => (*inner) == input,
+
+  startsWith(inner, input) => (*inner).starts_with(&input),
+
+  endsWith(inner, input) => (*inner).ends_with(&input),
+
+  contains(inner, input) => (*inner).contains(&input)
 }

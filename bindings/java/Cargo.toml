@@ -10,6 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 decancer = { path = "../../core" }
+pastey = "0.2"
 jni = "0.22"
 
 [profile.release]
