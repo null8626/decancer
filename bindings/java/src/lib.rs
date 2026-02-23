@@ -79,37 +79,13 @@ util::native_methods! {
     let inner = util::get_inner!(env, this);
     let input = input.to_string();
 
-    char::from_u32(with.into()).map_or_else(
-      || {
-        Err(Error::IllegalArgument(
-          "Replacement character is a surrogate.".into(),
-        ))
-      },
-      |with| {
-        unsafe { (*inner).censor(&input, with) }
-
-        Ok(())
-      },
-    )
+    util::censor!(inner => censor(&input, with))
   }
 
   censorMultiple(env, this: JObject<'local>, input: JObjectArray<'local>, with: jchar) {
     let inner = util::get_inner!(env, this);
 
-    char::from_u32(with.into()).map_or_else(
-      || {
-        Err(Error::IllegalArgument(
-          "Replacement character is a surrogate.".into(),
-        ))
-      },
-      |with| {
-        unsafe {
-          (*inner).censor_multiple(util::get_string_array!(env, input), with);
-        }
-
-        Ok(())
-      },
-    )
+    util::censor!(inner => censor_multiple(util::get_string_array!(env, input), with))
   }
 
   replace(env, this: JObject<'local>, input: JString<'local>, with: JString<'local>) {

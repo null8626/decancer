@@ -145,3 +145,22 @@ pub fn get_matches_array<'local>(
 
   Ok(array)
 }
+
+macro_rules! censor {
+  ($inner:ident => $method_name:ident($argument_name:expr, $with:ident)) => {
+    char::from_u32($with.into()).map_or_else(
+      || {
+        Err($crate::Error::IllegalArgument(
+          "Replacement character is a surrogate.".into(),
+        ))
+      },
+      |$with| {
+        unsafe { (*$inner).$method_name($argument_name, $with) }
+
+        Ok(())
+      },
+    )
+  };
+}
+
+pub(super) use censor;
