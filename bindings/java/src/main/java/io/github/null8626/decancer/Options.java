@@ -6,9 +6,8 @@ package io.github.null8626.decancer;
 /**
  * A configuration class where you can customize decancer's behavior.
  *
- * <p>
- * By default, decancer cures as much characters as possible and turns all of the output characters to lowercase.
- * </p>
+ * <p>By default, decancer cures as much characters as possible and turns all of the output
+ * characters to lowercase.
  *
  * @author null8626
  * @version 3.3.3
@@ -31,7 +30,8 @@ public final class Options {
   public static Options ALL = new Options(0x3ffffff);
 
   /**
-   * Predefined configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
+   * Predefined configuration that prevents decancer from curing characters from major foreign
+   * writing systems, including diacritics.
    *
    * @since 3.0.0
    */
@@ -40,9 +40,8 @@ public final class Options {
   /**
    * Creates a new Options object with decancer's default options.
    *
-   * <p>
-   * By default, all options here are disabled, which means that decancer cures as much characters as possible and turns all of the output characters to lowercase.
-   * </p>
+   * <p>By default, all options here are disabled, which means that decancer cures as much
+   * characters as possible and turns all of the output characters to lowercase.
    *
    * @since 3.0.0
    */
@@ -55,12 +54,11 @@ public final class Options {
   }
 
   /**
-   * Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
+   * Prevents decancer from changing all characters to lowercase. Therefore, if the input character
+   * is in uppercase, the output character will be in uppercase as well.
    *
-   * <p>
-   * Many confusables are neither an uppercase or a lowercase character.<br>
+   * <p>Many confusables are neither an uppercase or a lowercase character.<br>
    * Therefore, the decancer defaults to displaying the translation in lowercase.
-   * </p>
    *
    * @return Options A reference to this object to allow for method chaining.
    * @since 3.0.0
@@ -71,12 +69,11 @@ public final class Options {
   }
 
   /**
-   * Prevents decancer from applying the Unicode Bidirectional Algorithm. Use this only when you don't expect any right-to-left characters.
+   * Prevents decancer from applying the Unicode Bidirectional Algorithm. Use this only when you
+   * don't expect any right-to-left characters.
    *
-   * <p>
-   * <b>WARNING:</b> This speeds up the function call, but can BREAK right-to-left characters.
+   * <p><b>WARNING:</b> This speeds up the function call, but can BREAK right-to-left characters.
    * It's highly recommended to also use retainArabic() and retainHebrew().
-   * </p>
    *
    * @see retainArabic
    * @see retainHebrew
@@ -101,9 +98,7 @@ public final class Options {
   /**
    * Prevents decancer from curing characters *with* diacritics or accents.
    *
-   * <p>
-   * Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
-   * </p>
+   * <p>Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
    *
    * @return Options A reference to this object to allow for method chaining.
    * @since 3.0.0
@@ -281,9 +276,7 @@ public final class Options {
   /**
    * Prevents decancer from curing all katakana and hiragana characters.
    *
-   * <p>
-   * To also prevent decancer from curing kanji characters, use retainChinese().
-   * </p>
+   * <p>To also prevent decancer from curing kanji characters, use retainChinese().
    *
    * @see retainChinese
    * @return Options A reference to this object to allow for method chaining.
@@ -330,9 +323,8 @@ public final class Options {
   /**
    * Prevents decancer from curing all turkish characters.
    *
-   * <p>
-   * To also prevent decancer from curing the uppercase dotted i character (İ), use retainCapitalization().
-   * </p>
+   * <p>To also prevent decancer from curing the uppercase dotted i character (İ), use
+   * retainCapitalization().
    *
    * @see retainCapitalization
    * @return Options A reference to this object to allow for method chaining.

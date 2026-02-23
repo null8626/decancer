@@ -17,9 +17,7 @@ public class DecancerTest {
 
   @Test
   public void censor() throws Exception {
-    try (
-      final CuredString string = new CuredString("wow heellllo wow hello wow!")
-    ) {
+    try (final CuredString string = new CuredString("wow heellllo wow hello wow!")) {
       string.censor("hello", '*');
 
       Assertions.assertEquals("wow ******** wow ***** wow!", string.toString());
@@ -29,7 +27,7 @@ public class DecancerTest {
   @Test
   public void censorMultiple() throws Exception {
     try (final CuredString string = new CuredString("helloh yeah")) {
-      final String[] keywords = { "hello", "oh yeah" };
+      final String[] keywords = {"hello", "oh yeah"};
       string.censorMultiple(keywords, '*');
 
       Assertions.assertEquals("***********", string.toString());
@@ -38,9 +36,7 @@ public class DecancerTest {
 
   @Test
   public void replace() throws Exception {
-    try (
-      final CuredString string = new CuredString("wow hello wow heellllo!")
-    ) {
+    try (final CuredString string = new CuredString("wow hello wow heellllo!")) {
       string.replace("hello", "world");
 
       Assertions.assertEquals("wow world wow world!", string.toString());
@@ -50,7 +46,7 @@ public class DecancerTest {
   @Test
   public void replaceMultiple() throws Exception {
     try (final CuredString string = new CuredString("helloh yeah")) {
-      final String[] keywords = { "hello", "oh yeah" };
+      final String[] keywords = {"hello", "oh yeah"};
       string.replaceMultiple(keywords, "world");
 
       Assertions.assertEquals("world", string.toString());

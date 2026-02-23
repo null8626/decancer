@@ -10,9 +10,9 @@ import cz.adamh.utils.NativeUtils;
 /**
  * A small wrapper around the String data type for comparison purposes.
  *
- * <p>
- * This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: letter I and lowercase L)
- * </p>
+ * <p>This is used because imperfections from translations can happen, thus this is used to provide
+ * comparison functions that are not as strict and can detect similar-looking characters (e.g:
+ * letter I and lowercase L)
  *
  * @author null8626
  * @version 3.3.3
@@ -40,38 +40,39 @@ public class CuredString implements AutoCloseable {
       rustTarget = target.toRustTarget();
 
       switch (os) {
-        case WINDOWS: {
-          libPrefix = "";
-          fileExtension = "dll";
+        case WINDOWS:
+          {
+            libPrefix = "";
+            fileExtension = "dll";
 
-          break;
-        }
-        case MACOS: {
-          fileExtension = "dylib";
-        }
-        default: {
-          break;
-        }
+            break;
+          }
+        case MACOS:
+          {
+            fileExtension = "dylib";
+          }
+        default:
+          {
+            break;
+          }
       }
 
       if (System.getProperty("DECANCER_TESTING", "0").equals("1")) {
         System.loadLibrary("decancer-" + rustTarget);
       } else {
         NativeUtils.loadLibraryFromJar(
-          "/" + libPrefix + "decancer-" + rustTarget + "." + fileExtension
-        );
+            "/" + libPrefix + "decancer-" + rustTarget + "." + fileExtension);
       }
     } catch (final Throwable err) {
       throw new RuntimeException(
-        "[" +
-          rustTarget +
-          "] this operating system (" +
-          osName +
-          ") and/or architecture (" +
-          archName +
-          ") is not supported.\noriginal error:\n" +
-          err.getMessage()
-      );
+          "["
+              + rustTarget
+              + "] this operating system ("
+              + osName
+              + ") and/or architecture ("
+              + archName
+              + ") is not supported.\noriginal error:\n"
+              + err.getMessage());
     }
   }
 
@@ -122,9 +123,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Iterates throughout this string and yields every similar-looking match.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @see findMultiple
@@ -138,11 +137,10 @@ public class CuredString implements AutoCloseable {
   public native Match[] find(String other);
 
   /**
-   * Iterates throughout this string and returns an array of every similar-looking match. Unlike find, this method also takes note of overlapping matches and merges them together.
+   * Iterates throughout this string and returns an array of every similar-looking match. Unlike
+   * find, this method also takes note of overlapping matches and merges them together.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The list of strings to match with.
    * @see find
@@ -158,9 +156,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Censors every match of a string with a repetition of a character in-place.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @param with The character to repeat.
@@ -177,9 +173,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Censors every matches from an array of strings with a repetition of a character in-place.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The list of strings to match with.
    * @param with The character to repeat.
@@ -196,9 +190,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Replaces every match of a string with another string in-place.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @param with The other string to replace with.
@@ -214,9 +206,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Replaces every matches from an array of strings with another string in-place.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The list of strings to match with.
    * @param with The other string to replace with.
@@ -232,9 +222,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Checks if this object is similar with another string
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
@@ -249,9 +237,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Checks if this object similarly starts with another string.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
@@ -266,9 +252,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Checks if this object similarly ends with another string.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
@@ -283,9 +267,7 @@ public class CuredString implements AutoCloseable {
   /**
    * Checks if this object similarly contains another string.
    *
-   * <p>
-   * This comparison is case-insensitive.
-   * </p>
+   * <p>This comparison is case-insensitive.
    *
    * @param other The other string to match with.
    * @see disableLeetspeak
@@ -300,11 +282,9 @@ public class CuredString implements AutoCloseable {
   /**
    * Coerces this object to a String.
    *
-   * <p>
-   * This comparison is case-insensitive.<br>
-   *
-   * <b>WARNING:</b> It's highly NOT recommended to use Java's comparison methods after calling this. The string output is NOT meant to be displayed visually.
-   * </p>
+   * <p>This comparison is case-insensitive.<br>
+   * <b>WARNING:</b> It's highly NOT recommended to use Java's comparison methods after calling
+   * this. The string output is NOT meant to be displayed visually.
    *
    * @return String The String representation of this object.
    * @throws NullPointerException If close() has been called prior to this.
@@ -317,10 +297,8 @@ public class CuredString implements AutoCloseable {
   /**
    * Destroys and frees the memory used by this object.
    *
-   * <p>
-   * Repeated calls to this method is fine and does not guarantee a double-free.<br>
+   * <p>Repeated calls to this method is fine and does not guarantee a double-free.<br>
    * Any subsequent String objects from toString() calls can still be used after this.
-   * </p>
    *
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.3.0
@@ -331,13 +309,13 @@ public class CuredString implements AutoCloseable {
   /**
    * Cures a string with decancer's default options.
    *
-   * <p>
-   * Output will always be in lowercase and bidirectionally reordered in order to treat right-to-left characters.<br>
+   * <p>Output will always be in lowercase and bidirectionally reordered in order to treat
+   * right-to-left characters.<br>
    * Therefore, the output of this function should NOT be displayed visually.
-   * </p>
    *
    * @param input The string to cure.
-   * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
+   * @throws IllegalArgumentException If the string is malformed to the point where it's not
+   *     possible to apply unicode's bidirectional algorithm to it.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
@@ -350,7 +328,8 @@ public class CuredString implements AutoCloseable {
    *
    * @param input The string to cure.
    * @param options The explicit options.
-   * @throws IllegalArgumentException If the string is malformed to the point where it's not possible to apply unicode's bidirectional algorithm to it.
+   * @throws IllegalArgumentException If the string is malformed to the point where it's not
+   *     possible to apply unicode's bidirectional algorithm to it.
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
