@@ -244,7 +244,7 @@ jobs:
         shell: bash
       - name: Upload artifact
         if: ${{ github.event_name != 'pull_request' && needs.setup.outputs.release_version == 'null' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: java-${{ matrix.settings.target }}
           path: ./artifacts/**
@@ -399,7 +399,7 @@ jobs:
         shell: bash
       - name: Upload artifact
         if: ${{ needs.setup.outputs.create_release == 'true' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: native-${{ matrix.settings.target }}
           path: ./artifacts/**
@@ -589,7 +589,7 @@ jobs:
         shell: bash
       - name: Upload artifact
         if: ${{ needs.setup.outputs.publish_node == 'true' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: node-${{ matrix.settings.target }}
           path: decancer.*.node
@@ -658,7 +658,7 @@ jobs:
         working-directory: bindings/wasm
       - name: Upload artifact
         if: ${{ github.event_name != 'pull_request' && needs.setup.outputs.release_version == 'null' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: wasm
           path: bindings/wasm/bin
