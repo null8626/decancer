@@ -422,7 +422,7 @@ jobs:
           node-version: 22.x
           cache: yarn
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: native-x86_64-unknown-linux-gnu
           path: bindings/native
@@ -615,7 +615,7 @@ jobs:
         run: yarn install
         working-directory: bindings/node
       - name: Download artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: node-x86_64-unknown-linux-gnu
           path: bindings/node
@@ -724,13 +724,13 @@ jobs:
         run: node scripts/readme.mjs
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: wasm
           path: bindings/wasm/bin
       - name: Download all java artifacts
         if: ${{ needs.setup.outputs.java_affected == 'true' }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: java-*
           path: java-artifacts
@@ -789,7 +789,7 @@ jobs:
         uses: ssciwr/doxygen-install@v2
       - name: Download wasm artifact
         if: ${{ needs.setup.outputs.wasm_affected == 'true' }}
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: wasm
           path: bindings/wasm/bin
@@ -855,7 +855,7 @@ jobs:
         with:
           node-version: 22.x
       - name: Download all artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
       - name: Modify artifacts
