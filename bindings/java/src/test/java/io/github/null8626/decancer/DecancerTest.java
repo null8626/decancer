@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class DecancerTest {
-  private static CuredString CURED;
+  private static CuredString CURED = null;
 
   @BeforeAll
   public static void setup() {
@@ -90,6 +90,8 @@ public class DecancerTest {
 
   @AfterAll
   public static void cleanup() {
-    CURED.close();
+    if (CURED != null) {
+      CURED.close();
+    }
   }
 }
