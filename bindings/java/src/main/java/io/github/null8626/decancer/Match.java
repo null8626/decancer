@@ -40,6 +40,6 @@ public class Match {
    */
   @Override
   public String toString() {
-    return this.matched;
+    return matched;
   }
 }

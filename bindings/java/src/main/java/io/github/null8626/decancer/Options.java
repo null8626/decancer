@@ -46,7 +46,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options() {
-    this.inner = 0;
+    inner = 0;
   }
 
   private Options(final int inner) {
@@ -64,7 +64,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainCapitalization() {
-    this.inner |= 1;
+    inner |= 1;
     return this;
   }
 
@@ -81,7 +81,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options disableBidi() {
-    this.inner |= (1 << 1);
+    inner |= (1 << 1);
     return this;
   }
 
@@ -91,7 +91,7 @@ public final class Options {
    * @since 4.0.0
    */
   public Options disableLeetspeak() {
-    this.inner |= (1 << 2);
+    inner |= (1 << 2);
     return this;
   }
 
@@ -104,7 +104,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainDiacritics() {
-    this.inner |= (1 << 3);
+    inner |= (1 << 3);
     return this;
   }
 
@@ -115,7 +115,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainGreek() {
-    this.inner |= (1 << 4);
+    inner |= (1 << 4);
     return this;
   }
 
@@ -126,7 +126,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainCyrillic() {
-    this.inner |= (1 << 5);
+    inner |= (1 << 5);
     return this;
   }
 
@@ -137,7 +137,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainHebrew() {
-    this.inner |= (1 << 6);
+    inner |= (1 << 6);
     return this;
   }
 
@@ -148,7 +148,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainArabic() {
-    this.inner |= (1 << 7);
+    inner |= (1 << 7);
     return this;
   }
 
@@ -159,7 +159,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainDevanagari() {
-    this.inner |= (1 << 8);
+    inner |= (1 << 8);
     return this;
   }
 
@@ -170,7 +170,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBengali() {
-    this.inner |= (1 << 9);
+    inner |= (1 << 9);
     return this;
   }
 
@@ -181,7 +181,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainArmenian() {
-    this.inner |= (1 << 10);
+    inner |= (1 << 10);
     return this;
   }
 
@@ -192,7 +192,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainGujarati() {
-    this.inner |= (1 << 11);
+    inner |= (1 << 11);
     return this;
   }
 
@@ -203,7 +203,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainTamil() {
-    this.inner |= (1 << 12);
+    inner |= (1 << 12);
     return this;
   }
 
@@ -214,7 +214,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainThai() {
-    this.inner |= (1 << 13);
+    inner |= (1 << 13);
     return this;
   }
 
@@ -225,7 +225,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainLao() {
-    this.inner |= (1 << 14);
+    inner |= (1 << 14);
     return this;
   }
 
@@ -236,7 +236,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBurmese() {
-    this.inner |= (1 << 15);
+    inner |= (1 << 15);
     return this;
   }
 
@@ -247,7 +247,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainKhmer() {
-    this.inner |= (1 << 16);
+    inner |= (1 << 16);
     return this;
   }
 
@@ -258,7 +258,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainMongolian() {
-    this.inner |= (1 << 17);
+    inner |= (1 << 17);
     return this;
   }
 
@@ -269,7 +269,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainChinese() {
-    this.inner |= (1 << 18);
+    inner |= (1 << 18);
     return this;
   }
 
@@ -283,7 +283,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainJapanese() {
-    this.inner |= (1 << 19);
+    inner |= (1 << 19);
     return this;
   }
 
@@ -294,7 +294,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainKorean() {
-    this.inner |= (1 << 20);
+    inner |= (1 << 20);
     return this;
   }
 
@@ -305,7 +305,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBraille() {
-    this.inner |= (1 << 21);
+    inner |= (1 << 21);
     return this;
   }
 
@@ -316,7 +316,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainEmojis() {
-    this.inner |= (1 << 22);
+    inner |= (1 << 22);
     return this;
   }
 
@@ -331,7 +331,7 @@ public final class Options {
    * @since 3.2.4
    */
   public Options retainTurkish() {
-    this.inner |= (1 << 23);
+    inner |= (1 << 23);
     return this;
   }
 
@@ -343,7 +343,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options asciiOnly() {
-    this.inner |= (1 << 24);
+    inner |= (1 << 24);
     return this;
   }
 
@@ -355,7 +355,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options alphanumericOnly() {
-    this.inner |= (1 << 25);
+    inner |= (1 << 25);
     return this;
   }
 }

@@ -5,6 +5,7 @@ package io.github.null8626.decancer;
 
 import com.fizzed.jne.NativeTarget;
 import com.fizzed.jne.OperatingSystem;
+
 import cz.adamh.utils.NativeUtils;
 
 /**
@@ -320,7 +321,7 @@ public class CuredString implements AutoCloseable {
    * @since 3.0.0
    */
   public CuredString(String input) {
-    this.inner = CuredString.cure(input, 0);
+    inner = CuredString.cure(input, 0);
   }
 
   /**
@@ -334,6 +335,6 @@ public class CuredString implements AutoCloseable {
    * @since 3.0.0
    */
   public CuredString(String input, Options options) {
-    this.inner = CuredString.cure(input, options.inner);
+    inner = CuredString.cure(input, options.inner);
   }
 }

@@ -1,8 +1,8 @@
 package io.github.null8626.decancer;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,9 +10,9 @@ public class DecancerTest {
 
   private CuredString cured;
 
-  @BeforeEach
+  @BeforeAll
   public void cure() {
-    this.cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+    cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   }
 
   @Test
@@ -55,7 +55,7 @@ public class DecancerTest {
 
   @Test
   public void find() {
-    final Match[] match = this.cured.find("funny");
+    final Match[] match = cured.find("funny");
 
     Assertions.assertEquals(1, match.length, 1);
     Assertions.assertEquals(5, match[0].start, 5);
@@ -65,32 +65,32 @@ public class DecancerTest {
 
   @Test
   public void equals() {
-    Assertions.assertTrue(this.cured.equals("very funny text"));
+    Assertions.assertTrue(cured.equals("very funny text"));
   }
 
   @Test
   public void startsWith() {
-    Assertions.assertTrue(this.cured.startsWith("very"));
+    Assertions.assertTrue(cured.startsWith("very"));
   }
 
   @Test
   public void endsWith() {
-    Assertions.assertTrue(this.cured.endsWith("text"));
+    Assertions.assertTrue(cured.endsWith("text"));
   }
 
   @Test
   public void contains() {
-    Assertions.assertTrue(this.cured.contains("funny"));
+    Assertions.assertTrue(cured.contains("funny"));
   }
 
   @Test
   @DisplayName("toString()")
   public void toStringTest() {
-    Assertions.assertEquals("very funny text", this.cured.toString());
+    Assertions.assertEquals("very funny text", cured.toString());
   }
 
-  @AfterEach
+  @AfterAll
   public void cleanup() {
-    this.cured.close();
+    cured.close();
   }
 }
