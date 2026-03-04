@@ -47,8 +47,8 @@ publishing {
         
         scm {
           url = 'https://github.com/null8626/decancer'
-          connection = 'scm:git:git://github.com/null8626/decancer'
-          developerConnection = 'scm:git:git://github.com/null8626/decancer'
+          connection = 'scm:git:github.com/null8626/decancer.git'
+          developerConnection = 'scm:git:ssh://github.com/null8626/decancer.git'
         }
         
         issueManagement {
