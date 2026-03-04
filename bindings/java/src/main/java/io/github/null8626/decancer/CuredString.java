@@ -5,7 +5,6 @@ package io.github.null8626.decancer;
 
 import com.fizzed.jne.NativeTarget;
 import com.fizzed.jne.OperatingSystem;
-
 import cz.adamh.utils.NativeUtils;
 
 /**

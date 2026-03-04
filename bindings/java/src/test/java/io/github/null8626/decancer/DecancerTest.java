@@ -7,12 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class DecancerTest {
-
-  private CuredString cured;
+  private static CuredString CURED;
 
   @BeforeAll
-  public void cure() {
-    cured = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+  public static void setup() {
+    CURED = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
   }
 
   @Test
@@ -55,7 +54,7 @@ public class DecancerTest {
 
   @Test
   public void find() {
-    final Match[] match = cured.find("funny");
+    final Match[] match = CURED.find("funny");
 
     Assertions.assertEquals(1, match.length, 1);
     Assertions.assertEquals(5, match[0].start, 5);
@@ -65,32 +64,32 @@ public class DecancerTest {
 
   @Test
   public void equals() {
-    Assertions.assertTrue(cured.equals("very funny text"));
+    Assertions.assertTrue(CURED.equals("very funny text"));
   }
 
   @Test
   public void startsWith() {
-    Assertions.assertTrue(cured.startsWith("very"));
+    Assertions.assertTrue(CURED.startsWith("very"));
   }
 
   @Test
   public void endsWith() {
-    Assertions.assertTrue(cured.endsWith("text"));
+    Assertions.assertTrue(CURED.endsWith("text"));
   }
 
   @Test
   public void contains() {
-    Assertions.assertTrue(cured.contains("funny"));
+    Assertions.assertTrue(CURED.contains("funny"));
   }
 
   @Test
   @DisplayName("toString()")
   public void toStringTest() {
-    Assertions.assertEquals("very funny text", cured.toString());
+    Assertions.assertEquals("very funny text", CURED.toString());
   }
 
   @AfterAll
-  public void cleanup() {
-    cured.close();
+  public static void cleanup() {
+    CURED.close();
   }
 }
