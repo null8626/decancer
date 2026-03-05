@@ -319,7 +319,7 @@ public class CuredString implements AutoCloseable {
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
-  public CuredString(String input) {
+  public CuredString(final String input) {
     inner = CuredString.cure(input, 0);
   }
 
@@ -333,7 +333,7 @@ public class CuredString implements AutoCloseable {
    * @throws RuntimeException If a Rust panic occurs.
    * @since 3.0.0
    */
-  public CuredString(String input, Options options) {
+  public CuredString(final String input, final Options options) {
     inner = CuredString.cure(input, options.inner);
   }
 }
