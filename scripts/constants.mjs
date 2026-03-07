@@ -4,10 +4,10 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import process from 'node:process'
 
-export const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
+export const BINDINGS_DIR = dirname(fileURLToPath(import.meta.url))
+export const ROOT_DIR = join(BINDINGS_DIR, '..')
 
 export const CORE_DIR = join(ROOT_DIR, 'core')
-export const BINDINGS_DIR = join(ROOT_DIR, 'bindings')
 export const CACHE_FILE = join(ROOT_DIR, '.cache.bin')
 
 export const OPTIONS = Object.fromEntries(
