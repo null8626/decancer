@@ -741,7 +741,7 @@ jobs:
           mv ./java-artifacts/**/*.{dll,so,dylib} .
           zip -FSr ./bindings/java/bin/bindings.zip ./*.{dll,so,dylib}
       - name: Import Actions GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.CI_GPG_PASS }}
@@ -896,7 +896,7 @@ jobs:
         working-directory: bindings/java
       - name: Import Actions GPG key
         if: ${{ needs.setup.outputs.create_release == 'true' }}
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.CI_GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.CI_GPG_PASS }}
