@@ -147,9 +147,10 @@ dependencies {
   implementation 'com.fizzed:jne:4.11.0'
 
   testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.3'
-  googleJavaFormat 'com.google.googlejavaformat:google-java-format:1.35.0'
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.3'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.3'
+
+  googleJavaFormat 'com.google.googlejavaformat:google-java-format:1.35.0'
 }
 
 tasks.register('format', JavaExec) {
