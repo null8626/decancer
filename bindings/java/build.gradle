@@ -125,9 +125,13 @@ java {
   }
 
   javadoc {
-    if (JavaVersion.current().isJava9Compatible()) {
-      options.addBooleanOption('html5', true)
-    }
+    title = '<h1>Decancer</h1>'
+
+    options.bottom = '<i>Copyright &#169; 2021-2026 null8626. All Rights Reserved.</i>'
+    options.encoding = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.addBooleanOption('html5', true)
   }
 }
 
@@ -177,4 +181,8 @@ tasks.register('format', JavaExec) {
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << '-Xlint:deprecation'
+}
+
+tasks.withType(Javadoc) {
+  options.memberLevel = JavadocMemberLevel.PUBLIC
 }
