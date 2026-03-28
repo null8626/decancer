@@ -3,10 +3,7 @@ env:
   MACOSX_DEPLOYMENT_TARGET: '10.13'
 on:
   push:
-    branches:
-      - main
-    tags-ignore:
-      - '**'
+    tags-ignore: ['**']
     paths:
       - '**/src/**/*.rs'
       - '**/*.cjs'
