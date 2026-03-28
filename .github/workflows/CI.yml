@@ -19,7 +19,22 @@ on:
       - 'bindings/native/decancer.h'
       - 'bindings/native/decancer.cpp'
       - 'bindings/native/decancer.hpp'
-  pull_request: null
+  pull_request:
+    paths:
+      - '**/src/**/*.rs'
+      - '**/*.cjs'
+      - '**/*.js'
+      - '**/*.ts'
+      - '**/*.mjs'
+      - '**/*.java'
+      - '**/*.json'
+      - 'README.md'
+      - 'bindings/go/*.go'
+      - 'core/bin/codepoints.bin'
+      - 'bindings/native/docs/**'
+      - 'bindings/native/decancer.h'
+      - 'bindings/native/decancer.cpp'
+      - 'bindings/native/decancer.hpp'
   workflow_dispatch:
     inputs:
       release_version:
