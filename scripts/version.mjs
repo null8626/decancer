@@ -87,6 +87,7 @@ void (await Promise.all([
   update(join(BINDINGS_DIR, 'node', 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
+  update(join(BINDINGS_DIR, 'go', 'README.md'), directUpdateFunc),
   update(join(BINDINGS_DIR, 'java', 'build.gradle'), updateGradleFunc),
   new Promise(resolve => {
     readdir(join(NODE_DIR, 'npm')).then(files => {
