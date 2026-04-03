@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-linux-arm64-gnu",
-  "version": "3.3.3",
+  "version": "4.0.0",
   "os": [
     "linux"
   ],

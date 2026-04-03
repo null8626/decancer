@@ -33,7 +33,7 @@ Building requires Rust v1.65 or later. Windows systems also require a MinGW comp
 In your shell:
 
 ```console
-git clone https://github.com/null8626/decancer.git --branch v3.3.3 --depth 1
+git clone https://github.com/null8626/decancer.git --branch v4.0.0 --depth 1
 cd decancer/bindings/go
 sudo -E "PATH=$PATH" go generate
 go install

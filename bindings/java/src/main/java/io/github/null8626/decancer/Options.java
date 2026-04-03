@@ -10,7 +10,7 @@ package io.github.null8626.decancer;
  * characters to lowercase.
  *
  * @author null8626
- * @version 3.3.3
+ * @version 4.0.0
  * @since 3.0.0
  */
 public final class Options {

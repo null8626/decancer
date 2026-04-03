@@ -1,6 +1,6 @@
 {
   "name": "@vierofernando/decancer-linux-x64-musl",
-  "version": "3.3.3",
+  "version": "4.0.0",
   "os": [
     "linux"
   ],

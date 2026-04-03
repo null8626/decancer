@@ -7,8 +7,8 @@
  * @brief A library that removes common unicode confusables/homoglyphs from strings.
  * @author null8626
  * @copyright Copyright (c) 2021-2026 null8626
- * @date 2025-07-16
- * @version 3.3.3
+ * @date 2026-04-03
+ * @version 4.0.0
  */
 
 #ifndef __DECANCER_H__
@@ -32,7 +32,7 @@
  * @see DECANCER_VERSION_PATCH
  * @since 3.2.2
  */
-#define DECANCER_VERSION 0x030303
+#define DECANCER_VERSION 0x040000
 
 /**
  * @brief The current major version used by this library.

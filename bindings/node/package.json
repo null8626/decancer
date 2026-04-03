@@ -1,6 +1,6 @@
 {
   "name": "decancer",
-  "version": "3.3.3",
+  "version": "4.0.0",
   "description": "A library that removes common unicode confusables/homoglyphs from strings.",
   "author": "null8626",
   "keywords": [

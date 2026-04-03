@@ -15,7 +15,7 @@ import cz.adamh.utils.NativeUtils;
  * letter I and lowercase L)
  *
  * @author null8626
- * @version 3.3.3
+ * @version 4.0.0
  * @since 3.0.0
  */
 public class CuredString implements AutoCloseable {
