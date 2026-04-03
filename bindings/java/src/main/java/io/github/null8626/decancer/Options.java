@@ -97,6 +97,17 @@ public final class Options {
   }
 
   /**
+   * Prevents decancer from applying alphabetical leetspeak comparisons in comparison methods.
+   *
+   * @return Options A reference to this object to allow for method chaining.
+   * @since 4.0.0
+   */
+  public Options disableAlphabeticalLeetspeak() {
+    inner |= (1 << 3);
+    return this;
+  }
+
+  /**
    * Prevents decancer from curing characters *with* diacritics or accents.
    *
    * <p>Decancer can still cure standalone diacritic characters, which is used in Zalgo texts.
@@ -105,7 +116,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainDiacritics() {
-    inner |= (1 << 3);
+    inner |= (1 << 4);
     return this;
   }
 
@@ -116,7 +127,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainGreek() {
-    inner |= (1 << 4);
+    inner |= (1 << 5);
     return this;
   }
 
@@ -127,7 +138,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainCyrillic() {
-    inner |= (1 << 5);
+    inner |= (1 << 6);
     return this;
   }
 
@@ -138,7 +149,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainHebrew() {
-    inner |= (1 << 6);
+    inner |= (1 << 7);
     return this;
   }
 
@@ -149,7 +160,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainArabic() {
-    inner |= (1 << 7);
+    inner |= (1 << 8);
     return this;
   }
 
@@ -160,7 +171,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainDevanagari() {
-    inner |= (1 << 8);
+    inner |= (1 << 9);
     return this;
   }
 
@@ -171,7 +182,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBengali() {
-    inner |= (1 << 9);
+    inner |= (1 << 10);
     return this;
   }
 
@@ -182,7 +193,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainArmenian() {
-    inner |= (1 << 10);
+    inner |= (1 << 11);
     return this;
   }
 
@@ -193,7 +204,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainGujarati() {
-    inner |= (1 << 11);
+    inner |= (1 << 12);
     return this;
   }
 
@@ -204,7 +215,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainTamil() {
-    inner |= (1 << 12);
+    inner |= (1 << 13);
     return this;
   }
 
@@ -215,7 +226,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainThai() {
-    inner |= (1 << 13);
+    inner |= (1 << 14);
     return this;
   }
 
@@ -226,7 +237,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainLao() {
-    inner |= (1 << 14);
+    inner |= (1 << 15);
     return this;
   }
 
@@ -237,7 +248,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBurmese() {
-    inner |= (1 << 15);
+    inner |= (1 << 16);
     return this;
   }
 
@@ -248,7 +259,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainKhmer() {
-    inner |= (1 << 16);
+    inner |= (1 << 17);
     return this;
   }
 
@@ -259,7 +270,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainMongolian() {
-    inner |= (1 << 17);
+    inner |= (1 << 18);
     return this;
   }
 
@@ -270,7 +281,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainChinese() {
-    inner |= (1 << 18);
+    inner |= (1 << 19);
     return this;
   }
 
@@ -284,7 +295,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainJapanese() {
-    inner |= (1 << 19);
+    inner |= (1 << 20);
     return this;
   }
 
@@ -295,7 +306,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainKorean() {
-    inner |= (1 << 20);
+    inner |= (1 << 21);
     return this;
   }
 
@@ -306,7 +317,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainBraille() {
-    inner |= (1 << 21);
+    inner |= (1 << 22);
     return this;
   }
 
@@ -317,7 +328,7 @@ public final class Options {
    * @since 3.0.0
    */
   public Options retainEmojis() {
-    inner |= (1 << 22);
+    inner |= (1 << 23);
     return this;
   }
 
@@ -332,7 +343,7 @@ public final class Options {
    * @since 3.2.4
    */
   public Options retainTurkish() {
-    inner |= (1 << 23);
+    inner |= (1 << 24);
     return this;
   }
 
@@ -344,7 +355,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options asciiOnly() {
-    inner |= (1 << 24);
+    inner |= (1 << 25);
     return this;
   }
 
@@ -356,7 +367,7 @@ public final class Options {
    * @since 3.2.0
    */
   public Options alphanumericOnly() {
-    inner |= (1 << 25);
+    inner |= (1 << 26);
     return this;
   }
 }
