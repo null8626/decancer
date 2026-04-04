@@ -26,7 +26,7 @@
   "license": "MIT",
   "devDependencies": {
     "@fastify/static": "^9.0.0",
-    "esbuild": "^0.27.4",
+    "esbuild": "^0.28.0",
     "fastify": "^5.0.0",
     "puppeteer": "^24.0.0",
     "rollup-plugin-license": "^3.6.0",
