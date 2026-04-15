@@ -10,7 +10,9 @@ import { readdir, readFile, writeFile } from 'node:fs/promises'
 import process from 'node:process'
 import { join } from 'node:path'
 
+const NATIVE_DIR = join(BINDINGS_DIR, 'native')
 const NODE_DIR = join(BINDINGS_DIR, 'node')
+const WASM_DIR = join(BINDINGS_DIR, 'wasm')
 const JAVA_SOURCES_DIR = join(
   BINDINGS_DIR,
   'java',
@@ -72,22 +74,26 @@ function updateNativeHeaderFunc(x) {
 void (await Promise.all([
   update(join(CORE_DIR, 'Cargo.toml'), updateTomlFunc),
   update(join(NODE_DIR, 'Cargo.toml'), updateTomlFunc),
-  update(join(BINDINGS_DIR, 'wasm', 'Cargo.toml'), updateTomlFunc),
-  update(join(BINDINGS_DIR, 'native', 'Cargo.toml'), updateTomlFunc),
+  update(join(WASM_DIR, 'Cargo.toml'), updateTomlFunc),
+  update(join(NATIVE_DIR, 'Cargo.toml'), updateTomlFunc),
   update(join(NODE_DIR, 'package.json'), updateJsonFunc),
+  update(join(WASM_DIR, 'package.json'), updateJsonFunc),
   update(
-    join(BINDINGS_DIR, 'wasm', 'bin', 'decancer.min.js'),
+    join(WASM_DIR, 'src', 'glue.js'),
     directUpdateFunc
   ),
-  update(join(BINDINGS_DIR, 'wasm', 'example.html'), directUpdateFunc),
+  update(
+    join(WASM_DIR, 'bin', 'decancer.min.js'),
+    directUpdateFunc
+  ),
+  update(join(WASM_DIR, 'example.html'), directUpdateFunc),
   update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),
-  update(join(BINDINGS_DIR, 'native', 'decancer.h'), updateNativeHeaderFunc),
-  update(join(BINDINGS_DIR, 'native', 'docs', 'Doxyfile'), directUpdateFunc),
-  update(join(BINDINGS_DIR, 'node', 'README.md'), directUpdateFunc),
-  update(join(CORE_DIR, 'README.md'), directUpdateFunc),
-  update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
   update(join(BINDINGS_DIR, 'go', 'README.md'), directUpdateFunc),
+  update(join(NODE_DIR, 'README.md'), directUpdateFunc),
+  update(join(NATIVE_DIR, 'decancer.h'), updateNativeHeaderFunc),
+  update(join(NATIVE_DIR, 'docs', 'Doxyfile'), directUpdateFunc),
+  update(join(CORE_DIR, 'src', 'lib.rs'), directUpdateFunc),
   update(join(BINDINGS_DIR, 'java', 'build.gradle'), updateGradleFunc),
   new Promise(resolve => {
     readdir(join(NODE_DIR, 'npm')).then(files => {

@@ -66,7 +66,7 @@ export default async function init({ local } = {}) {
   const wasm = await fetch(
     local
       ? './decancer.wasm'
-      : 'https://cdn.jsdelivr.net/gh/null8626/decancer@v3.3.3/bindings/wasm/bin/decancer.wasm'
+      : 'https://cdn.jsdelivr.net/gh/null8626/decancer@v4.0.0/bindings/wasm/bin/decancer.wasm'
   )
   const { instance } = await WebAssembly.instantiate(await wasm.arrayBuffer(), {
     './decancer_bg.js': glue,
