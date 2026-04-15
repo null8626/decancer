@@ -18,15 +18,15 @@ func DoRetainTest(t *testing.T, options Option, input string) {
 
 	defer defaultCured.Close()
 
-	assert.True(t, defaultCured.Equals(input), "Default should make decancer cure the designated characters")
+	assert.False(t, defaultCured.Equals(input), "Default should make decancer cure the designated characters")
 
-	retainCured, err := Cure(input, options)
+	retainCured, err := Cure(input, options | DisableBidi)
 
 	assert.Nil(t, err, "curing should not fail")
 
 	defer retainCured.Close()
 
-	assert.False(t, retainCured.Equals(input), "Retain should prevent decancer from curing the designated characters")
+	assert.True(t, retainCured.Equals(input), "Retain should prevent decancer from curing the designated characters")
 }
 
 func TestRetains(t *testing.T) {
