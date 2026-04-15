@@ -1,14 +1,16 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 /* eslint-disable */
 
+import { BINDINGS_DIR, SPDX_LICENSE_COMMENTS } from '../../../scripts/constants.mjs'
 import { readdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { rm } from 'node:fs/promises'
 import process from 'node:process'
+import { join } from 'node:path'
 
-const ROOT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
-const TESTS_DIR = join(ROOT_DIR, 'tests')
+const TESTS_DIR = join(BINDINGS_DIR, 'native', 'tests')
 
 rmSync(join(TESTS_DIR, 'build'), {
   recursive: true,
@@ -79,6 +81,8 @@ for (const line of readFileSync(join(ROOT_DIR, 'decancer.h'))
 }
 
 let testFile = `
+${SPDX_LICENSE_COMMENTS}
+
 #include <stdio.h>
 
 #ifdef _WIN32

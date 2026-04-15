@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 import { parentPort } from 'node:worker_threads'
 import fastifyStatic from '@fastify/static'
 import { createReadStream } from 'node:fs'

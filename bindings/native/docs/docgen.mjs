@@ -1,13 +1,12 @@
 /* eslint-disable */
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { BINDINGS_DIR } from '../../../scripts/util.mjs'
 import { execSync } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import process from 'node:process'
+import { join } from 'node:path'
 
-const ROOT_DIR = dirname(fileURLToPath(import.meta.url))
-const HTML_DIR = join(ROOT_DIR, 'html')
+const HTML_DIR = join(BINDINGS_DIR, 'native', 'docs', 'html')
 let XMLParser
 
 try {

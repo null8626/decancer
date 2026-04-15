@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2021-2026 null8626
+
 const { strictEqual } = require('node:assert')
 const { describe, it } = require('node:test')
 
