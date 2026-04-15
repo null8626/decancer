@@ -12,8 +12,8 @@ import {
   ROOT_DIR,
   SPDX_LICENSE_COMMENTS
 } from './constants.mjs'
+import { binarySearchExists, snakeToCamel, snakeToPascal } from './util.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { binarySearchExists, snakeToPascal } from './util.mjs'
 import { execSync } from 'node:child_process'
 import { deserialize } from 'node:v8'
 import { join } from 'node:path'
@@ -23,6 +23,8 @@ if (!existsSync(CACHE_FILE)) {
     stdio: 'inherit'
   })
 }
+
+const TURKISH_TEST_STRING = TURKISH_CHARACTERS.join('')
 
 const binary = readFileSync(join(CORE_DIR, 'bin', 'codepoints.bin'))
 const { blocks } = deserialize(readFileSync(CACHE_FILE))
@@ -75,7 +77,7 @@ fn do_retain_test(options: Options, test_string: &str) {
 #[cfg(feature = "options")]
 #[allow(clippy::unicode_not_nfc)]
 fn retains() {
-  do_retain_test(Options::default().retain_turkish(), "${TURKISH_CHARACTERS.join('')}");`
+  do_retain_test(Options::default().retain_turkish(), "${TURKISH_TEST_STRING}");`
 
 let goTestCode = `${SPDX_LICENSE_COMMENTS}
 
@@ -108,7 +110,11 @@ func DoRetainTest(t *testing.T, options Option, input string) {
 }
 
 func TestRetains(t *testing.T) {
-	DoRetainTest(t, RetainTurkish, "${TURKISH_CHARACTERS.join('')}")`
+	DoRetainTest(t, RetainTurkish, "${TURKISH_TEST_STRING}")`
+
+const jsonData = {
+  retainTurkish: TURKISH_TEST_STRING
+}
 
 for (const [name, codepoints] of Object.entries(retain)) {
   const middleIndex = Math.round(codepoints.length / 2)
@@ -127,6 +133,8 @@ for (const [name, codepoints] of Object.entries(retain)) {
 
   coreTestCode += `\n  do_retain_test(Options::default().retain_${name}(), "${testString}");`
   goTestCode += `\n\tDoRetainTest(t, ${snakeToPascal(`retain_${name}`)}, "${testString}")`
+
+  jsonData[snakeToCamel(`retain_${name}`)] = testString
 }
 
 coreTestCode += '\n}'
@@ -134,3 +142,4 @@ goTestCode += '\n}'
 
 writeFileSync(join(CORE_DIR, 'src', 'retain_tests.rs'), coreTestCode)
 writeFileSync(join(BINDINGS_DIR, 'go', 'decancer_retain_test.go'), goTestCode)
+writeFileSync(join(BINDINGS_DIR, 'node', 'retain_data.json'), JSON.stringify(jsonData, null, 2))

@@ -129,6 +129,12 @@ export function binarySearchExists(arr, val) {
   return false
 }
 
+export function snakeToCamel(text) {
+  return text
+    .toLowerCase()
+    .replace(/_./g, x => x.slice(1).replace(/^_/, '').toUpperCase())
+}
+
 export function snakeToPascal(text) {
   return text
     .toLowerCase()

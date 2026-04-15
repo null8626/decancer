@@ -1,0 +1,21 @@
+{
+  "retainTurkish": "çğıöşü",
+  "retainGreek": "ͱͳʹ͵ͷϝϟϣϥϧῦ`ῲῶ´",
+  "retainCyrillic": "абвгдӆӈӊӌӎꚕꚗꚙꚛꚜ",
+  "retainArmenian": "ՙ՟ՠաբճմյնշֆև։֊֍",
+  "retainHebrew": "־׀׃׆אכלםמןװױײ׳״",
+  "retainArabic": "؅؈؉،؎ݧݪݬݮݱ𞸫𞹋𞺀𞺋𞺫",
+  "retainDevanagari": "ःऄअआइऽािीॉ꣺ꣻ꣼ꣽꣾ",
+  "retainBengali": "ঀংঃঌএযরষসঽ৷৸৹৻৽",
+  "retainGujarati": "ઃઅઆઇઊદનપફબ૮૯૰૱ૹ",
+  "retainTamil": "அஈஉஊஎயரறலள௭௰௱௴௶",
+  "retainThai": "กขคฆชวษหฬฯ๖๗๘๚๛",
+  "retainLao": "ກຂງຊຍວສຫອຮ໗໘໙ໜໞ",
+  "retainBurmese": "ကခဂဃငၶၸၹၺၻꩰꩲ꩷꩹ꩽ",
+  "retainKorean": "ᄀᄁᄂᄃᄄᇧᇨᇩᇫᇬퟵퟶퟹퟺퟻ",
+  "retainKhmer": "កខគឃចអឤឥឧឫ៴៶៷៸៹",
+  "retainMongolian": "᠁᠂᠃᠄᠆᠗᠘ᠪᠫᠯᢃᢄᢒᢗᢦ",
+  "retainBraille": "⠀⠁⠃⠄⠅⡃⡄⡅⡇⡈⣤⣫⣸⣹⣻",
+  "retainChinese": "⺀⺁⺃⺄⺅㟄㟍㟐㟪㠩﹀﹁﹅﹆﹉",
+  "retainJapanese": "ぃいくけこチテトナニㇻㇼㇽㇾㇿ"
+}

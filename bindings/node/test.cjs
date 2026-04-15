@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-const { strictEqual } = require('node:assert')
+const { strict, strictEqual } = require('node:assert')
 const { describe, it } = require('node:test')
+const retainData = require('./retain_data.json')
+const decancer = require('./src/lib.js')
 
 class TestContext {
   #inner
@@ -33,9 +35,7 @@ class TestContext {
   }
 }
 
-describe('decancer', () => {
-  const decancer = require('./src/lib.js')
-
+describe('cure', () => {
   new TestContext(decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣'))
     .test('equals', true, 'very funny text')
     .test('startsWith', true, 'very')
@@ -43,4 +43,37 @@ describe('decancer', () => {
     .test('contains', true, 'funny')
     .test('toString', 'very funny text')
     .testFind()
+})
+
+it('retains', () => {
+  for (const [option, testString] of Object.entries(retainData)) {
+    const cured = decancer('|-|3|_I_0', {
+      disableAlphabeticalLeetspeak: true,
+      disableBidi: true
+    })
+
+    strict(cured.equals('helI_o'))
+  }
+})
+
+it('retains leetspeak', () => {
+  let cured = decancer('|-|3|_I_0', {
+    disableLeetspeak: true
+  })
+
+  strict(cured.equals('|-|3|_I_0'))
+
+  cured = decancer('|-|3|_I_0', {
+    disableAlphabeticalLeetspeak: true
+  })
+
+  strict(cured.equals('helI_o'))
+})
+
+it('retains capitalization', () => {
+  const cured = decancer('decÁncer', {
+    retainCapitalization: true
+  })
+
+  strict(cured.equals('decAncer'))
 })

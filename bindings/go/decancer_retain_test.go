@@ -20,7 +20,7 @@ func DoRetainTest(t *testing.T, options Option, input string) {
 
 	assert.False(t, defaultCured.Equals(input), "Default should make decancer cure the designated characters")
 
-	retainCured, err := Cure(input, options | DisableBidi)
+	retainCured, err := Cure(input, options|DisableBidi)
 
 	assert.Nil(t, err, "curing should not fail")
 
