@@ -2,8 +2,8 @@
 
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { renameSync } from 'node:fs'
 
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import license from 'rollup-plugin-license'
 import { defineConfig } from 'vite'
@@ -13,14 +13,10 @@ const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [
     topLevelAwait(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: './pkg/decancer_bg.wasm',
-          dest: '.',
-          rename: 'decancer.wasm'
-        }
-      ]
+    defineConfig({
+      name: 'move-decancer-wasm',
+      apply: 'build',
+      closeBundle: () => renameSync(join(CURRENT_DIR, 'pkg', 'decancer_bg.wasm'), join(CURRENT_DIR, 'bin', 'decancer.wasm'))
     }),
     license({
       banner: {
