@@ -38,6 +38,17 @@ fn assert_no_matches(input: &str, find: &str, options: Options) {
 }
 
 #[test]
+#[cfg(feature = "options")]
+fn retain_capitalization() {
+  assert_eq!(
+    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
+    "decAncer"
+  );
+}
+
+include!("./retain_tests.rs");
+
+#[test]
 #[allow(clippy::single_range_in_vec_init)]
 fn similar_equal() {
   let default_options = Options::default();
@@ -312,17 +323,6 @@ fn isolating_run_sequences() {
     },
   );
 }
-
-#[test]
-#[cfg(feature = "options")]
-fn retain_capitalization() {
-  assert_eq!(
-    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
-    "decAncer"
-  );
-}
-
-include!("./retain_tests.rs");
 
 #[cfg(feature = "options")]
 fn test_reorder(input: &str, expected: &str) {

@@ -129,6 +129,12 @@ export function binarySearchExists(arr, val) {
   return false
 }
 
+export function snakeToPascal(text) {
+  return text
+    .toLowerCase()
+    .replace(/(\b|_)./g, x => x.replace(/^_/, '').toUpperCase())
+}
+
 export class SortedSet {
   #mapFn
   #array

@@ -3,7 +3,10 @@
 
 /* eslint-disable */
 
-import { BINDINGS_DIR, SPDX_LICENSE_COMMENTS } from '../../../scripts/constants.mjs'
+import {
+  BINDINGS_DIR,
+  SPDX_LICENSE_COMMENTS
+} from '../../../scripts/constants.mjs'
 import { readdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { execSync } from 'node:child_process'
 import { rm } from 'node:fs/promises'

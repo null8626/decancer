@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import {
+  BINDINGS_DIR,
   CACHE_FILE,
   CODEPOINT_MASK,
   CORE_DIR,
@@ -12,7 +13,7 @@ import {
   SPDX_LICENSE_COMMENTS
 } from './constants.mjs'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { binarySearchExists } from './util.mjs'
+import { binarySearchExists, snakeToPascal } from './util.mjs'
 import { execSync } from 'node:child_process'
 import { deserialize } from 'node:v8'
 import { join } from 'node:path'
@@ -61,20 +62,53 @@ for (const { start, end, name } of blocks) {
   }
 }
 
-let testCode = `${SPDX_LICENSE_COMMENTS}
+let coreTestCode = `${SPDX_LICENSE_COMMENTS}
 
 ${MODIFIED_RETAIN_TESTS_WARNING}
+
+fn do_retain_test(options: Options, test_string: &str) {
+  assert_ne!(super::cure!(test_string).unwrap(), test_string);
+  assert_eq!(super::cure(test_string, options.disable_bidi()).unwrap(), test_string);
+}
 
 #[test]
 #[cfg(feature = "options")]
 #[allow(clippy::unicode_not_nfc)]
 fn retains() {
-  let test_retain = |options: Options, test_string| {
-    assert_ne!(super::cure!(test_string).unwrap(), test_string);
-    assert_eq!(super::cure(test_string, options.disable_bidi()).unwrap(), test_string);
-  };
+  do_retain_test(Options::default().retain_turkish(), "${TURKISH_CHARACTERS.join('')}");`
 
-  test_retain(Options::default().retain_turkish(), "${TURKISH_CHARACTERS.join('')}");\n`
+let goTestCode = `${SPDX_LICENSE_COMMENTS}
+
+${MODIFIED_RETAIN_TESTS_WARNING}
+
+package decancer
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func DoRetainTest(t *testing.T, options Option, input string) {
+	defaultCured, err := Cure(input, Default)
+
+	assert.Nil(t, err, "curing should not fail")
+
+	defer defaultCured.Close()
+
+	assert.True(t, defaultCured.Equals(input), "Default should make decancer cure the designated characters")
+
+	retainCured, err := Cure(input, options)
+
+	assert.Nil(t, err, "curing should not fail")
+
+	defer retainCured.Close()
+
+	assert.False(t, retainCured.Equals(input), "Retain should prevent decancer from curing the designated characters")
+}
+
+func TestRetains(t *testing.T) {
+	DoRetainTest(t, RetainTurkish, "${TURKISH_CHARACTERS.join('')}")`
 
 for (const [name, codepoints] of Object.entries(retain)) {
   const middleIndex = Math.round(codepoints.length / 2)
@@ -91,9 +125,12 @@ for (const [name, codepoints] of Object.entries(retain)) {
     ])
   )
 
-  testCode += `  test_retain(Options::default().retain_${name}(), "${testString}");\n`
+  coreTestCode += `\n  do_retain_test(Options::default().retain_${name}(), "${testString}");`
+  goTestCode += `\n\tDoRetainTest(t, ${snakeToPascal(`retain_${name}`)}, "${testString}")`
 }
 
-testCode += '}'
+coreTestCode += '\n}'
+goTestCode += '\n}'
 
-writeFileSync(join(CORE_DIR, 'src', 'retain_tests.rs'), testCode)
+writeFileSync(join(CORE_DIR, 'src', 'retain_tests.rs'), coreTestCode)
+writeFileSync(join(BINDINGS_DIR, 'go', 'decancer_retain_test.go'), goTestCode)

@@ -57,6 +57,17 @@ func TestCure(t *testing.T) {
 	assert.Equal(t, 4, matches[0].End, "FindMultiple match[0] end should be 4")
 	assert.Equal(t, 5, matches[1].Start, "FindMultiple match[1] start should be 5")
 	assert.Equal(t, 10, matches[1].End, "FindMultiple match[1] end should be 10")
+
+	DoRetainTest(t, DisableLeetspeak, "|-|3|_I_0")
+
+	disableAlphabeticalLeetspeakCured, err := Cure("|-|3|_I_0", DisableAlphabeticalLeetspeak)
+
+	assert.Nil(t, err, "curing should not fail")
+	assert.True(t, disableAlphabeticalLeetspeakCured.Equals("helI_o"), "Retain should prevent decancer from curing the designated characters")
+}
+
+func TestRetainCapitalization(t *testing.T) {
+	DoRetainTest(t, RetainCapitalization, "decÁncer")
 }
 
 func TestCensor(t *testing.T) {
