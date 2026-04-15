@@ -78,14 +78,8 @@ void (await Promise.all([
   update(join(NATIVE_DIR, 'Cargo.toml'), updateTomlFunc),
   update(join(NODE_DIR, 'package.json'), updateJsonFunc),
   update(join(WASM_DIR, 'package.json'), updateJsonFunc),
-  update(
-    join(WASM_DIR, 'src', 'glue.js'),
-    directUpdateFunc
-  ),
-  update(
-    join(WASM_DIR, 'bin', 'decancer.min.js'),
-    directUpdateFunc
-  ),
+  update(join(WASM_DIR, 'src', 'glue.js'), directUpdateFunc),
+  update(join(WASM_DIR, 'bin', 'decancer.min.js'), directUpdateFunc),
   update(join(WASM_DIR, 'example.html'), directUpdateFunc),
   update(join(ROOT_DIR, 'README.md'), directUpdateFunc),
   update(join(CORE_DIR, 'README.md'), directUpdateFunc),

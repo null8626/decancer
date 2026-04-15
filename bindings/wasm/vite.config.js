@@ -16,7 +16,11 @@ export default defineConfig({
     defineConfig({
       name: 'move-decancer-wasm',
       apply: 'build',
-      closeBundle: () => renameSync(join(CURRENT_DIR, 'pkg', 'decancer_bg.wasm'), join(CURRENT_DIR, 'bin', 'decancer.wasm'))
+      closeBundle: () =>
+        renameSync(
+          join(CURRENT_DIR, 'pkg', 'decancer_bg.wasm'),
+          join(CURRENT_DIR, 'bin', 'decancer.wasm')
+        )
     }),
     license({
       banner: {
