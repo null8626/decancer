@@ -548,7 +548,7 @@ jobs:
           tool: cargo-zigbuild
       - name: Configure Node.js (windows x86)
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
-        run: npm config set supportedArchitectures.cpu "ia32"
+        run: npm config set cpu "ia32"
         shell: bash
       - name: Setup Node.js (windows x86)
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
