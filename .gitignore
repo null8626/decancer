@@ -28,6 +28,8 @@ bindings/native/docs/xml/
 bindings/native/tests/*.c
 bindings/native/tests/build/
 bindings/native/build/
+bindings/node/index.d.ts
+bindings/node/index.js
 bindings/wasm/pkg/
 core/proptest-regressions/
 

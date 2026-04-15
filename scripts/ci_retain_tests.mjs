@@ -142,4 +142,7 @@ goTestCode += '\n}'
 
 writeFileSync(join(CORE_DIR, 'src', 'retain_tests.rs'), coreTestCode)
 writeFileSync(join(BINDINGS_DIR, 'go', 'decancer_retain_test.go'), goTestCode)
-writeFileSync(join(BINDINGS_DIR, 'node', 'retain_data.json'), JSON.stringify(jsonData, null, 2))
+writeFileSync(
+  join(BINDINGS_DIR, 'node', 'retain_data.json'),
+  JSON.stringify(jsonData, null, 2)
+)
