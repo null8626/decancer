@@ -432,7 +432,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
@@ -481,40 +480,40 @@ jobs:
         settings:
           - target: x86_64-apple-darwin
             host: macos-latest
-            build: yarn build --target x86_64-apple-darwin
+            build: npm run build --target x86_64-apple-darwin
           - target: x86_64-pc-windows-msvc
             host: windows-latest
-            build: yarn build --target x86_64-pc-windows-msvc
+            build: npm run build --target x86_64-pc-windows-msvc
           - target: i686-pc-windows-msvc
             host: windows-latest
-            build: yarn build --target i686-pc-windows-msvc
+            build: npm run build --target i686-pc-windows-msvc
           - target: x86_64-unknown-linux-gnu
             host: ubuntu-latest
-            build: yarn build --target x86_64-unknown-linux-gnu --use-napi-cross
+            build: npm run build --target x86_64-unknown-linux-gnu --use-napi-cross
           - target: x86_64-unknown-linux-musl
             host: ubuntu-latest
-            build: yarn build --target x86_64-unknown-linux-musl -x
+            build: npm run build --target x86_64-unknown-linux-musl -x
           - target: aarch64-apple-darwin
             host: macos-latest
-            build: yarn build --target aarch64-apple-darwin
+            build: npm run build --target aarch64-apple-darwin
           - target: aarch64-unknown-linux-gnu
             host: ubuntu-latest
-            build: yarn build --target aarch64-unknown-linux-gnu --use-napi-cross
+            build: npm run build --target aarch64-unknown-linux-gnu --use-napi-cross
           - target: armv7-unknown-linux-gnueabihf
             host: ubuntu-latest
-            build: yarn build --target armv7-unknown-linux-gnueabihf --use-napi-cross
+            build: npm run build --target armv7-unknown-linux-gnueabihf --use-napi-cross
           - target: aarch64-linux-android
             host: ubuntu-latest
-            build: yarn build --target aarch64-linux-android
+            build: npm run build --target aarch64-linux-android
           - target: armv7-linux-androideabi
             host: ubuntu-latest
-            build: yarn build --target armv7-linux-androideabi
+            build: npm run build --target armv7-linux-androideabi
           - target: aarch64-unknown-linux-musl
             host: ubuntu-latest
-            build: yarn build --target aarch64-unknown-linux-musl -x
+            build: npm run build --target aarch64-unknown-linux-musl -x
           - target: aarch64-pc-windows-msvc
             host: windows-latest
-            build: yarn build --target aarch64-pc-windows-msvc
+            build: npm run build --target aarch64-pc-windows-msvc
           - target: freebsd-x64
             host: ubuntu-latest
     steps:
@@ -527,7 +526,6 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
       - name: Setup Rust
         if: ${{ matrix.settings.target != 'freebsd-x64' }}
         uses: actions-rs/toolchain@v1
@@ -550,18 +548,17 @@ jobs:
           tool: cargo-zigbuild
       - name: Configure Node.js (windows x86)
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
-        run: yarn config set supportedArchitectures.cpu "ia32"
+        run: npm config set supportedArchitectures.cpu "ia32"
         shell: bash
       - name: Setup Node.js (windows x86)
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
           architecture: x86
       - name: Install dependencies
         if: ${{ matrix.settings.target != 'freebsd-x64' }}
-        run: yarn install
+        run: npm i
         working-directory: bindings/node
       - name: Build
         if: ${{ matrix.settings.target != 'freebsd-x64' }}
@@ -581,16 +578,14 @@ jobs:
           shell: bash
           run: |
             sudo pkg install -y -f curl node libnghttp2 npm
-            sudo npm install -g yarn --ignore-scripts
             curl https://sh.rustup.rs -sSf --output rustup.sh
             sh rustup.sh -y --profile minimal --default-toolchain stable
             source "$HOME/.cargo/env"
             cd ./bindings/node
-            yarn install
-            yarn build
+            npm i
+            npm run build
             rm -rf node_modules
             rm -rf target
-            rm -rf .yarn/cache
         env:
           DEBUG: napi:*
           RUSTUP_IO_THREADS: 1
@@ -622,9 +617,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
       - name: Install dependencies
-        run: yarn install
+        run: npm i
         working-directory: bindings/node
       - name: Download artifact
         uses: actions/download-artifact@v8
@@ -632,7 +626,7 @@ jobs:
           name: node-x86_64-unknown-linux-gnu
           path: bindings/node
       - name: Test bindings
-        run: yarn test
+        run: npm test
         working-directory: bindings/node
   wasm:
     name: Build and test WASM binding
@@ -874,11 +868,11 @@ jobs:
         run: node scripts/ci_artifacts.mjs
       - name: Install node dependencies
         if: ${{ needs.setup.outputs.publish_node == 'true' }}
-        run: yarn install
+        run: npm i
         working-directory: bindings/node
       - name: Move node artifacts
         if: ${{ needs.setup.outputs.publish_node == 'true' }}
-        run: yarn artifacts
+        run: npm run artifacts
         working-directory: bindings/node
       - name: Publish Node.js binding
         if: ${{ needs.setup.outputs.publish_node == 'true' }}
