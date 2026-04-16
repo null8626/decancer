@@ -66,7 +66,7 @@ func TestRetainCapitalization(t *testing.T) {
 
 	defer retainCapitalizationCured.Close()
 
-	assert.Equal(t, "decAncer", retainCapitalizationCured.String(), "RetainCapitalization should prevent decancer from curing the designated characters")
+	assert.Equal(t, "decAncer", retainCapitalizationCured.String(), "RetainCapitalization should prevent decancer from turning all characters to lowercase")
 }
 
 func TestDisableLeetspeak(t *testing.T) {
