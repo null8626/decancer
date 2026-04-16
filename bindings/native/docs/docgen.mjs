@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { BINDINGS_DIR } from '../../../scripts/util.mjs'
+import { BINDINGS_DIR } from '../../../scripts/constants.mjs'
 import { execSync } from 'node:child_process'
 import process from 'node:process'
 import { join } from 'node:path'

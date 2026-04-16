@@ -45,18 +45,22 @@ describe('cure', () => {
     .testFind()
 })
 
-it('retains', () => {
+it('retain', () => {
   for (const [option, testString] of Object.entries(retainData)) {
-    const cured = decancer('|-|3|_I_0', {
-      disableAlphabeticalLeetspeak: true,
+    let cured = decancer(testString, {
+      [option]: true,
       disableBidi: true
     })
 
-    strict(cured.equals('helI_o'))
+    strict(cured.equals(testString))
+
+    cured = decancer(testString)
+
+    strict(!cured.equals(testString))
   }
 })
 
-it('retains capitalization', () => {
+it('retain capitalization', () => {
   const cured = decancer('decÁncer', {
     retainCapitalization: true
   })
