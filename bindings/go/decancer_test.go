@@ -57,22 +57,6 @@ func TestCure(t *testing.T) {
 	assert.Equal(t, 4, matches[0].End, "FindMultiple match[0] end should be 4")
 	assert.Equal(t, 5, matches[1].Start, "FindMultiple match[1] start should be 5")
 	assert.Equal(t, 10, matches[1].End, "FindMultiple match[1] end should be 10")
-
-	disableLeetspeakCured, err := Cure("|-|3|_I_0", DisableLeetspeak)
-
-	assert.Nil(t, err, "curing should not fail")
-
-	defer disableLeetspeakCured.Close()
-
-	assert.True(t, disableLeetspeakCured.Equals("|-|3|_I_0"), "DisableLeetspeak should prevent decancer from curing the designated characters")
-
-	disableAlphabeticalLeetspeakCured, err := Cure("|-|3|_I_0", DisableAlphabeticalLeetspeak)
-
-	assert.Nil(t, err, "curing should not fail")
-
-	defer disableAlphabeticalLeetspeakCured.Close()
-
-	assert.True(t, disableAlphabeticalLeetspeakCured.Equals("helI_o"), "DisableAlphabeticalLeetspeak should prevent decancer from curing the designated characters")
 }
 
 func TestRetainCapitalization(t *testing.T) {
@@ -83,6 +67,34 @@ func TestRetainCapitalization(t *testing.T) {
 	defer retainCapitalizationCured.Close()
 
 	assert.True(t, retainCapitalizationCured.Equals("decAncer"), "RetainCapitalization should prevent decancer from curing the designated characters")
+}
+
+func TestDisableLeetspeak(t *testing.T) {
+	disableLeetspeakCured, err := Cure("|-|3|_I_0", DisableLeetspeak)
+
+	assert.Nil(t, err, "curing should not fail")
+
+	defer disableLeetspeakCured.Close()
+
+	assert.False(t, disableLeetspeakCured.Equals("hello"), "DisableLeetspeak should prevent decancer from matching the designated characters")
+
+	disableLeetspeakCured.DisableLeetspeak(false)
+	disableLeetspeakCured.DisableAlphabeticalLeetspeak(true)
+
+	assert.True(t, disableLeetspeakCured.Equals("helI_o"), "DisableAlphabeticalLeetspeak should prevent decancer from matching the designated characters")
+
+	disableAlphabeticalLeetspeakCured, err := Cure("|-|3|_I_0", DisableAlphabeticalLeetspeak)
+
+	assert.Nil(t, err, "curing should not fail")
+
+	defer disableAlphabeticalLeetspeakCured.Close()
+
+	assert.True(t, disableAlphabeticalLeetspeakCured.Equals("helI_o"), "DisableAlphabeticalLeetspeak should prevent decancer from matching the designated characters")
+
+	disableAlphabeticalLeetspeakCured.DisableLeetspeak(true)
+	disableAlphabeticalLeetspeakCured.DisableAlphabeticalLeetspeak(false)
+
+	assert.False(t, disableAlphabeticalLeetspeakCured.Equals("hello"), "DisableLeetspeak should prevent decancer from matching the designated characters")
 }
 
 func TestCensor(t *testing.T) {

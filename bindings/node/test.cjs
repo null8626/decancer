@@ -56,24 +56,34 @@ it('retains', () => {
   }
 })
 
-it('retains leetspeak', () => {
-  let cured = decancer('|-|3|_I_0', {
-    disableLeetspeak: true
-  })
-
-  strict(cured.equals('|-|3|_I_0'))
-
-  cured = decancer('|-|3|_I_0', {
-    disableAlphabeticalLeetspeak: true
-  })
-
-  strict(cured.equals('helI_o'))
-})
-
 it('retains capitalization', () => {
   const cured = decancer('decÁncer', {
     retainCapitalization: true
   })
 
   strict(cured.equals('decAncer'))
+})
+
+it('disable leetspeak', () => {
+  let cured = decancer('|-|3|_I_0', {
+    disableLeetspeak: true
+  })
+
+  strict(!cured.equals('hello'))
+
+  cured.disableLeetspeak(false)
+  cured.disableAlphabeticalLeetspeak(true)
+
+  strict(cured.equals('helI_o'))
+
+  cured = decancer('|-|3|_I_0', {
+    disableAlphabeticalLeetspeak: true
+  })
+
+  strict(cured.equals('helI_o'))
+
+  cured.disableLeetspeak(true)
+  cured.disableAlphabeticalLeetspeak(false)
+
+  strict(!cured.equals('hello'))
 })
