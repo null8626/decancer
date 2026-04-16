@@ -196,7 +196,7 @@ server.on('message', async message => {
             return this
           }
 
-          testLeetspeak() {
+          testDisableLeetspeak() {
             if (this.#err === null) {
               let cured = decancer('|-|3|_I_0', {
                 disableLeetspeak: true
@@ -260,7 +260,7 @@ server.on('message', async message => {
             .testModifications()
             .testRetain()
             .testRetainCapitalization()
-            .testLeetspeak()
+            .testDisableLeetspeak()
             .finish()
         } catch (err) {
           return err.stack
