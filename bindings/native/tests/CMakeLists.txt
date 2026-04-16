@@ -29,7 +29,7 @@ find_library(
   REQUIRED
 )
 
-target_include_directories(decancer_native_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/..")
+target_include_directories(decancer_native_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/..")
 target_link_libraries(decancer_native_test ${DECANCER_LIBRARY})
 
 if(WIN32)

@@ -13,18 +13,19 @@ import { rm } from 'node:fs/promises'
 import process from 'node:process'
 import { join } from 'node:path'
 
-const TESTS_DIR = join(BINDINGS_DIR, 'native', 'tests')
+const CURRENT_DIR = join(BINDINGS_DIR, 'native', 'tests')
+const NATIVE_DIR = join(CURRENT_DIR, '..')
 
-rmSync(join(TESTS_DIR, 'build'), {
+rmSync(join(NATIVE_DIR, 'build'), {
   recursive: true,
   force: true
 })
 
 await Promise.all(
-  readdirSync(TESTS_DIR)
-    .filter(f => f.endsWith('.c'))
+  readdirSync(NATIVE_DIR)
+    .filter(f => f.endsWith('test.c'))
     .map(f =>
-      rm(join(TESTS_DIR, f), {
+      rm(join(NATIVE_DIR, f), {
         force: true
       })
     )
@@ -34,7 +35,7 @@ const functions = []
 let status = 0
 let example = []
 
-for (const line of readFileSync(join(ROOT_DIR, 'decancer.h'))
+for (const line of readFileSync(join(NATIVE_DIR, 'decancer.h'))
   .toString()
   .trim()
   .split(/\r?\n/g)
@@ -74,7 +75,7 @@ for (const line of readFileSync(join(ROOT_DIR, 'decancer.h'))
           .replace('int main(', `int ${functionName}_test(`)
         functions.push(functionName)
 
-        writeFileSync(join(TESTS_DIR, `${functionName}_test.c`), exampleCode)
+        writeFileSync(join(CURRENT_DIR, `${functionName}_test.c`), exampleCode)
       } catch {}
 
       example = []
@@ -94,9 +95,15 @@ ${SPDX_LICENSE_COMMENTS}
 #pragma comment(lib, "ntdll")
 #endif
 
+int extra_tests();
 ${functions.map(f => `int ${f}_test(void);`).join('\n')}
 
 int main() {
+  printf("testing other tests...\\n");
+  if (extra_tests()) {
+    fprintf(stderr, "error: other tests failed.\\n");
+    return 1;
+  }
 `
 
 for (const func of functions) {
@@ -111,11 +118,11 @@ for (const func of functions) {
 
 testFile += '\n  return 0;\n}'
 
-writeFileSync(join(TESTS_DIR, 'test.c'), testFile)
+writeFileSync(join(CURRENT_DIR, 'test.c'), testFile)
 
 try {
   execSync('cmake -B build . && cmake --build build --config Debug', {
-    cwd: TESTS_DIR,
+    cwd: CURRENT_DIR,
     stdio: 'inherit'
   })
 } catch {

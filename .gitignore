@@ -25,7 +25,7 @@ bindings/java/gradle.properties
 bindings/native/docs/package.json
 bindings/native/docs/html/
 bindings/native/docs/xml/
-bindings/native/tests/*.c
+bindings/native/tests/*test.c
 bindings/native/tests/build/
 bindings/native/build/
 bindings/node/index.d.ts
