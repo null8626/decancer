@@ -3,22 +3,20 @@
 
 package io.github.null8626.decancer;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 public class DecancerTests {
   private static CuredString CURED = null;
@@ -30,12 +28,15 @@ public class DecancerTests {
 
     final Gson gson = new Gson();
 
-    try (final InputStream inputStream = DecancerTests.class.getResourceAsStream("retain_data.json"); final Reader reader = new InputStreamReader(inputStream)) {
+    try (final InputStream inputStream =
+        DecancerTests.class.getResourceAsStream("/retain_data.json")) {
       if (inputStream == null) {
         throw new IOException("Unable to read retain_data.json.");
       }
 
-      RETAIN_DATA = gson.fromJson(reader, JsonObject.class);
+      try (final Reader reader = new InputStreamReader(inputStream)) {
+        RETAIN_DATA = gson.fromJson(reader, JsonObject.class);
+      }
     }
   }
 
@@ -114,18 +115,19 @@ public class DecancerTests {
   }
 
   @Test
-  public void retain() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+  public void retain()
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     for (final Map.Entry<String, JsonElement> entry : RETAIN_DATA.entrySet()) {
       final String testString = entry.getValue().getAsString();
-      
+
       Options options = new Options().disableBidi();
 
-      options = (Options)Options.class.getMethod(entry.getKey()).invoke(options);
+      options = (Options) Options.class.getMethod(entry.getKey()).invoke(options);
 
       try (final CuredString cured = new CuredString(testString, options)) {
         Assertions.assertTrue(cured.equals(testString));
       }
-      
+
       try (final CuredString cured = new CuredString(testString)) {
         Assertions.assertFalse(cured.equals(testString));
       }
@@ -134,7 +136,8 @@ public class DecancerTests {
 
   @Test
   public void retainCapitalization() {
-    try (final CuredString cured = new CuredString("decÁncer", new Options().retainCapitalization())) {
+    try (final CuredString cured =
+        new CuredString("decÁncer", new Options().retainCapitalization())) {
       Assertions.assertTrue(cured.toString().equals("decAncer"));
     }
   }
@@ -150,7 +153,8 @@ public class DecancerTests {
       Assertions.assertTrue(cured.equals("helI_o"));
     }
 
-    try (final CuredString cured = new CuredString("|-|3|_I_0", new Options().disableAlphabeticalLeetspeak())) {
+    try (final CuredString cured =
+        new CuredString("|-|3|_I_0", new Options().disableAlphabeticalLeetspeak())) {
       Assertions.assertTrue(cured.equals("helI_o"));
 
       cured.disableLeetspeak(true);
