@@ -64,6 +64,8 @@ server.on('message', async message => {
 
       console.log('- [client] running tests...')
       const err = await page.evaluate(async (retainData) => {
+        let decancer
+        
         class TestContext {
           #err
           #object
@@ -226,7 +228,7 @@ server.on('message', async message => {
         }
 
         try {
-          const decancer = await window.init({
+          decancer = await window.init({
             local: true
           })
 
