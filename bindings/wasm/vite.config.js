@@ -1,14 +1,14 @@
 'use strict'
 
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { BINDINGS_DIR } from '../../scripts/constants.mjs'
 import { renameSync } from 'node:fs'
+import { join } from 'node:path'
 
 import topLevelAwait from 'vite-plugin-top-level-await'
 import license from 'rollup-plugin-license'
 import { defineConfig } from 'vite'
 
-const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
+const CURRENT_DIR = join(BINDINGS_DIR, 'wasm')
 
 export default defineConfig({
   plugins: [

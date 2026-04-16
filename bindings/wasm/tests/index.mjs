@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
+import { BINDINGS_DIR } from '../../../scripts/constants.mjs'
 import { Worker } from 'node:worker_threads'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { readFileSync } from 'node:fs'
 import process from 'node:process'
 import puppeteer from 'puppeteer'
+import { join } from 'node:path'
 
-const CURRENT_DIR = dirname(fileURLToPath(import.meta.url))
+const CURRENT_DIR = join(BINDINGS_DIR, 'wasm', 'tests')
+const RETAIN_DATA = JSON.parse(readFileSync(join(CURRENT_DIR, 'retain_data.json')))
 
 function error(message) {
   process.exitCode = 1
@@ -61,7 +63,7 @@ server.on('message', async message => {
       })
 
       console.log('- [client] running tests...')
-      const err = await page.evaluate(async () => {
+      const err = await page.evaluate(async (retainData) => {
         class TestContext {
           #err
           #object
@@ -159,6 +161,65 @@ server.on('message', async message => {
             return this
           }
 
+          testRetain() {
+            if (this.#err === null) {
+              for (const [option, testString] of Object.entries(retainData)) {
+                let cured = decancer(testString, {
+                  [option]: true,
+                  disableBidi: true
+                })
+
+                this.#assert(cured.equals(testString), true, option)
+
+                cured = decancer(testString)
+
+                this.#assert(cured.equals(testString), false, `!${option}`)
+              }
+            }
+
+            return this
+          }
+
+          testRetainCapitalization() {
+            if (this.#err === null) {
+              const cured = decancer('decÁncer', {
+                retainCapitalization: true
+              })
+
+              this.#assert(cured.toString(), 'decAncer', 'retainCapitalization')
+            }
+
+            return this
+          }
+
+          testLeetspeak() {
+            if (this.#err === null) {
+              let cured = decancer('|-|3|_I_0', {
+                disableLeetspeak: true
+              })
+
+              this.#assert(cured.equals('hello'), false, 'disableLeetspeak:option')
+
+              cured.disableLeetspeak(false)
+              cured.disableAlphabeticalLeetspeak(true)
+
+              this.#assert(cured.equals('helI_o'), true, 'disableAlphabeticalLeetspeak:method')
+
+              cured = decancer('|-|3|_I_0', {
+                disableAlphabeticalLeetspeak: true
+              })
+
+              this.#assert(cured.equals('helI_o'), true, 'disableAlphabeticalLeetspeak:option')
+
+              cured.disableLeetspeak(true)
+              cured.disableAlphabeticalLeetspeak(false)
+
+              this.#assert(cured.equals('hello'), false, 'disableLeetspeak:method')
+            }
+
+            return this
+          }
+
           finish() {
             return this.#err
           }
@@ -177,11 +238,14 @@ server.on('message', async message => {
             .test('very funny text', 'toString')
             .testFind()
             .testModifications()
+            .testRetain()
+            .testRetainCapitalization()
+            .testLeetspeak()
             .finish()
         } catch (err) {
           return err.stack
         }
-      })
+      }, RETAIN_DATA)
 
       if (err !== null) {
         if (typeof err === 'string') {

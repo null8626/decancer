@@ -37,11 +37,13 @@ fn assert_no_matches(input: &str, find: &str, options: Options) {
   assert!(cured.find(find).next().is_none());
 }
 
+include!("./retain_tests.rs");
+
 #[test]
 #[cfg(feature = "options")]
 fn retain_capitalization() {
   assert_eq!(
-    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
+    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap().to_string(),
     "decAncer"
   );
 }
@@ -87,8 +89,6 @@ fn leetspeak() {
     assert_eq!(cured, "helI_o");
   }
 }
-
-include!("./retain_tests.rs");
 
 #[test]
 #[allow(clippy::single_range_in_vec_init)]

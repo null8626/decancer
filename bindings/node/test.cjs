@@ -65,7 +65,7 @@ it('retain capitalization', () => {
     retainCapitalization: true
   })
 
-  strict(cured.equals('decAncer'))
+  strictEqual(cured.toString(), 'decAncer')
 })
 
 it('disable leetspeak', () => {
