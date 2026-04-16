@@ -15,7 +15,9 @@ try {
   try {
     execSync('npm init -y && npm i fast-xml-parser --save')
   } catch (err) {
-    console.error(`error: Unable to install fast-xml-parser: ${err.stderr?.toString() ?? err.stack ?? err}`)
+    console.error(
+      `error: Unable to install fast-xml-parser: ${err.stderr?.toString() ?? err.stack ?? err}`
+    )
 
     process.exit(1)
   }
@@ -45,7 +47,9 @@ try {
     cwd: ROOT_DIR
   })
 } catch (err) {
-  console.error(`error: Unable to run doxygen: ${err.stderr?.toString() ?? err.stack ?? err}`)
+  console.error(
+    `error: Unable to run doxygen: ${err.stderr?.toString() ?? err.stack ?? err}`
+  )
 
   process.exit(1)
 }
