@@ -9,7 +9,9 @@ import puppeteer from 'puppeteer'
 import { join } from 'node:path'
 
 const CURRENT_DIR = join(BINDINGS_DIR, 'wasm', 'tests')
-const RETAIN_DATA = JSON.parse(readFileSync(join(CURRENT_DIR, 'retain_data.json')))
+const RETAIN_DATA = JSON.parse(
+  readFileSync(join(CURRENT_DIR, 'retain_data.json'))
+)
 
 function error(message) {
   process.exitCode = 1
@@ -63,9 +65,9 @@ server.on('message', async message => {
       })
 
       console.log('- [client] running tests...')
-      const err = await page.evaluate(async (retainData) => {
+      const err = await page.evaluate(async retainData => {
         let decancer
-        
+
         class TestContext {
           #err
           #object
@@ -200,23 +202,39 @@ server.on('message', async message => {
                 disableLeetspeak: true
               })
 
-              this.#assert(cured.equals('hello'), false, 'disableLeetspeak:option')
+              this.#assert(
+                cured.equals('hello'),
+                false,
+                'disableLeetspeak:option'
+              )
 
               cured.disableLeetspeak(false)
               cured.disableAlphabeticalLeetspeak(true)
 
-              this.#assert(cured.equals('helI_o'), true, 'disableAlphabeticalLeetspeak:method')
+              this.#assert(
+                cured.equals('helI_o'),
+                true,
+                'disableAlphabeticalLeetspeak:method'
+              )
 
               cured = decancer('|-|3|_I_0', {
                 disableAlphabeticalLeetspeak: true
               })
 
-              this.#assert(cured.equals('helI_o'), true, 'disableAlphabeticalLeetspeak:option')
+              this.#assert(
+                cured.equals('helI_o'),
+                true,
+                'disableAlphabeticalLeetspeak:option'
+              )
 
               cured.disableLeetspeak(true)
               cured.disableAlphabeticalLeetspeak(false)
 
-              this.#assert(cured.equals('hello'), false, 'disableLeetspeak:method')
+              this.#assert(
+                cured.equals('hello'),
+                false,
+                'disableLeetspeak:method'
+              )
             }
 
             return this

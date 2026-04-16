@@ -39,17 +39,17 @@ const OPTIONS = {
 }
 
 function options(opt = {}) {
+  const override = Object.entries(OPTIONS.overrides).find(([key]) => opt[key])
+
+  if (override) {
+    return override[1]
+  }
+
   let output = 0
 
   for (let i = 0; i < OPTIONS.keys.length; i++) {
     if (opt[OPTIONS.keys[i]]) {
       output |= 1 << i
-    }
-  }
-
-  for (const [key, override] of Object.entries(OPTIONS.overrides)) {
-    if (opt[key]) {
-      output = override
     }
   }
 
@@ -76,7 +76,14 @@ export default async function init({ local } = {}) {
   glue.__wbg_set_wasm(instance.exports)
   instance.exports.__wbindgen_start()
 
-  exports = Object.assign(glue.cure, { options })
+  return (exports = Object.assign(
+    function cure(input, opt) {
+      if (typeof opt !== 'number') {
+        opt = options(opt)
+      }
 
-  return exports
+      return glue.cure(input, opt)
+    },
+    { options }
+  ))
 }

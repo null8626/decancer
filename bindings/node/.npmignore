@@ -1,9 +1,10 @@
-target
-Cargo.lock
-.cargo
-npm
-rustfmt.toml
-test.cjs
 **/*.node
 **/*.rs
+.cargo
+Cargo.lock
 Cargo.toml
+npm
+retain_data.json
+rustfmt.toml
+target
+test.cjs

@@ -29,14 +29,14 @@ macro_rules! options {
 
     impl From<Options> for u32 {
       fn from(value: Options) -> u32 {
+        $(if value.$override_name.unwrap_or_default() {
+          return $override_value;
+        })*
+
         let mut options = 0;
 
         $(if value.$key_name.unwrap_or_default() {
           options |= (1 << $key_idx);
-        })*
-
-        $(if value.$override_name.unwrap_or_default() {
-          options = $override_value;
         })*
 
         options
