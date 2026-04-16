@@ -3,18 +3,40 @@
 
 package io.github.null8626.decancer;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 public class DecancerTests {
   private static CuredString CURED = null;
+  private static JsonObject RETAIN_DATA = null;
 
   @BeforeAll
-  public static void setup() {
+  public static void setup() throws IOException {
     CURED = new CuredString("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣");
+
+    final Gson gson = new Gson();
+
+    try (final InputStream inputStream = DecancerTests.class.getResourceAsStream("retain_data.json"); final Reader reader = new InputStreamReader(inputStream)) {
+      if (inputStream == null) {
+        throw new IOException("Unable to read retain_data.json.");
+      }
+
+      RETAIN_DATA = gson.fromJson(reader, JsonObject.class);
+    }
   }
 
   @Test
@@ -89,6 +111,53 @@ public class DecancerTests {
   @DisplayName("toString()")
   public void toStringTest() {
     Assertions.assertEquals("very funny text", CURED.toString());
+  }
+
+  @Test
+  public void retain() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    for (final Map.Entry<String, JsonElement> entry : RETAIN_DATA.entrySet()) {
+      final String testString = entry.getValue().getAsString();
+      
+      Options options = new Options().disableBidi();
+
+      options = (Options)Options.class.getMethod(entry.getKey()).invoke(options);
+
+      try (final CuredString cured = new CuredString(testString, options)) {
+        Assertions.assertTrue(cured.equals(testString));
+      }
+      
+      try (final CuredString cured = new CuredString(testString)) {
+        Assertions.assertFalse(cured.equals(testString));
+      }
+    }
+  }
+
+  @Test
+  public void retainCapitalization() {
+    try (final CuredString cured = new CuredString("decÁncer", new Options().retainCapitalization())) {
+      Assertions.assertTrue(cured.toString().equals("decAncer"));
+    }
+  }
+
+  @Test
+  public void disableLeetspeak() {
+    try (final CuredString cured = new CuredString("|-|3|_I_0", new Options().disableLeetspeak())) {
+      Assertions.assertFalse(cured.equals("hello"));
+
+      cured.disableLeetspeak(false);
+      cured.disableAlphabeticalLeetspeak(true);
+
+      Assertions.assertTrue(cured.equals("helI_o"));
+    }
+
+    try (final CuredString cured = new CuredString("|-|3|_I_0", new Options().disableAlphabeticalLeetspeak())) {
+      Assertions.assertTrue(cured.equals("helI_o"));
+
+      cured.disableLeetspeak(true);
+      cured.disableAlphabeticalLeetspeak(false);
+
+      Assertions.assertFalse(cured.equals("hello"));
+    }
   }
 
   @AfterAll
