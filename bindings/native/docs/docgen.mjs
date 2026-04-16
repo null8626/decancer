@@ -6,7 +6,8 @@ import { execSync } from 'node:child_process'
 import process from 'node:process'
 import { join } from 'node:path'
 
-const HTML_DIR = join(BINDINGS_DIR, 'native', 'docs', 'html')
+const CURRENT_DIR = join(BINDINGS_DIR, 'native', 'docs')
+const HTML_DIR = join(CURRENT_DIR, 'html')
 let XMLParser
 
 try {
@@ -44,7 +45,7 @@ function renderAPIHTML(parts) {
 
 try {
   execSync('doxygen', {
-    cwd: ROOT_DIR
+    cwd: CURRENT_DIR
   })
 } catch (err) {
   console.error(
@@ -59,7 +60,7 @@ const parser = new XMLParser({
 })
 
 const index = parser.parse(
-  readFileSync(join(ROOT_DIR, 'xml', 'index.xml')).toString()
+  readFileSync(join(CURRENT_DIR, 'xml', 'index.xml')).toString()
 )
 
 const typeDefinitions = []
