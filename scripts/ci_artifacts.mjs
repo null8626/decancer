@@ -65,6 +65,6 @@ void (await Promise.all(
 ))
 
 if (EXPECTED_NODE_TARGETS.length !== 0 || !foundJavaJar) {
-  console.error('error: found missing targets')
+  console.error('error: Found missing targets')
   process.exit(1)
 }

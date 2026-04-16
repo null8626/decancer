@@ -45,7 +45,7 @@ for (const artifact of artifacts) {
 }
 
 if (promises.length === 0) {
-  console.error('error: target directory is empty')
+  console.error('error: Target directory is empty')
   process.exit(1)
 }
 
