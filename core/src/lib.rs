@@ -119,7 +119,13 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
           Translation::character(default_output)
         }
       },
-      |translation| translation.ensure_stripped_if(ascii_only, alphanumeric_only),
+      |mut translation| {
+        if retain_capitalization {
+          translation.make_uppercase();
+        }
+
+        translation.ensure_stripped_if(ascii_only, alphanumeric_only)
+      }
     );
 
   #[cfg(not(feature = "options"))]
