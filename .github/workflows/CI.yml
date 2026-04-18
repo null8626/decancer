@@ -256,7 +256,7 @@ jobs:
         run: node scripts/ci_native_artifacts.mjs ${{ matrix.settings.target }} --java
         shell: bash
       - name: Upload artifact
-        if: ${{ github.event_name != 'pull_request' && needs.setup.outputs.release_version == 'null' }}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v7
         with:
           name: java-${{ matrix.settings.target }}

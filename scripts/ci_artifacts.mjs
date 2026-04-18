@@ -22,8 +22,6 @@ const [artifacts] = await Promise.all([
   mkdir(NODE_ARTIFACTS_DIR)
 ])
 
-let foundJavaJar = false
-
 void (await Promise.all(
   artifacts.map(async artifact => {
     if (artifact.startsWith('native-')) {
@@ -53,19 +51,12 @@ void (await Promise.all(
       ])
 
       await rename(join(originDir, nodeBinary), join(artifactsDir, nodeBinary))
-    } else if (artifact === 'java-jar') {
-      await rename(
-        join(ARTIFACTS_DIR, artifact, 'decancer.jar'),
-        join(ROOT_DIR, 'decancer.jar')
-      )
-
-      foundJavaJar = true
     }
   })
 ))
 
-if (EXPECTED_NODE_TARGETS.length !== 0 || !foundJavaJar) {
-  console.error(`error: Found missing targets:\n${foundJavaJar ? '- java\n' : ''}${EXPECTED_NODE_TARGETS.map(target => `- ${target}`).join('\n')}`)
+if (EXPECTED_NODE_TARGETS.length !== 0) {
+  console.error(`error: Found missing targets:\n${EXPECTED_NODE_TARGETS.map(target => `- ${target}`).join('\n')}`)
 
   process.exit(1)
 }
