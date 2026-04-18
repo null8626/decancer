@@ -664,7 +664,7 @@ jobs:
         run: timeout 180 npm test
         working-directory: bindings/wasm
       - name: Upload artifact
-        if: ${{ github.event_name != 'pull_request' && needs.setup.outputs.release_version == 'null' }}
+        if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v7
         with:
           name: wasm

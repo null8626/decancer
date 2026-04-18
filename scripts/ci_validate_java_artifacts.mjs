@@ -15,6 +15,6 @@ for (const artifact of artifacts) {
 }
 
 if (EXPECTED_JAVA_TARGETS.length !== 0) {
-  console.error('error: Found missing targets')
+  console.error(`error: Found missing targets:\n${EXPECTED_JAVA_TARGETS.map(target => `- ${target}`).join('\n')}`)
   process.exit(1)
 }
