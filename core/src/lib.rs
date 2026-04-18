@@ -125,7 +125,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
         }
 
         translation.ensure_stripped_if(ascii_only, alphanumeric_only)
-      }
+      },
     );
 
   #[cfg(not(feature = "options"))]

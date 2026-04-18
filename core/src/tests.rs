@@ -43,7 +43,9 @@ include!("./retain_tests.rs");
 #[cfg(feature = "options")]
 fn retain_capitalization() {
   assert_eq!(
-    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap().to_string(),
+    super::cure("decÁncer", Options::default().retain_capitalization())
+      .unwrap()
+      .to_string(),
     "decAncer"
   );
 }
