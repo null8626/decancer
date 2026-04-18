@@ -820,7 +820,7 @@ jobs:
           node ./scripts/ci_setup_pages.mjs
           rm -rf ./scripts
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: '.'
       - name: Deploy to GitHub Pages
