@@ -810,7 +810,7 @@ jobs:
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v6
       - name: Delete GitHub Pages deployment history
-        uses: strumwolf/delete-deployment-environment@v3
+        uses: strumwolf/delete-deployment-environment@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           environment: github-pages
