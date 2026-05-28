@@ -56,7 +56,9 @@ void (await Promise.all(
 ))
 
 if (EXPECTED_NODE_TARGETS.length !== 0) {
-  console.error(`error: Found missing targets:\n${EXPECTED_NODE_TARGETS.map(target => `- ${target}`).join('\n')}`)
+  console.error(
+    `error: Found missing targets:\n${EXPECTED_NODE_TARGETS.map(target => `- ${target}`).join('\n')}`
+  )
 
   process.exit(1)
 }
