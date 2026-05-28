@@ -18,7 +18,7 @@ export const OPTIONS = Object.fromEntries(
     .filter(x => x)
 )
 
-export const JRELEASER_VERSION = '1.23.0'
+export const JRELEASER_VERSION = '1.24.0'
 
 export const EXPECTED_NATIVE_TARGETS = [
   'aarch64-apple-darwin',
