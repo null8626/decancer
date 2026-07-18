@@ -454,7 +454,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: '>=1.17.0'
       - name: Setup Rust
@@ -711,7 +711,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Setup Go
         if: ${{ needs.setup.outputs.go_affected == 'true' }}
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: '>=1.17.0'
       - name: Run go vet and go mod tidy
