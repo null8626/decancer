@@ -25,7 +25,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@fastify/static": "^9.0.0",
+    "@fastify/static": "^10.1.0",
     "esbuild": "^0.28.0",
     "fastify": "^5.0.0",
     "puppeteer": "^25.0.2",
