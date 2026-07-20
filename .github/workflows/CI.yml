@@ -96,7 +96,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup
@@ -137,7 +137,7 @@ jobs:
           toolchain: stable
           components: clippy
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Ensure no default features is working
@@ -219,7 +219,7 @@ jobs:
         if: ${{ matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
         uses: gradle/actions/setup-gradle@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup Rust
@@ -373,7 +373,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup Rust
@@ -430,7 +430,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Download artifact
@@ -524,7 +524,7 @@ jobs:
           fetch-depth: 1
       - name: Setup Node.js
         if: ${{ matrix.settings.target != 'freebsd-x64' }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup Rust
@@ -553,7 +553,7 @@ jobs:
         shell: bash
       - name: Setup Node.js (windows x86)
         if: ${{ matrix.settings.target == 'i686-pc-windows-msvc' }}
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
           architecture: x86
@@ -615,7 +615,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Install dependencies
@@ -648,7 +648,7 @@ jobs:
           override: true
           toolchain: stable
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup wasm-pack
@@ -691,7 +691,7 @@ jobs:
           toolchain: stable
           components: rustfmt
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup Clang
@@ -789,7 +789,7 @@ jobs:
           submodules: recursive
           fetch-depth: 1
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Setup Doxygen
@@ -858,7 +858,7 @@ jobs:
           distribution: oracle
           java-version: 21
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
       - name: Download all artifacts
