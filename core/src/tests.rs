@@ -157,6 +157,49 @@ fn similar_equal() {
   assert_no_matches("ello?", "hello", default_options);
 }
 
+fn assert_ends_with(input: &str, needle: &str, expected: bool) {
+  let cured = super::cure!(input).unwrap();
+
+  assert_eq!(cured.ends_with(needle), expected);
+}
+
+#[test]
+fn similar_ends_with() {
+  // find() skips overlapping matches, so an overlapping suffix must still match.
+  assert_ends_with("hahaha", "haha", true);
+  assert_ends_with("banana", "ana", true);
+  assert_ends_with("aXaXa", "aXa", true);
+
+  // the whole string equals the suffix.
+  assert_ends_with("banana", "banana", true);
+
+  // ordinary, repeated, separated and leetspeak suffixes.
+  assert_ends_with("hello world", "world", true);
+  assert_ends_with("wow heellllo", "hello", true);
+  assert_ends_with("hell0 w0rld", "world", true);
+
+  #[cfg(feature = "separators")]
+  assert_ends_with("h.e.l.l.o", "hello", true);
+
+  // confusable suffix: cures to "banana" and ends with "ana".
+  assert_ends_with("bаnаnа", "ana", true);
+
+  // non-suffixes must stay false.
+  assert_ends_with("hahaha", "hah", false);
+  assert_ends_with("banana", "nan", false);
+  assert_ends_with("banana", "ban", false);
+  assert_ends_with("hello world", "hello", false);
+  assert_ends_with("banana", "xyz", false);
+
+  // an empty needle mirrors starts_with.
+  assert_ends_with("banana", "", false);
+
+  // starts_with is unaffected and stays correct.
+  let cured = super::cure!("banana").unwrap();
+  assert!(cured.starts_with("ban"));
+  assert!(!cured.starts_with("ana"));
+}
+
 #[test]
 fn censor() {
   let mut cured = super::cure!("word word this is a word").unwrap();

@@ -240,10 +240,17 @@ impl CuredString {
   /// This comparison is case-insensitive.
   #[must_use]
   pub fn ends_with(&self, other: &str) -> bool {
-    self
-      .find(other)
-      .last()
-      .is_some_and(|last| last.end == self.string.len())
+    // find() skips overlapping matches, so scan every suffix for an anchored equal.
+    self.string.char_indices().any(|(index, _)| {
+      Matcher::is_equal(
+        &self.string[index..],
+        other,
+        #[cfg(all(feature = "leetspeak", feature = "options"))]
+        self.disable_leetspeak,
+        #[cfg(all(feature = "leetspeak", feature = "options"))]
+        self.disable_alphabetical_leetspeak,
+      )
+    })
   }
 
   /// Checks if this cured string similarly contains another string.
