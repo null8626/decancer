@@ -541,7 +541,7 @@ jobs:
         with:
           version: 0.14.1
       - name: Setup cargo-zigbuild
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         if: ${{ contains(matrix.settings.target, 'musl') }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
