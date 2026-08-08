@@ -155,7 +155,7 @@ dependencies {
   testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.1.2'
   testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.1.2'
 
-  googleJavaFormat 'com.google.googlejavaformat:google-java-format:1.35.0'
+  googleJavaFormat 'com.google.googlejavaformat:google-java-format:1.36.1'
 }
 
 tasks.register('format', JavaExec) {
