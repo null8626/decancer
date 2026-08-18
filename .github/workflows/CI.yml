@@ -756,7 +756,7 @@ jobs:
           git_commit_gpgsign: true
       - name: Push new commit
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        uses: EndBug/add-and-commit@v10
+        uses: EndBug/add-and-commit@v11
         with:
           commit: -S
           message: 'chore: update decancer from manually invoked CI'
@@ -764,7 +764,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Override HEAD commit
         if: ${{ github.event_name != 'workflow_dispatch' }}
-        uses: EndBug/add-and-commit@v10
+        uses: EndBug/add-and-commit@v11
         with:
           commit: -S --amend --no-edit --no-reset-author
           message: ${{ github.event.head_commit.message }}
