@@ -24,7 +24,7 @@
   "main": "src/lib.js",
   "typings": "typings.d.ts",
   "devDependencies": {
-    "@napi-rs/cli": "3.6.x"
+    "@napi-rs/cli": "3.5.x"
   },
   "engines": {
     "node": ">= 10"
