@@ -515,8 +515,8 @@ jobs:
           - target: aarch64-pc-windows-msvc
             host: windows-latest
             build: npm run build -- --target aarch64-pc-windows-msvc
-          #- target: freebsd-x64
-          #  host: ubuntu-latest
+          - target: freebsd-x64
+            host: ubuntu-latest
     steps:
       - name: Clone repository
         uses: actions/checkout@v7
@@ -566,31 +566,31 @@ jobs:
         run: ${{ matrix.settings.build }}
         shell: bash
         working-directory: bindings/node
-      # - name: Build for FreeBSD
-      #   id: build
-      #   if: ${{ matrix.settings.target == 'freebsd-x64' }}
-      #   uses: cross-platform-actions/action@v1.5.0
-      #   with:
-      #     operating_system: freebsd
-      #     version: '13.3'
-      #     memory: 8G
-      #     cpu_count: 3
-      #     environment_variables: DEBUG RUSTUP_IO_THREADS
-      #     shell: bash
-      #     run: |
-      #       sudo pkg install -y -f curl node libnghttp2 npm
-      #       curl https://sh.rustup.rs -sSf --output rustup.sh
-      #       sh rustup.sh -y --profile minimal --default-toolchain stable
-      #       source "$HOME/.cargo/env"
-      #       cd ./bindings/node
-      #       npm i
-      #       npm run build
-      #       rm -rf node_modules
-      #       rm -rf target
-      #   env:
-      #     DEBUG: napi:*
-      #     RUSTUP_IO_THREADS: 1
-      #   timeout-minutes: 30
+      - name: Build for FreeBSD
+        id: build
+        if: ${{ matrix.settings.target == 'freebsd-x64' }}
+        uses: cross-platform-actions/action@v1.5.0
+        with:
+          operating_system: freebsd
+          version: '13.3'
+          memory: 8G
+          cpu_count: 3
+          environment_variables: DEBUG RUSTUP_IO_THREADS
+          shell: bash
+          run: |
+            sudo pkg install -y -f curl node libnghttp2 npm
+            curl https://sh.rustup.rs -sSf --output rustup.sh
+            sh rustup.sh -y --profile minimal --default-toolchain stable
+            source "$HOME/.cargo/env"
+            cd ./bindings/node
+            npm i
+            npm run build
+            rm -rf node_modules
+            rm -rf target
+        env:
+          DEBUG: napi:*
+          RUSTUP_IO_THREADS: 1
+        timeout-minutes: 30
       - name: Move artifact
         if: ${{ needs.setup.outputs.publish_node == 'true' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
         run: mv ./bindings/node/decancer.*.node .
@@ -839,6 +839,10 @@ jobs:
       - commit
       - pages
     if: ${{ always() && github.event_name != 'pull_request' && needs.setup.outputs.release_version != 'null' }}
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write
     env:
       JRELEASER_MAVENCENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_NAME }}
       JRELEASER_MAVENCENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASS }}
@@ -860,7 +864,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: 22.x
+          node-version: 26
+          registry-url: https://registry.npmjs.org
       - name: Download all artifacts
         uses: actions/download-artifact@v8
         with:
@@ -877,13 +882,10 @@ jobs:
         working-directory: bindings/node
       - name: Publish Node.js binding
         if: ${{ needs.setup.outputs.publish_node == 'true' }}
-        run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --access public
+        run: npm publish --access public
         working-directory: bindings/node
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Prepare Java binding
         if: ${{ needs.setup.outputs.java_affected == 'true' }}
         run: |
