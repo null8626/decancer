@@ -63,7 +63,8 @@ export const EXPECTED_NODE_TARGETS = [
   'aarch64-linux-android',
   'armv7-linux-androideabi',
   'aarch64-unknown-linux-musl',
-  'aarch64-pc-windows-msvc'
+  'aarch64-pc-windows-msvc',
+  'x86_64-unknown-freebsd'
 ]
 
 export const EXPECTED_JAVA_TARGETS = [
