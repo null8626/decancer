@@ -61,7 +61,7 @@ where
     return;
   }
 
-  ranges.sort_by(|a, b| a.start.cmp(&b.start));
+  ranges.sort_by_key(|a| a.start);
 
   let mut j = 0;
 
