@@ -24,9 +24,6 @@ const PLATFORMS = {
   android: {
     arm64: 'android-arm64',
     arm: 'android-arm-eabi'
-  },
-  freebsd: {
-    x64: 'freebsd-x64'
   }
 }
 

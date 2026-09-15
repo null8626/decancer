@@ -7,7 +7,7 @@
  * @brief A library that removes common unicode confusables/homoglyphs from strings.
  * @author null8626
  * @copyright Copyright (c) 2021-2026 null8626
- * @date 2026-08-24
+ * @date 2026-09-15
  * @version 4.0.0
  */
 
