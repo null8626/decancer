@@ -201,7 +201,7 @@ fn first_cure_pass(input: &str) -> (Vec<char>, Vec<Class>, Vec<Paragraph>) {
         codepoint = 0x20;
       }
 
-      original_classes.resize(original_classes.len() + 1, class);
+      original_classes.push(class);
 
       match class {
         Class::B => {
