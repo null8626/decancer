@@ -178,8 +178,8 @@ macro_rules! cure_char {
   };
 }
 
-fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
-  let mut refined_input = String::with_capacity(input.len());
+fn first_cure_pass(input: &str) -> (Vec<char>, Vec<Class>, Vec<Paragraph>) {
+  let mut refined_input = Vec::with_capacity(input.len());
   let mut original_classes = Vec::with_capacity(input.len());
   let mut isolate_stack = vec![];
 
@@ -192,89 +192,85 @@ fn first_cure_pass(input: &str) -> (String, Vec<Class>, Vec<Paragraph>) {
   let mut idx = 0;
 
   for codepoint in input.chars() {
-    let mut character_len = codepoint.len_utf8();
     let mut codepoint = codepoint as u32;
 
-    if !is_none(codepoint) {
-      if let Some(class) = Class::new(codepoint) {
-        if class == Class::WS && codepoint > 0x7f {
-          character_len = 1;
-          codepoint = 0x20;
-        }
-
-        original_classes.resize(original_classes.len() + character_len, class);
-
-        match class {
-          Class::B => {
-            let paragraph_end = idx + character_len;
-
-            paragraphs.push(Paragraph {
-              range: paragraph_start..paragraph_end,
-              level: paragraph_level.unwrap_or(Level::LTR),
-              pure_ltr,
-              has_isolate_controls,
-            });
-
-            paragraph_start = paragraph_end;
-            pure_ltr = true;
-            has_isolate_controls = false;
-            isolate_stack.clear();
-            paragraph_level = None;
-          },
-
-          Class::L | Class::R | Class::AL => {
-            if class != Class::L {
-              pure_ltr = false;
-            }
-
-            match isolate_stack.last() {
-              Some(&start_idx) => {
-                if original_classes[start_idx] == Class::FSI {
-                  let new_class = if class == Class::L {
-                    Class::LRI
-                  } else {
-                    Class::RLI
-                  };
-
-                  for j in 0..3 {
-                    original_classes[start_idx + j] = new_class;
-                  }
-                }
-              },
-
-              None => {
-                if paragraph_level.is_none() {
-                  paragraph_level.replace(if class == Class::L {
-                    Level::LTR
-                  } else {
-                    Level::RTL
-                  });
-                }
-              },
-            }
-          },
-
-          Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
-            pure_ltr = false;
-          },
-
-          Class::RLI | Class::LRI | Class::FSI => {
-            pure_ltr = false;
-            has_isolate_controls = true;
-            isolate_stack.push(idx);
-          },
-
-          Class::PDI => {
-            isolate_stack.pop();
-          },
-
-          _ => {},
-        }
-
-        refined_input.push(char::from_u32(codepoint).unwrap());
-
-        idx += character_len;
+    if !is_none(codepoint)
+      && let Some(class) = Class::new(codepoint)
+    {
+      if class == Class::WS && codepoint > 0x7f {
+        codepoint = 0x20;
       }
+
+      original_classes.resize(original_classes.len() + 1, class);
+
+      match class {
+        Class::B => {
+          let paragraph_end = idx + 1;
+
+          paragraphs.push(Paragraph {
+            range: paragraph_start..paragraph_end,
+            level: paragraph_level.unwrap_or(Level::LTR),
+            pure_ltr,
+            has_isolate_controls,
+          });
+
+          paragraph_start = paragraph_end;
+          pure_ltr = true;
+          has_isolate_controls = false;
+          isolate_stack.clear();
+          paragraph_level = None;
+        },
+
+        Class::L | Class::R | Class::AL => {
+          if class != Class::L {
+            pure_ltr = false;
+          }
+
+          match isolate_stack.last() {
+            Some(&start_idx) => {
+              if original_classes[start_idx] == Class::FSI {
+                let new_class = if class == Class::L {
+                  Class::LRI
+                } else {
+                  Class::RLI
+                };
+
+                original_classes[start_idx] = new_class;
+              }
+            },
+
+            None => {
+              if paragraph_level.is_none() {
+                paragraph_level.replace(if class == Class::L {
+                  Level::LTR
+                } else {
+                  Level::RTL
+                });
+              }
+            },
+          }
+        },
+
+        Class::AN | Class::LRE | Class::RLE | Class::LRO | Class::RLO => {
+          pure_ltr = false;
+        },
+
+        Class::RLI | Class::LRI | Class::FSI => {
+          pure_ltr = false;
+          has_isolate_controls = true;
+          isolate_stack.push(idx);
+        },
+
+        Class::PDI => {
+          isolate_stack.pop();
+        },
+
+        _ => {},
+      }
+
+      refined_input.push(char::from_u32(codepoint).unwrap());
+
+      idx += 1;
     }
   }
 
@@ -321,7 +317,7 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
       paragraph.isolating_run_sequences(levels, &level_runs, original_classes, &mut sequences)?;
 
       for sequence in &sequences {
-        sequence.resolve_implicit_weak(input, processing_classes);
+        sequence.resolve_implicit_weak(processing_classes);
         sequence.resolve_implicit_neutral(input, processing_classes, levels);
       }
 
@@ -359,11 +355,11 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
       let text = &refined_input[run.clone()];
 
       if revised_levels[run.start].is_rtl() {
-        for c in text.chars().rev() {
+        for &c in text.iter().rev() {
           output += cure_char_inner(c as _, options);
         }
       } else {
-        for c in text.chars() {
+        for &c in text {
           output += cure_char_inner(c as _, options);
         }
       }

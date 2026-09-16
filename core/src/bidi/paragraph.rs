@@ -42,11 +42,7 @@ pub struct IsolatingRunSequence {
 
 impl IsolatingRunSequence {
   #[allow(clippy::similar_names, clippy::too_many_lines)]
-  pub(in super::super) fn resolve_implicit_weak(
-    &self,
-    text: &str,
-    processing_classes: &mut [Class],
-  ) {
+  pub(in super::super) fn resolve_implicit_weak(&self, processing_classes: &mut [Class]) {
     let mut prev_class_before_w4 = self.start_class;
     let mut prev_class_before_w5 = self.start_class;
 
@@ -94,49 +90,43 @@ impl IsolatingRunSequence {
           },
 
           Class::ES | Class::CS => {
-            if let Some(character) = text.get(i..).and_then(|x| x.chars().next()) {
-              let char_len = character.len_utf8();
+            let mut next_class = self
+              .iter_forwards_from(i + 1, run_index)
+              .map(|j| processing_classes[j])
+              .find(|x| !x.removed_by_x9())
+              .unwrap_or(self.end_class);
 
-              let mut next_class = self
-                .iter_forwards_from(i + char_len, run_index)
-                .map(|j| processing_classes[j])
-                .find(|x| !x.removed_by_x9())
-                .unwrap_or(self.end_class);
+            if next_class == Class::EN && last_strong_is_al {
+              next_class = Class::AN;
+            }
 
-              if next_class == Class::EN && last_strong_is_al {
-                next_class = Class::AN;
-              }
+            processing_classes[i] = match (prev_class_before_w4, processing_classes[i], next_class)
+            {
+              (Class::EN, Class::ES | Class::CS, Class::EN) => Class::EN,
 
-              processing_classes[i] =
-                match (prev_class_before_w4, processing_classes[i], next_class) {
-                  (Class::EN, Class::ES | Class::CS, Class::EN) => Class::EN,
+              (Class::AN, Class::CS, Class::AN) => Class::AN,
 
-                  (Class::AN, Class::CS, Class::AN) => Class::AN,
+              _ => Class::ON,
+            };
 
-                  _ => Class::ON,
-                };
-
-              if processing_classes[i] == Class::ON {
-                for idx in self.iter_backwards_from(i, run_index) {
-                  let class = &mut processing_classes[idx];
-                  if *class != Class::BN {
-                    break;
-                  }
-
-                  *class = Class::ON;
+            if processing_classes[i] == Class::ON {
+              for idx in self.iter_backwards_from(i, run_index) {
+                let class = &mut processing_classes[idx];
+                if *class != Class::BN {
+                  break;
                 }
 
-                for idx in self.iter_forwards_from(i + char_len, run_index) {
-                  let class = &mut processing_classes[idx];
-                  if *class != Class::BN {
-                    break;
-                  }
-
-                  *class = Class::ON;
-                }
+                *class = Class::ON;
               }
-            } else {
-              processing_classes[i] = processing_classes[i - 1];
+
+              for idx in self.iter_forwards_from(i + 1, run_index) {
+                let class = &mut processing_classes[idx];
+                if *class != Class::BN {
+                  break;
+                }
+
+                *class = Class::ON;
+              }
             }
           },
 
@@ -186,14 +176,14 @@ impl IsolatingRunSequence {
 
   pub(in super::super) fn identify_bracket_pairs(
     &self,
-    text: &str,
+    text: &[char],
     original_classes: &[Class],
     bracket_pairs: &mut Vec<BracketPair>,
   ) {
     let mut stack = vec![];
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
-      for (i, ch) in text[level_run.clone()].char_indices() {
+      for (i, &ch) in text[level_run.clone()].iter().enumerate() {
         let actual_index = level_run.start + i;
 
         if original_classes[actual_index] != Class::ON {
@@ -232,7 +222,7 @@ impl IsolatingRunSequence {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn resolve_implicit_neutral(
     &self,
-    text: &str,
+    text: &[char],
     processing_classes: &mut [Class],
     levels: &[Level],
   ) {
@@ -248,9 +238,7 @@ impl IsolatingRunSequence {
       let mut found_not_e = false;
       let mut class_to_set = None;
 
-      let start_char_len = text[pair.start..].chars().next().unwrap().len_utf8();
-
-      for enclosed_i in self.iter_forwards_from(pair.start + start_char_len, pair.start_run) {
+      for enclosed_i in self.iter_forwards_from(pair.start + 1, pair.start_run) {
         if enclosed_i >= pair.end {
           break;
         }
@@ -289,13 +277,8 @@ impl IsolatingRunSequence {
       }
 
       if let Some(class_to_set) = class_to_set {
-        let end_char_len = text[pair.end..].chars().next().unwrap().len_utf8();
-
-        for class in
-          (pair.start..pair.start + start_char_len).chain(pair.end..pair.end + end_char_len)
-        {
-          processing_classes[class] = class_to_set;
-        }
+        processing_classes[pair.start] = class_to_set;
+        processing_classes[pair.end] = class_to_set;
 
         for idx in self.iter_backwards_from(pair.start, pair.start_run) {
           let class = &mut processing_classes[idx];
@@ -307,7 +290,7 @@ impl IsolatingRunSequence {
           *class = class_to_set;
         }
 
-        for idx in self.iter_forwards_from(pair.start + start_char_len, pair.start_run) {
+        for idx in self.iter_forwards_from(pair.start + 1, pair.start_run) {
           if processing_classes[idx] == Class::BN {
             processing_classes[idx] = class_to_set;
           } else {
@@ -315,7 +298,7 @@ impl IsolatingRunSequence {
           }
         }
 
-        for idx in self.iter_forwards_from(pair.end + end_char_len, pair.end_run) {
+        for idx in self.iter_forwards_from(pair.end + 1, pair.end_run) {
           if processing_classes[idx] == Class::BN {
             processing_classes[idx] = class_to_set;
           } else {
@@ -417,7 +400,7 @@ impl Paragraph {
 
   pub(in super::super) fn visual_runs(
     &self,
-    text: &str,
+    text: &[char],
     original_classes: &[Class],
     levels: &[Level],
   ) -> Result<(Vec<Level>, Vec<Range<usize>>), Error> {
@@ -427,10 +410,10 @@ impl Paragraph {
     let mut reset_to = None;
     let mut prev_level = self.level;
 
-    for (i, c) in text.char_indices() {
+    for i in 0..text.len() {
       match original_classes[i] {
         Class::B | Class::S => {
-          reset_to.replace(i + c.len_utf8());
+          reset_to.replace(i + 1);
 
           if reset_from.is_none() {
             reset_from.replace(i);
@@ -530,7 +513,7 @@ impl Paragraph {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn compute_explicit(
     &self,
-    input: &str,
+    input: &[char],
     original_classes: &[Class],
     processing_classes: &mut [Class],
     levels: &mut [Level],
@@ -548,7 +531,7 @@ impl Paragraph {
     let mut current_run_level = Level::LTR;
     let mut current_run_start = 0;
 
-    for (idx, character) in input.char_indices() {
+    for idx in 0..input.len() {
       let current_class = original_classes[idx];
 
       match current_class {
@@ -659,11 +642,6 @@ impl Paragraph {
             last.status.apply(&mut processing_classes[idx]);
           }
         },
-      }
-
-      for j in 1..character.len_utf8() {
-        levels[idx + j] = levels[idx];
-        processing_classes[idx + j] = processing_classes[idx];
       }
 
       if idx == 0 {
