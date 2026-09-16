@@ -37,7 +37,7 @@ A library that removes common unicode confusables/homoglyphs from strings.
 
 <!---[ begin DECANCER_GLOBAL ]--->
 <details>
-<summary><b>Rust (v1.65 or later)</b></summary>
+<summary><b>Rust (v1.87 or later)</b></summary>
 <!---[ end, begin DECANCER_RUST ]--->
 
 In your `Cargo.toml`:
@@ -193,7 +193,7 @@ Tip: You can shrink the size of the resulting JAR file by removing binaries in t
 
 ### Building from source
 
-Building from source requires [Rust v1.65 or later](https://rustup.rs/).
+Building from source requires [Rust v1.87 or later](https://rustup.rs/).
 
 ```console
 git clone https://github.com/null8626/decancer.git --branch v4.0.0 --depth 1
@@ -209,7 +209,7 @@ And the binary files should be generated in the `target/release` directory.
 <summary><b>Go (v1.17 or later)</b></summary>
 <!---[ end, begin DECANCER_GO ]--->
 
-Building requires Rust v1.65 or later. Windows systems also require a MinGW compiler to be readily available.
+Building requires Rust v1.87 or later. Windows systems also require a MinGW compiler to be readily available.
 
 In your shell:
 

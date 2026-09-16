@@ -28,7 +28,7 @@ A library that removes common unicode confusables/homoglyphs from strings.
 - Its behavior is also highly customizable to your liking!
 
 ## Installation
-Building requires Rust v1.65 or later. Windows systems also require a MinGW compiler to be readily available.
+Building requires Rust v1.87 or later. Windows systems also require a MinGW compiler to be readily available.
 
 In your shell:
 

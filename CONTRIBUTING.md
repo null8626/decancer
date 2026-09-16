@@ -72,7 +72,7 @@ node scripts/readme.mjs
 Prerequisites:
 
 - [clang-format v18 or later](https://clang.llvm.org)
-- [Rust v1.65 or later](https://www.rust-lang.org)
+- [Rust v1.87 or later](https://www.rust-lang.org)
 
 ```console
 node scripts/pretty.mjs
