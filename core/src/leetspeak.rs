@@ -57,7 +57,6 @@ pub static REGEXES: LazyLock<[Option<Regex>; 26]> = LazyLock::new(|| {
   ]
 });
 
-#[cfg(feature = "options")]
 #[allow(clippy::trivial_regex)]
 pub static NON_ALPHABETICAL_REGEXES: LazyLock<[Option<Regex>; 26]> = LazyLock::new(|| {
   [

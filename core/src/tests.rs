@@ -62,34 +62,28 @@ fn leetspeak() {
 
   assert_no_matches("|-|3|_|_0", "he+lo", default_options);
 
-  #[cfg(feature = "options")]
-  {
-    let disabled_options = default_options.disable_leetspeak();
+  let disabled_options = default_options.disable_leetspeak();
 
-    assert_no_matches("|-|3|_I_0", "hello", disabled_options);
-    assert_no_matches("|-|3|aI_0", "helalo", disabled_options);
-    assert_no_matches("|-|3|_|_0", "he|_lo", disabled_options);
-    assert_no_matches("|--|3e33|__|_I_I_0()O[]", "hello", disabled_options);
+  assert_no_matches("|-|3|_I_0", "hello", disabled_options);
+  assert_no_matches("|-|3|aI_0", "helalo", disabled_options);
+  assert_no_matches("|-|3|_|_0", "he|_lo", disabled_options);
+  assert_no_matches("|--|3e33|__|_I_I_0()O[]", "hello", disabled_options);
 
-    let mut cured = super::cure!("|-|3|_I_0").unwrap();
+  let mut cured = super::cure!("|-|3|_I_0").unwrap();
 
-    cured.disable_leetspeak(true);
+  cured.disable_leetspeak(true);
 
-    assert_ne!(cured, "hello");
-  }
+  assert_ne!(cured, "hello");
 
-  #[cfg(feature = "options")]
-  {
-    let disabled_options = default_options.disable_alphabetical_leetspeak();
+  let disabled_options = default_options.disable_alphabetical_leetspeak();
 
-    assert_matches("|-|3|_I_0", "helI_o", 0..9, disabled_options);
+  assert_matches("|-|3|_I_0", "helI_o", 0..9, disabled_options);
 
-    let mut cured = super::cure!("|-|3|_I_0").unwrap();
+  let mut cured = super::cure!("|-|3|_I_0").unwrap();
 
-    cured.disable_alphabetical_leetspeak(true);
+  cured.disable_alphabetical_leetspeak(true);
 
-    assert_eq!(cured, "helI_o");
-  }
+  assert_eq!(cured, "helI_o");
 }
 
 #[test]

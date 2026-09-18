@@ -47,7 +47,7 @@ impl Options {
   options! {
     /// Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
     ///
-    /// **NOTE:** 
+    /// **NOTE:**
     /// - This is **required** to properly perform leetspeak matching.
     /// - Many confusables are neither an uppercase or a lowercase character. Therefore, the decancer defaults to displaying the translation **in lowercase**:
     ///

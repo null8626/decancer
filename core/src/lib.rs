@@ -347,8 +347,7 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
   }
 
   for paragraph in paragraphs {
-    let (revised_levels, runs) =
-      paragraph.visual_runs(&original_classes, &levels)?;
+    let (revised_levels, runs) = paragraph.visual_runs(&original_classes, &levels)?;
 
     for run in runs {
       let text = &refined_input[run.clone()];
