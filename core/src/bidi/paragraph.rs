@@ -176,7 +176,7 @@ impl IsolatingRunSequence {
 
   pub(in super::super) fn identify_bracket_pairs(
     &self,
-    text: &[char],
+    text: &[u32],
     original_classes: &[Class],
     bracket_pairs: &mut Vec<BracketPair>,
   ) {
@@ -190,7 +190,7 @@ impl IsolatingRunSequence {
           continue;
         }
 
-        if let Some(matched) = OpeningBracket::new(ch as _) {
+        if let Some(matched) = OpeningBracket::new(ch) {
           if matched.is_open {
             if stack.len() >= 63 {
               break;
@@ -222,7 +222,7 @@ impl IsolatingRunSequence {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn resolve_implicit_neutral(
     &self,
-    text: &[char],
+    text: &[u32],
     processing_classes: &mut [Class],
     levels: &[Level],
   ) {
@@ -400,7 +400,7 @@ impl Paragraph {
 
   pub(in super::super) fn visual_runs(
     &self,
-    text: &[char],
+    text: &[u32],
     original_classes: &[Class],
     levels: &[Level],
   ) -> Result<(Vec<Level>, Vec<Range<usize>>), Error> {
@@ -513,7 +513,7 @@ impl Paragraph {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn compute_explicit(
     &self,
-    input: &[char],
+    input: &[u32],
     original_classes: &[Class],
     processing_classes: &mut [Class],
     levels: &mut [Level],

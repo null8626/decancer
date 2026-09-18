@@ -178,7 +178,7 @@ macro_rules! cure_char {
   };
 }
 
-fn first_cure_pass(input: &str) -> (Vec<char>, Vec<Class>, Vec<Paragraph>) {
+fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
   let mut refined_input = Vec::with_capacity(input.len());
   let mut original_classes = Vec::with_capacity(input.len());
   let mut isolate_stack = vec![];
@@ -268,7 +268,7 @@ fn first_cure_pass(input: &str) -> (Vec<char>, Vec<Class>, Vec<Paragraph>) {
         _ => {},
       }
 
-      refined_input.push(char::from_u32(codepoint).unwrap());
+      refined_input.push(codepoint);
 
       idx += 1;
     }
