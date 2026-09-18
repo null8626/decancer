@@ -18,7 +18,7 @@
 A library that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of [**Binary Search**](https://en.wikipedia.org/wiki/Binary_search_algorithm) to ensure speed!
-- By default, it's capable of filtering **222,557 (19.98%) different unicode codepoints** like:
+- By default, it's capable of filtering **222,585 (19.98%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
@@ -48,26 +48,32 @@ import decancer from 'decancer'
 ## Examples
 ```js
 const assert = require('assert')
-const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<')
+const cured = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣')
 
-assert(cured.equals('very funny text with leetspeak'))
-
-// WARNING: it's NOT recommended to coerce this output to a JavaScript string
-//          and process it manually from there, as decancer has its own
-//          custom comparison measures, including leetspeak matching!
-assert(cured.toString() !== 'very funny text with leetspeak')
-console.log(cured.toString())
-// => very funny text wwiiiiitthh l133t5p3/-\|<
-
+assert(cured.equals('very funny text'))
 assert(cured.contains('funny'))
 
 cured.censor('funny', '*')
 console.log(cured.toString())
-// => very ***** text wwiiiiitthh l133t5p3/-\|<
+// => very ***** text
 
 cured.censorMultiple(['very', 'text'], '-')
 console.log(cured.toString())
-// => ---- ***** ---- wwiiiiitthh l133t5p3/-\|<
+// => ---- ***** ----
+
+// Leetspeak matching requires retainCapitalization.
+const cured2 = decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\\|<', {
+  retainCapitalization: true
+})
+
+assert(cured2.equals('very funny text with leetspeak'))
+
+// WARNING: it's NOT recommended to coerce this output to a JavaScript string
+//          and process it manually from there, as decancer has its own
+//          custom comparison measures, including leetspeak matching!
+assert(cured2.toString() !== 'very funny text with leetspeak')
+console.log(cured2.toString())
+// => very funny text wWiIiIIttHh l133t5p3/-\|<
 ```
 ## Donations
 

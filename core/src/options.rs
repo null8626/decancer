@@ -47,7 +47,9 @@ impl Options {
   options! {
     /// Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
     ///
-    /// **NOTE:** Many confusables are neither an uppercase or a lowercase character. Therefore, the decancer defaults to displaying the translation **in lowercase**:
+    /// **NOTE:** 
+    /// - This is **required** to properly perform leetspeak matching.
+    /// - Many confusables are neither an uppercase or a lowercase character. Therefore, the decancer defaults to displaying the translation **in lowercase**:
     ///
     /// ```rust
     /// use decancer::{Translation, Options};
@@ -185,9 +187,9 @@ impl Options {
         Ordering::Equal => {
           return Some(codepoint.translation(
             code,
-            #[cfg(all(feature = "leetspeak", feature = "options"))]
+            #[cfg(feature = "leetspeak")]
             self.is(2),
-            #[cfg(all(feature = "leetspeak", feature = "options"))]
+            #[cfg(feature = "leetspeak")]
             self.is(3),
           ));
         },

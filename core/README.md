@@ -18,7 +18,7 @@
 A library that removes common unicode confusables/homoglyphs from strings.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of [**Binary Search**](https://en.wikipedia.org/wiki/Binary_search_algorithm) to ensure speed!
-- By default, it's capable of filtering **222,557 (19.98%) different unicode codepoints** like:
+- By default, it's capable of filtering **222,585 (19.98%) different unicode codepoints** like:
   - All [whitespace characters](https://en.wikipedia.org/wiki/Whitespace_character)
   - All [diacritics](https://en.wikipedia.org/wiki/Diacritic), this also eliminates all forms of [Zalgo text](https://en.wikipedia.org/wiki/Zalgo_text)
   - Most [leetspeak characters](https://en.wikipedia.org/wiki/Leet)
@@ -37,7 +37,20 @@ decancer = "4.0.0"
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let mut cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<").unwrap();
+let mut cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+
+assert_eq!(cured, "very funny text");
+assert!(cured.contains("funny"));
+
+cured.censor("funny", '*');
+assert_eq!(cured, "very ***** text");
+
+cured.censor_multiple(["very", "text"], '-');
+assert_eq!(cured, "---- ***** ----");
+
+// Leetspeak matching requires retain_capitalization.
+let options = decancer::Options::default().retain_capitalization();
+let cured = decancer::cure(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<", options).unwrap();
 
 assert_eq!(cured, "very funny text with leetspeak");
 
@@ -45,14 +58,6 @@ assert_eq!(cured, "very funny text with leetspeak");
 //          and process it manually from there, as decancer has its own
 //          custom comparison measures, including leetspeak matching!
 assert_ne!(&*cured, "very funny text with leetspeak");
-
-assert!(cured.contains("funny"));
-
-cured.censor("funny", '*');
-assert_eq!(cured, "very ***** text with leetspeak");
-
-cured.censor_multiple(["very", "text"], '-');
-assert_eq!(cured, "---- ***** ---- with leetspeak");
 ```
 ## Donations
 

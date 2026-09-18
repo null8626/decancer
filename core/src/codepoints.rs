@@ -86,16 +86,16 @@ impl Codepoint {
   pub(super) fn translation(
     self,
     other: u32,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_alphabetical_leetspeak: bool,
   ) -> Translation {
     if self.is_string_translation() {
       Translation::string(
         self.0,
         self.1,
-        #[cfg(all(feature = "leetspeak", feature = "options"))]
+        #[cfg(feature = "leetspeak")]
         disable_leetspeak,
-        #[cfg(all(feature = "leetspeak", feature = "options"))]
+        #[cfg(feature = "leetspeak")]
         disable_alphabetical_leetspeak,
       )
     } else {

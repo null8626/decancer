@@ -95,7 +95,7 @@
 /**
  * @brief Prevents decancer from changing all characters to lowercase. Therefore, if the input character is in uppercase, the output character will be in uppercase as well.
  *
- * @note Many confusables are neither an uppercase or a lowercase character. Therefore, the decancer defaults to displaying the translation in LOWERCASE.
+ * @note This is required to properly perform leetspeak matching. In addition, many confusables are neither an uppercase or a lowercase character. Therefore, the decancer defaults to displaying the translation in LOWERCASE.
  * @since 3.0.0
  */
 #define DECANCER_OPTION_RETAIN_CAPITALIZATION (1 << 0)

@@ -398,9 +398,9 @@ pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
       cure_reordered(input, options)?
     }
     .into(),
-    #[cfg(all(feature = "leetspeak", feature = "options"))]
+    #[cfg(feature = "leetspeak")]
     disable_leetspeak: options.is(2),
-    #[cfg(all(feature = "leetspeak", feature = "options"))]
+    #[cfg(feature = "leetspeak")]
     disable_alphabetical_leetspeak: options.is(3),
   })
 }

@@ -68,7 +68,7 @@ const rootReadmeLines = readFileSync(join(ROOT_DIR, 'README.md'))
   .split(/\r?\n/g)
 
 if (!existsSync(CACHE_FILE)) {
-  execSync(`node ${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}`, {
+  execSync(`node "${join(ROOT_DIR, 'scripts', 'update_unicode.mjs')}"`, {
     stdio: 'inherit'
   })
 }

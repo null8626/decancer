@@ -21,7 +21,8 @@ fn cure_char(c: &mut Criterion) {
 fn leetspeak(c: &mut Criterion) {
   c.bench_function("leetspeak", |b| {
     b.iter(|| {
-      let cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdf").unwrap();
+      let options = decancer::Options::default().retain_capitalization();
+      let cured = decancer::cure(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣 wWiIiIIttHh l133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdfl133t5p3/-\|<asdfasdf", options).unwrap();
 
       assert_eq!(cured, "very funny text with leetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdfleetspeakasdfasdf");
     });

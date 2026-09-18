@@ -53,7 +53,7 @@ fn retain_capitalization() {
 #[test]
 #[cfg(feature = "leetspeak")]
 fn leetspeak() {
-  let default_options = Options::default();
+  let default_options = Options::default().retain_capitalization();
 
   assert_matches("|-|3|_I_0", "hello", 0..9, default_options);
   assert_matches("|-|3|aI_0", "helalo", 0..9, default_options);

@@ -65,9 +65,9 @@ pub struct Matcher<'a, 'b> {
   self_index: usize,
   start_index: usize,
   other_iterator: Cached<'b>,
-  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  #[cfg(feature = "leetspeak")]
   disable_leetspeak: bool,
-  #[cfg(all(feature = "leetspeak", feature = "options"))]
+  #[cfg(feature = "leetspeak")]
   disable_alphabetical_leetspeak: bool,
 }
 
@@ -75,8 +75,8 @@ impl<'a, 'b> Matcher<'a, 'b> {
   pub(super) fn new(
     mut self_str: &'a str,
     other_str: &'b str,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_alphabetical_leetspeak: bool,
   ) -> Self {
     if other_str.is_empty() || self_str.len() < other_str.len() {
       self_str = "";
@@ -90,9 +90,9 @@ impl<'a, 'b> Matcher<'a, 'b> {
       self_index: 0,
       start_index: 0,
       other_iterator: other_str.chars().into(),
-      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      #[cfg(feature = "leetspeak")]
       disable_leetspeak,
-      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      #[cfg(feature = "leetspeak")]
       disable_alphabetical_leetspeak,
     }
   }
@@ -148,15 +148,15 @@ impl<'a, 'b> Matcher<'a, 'b> {
   pub(super) fn is_equal(
     self_str: &'a str,
     other_str: &'b str,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_alphabetical_leetspeak: bool,
   ) -> bool {
     let mut iter = Self::new(
       self_str,
       other_str,
-      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      #[cfg(feature = "leetspeak")]
       disable_leetspeak,
-      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      #[cfg(feature = "leetspeak")]
       disable_alphabetical_leetspeak,
     );
 

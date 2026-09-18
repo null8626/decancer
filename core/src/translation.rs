@@ -36,8 +36,8 @@ impl Translation {
   pub(super) fn string(
     integer: u32,
     second_byte: u8,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_leetspeak: bool,
-    #[cfg(all(feature = "leetspeak", feature = "options"))] disable_alphabetical_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_leetspeak: bool,
+    #[cfg(feature = "leetspeak")] disable_alphabetical_leetspeak: bool,
   ) -> Self {
     Self::String(CuredString {
       string: Cow::Borrowed(
@@ -48,9 +48,9 @@ impl Translation {
         ))
         .unwrap(),
       ),
-      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      #[cfg(feature = "leetspeak")]
       disable_leetspeak,
-      #[cfg(all(feature = "leetspeak", feature = "options"))]
+      #[cfg(feature = "leetspeak")]
       disable_alphabetical_leetspeak,
     })
   }
