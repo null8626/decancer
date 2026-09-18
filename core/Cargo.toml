@@ -21,7 +21,7 @@ default = ["options", "separators", "leetspeak"]
 serde = ["dep:serde"]
 options = []
 separators = []
-leetspeak = ["regex"]
+leetspeak = ["options", "regex"]
 
 [dev-dependencies]
 proptest = { version = "1", default-features = false, features = ["std"] }

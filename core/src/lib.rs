@@ -306,7 +306,6 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
       level_runs.clear();
 
       paragraph.compute_explicit(
-        input,
         original_classes,
         processing_classes,
         levels,
@@ -349,7 +348,7 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
 
   for paragraph in paragraphs {
     let (revised_levels, runs) =
-      paragraph.visual_runs(&refined_input, &original_classes, &levels)?;
+      paragraph.visual_runs(&original_classes, &levels)?;
 
     for run in runs {
       let text = &refined_input[run.clone()];

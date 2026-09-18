@@ -386,7 +386,6 @@ pub struct Paragraph {
 impl Paragraph {
   pub(in super::super) fn visual_runs(
     &self,
-    text: &[u32],
     original_classes: &[Class],
     levels: &[Level],
   ) -> Result<(Vec<Level>, Vec<Range<usize>>), Error> {
@@ -396,7 +395,7 @@ impl Paragraph {
     let mut reset_to = None;
     let mut prev_level = self.level;
 
-    for i in 0..text.len() {
+    for i in 0..original_classes.len() {
       match original_classes[i] {
         Class::B | Class::S => {
           reset_to.replace(i + 1);
@@ -499,7 +498,6 @@ impl Paragraph {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn compute_explicit(
     &self,
-    input: &[u32],
     original_classes: &[Class],
     processing_classes: &mut [Class],
     levels: &mut [Level],
@@ -517,7 +515,7 @@ impl Paragraph {
     let mut current_run_level = Level::LTR;
     let mut current_run_start = 0;
 
-    for idx in 0..input.len() {
+    for idx in 0..original_classes.len() {
       let current_class = original_classes[idx];
 
       match current_class {
