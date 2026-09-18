@@ -4,7 +4,7 @@
 use super::{super::Error, BracketPair, Class, Level, OpeningBracket};
 use std::{
   cmp::{max, min},
-  ops::{Index, IndexMut, Range},
+  ops::Range,
 };
 
 #[derive(Eq, PartialEq)]
@@ -384,20 +384,6 @@ pub struct Paragraph {
 }
 
 impl Paragraph {
-  pub(in super::super) fn sliced<'a, T: Index<Range<usize>> + ?Sized>(
-    &'a self,
-    slicable: &'a T,
-  ) -> &'a <T as Index<Range<usize>>>::Output {
-    &slicable[self.range.clone()]
-  }
-
-  pub(in super::super) fn sliced_mut<'a, T: IndexMut<Range<usize>> + ?Sized>(
-    &'a self,
-    slicable: &'a mut T,
-  ) -> &'a mut <T as Index<Range<usize>>>::Output {
-    &mut slicable[self.range.clone()]
-  }
-
   pub(in super::super) fn visual_runs(
     &self,
     text: &[u32],

@@ -299,10 +299,10 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
 
     if paragraph.level.0 != 0 || !paragraph.pure_ltr {
-      let input = paragraph.sliced(&refined_input);
-      let original_classes = paragraph.sliced(&original_classes);
-      let processing_classes = paragraph.sliced_mut(&mut processing_classes);
-      let levels = paragraph.sliced_mut(&mut levels);
+      let input = &refined_input[paragraph.range.clone()];
+      let original_classes = &original_classes[paragraph.range.clone()];
+      let processing_classes = &mut processing_classes[paragraph.range.clone()];
+      let levels = &mut levels[paragraph.range.clone()];
       level_runs.clear();
 
       paragraph.compute_explicit(
@@ -356,11 +356,11 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
 
       if revised_levels[run.start].is_rtl() {
         for &c in text.iter().rev() {
-          output += cure_char_inner(c as _, options);
+          output += cure_char_inner(c, options);
         }
       } else {
         for &c in text {
-          output += cure_char_inner(c as _, options);
+          output += cure_char_inner(c, options);
         }
       }
     }
