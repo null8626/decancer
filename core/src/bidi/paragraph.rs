@@ -17,7 +17,6 @@ pub enum OverrideStatus {
 }
 
 impl OverrideStatus {
-  #[cfg(not(tarpaulin_include))]
   pub(in super::super) const fn apply(&self, class: &mut Class) {
     match self {
       Self::RTL => *class = Class::R,

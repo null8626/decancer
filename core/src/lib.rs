@@ -33,7 +33,6 @@ use util::{is_alphanumeric, is_special_rtl};
 error_enum! {
   /// An error enum for unicode bidi errors caused by malformed string inputs.
   #[repr(u8)]
-  #[cfg(not(tarpaulin_include))]
   #[derive(Copy, Clone, Debug)]
   pub enum Error {
     /// Attempted to create a unicode bidi level that exceeds `MAX_EXPLICIT_DEPTH` (125).
@@ -46,15 +45,12 @@ error_enum! {
     LevelModificationUnderflow,
 
     /// Attempted to raise a unicode bidi level that is already at `MAX_IMPLICIT_DEPTH` (126).
-    #[cfg(not(tarpaulin_include))]
     LevelModificationOverflow,
 
     /// Got a malformed isolating run sequence structure.
-    #[cfg(not(tarpaulin_include))]
     MalformedIsolatingRunSequence,
 
     /// Got a malformed bidi level override status stack.
-    #[cfg(not(tarpaulin_include))]
     MalformedOverrideStatusStack,
   }
 }
@@ -93,7 +89,6 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
 
     return Translation::character(default_output);
   } else if is_case_sensitive {
-    #[cfg(not(tarpaulin_include))]
     #[cfg_attr(not(feature = "options"), allow(unused_mut))]
     if let Some(mut translation) = options.translate(
       code,
@@ -102,7 +97,6 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
     ) {
       #[cfg(feature = "options")]
       if retain_capitalization {
-        #[cfg(not(tarpaulin_include))]
         translation.make_uppercase();
       }
 
@@ -115,7 +109,6 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
   }
 
   #[cfg(feature = "options")]
-  #[cfg(not(tarpaulin_include))]
   return options
     .translate(code_lowercased, 6, CODEPOINTS_COUNT.into())
     .map_or_else(
@@ -211,7 +204,6 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
       original_classes.push(class);
 
       match class {
-        #[cfg(not(tarpaulin_include))]
         Class::B => {
           let paragraph_end = idx + 1;
 
@@ -264,19 +256,16 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
           pure_ltr = false;
         },
 
-        #[cfg(not(tarpaulin_include))]
         Class::RLI | Class::LRI | Class::FSI => {
           pure_ltr = false;
           has_isolate_controls = true;
           isolate_stack.push(idx);
         },
 
-        #[cfg(not(tarpaulin_include))]
         Class::PDI => {
           isolate_stack.pop();
         },
 
-        #[cfg(not(tarpaulin_include))]
         _ => {},
       }
 
@@ -319,11 +308,8 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
 
       paragraph.compute_explicit(
         original_classes,
-        #[cfg(not(tarpaulin_include))]
         processing_classes,
-        #[cfg(not(tarpaulin_include))]
         levels,
-        #[cfg(not(tarpaulin_include))]
         &mut level_runs,
       )?;
 
@@ -346,7 +332,6 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
               level.raise(1)?;
             },
 
-            #[cfg(not(tarpaulin_include))]
             _ => {},
           }
         }
@@ -391,7 +376,6 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
 ///
 /// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
 pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
-  #[cfg(not(tarpaulin_include))]
   Ok(CuredString {
     string: {
       #[cfg(feature = "options")]

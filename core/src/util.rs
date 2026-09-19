@@ -141,7 +141,6 @@ macro_rules! numbered_enum {
         match value {
           $($enum_prop_value => Self::$enum_prop,)*
 
-          #[cfg(not(tarpaulin_include))]
           _ => unreachable!(),
         }
       }

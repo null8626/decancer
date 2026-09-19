@@ -100,8 +100,6 @@ impl<'a, 'b> Matcher<'a, 'b> {
   #[cfg(feature = "leetspeak")]
   fn matches_leetspeak(&mut self, other_char: char) -> Option<usize> {
     let haystack = &self.self_str[self.self_index..];
-
-    #[cfg(not(tarpaulin_include))]
     let matched_len = leetspeak::find(
       if self.disable_alphabetical_leetspeak {
         &leetspeak::NON_ALPHABETICAL_REGEXES
@@ -164,7 +162,6 @@ impl<'a, 'b> Matcher<'a, 'b> {
       disable_alphabetical_leetspeak,
     );
 
-    #[cfg(not(tarpaulin_include))]
     iter
       .next()
       .is_some_and(|mat| mat.start == 0 && mat.end == self_str.len())

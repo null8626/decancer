@@ -171,7 +171,6 @@ impl CuredString {
     let mut char_diff = 0isize;
 
     for mat in matches {
-      #[cfg(not(tarpaulin_include))]
       self_str.replace_range(
         (mat.start.cast_signed() + char_diff).cast_unsigned()
           ..(mat.end.cast_signed() + char_diff).cast_unsigned(),
