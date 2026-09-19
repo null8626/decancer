@@ -1,4 +1,4 @@
-# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
+# decancer [![npm][npm-image]][npm-url] [![crates.io][crates-io-image]][crates-io-url] [![npm downloads][npm-downloads-image]][npm-url] [![crates.io downloads][crates-io-downloads-image]][crates-io-url] [![codacy][codacy-image]][codacy-url] [![codecov][codecov-image]][codecov-url] [![ko-fi][ko-fi-brief-image]][ko-fi-url]
 
 [crates-io-url]: https://crates.io/crates/decancer
 [crates-io-image]: https://img.shields.io/crates/v/decancer?style=flat-square
@@ -8,6 +8,8 @@
 [npm-downloads-image]: https://img.shields.io/npm/dt/decancer.svg?style=flat-square
 [codacy-url]: https://app.codacy.com/gh/null8626/decancer/dashboard
 [codacy-image]: https://app.codacy.com/project/badge/Grade/d740b1aa867d42f2b37eb992ad73784a
+[codecov-url]: https://codecov.io/gh/null8626/decancer
+[codecov-image]: https://codecov.io/gh/null8626/decancer/graph/badge.svg
 [ko-fi-url]: https://ko-fi.com/null8626
 [ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
 [ko-fi-brief-image]: https://img.shields.io/badge/donations-ko--fi-red?color=ff5e5b&style=flat-square

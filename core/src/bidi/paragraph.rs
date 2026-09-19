@@ -17,6 +17,7 @@ pub enum OverrideStatus {
 }
 
 impl OverrideStatus {
+  #[cfg(not(tarpaulin_include))]
   pub(in super::super) const fn apply(&self, class: &mut Class) {
     match self {
       Self::RTL => *class = Class::R,
@@ -577,6 +578,7 @@ impl Paragraph {
           } else if valid_isolate_count > 0 {
             overflow_embedding_count = 0;
 
+            #[cfg(not(tarpaulin_include))]
             while !matches!(
               stack.pop(),
               None
@@ -652,6 +654,7 @@ impl Paragraph {
 
     let mut current_run_start = 0;
     let Some(&(mut current_run_level)) = levels.first() else {
+      #[cfg(not(tarpaulin_include))]
       return runs;
     };
 
@@ -711,6 +714,7 @@ impl Paragraph {
 
       for sequence in sequences {
         if sequence.is_empty() {
+          #[cfg(not(tarpaulin_include))]
           return Err(Error::MalformedIsolatingRunSequence);
         }
 

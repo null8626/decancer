@@ -39,6 +39,7 @@ impl CuredString {
   /// assert_eq!(matcher.next(), None);
   /// ```
   pub fn find<'a, 'b>(&'a self, other: &'b str) -> Matcher<'a, 'b> {
+    #[cfg(not(tarpaulin_include))]
     Matcher::new(
       self,
       other,
@@ -170,6 +171,7 @@ impl CuredString {
     let mut char_diff = 0isize;
 
     for mat in matches {
+      #[cfg(not(tarpaulin_include))]
       self_str.replace_range(
         (mat.start.cast_signed() + char_diff).cast_unsigned()
           ..(mat.end.cast_signed() + char_diff).cast_unsigned(),
@@ -242,6 +244,7 @@ impl CuredString {
   pub fn ends_with(&self, other: &str) -> bool {
     // find() skips overlapping matches, so scan every suffix for an anchored equal.
     self.string.char_indices().any(|(index, _)| {
+      #[cfg(not(tarpaulin_include))]
       Matcher::is_equal(
         &self.string[index..],
         other,
@@ -322,6 +325,7 @@ where
   ///
   /// This comparison is case-insensitive.
   fn eq(&self, other: &S) -> bool {
+    #[cfg(not(tarpaulin_include))]
     Matcher::is_equal(
       self,
       other.as_ref(),

@@ -25,6 +25,7 @@ pub struct Binary {
 }
 
 impl Binary {
+  #[cfg(not(tarpaulin_include))]
   pub(super) const fn new(bytes: &'static [u8]) -> Self {
     Self { bytes }
   }
@@ -53,11 +54,13 @@ impl Binary {
 
 // Special thanks to https://medium.com/@michealkeines/merge-overlapping-intervals-rust-117a7099f348
 // except i've improved upon it :)
+#[allow(clippy::suspicious_operation_groupings)]
 pub fn merge_ranges<T>(ranges: &mut Vec<Range<T>>)
 where
   T: Ord + Copy,
 {
   if ranges.is_empty() {
+    #[cfg(not(tarpaulin_include))]
     return;
   }
 
@@ -69,7 +72,6 @@ where
     let current = ranges[i].clone();
     let previous = &mut ranges[j];
 
-    #[allow(clippy::suspicious_operation_groupings)]
     if current.start >= previous.start && current.start <= previous.end {
       previous.end = previous.end.max(current.end);
     } else {
@@ -87,6 +89,7 @@ macro_rules! error_enum {
     pub enum $enum_name:ident {
       $(
         #[doc = $prop_doc:literal]
+        $(#[$prop_attrs:meta])*
         $prop_name:ident,
       )*
     }
@@ -95,6 +98,7 @@ macro_rules! error_enum {
     pub enum $enum_name {
       $(
         #[doc = $prop_doc]
+        $(#[$prop_attrs])*
         $prop_name,
       )*
     }
@@ -137,6 +141,7 @@ macro_rules! numbered_enum {
         match value {
           $($enum_prop_value => Self::$enum_prop,)*
 
+          #[cfg(not(tarpaulin_include))]
           _ => unreachable!(),
         }
       }

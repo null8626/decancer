@@ -183,7 +183,7 @@ impl Serialize for Translation {
     match self {
       Self::Character(ch) => serializer.serialize_char(*ch),
 
-      Self::String(s) => serializer.serialize_str(&s),
+      Self::String(s) => serializer.serialize_str(s),
 
       Self::None => serializer.serialize_unit(),
     }

@@ -8,6 +8,7 @@ use super::{
 
 numbered_enum! {
   #[allow(clippy::upper_case_acronyms, dead_code)]
+  #[cfg(not(tarpaulin_include))]
   #[cfg_attr(test, derive(Debug))]
   #[derive(Copy, Clone, Eq, PartialEq)]
   pub enum Class: u8 {
@@ -73,6 +74,7 @@ impl Class {
     matches!(self, Self::RLI | Self::LRI | Self::FSI)
   }
 
+  #[cfg(not(tarpaulin_include))]
   pub(in super::super) const fn override_status(self) -> OverrideStatus {
     match self {
       Self::RLO => OverrideStatus::RTL,

@@ -43,6 +43,7 @@ lto = true
 
 [lints.rust]
 unsafe_code = "forbid"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
 
 [lints.rustdoc]
 broken_intra_doc_links = "deny"

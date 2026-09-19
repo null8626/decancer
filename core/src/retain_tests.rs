@@ -3,6 +3,7 @@
 
 // WARNING: This file is computer generated.
 
+#[cfg(feature = "options")]
 fn do_retain_test(options: Options, test_string: &str) {
   assert_ne!(super::cure!(test_string).unwrap(), test_string);
   assert_eq!(super::cure(test_string, options.disable_bidi()).unwrap(), test_string);

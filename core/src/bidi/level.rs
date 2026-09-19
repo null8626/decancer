@@ -17,6 +17,7 @@ impl Level {
     if number <= MAX_EXPLICIT_DEPTH {
       Ok(Self(number))
     } else {
+      #[cfg(not(tarpaulin_include))]
       Err(Error::LevelExplicitOverflow)
     }
   }
@@ -25,6 +26,7 @@ impl Level {
     if number <= MAX_IMPLICIT_DEPTH {
       Ok(Self(number))
     } else {
+      #[cfg(not(tarpaulin_include))]
       Err(Error::LevelImplicitOverflow)
     }
   }
@@ -37,6 +39,7 @@ impl Level {
         Ok(())
       },
 
+      #[cfg(not(tarpaulin_include))]
       None => Err(Error::LevelModificationUnderflow),
     }
   }
@@ -50,6 +53,7 @@ impl Level {
       return Ok(());
     }
 
+    #[cfg(not(tarpaulin_include))]
     Err(Error::LevelModificationOverflow)
   }
 

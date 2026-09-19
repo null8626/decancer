@@ -130,22 +130,27 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@nightly
         with:
-          profile: minimal
-          override: true
-          toolchain: stable
           components: clippy
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: 22.x
+      - name: Setup tarpaulin
+        uses: taiki-e/install-action@cargo-tarpaulin
       - name: Ensure no default features is working
         run: cargo c --no-default-features
         working-directory: core
-      - name: Run cargo test
-        run: cargo test --all-features
+      - name: Run tests
+        run: cargo-tarpaulin --engine llvm --doc --benches --all-features --out Lcov
         working-directory: core
+      - name: Ensure there are no clippy issues
+        run: cargo clippy --all-features -- -D warnings
+        working-directory: core
+      - name: Upload coverage artifact
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: core/lcov.info
+          if-no-files-found: error
   java:
     name: Build native Java bindings on ${{ matrix.settings.target }}
     if: ${{ always() && needs.setup.outputs.java_affected == 'true' }}
@@ -223,11 +228,7 @@ jobs:
         with:
           node-version: 22.x
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: Make artifacts directory
         run: mkdir artifacts
         shell: bash
@@ -377,11 +378,7 @@ jobs:
         with:
           node-version: 22.x
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: Make artifacts directory
         if: ${{ !matrix.settings.build || needs.setup.outputs.create_release == 'true' || matrix.settings.target == 'x86_64-unknown-linux-gnu' }}
         run: mkdir artifacts
@@ -458,11 +455,7 @@ jobs:
         with:
           go-version: '>=1.17.0'
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: Run tests
         run: |
           sudo -E "PATH=$PATH" go generate
@@ -529,12 +522,9 @@ jobs:
           node-version: 22.x
       - name: Setup Rust
         if: ${{ matrix.settings.target != 'freebsd-x64' }}
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          target: ${{ matrix.settings.target }}
+          targets: ${{ matrix.settings.target }}
       - name: Setup Zig
         if: ${{ contains(matrix.settings.target, 'musl') }}
         uses: mlugg/setup-zig@v2
@@ -642,11 +632,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          override: true
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -684,12 +670,9 @@ jobs:
         with:
           fetch-depth: 2
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          override: true
-          toolchain: stable
-          components: rustfmt
+          components: clippy,rustfmt
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -771,6 +754,25 @@ jobs:
           push: --force-with-lease
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download coverage artifact
+        if: ${{ needs.setup.outputs.core_affected == 'true' }}
+        uses: actions/download-artifact@v8
+        with:
+          name: coverage
+          path: core
+      - name: Upload coverage results to Codecov
+        if: ${{ needs.setup.outputs.core_affected == 'true' }}
+        uses: codecov/codecov-action@v7
+        with:
+          files: core/lcov.info
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage results to Codacy
+        if: ${{ needs.setup.outputs.core_affected == 'true' }}
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          coverage-reports: core/lcov.info
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
   pages:
     name: Deploy to GitHub Pages
     if: ${{ always() && github.event_name != 'pull_request' && (needs.setup.outputs.wasm_affected == 'true' || needs.setup.outputs.native_docs_affected == 'true') }}

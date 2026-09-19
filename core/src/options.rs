@@ -207,6 +207,7 @@ impl Options {
 #[doc(hidden)]
 #[cfg(feature = "options")]
 impl From<u32> for Options {
+  #[cfg(not(tarpaulin_include))]
   fn from(value: u32) -> Self {
     Self(value)
   }

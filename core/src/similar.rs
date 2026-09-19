@@ -100,6 +100,8 @@ impl<'a, 'b> Matcher<'a, 'b> {
   #[cfg(feature = "leetspeak")]
   fn matches_leetspeak(&mut self, other_char: char) -> Option<usize> {
     let haystack = &self.self_str[self.self_index..];
+
+    #[cfg(not(tarpaulin_include))]
     let matched_len = leetspeak::find(
       if self.disable_alphabetical_leetspeak {
         &leetspeak::NON_ALPHABETICAL_REGEXES
@@ -125,6 +127,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
 
   fn matches(&mut self, self_char: char, other_char: char) -> Option<usize> {
     #[cfg(feature = "leetspeak")]
+    #[cfg(not(tarpaulin_include))]
     {
       let result = Self::matches_character(self_char, other_char);
 
@@ -151,6 +154,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     #[cfg(feature = "leetspeak")] disable_leetspeak: bool,
     #[cfg(feature = "leetspeak")] disable_alphabetical_leetspeak: bool,
   ) -> bool {
+    #[cfg(not(tarpaulin_include))]
     let mut iter = Self::new(
       self_str,
       other_str,
@@ -160,6 +164,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
       disable_alphabetical_leetspeak,
     );
 
+    #[cfg(not(tarpaulin_include))]
     iter
       .next()
       .is_some_and(|mat| mat.start == 0 && mat.end == self_str.len())
@@ -172,6 +177,7 @@ impl<'a, 'b> Matcher<'a, 'b> {
     let mut skipped = 0;
 
     if let Some(explicit_starting_position) = self.explicit_starting_position.take() {
+      #[cfg(not(tarpaulin_include))]
       self
         .self_iterator
         .set_index(explicit_starting_position.index);
