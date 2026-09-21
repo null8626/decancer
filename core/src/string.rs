@@ -4,7 +4,7 @@
 #[cfg(feature = "leetspeak")]
 use super::Options;
 #[cfg(feature = "suggestions")]
-use super::Translation;
+use super::CureSuggestion;
 use super::{Matcher, util::merge_ranges};
 use std::{
   borrow::Cow,
@@ -14,21 +14,6 @@ use std::{
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
-
-/// A cure suggested by decancer.
-#[cfg(feature = "suggestions")]
-#[cfg_attr(docsrs, doc(cfg(feature = "suggestions")))]
-#[derive(Clone, Eq, Hash, PartialEq)]
-pub struct CureSuggestion {
-  /// The character's UTF-8 index in the original input string.
-  pub old_index: usize,
-
-  /// The character's UTF-8 index in the suggested cured string or [`None`] if it's removed.
-  pub new_index: Option<usize>,
-
-  /// The suggested translation.
-  pub translation: Translation,
-}
 
 /// A wrapper around a [`Cow<'static, str>`] for comparison purposes.
 ///

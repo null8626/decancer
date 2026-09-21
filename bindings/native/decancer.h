@@ -548,6 +548,8 @@ typedef void* decancer_cured_t;
  * } decancer_suggestion_t;
  * ```
  *
+ * @see decancer_get_suggestion_length
+ * @see decancer_get_suggestion
  * @see DECANCER_SUGGESTION_REMOVED_INDEX
  * @since 4.1.0
  */
@@ -559,7 +561,7 @@ typedef struct {
   size_t old_index;
 
   /**
-   * @brief The character's UTF-8 index in the suggested cured string or DECANCER_SUGGESTION_REMOVED_INDEX if it's removed.
+   * @brief The translation's UTF-8 index in the suggested cured string or DECANCER_SUGGESTION_REMOVED_INDEX if it's removed.
    * @since 4.1.0
    */
   size_t new_index;

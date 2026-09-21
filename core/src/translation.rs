@@ -202,3 +202,17 @@ impl<'de> Deserialize<'de> for Translation {
     char::deserialize(deserializer).map(|character| super::cure_char!(character))
   }
 }
+
+#[cfg(feature = "suggestions")]
+#[cfg_attr(docsrs, doc(cfg(feature = "suggestions")))]
+#[derive(Clone, Eq, Hash, PartialEq)]
+pub struct CureSuggestion {
+  /// The character's UTF-8 index in the original input string.
+  pub old_index: usize,
+
+  /// The translation's UTF-8 index in the suggested cured string or [`None`] if it's removed.
+  pub new_index: Option<usize>,
+
+  /// The suggested translation.
+  pub translation: Translation,
+}

@@ -19,9 +19,9 @@ mod util;
 use bidi::{Class, Level, Paragraph};
 pub use options::Options;
 pub use similar::Matcher;
-#[cfg(feature = "suggestions")]
-pub use string::CureSuggestion;
 pub use string::CuredString;
+#[cfg(feature = "suggestions")]
+pub use translation::CureSuggestion;
 pub use translation::Translation;
 
 use codepoints::{
