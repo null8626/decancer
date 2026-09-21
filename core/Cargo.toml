@@ -42,6 +42,7 @@ rustc-args = ["--cfg", "docsrs"]
 
 [package.metadata.cargo-fc]
 exclude_features = ["regex"]
+exclude_feature_sets = [["options", "leetspeak"]]
 
 [profile.release]
 lto = true
