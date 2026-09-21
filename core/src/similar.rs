@@ -174,7 +174,6 @@ impl<'a, 'b> Matcher<'a, 'b> {
     let mut skipped = 0;
 
     if let Some(explicit_starting_position) = self.explicit_starting_position.take() {
-      #[cfg(not(tarpaulin_include))]
       self
         .self_iterator
         .set_index(explicit_starting_position.index);
