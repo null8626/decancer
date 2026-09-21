@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-#[cfg(feature = "options")]
-use super::Options;
 use super::{
-  Class, Level,
+  Class, Input, Level, Options,
   bidi::{IsolatingRunSequence, Paragraph},
 };
 use std::ops::Range;
@@ -210,6 +208,49 @@ fn censor() {
 }
 
 #[test]
+#[cfg(feature = "suggestions")]
+fn suggestions() {
+  macro_rules! suggestion {
+    ($old_index:literal, $new_index:literal, $character:literal) => {
+      super::CureSuggestion {
+        old_index: $old_index,
+        new_index: Some($new_index),
+        translation: super::Translation::Character($character),
+      }
+    };
+  }
+
+  let expected_suggestions = [
+    suggestion!(0, 0, 'v'),
+    suggestion!(1, 1, 'e'),
+    suggestion!(4, 2, 'r'),
+    suggestion!(7, 3, 'y'),
+    suggestion!(11, 4, ' '),
+    suggestion!(12, 5, 'f'),
+    suggestion!(16, 6, 'u'),
+    suggestion!(20, 7, 'n'),
+    suggestion!(22, 8, 'n'),
+    suggestion!(25, 9, 'y'),
+    suggestion!(28, 10, ' '),
+    suggestion!(29, 11, 't'),
+    suggestion!(31, 12, 'e'),
+    suggestion!(34, 13, 'x'),
+    suggestion!(38, 14, 't'),
+  ];
+
+  let cured = super::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+  let suggestions = cured.get_suggestions();
+
+  assert_eq!(suggestions.len(), expected_suggestions.len());
+  assert!(
+    suggestions
+      .iter()
+      .enumerate()
+      .all(|(idx, suggestion)| suggestion == &expected_suggestions[idx])
+  );
+}
+
+#[test]
 fn bidi_class() {
   assert_eq!(Class::new(0x0000), Some(Class::BN));
   assert_eq!(Class::new(0x0040), Some(Class::ON));
@@ -248,13 +289,13 @@ fn bidi_class() {
 fn irs_sorted(
   paragraph: &Paragraph,
   levels: &[Level],
-  classes: &[Class],
+  inputs: &[Input],
 ) -> Vec<IsolatingRunSequence> {
-  let level_runs = Paragraph::get_level_runs(levels, classes);
+  let level_runs = Paragraph::get_level_runs(levels, inputs);
   let mut sequences = vec![];
 
   paragraph
-    .isolating_run_sequences(levels, &level_runs, classes, &mut sequences)
+    .isolating_run_sequences(levels, &level_runs, inputs, &mut sequences)
     .unwrap();
 
   sequences.sort_by(|a, b| a.runs[0].clone().cmp(b.runs[0].clone()));
@@ -265,25 +306,25 @@ fn irs_sorted(
 #[allow(clippy::needless_pass_by_value)]
 fn test_irs_runs(
   paragraph: &Paragraph,
-  classes: &[Class],
+  inputs: &[Input],
   levels: &[Level],
   expected: Vec<Vec<Range<usize>>>,
 ) {
-  let sequences = irs_sorted(paragraph, levels, classes);
+  let sequences = irs_sorted(paragraph, levels, inputs);
 
   assert_eq!(
-    sequences.iter().map(|s| s.runs.clone()).collect::<Vec<_>>(),
+    sequences.into_iter().map(|s| s.runs).collect::<Vec<_>>(),
     expected,
   );
 }
 
 fn test_irs(
   paragraph: &Paragraph,
-  classes: &[Class],
+  inputs: &[Input],
   levels: &[Level],
   expected: &[IsolatingRunSequence],
 ) {
-  let sequences = irs_sorted(paragraph, levels, classes);
+  let sequences = irs_sorted(paragraph, levels, inputs);
 
   assert_eq!(sequences.len(), expected.len());
 
@@ -294,9 +335,14 @@ fn test_irs(
 
 #[test]
 fn isolating_run_sequences() {
-  macro_rules! classes {
+  macro_rules! inputs {
     ($($rest:tt),*) => {
-      &[$(Class::$rest),*]
+      &[$(Input {
+        code: 0,
+        class: Class::$rest,
+        #[cfg(feature = "suggestions")]
+        index: 0,
+      }),*]
     }
   }
 
@@ -333,28 +379,28 @@ fn isolating_run_sequences() {
 
   test_irs_runs(
     &mock_paragraph,
-    classes!(L, RLE, L, PDF, RLE, L, PDF, L),
+    inputs!(L, RLE, L, PDF, RLE, L, PDF, L),
     levels!(0, 1, 1, 1, 1, 1, 1, 0),
     runs!([0..2], [2..7], [7..8]),
   );
 
   test_irs_runs(
     &mock_paragraph,
-    classes!(L, RLI, L, PDI, RLI, L, PDI, L),
+    inputs!(L, RLI, L, PDI, RLI, L, PDI, L),
     levels!(0, 0, 1, 0, 0, 1, 0, 0),
     runs!([0..2, 3..5, 6..8], [2..3], [5..6]),
   );
 
   test_irs_runs(
     &mock_paragraph,
-    classes!(L, RLI, L, LRI, L, RLE, L, PDF, L, PDI, L, PDI, L),
+    inputs!(L, RLI, L, LRI, L, RLE, L, PDF, L, PDI, L, PDI, L),
     levels!(0, 0, 1, 1, 2, 3, 3, 3, 2, 1, 1, 0, 0),
     runs!([0..2, 11..13], [2..4, 9..11], [4..6], [6..8], [8..9]),
   );
 
   test_irs(
     &mock_paragraph,
-    classes!(L, RLE, L, LRE, L, PDF, L, PDF, RLE, L, PDF, L),
+    inputs!(L, RLE, L, LRE, L, PDF, L, PDF, RLE, L, PDF, L),
     levels!(0, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 0),
     irs! {
       [[0..2], L, R],
@@ -367,7 +413,7 @@ fn isolating_run_sequences() {
 
   test_irs(
     &mock_paragraph,
-    classes!(L, RLI, L, LRI, L, PDI, L, PDI, RLI, L, PDI, L),
+    inputs!(L, RLI, L, LRI, L, PDI, L, PDI, RLI, L, PDI, L),
     levels!(0, 0, 1, 1, 2, 1, 1, 0, 0, 1, 0, 0),
     irs! {
       [[0..2, 7..9, 10..12], L, L],
@@ -425,4 +471,24 @@ fn reorder() {
   );
   test_reorder("\u{05D0}(ב)ג.", ".ג)ב(א");
   test_reorder("\u{05D0}ב(גד[&ef].)gh", "gh).]ef&[דג(בא");
+}
+
+#[test]
+#[cfg(feature = "serde")]
+fn serde() {
+  use serde::{Deserialize, Serialize};
+
+  #[derive(Deserialize, Serialize)]
+  struct CuredStringWrapper {
+    cured: super::CuredString,
+  }
+
+  let wrapper: CuredStringWrapper =
+    serde_json::from_str("{\"cured\":\"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣\"}").unwrap();
+
+  assert_eq!(wrapper.cured, "very funny text");
+  assert_eq!(
+    serde_json::to_string(&wrapper).unwrap(),
+    "{\"cured\":\"very funny text\"}"
+  );
 }

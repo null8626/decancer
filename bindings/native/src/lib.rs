@@ -22,6 +22,50 @@ pub struct Translation {
   slot_c: usize,
 }
 
+impl Translation {
+  fn fill(translation: decancer::Translation, output: *mut Self) {
+    match translation {
+      decancer::Translation::Character(c) => unsafe {
+        (*output).kind = 0;
+        (*output).slot_a = c as _;
+      },
+
+      decancer::Translation::String(s) => unsafe {
+        let s: Cow<'_, str> = s.into();
+
+        (*output).kind = 1;
+        (*output).slot_b = s.len();
+
+        match s {
+          Cow::Borrowed(_) => {
+            (*output).slot_a = s.as_ptr() as _;
+            (*output).slot_c = 0 as _;
+          },
+
+          Cow::Owned(s) => {
+            let s = Box::new(s);
+
+            (*output).slot_a = s.as_ptr() as _;
+            (*output).slot_c = Box::into_raw(Box::new(s)).cast::<u8>() as _;
+          },
+        }
+      },
+
+      decancer::Translation::None => unsafe {
+        (*output).kind = 2;
+      },
+    }
+  }
+}
+
+#[repr(C)]
+#[cfg(feature = "suggestions")]
+pub struct CureSuggestion {
+  old_index: usize,
+  new_index: usize,
+  translation: Translation,
+}
+
 #[repr(C)]
 #[cfg(feature = "utf16")]
 pub struct MatcherUtf16 {
@@ -53,42 +97,16 @@ pub unsafe extern "C" fn decancer_cure_char(input: u32, options: u32, output: *m
     decancer_translation_free(output);
   }
 
-  match decancer::cure_char(input, unsafe {
-    transmute::<u32, decancer::Options>(options)
-  }) {
-    decancer::Translation::Character(c) => unsafe {
-      (*output).kind = 0;
-      (*output).slot_a = c as _;
-    },
-
-    decancer::Translation::String(s) => unsafe {
-      let s: Cow<'_, str> = s.into();
-
-      (*output).kind = 1;
-      (*output).slot_b = s.len();
-
-      match s {
-        Cow::Borrowed(_) => {
-          (*output).slot_a = s.as_ptr() as _;
-          (*output).slot_c = 0 as _;
-        },
-
-        Cow::Owned(s) => {
-          let s = Box::new(s);
-
-          (*output).slot_a = s.as_ptr() as _;
-          (*output).slot_c = Box::into_raw(Box::new(s)).cast::<u8>() as _;
-        },
-      }
-    },
-
-    decancer::Translation::None => unsafe {
-      (*output).kind = 2;
-    },
-  }
+  Translation::fill(
+    decancer::cure_char(input, unsafe {
+      transmute::<u32, decancer::Options>(options)
+    }),
+    output,
+  );
 }
 
 #[unsafe(no_mangle)]
+#[cfg(feature = "leetspeak")]
 pub unsafe extern "C" fn decancer_disable_leetspeak(
   cured: *mut decancer::CuredString,
   switch: bool,
@@ -97,11 +115,41 @@ pub unsafe extern "C" fn decancer_disable_leetspeak(
 }
 
 #[unsafe(no_mangle)]
+#[cfg(feature = "leetspeak")]
 pub unsafe extern "C" fn decancer_disable_alphabetical_leetspeak(
   cured: *mut decancer::CuredString,
   switch: bool,
 ) {
   unsafe { (*cured).disable_alphabetical_leetspeak(switch) }
+}
+
+#[unsafe(no_mangle)]
+#[cfg(feature = "suggestions")]
+pub unsafe extern "C" fn decancer_get_suggestion_length(
+  cured: *mut decancer::CuredString,
+) -> usize {
+  unsafe { (*cured).get_suggestions().len() }
+}
+
+#[unsafe(no_mangle)]
+#[cfg(feature = "suggestions")]
+pub unsafe extern "C" fn decancer_get_suggestion(
+  cured: *mut decancer::CuredString,
+  index: usize,
+  output: *mut CureSuggestion,
+) {
+  unsafe {
+    let suggestions = (*cured).get_suggestions();
+    let suggestion = &suggestions[index];
+
+    (*output).old_index = suggestion.old_index;
+    (*output).new_index = suggestion.new_index.unwrap_or(u32::MAX as _);
+
+    Translation::fill(
+      suggestion.translation.clone(),
+      std::ptr::from_mut(&mut (*output).translation),
+    );
+  }
 }
 
 #[unsafe(no_mangle)]

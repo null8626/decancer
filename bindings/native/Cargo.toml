@@ -15,11 +15,12 @@ decancer = { path = "../../core", default-features = false }
 embed-resource = "2"
 
 [features]
-default = ["options", "separators", "leetspeak", "utf8", "utf16"]
+default = ["options", "separators", "suggestions", "leetspeak", "utf8", "utf16"]
 utf8 = []
 utf16 = []
 options = ["decancer/options"]
 separators = ["decancer/separators"]
+suggestions = ["decancer/suggestions"]
 leetspeak = ["decancer/leetspeak"]
 
 [profile.release]

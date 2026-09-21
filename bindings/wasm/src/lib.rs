@@ -20,6 +20,14 @@ impl Match {
 }
 
 #[wasm_bindgen]
+pub struct CureSuggestion {
+  pub oldIndex: usize,
+  pub newIndex: Option<usize>,
+  #[wasm_bindgen(getter_with_clone)]
+  pub translation: String,
+}
+
+#[wasm_bindgen]
 pub struct CuredString(decancer::CuredString);
 
 #[wasm_bindgen]
@@ -40,6 +48,19 @@ impl CuredString {
   #[allow(clippy::missing_const_for_fn)]
   pub fn disableAlphabeticalLeetspeak(&mut self, switch: bool) {
     self.0.disable_alphabetical_leetspeak(switch);
+  }
+
+  pub fn getSuggestions(&self) -> Vec<CureSuggestion> {
+    self
+      .0
+      .get_suggestions()
+      .into_iter()
+      .map(|suggestion| CureSuggestion {
+        oldIndex: suggestion.old_index,
+        newIndex: suggestion.new_index,
+        translation: suggestion.translation.to_string(),
+      })
+      .collect()
   }
 
   pub fn find(&self, other: &str) -> Vec<Match> {

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-use super::{super::Error, BracketPair, Class, Level, OpeningBracket};
+use super::{
+  super::{Error, Input},
+  BracketPair, Class, Level, OpeningBracket,
+};
 use std::{
   cmp::{max, min},
   ops::Range,
@@ -176,21 +179,21 @@ impl IsolatingRunSequence {
 
   pub(in super::super) fn identify_bracket_pairs(
     &self,
-    text: &[u32],
+    inputs: &[Input],
     original_classes: &[Class],
     bracket_pairs: &mut Vec<BracketPair>,
   ) {
     let mut stack = vec![];
 
     for (run_index, level_run) in self.runs.iter().enumerate() {
-      for (i, &ch) in text[level_run.clone()].iter().enumerate() {
+      for (i, input) in inputs[level_run.clone()].iter().enumerate() {
         let actual_index = level_run.start + i;
 
         if original_classes[actual_index] != Class::ON {
           continue;
         }
 
-        if let Some(matched) = OpeningBracket::new(ch) {
+        if let Some(matched) = OpeningBracket::new(input.code) {
           if matched.is_open {
             if stack.len() >= 63 {
               break;
@@ -222,7 +225,7 @@ impl IsolatingRunSequence {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn resolve_implicit_neutral(
     &self,
-    text: &[u32],
+    inputs: &[Input],
     processing_classes: &mut [Class],
     levels: &[Level],
   ) {
@@ -231,7 +234,7 @@ impl IsolatingRunSequence {
     let not_e = if e == Class::L { Class::R } else { Class::L };
     let mut bracket_pairs = vec![];
 
-    self.identify_bracket_pairs(text, processing_classes, &mut bracket_pairs);
+    self.identify_bracket_pairs(inputs, processing_classes, &mut bracket_pairs);
 
     for pair in bracket_pairs {
       let mut found_e = false;
@@ -386,7 +389,7 @@ pub struct Paragraph {
 impl Paragraph {
   pub(in super::super) fn visual_runs(
     &self,
-    original_classes: &[Class],
+    inputs: &[Input],
     levels: &[Level],
   ) -> Result<(Vec<Level>, Vec<Range<usize>>), Error> {
     let mut levels = Vec::from(levels);
@@ -395,8 +398,8 @@ impl Paragraph {
     let mut reset_to = None;
     let mut prev_level = self.level;
 
-    for i in 0..original_classes.len() {
-      match original_classes[i] {
+    for i in 0..inputs.len() {
+      match inputs[i].class {
         Class::B | Class::S => {
           reset_to.replace(i + 1);
 
@@ -498,7 +501,7 @@ impl Paragraph {
   #[allow(clippy::too_many_lines)]
   pub(in super::super) fn compute_explicit(
     &self,
-    original_classes: &[Class],
+    inputs: &[Input],
     processing_classes: &mut [Class],
     levels: &mut [Level],
     runs: &mut Vec<Range<usize>>,
@@ -515,8 +518,8 @@ impl Paragraph {
     let mut current_run_level = Level::LTR;
     let mut current_run_start = 0;
 
-    for idx in 0..original_classes.len() {
-      let current_class = original_classes[idx];
+    for idx in 0..inputs.len() {
+      let current_class = inputs[idx].class;
 
       match current_class {
         Class::RLE
@@ -546,7 +549,7 @@ impl Paragraph {
             (Ok(new_level), 0, 0) => {
               stack.push(Status {
                 level: new_level,
-                status: original_classes[idx].override_status(),
+                status: inputs[idx].class.override_status(),
               });
 
               if is_isolate {
@@ -631,7 +634,7 @@ impl Paragraph {
 
       if idx == 0 {
         current_run_level = levels[idx];
-      } else if original_classes[idx].removed_by_x9() && levels[idx] != current_run_level {
+      } else if inputs[idx].class.removed_by_x9() && levels[idx] != current_run_level {
         runs.push(current_run_start..idx);
         current_run_level = levels[idx];
         current_run_start = idx;
@@ -645,10 +648,7 @@ impl Paragraph {
     Ok(())
   }
 
-  pub(in super::super) fn get_level_runs(
-    levels: &[Level],
-    original_classes: &[Class],
-  ) -> Vec<Range<usize>> {
+  pub(in super::super) fn get_level_runs(levels: &[Level], inputs: &[Input]) -> Vec<Range<usize>> {
     let mut runs = vec![];
 
     let mut current_run_start = 0;
@@ -658,7 +658,7 @@ impl Paragraph {
     };
 
     for i in 1..levels.len() {
-      if !original_classes[i].removed_by_x9() && levels[i] != current_run_level {
+      if !inputs[i].class.removed_by_x9() && levels[i] != current_run_level {
         runs.push(current_run_start..i);
 
         current_run_level = levels[i];
@@ -674,20 +674,20 @@ impl Paragraph {
     &self,
     levels: &[Level],
     level_runs: &[Range<usize>],
-    original_classes: &[Class],
+    inputs: &[Input],
     irs: &mut Vec<IsolatingRunSequence>,
   ) -> Result<(), Error> {
     if self.has_isolate_controls {
-      let runs = Self::get_level_runs(levels, original_classes);
+      let runs = Self::get_level_runs(levels, inputs);
 
       let mut sequences = Vec::with_capacity(runs.len());
       let mut stack = vec![vec![]];
 
       for run in runs {
-        let start_class = original_classes[run.start];
-        let end_class = original_classes[run.clone()]
+        let start_class = inputs[run.start].class;
+        let end_class = inputs[run.clone()]
           .iter()
-          .copied()
+          .map(|entry| entry.class)
           .rev()
           .find(|x| !x.removed_by_x9())
           .unwrap_or(start_class);
@@ -729,22 +729,22 @@ impl Paragraph {
 
         let sequence_level = levels[result
           .iter_forwards_from(sequence_start, 0)
-          .find(|&i| !original_classes[i].removed_by_x9())
+          .find(|&i| !inputs[i].class.removed_by_x9())
           .unwrap_or(sequence_start)];
 
         let end_level = levels[result
           .iter_backwards_from(sequence_end, runs_len - 1)
-          .find(|&i| !original_classes[i].removed_by_x9())
+          .find(|&i| !inputs[i].class.removed_by_x9())
           .unwrap_or(sequence_end - 1)];
 
-        let preceeding_level = original_classes[..sequence_start]
+        let preceeding_level = inputs[..sequence_start]
           .iter()
-          .rposition(|x| !x.removed_by_x9())
+          .rposition(|entry| !entry.class.removed_by_x9())
           .map_or(self.level, |idx| levels[idx]);
 
-        let last_non_removed = original_classes[..sequence_end]
+        let last_non_removed = inputs[..sequence_end]
           .iter()
-          .copied()
+          .map(|entry| entry.class)
           .rev()
           .find(|x| !x.removed_by_x9())
           .unwrap_or(Class::BN);
@@ -752,9 +752,9 @@ impl Paragraph {
         let succeeding_level = if last_non_removed.is_isolate() {
           self.level
         } else {
-          original_classes[sequence_end..]
+          inputs[sequence_end..]
             .iter()
-            .position(|x| !x.removed_by_x9())
+            .position(|entry| !entry.class.removed_by_x9())
             .map_or(self.level, |idx| levels[sequence_end + idx])
         };
 
@@ -768,25 +768,25 @@ impl Paragraph {
 
       irs.extend(level_runs.iter().map(|run| {
         let run_levels = &levels[run.clone()];
-        let run_classes = &original_classes[run.clone()];
-        let seq_level = run_levels[run_classes
+        let run_inputs = &inputs[run.clone()];
+        let seq_level = run_levels[run_inputs
           .iter()
-          .position(|c| !c.removed_by_x9())
+          .position(|entry| !entry.class.removed_by_x9())
           .unwrap_or(0)];
 
-        let end_level = run_levels[run_classes
+        let end_level = run_levels[run_inputs
           .iter()
-          .rposition(|c| !c.removed_by_x9())
+          .rposition(|entry| !entry.class.removed_by_x9())
           .unwrap_or(run.end - run.start - 1)];
 
-        let pred_level = original_classes[..run.start]
+        let pred_level = inputs[..run.start]
           .iter()
-          .rposition(|c| !c.removed_by_x9())
+          .rposition(|entry| !entry.class.removed_by_x9())
           .map_or(self.level, |idx| levels[idx]);
 
-        let succ_level = original_classes[run.end..]
+        let succ_level = inputs[run.end..]
           .iter()
-          .position(|c| !c.removed_by_x9())
+          .position(|entry| !entry.class.removed_by_x9())
           .map_or(self.level, |idx| levels[run.end + idx]);
 
         IsolatingRunSequence {

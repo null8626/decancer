@@ -238,7 +238,7 @@ For most platforms, `go generate` will require elevated administrator permission
 For more information, please read the [documentation](https://docs.rs/decancer).
 
 ```rust
-let mut cured = decancer::cure!(r"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+let mut cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
 
 assert_eq!(cured, "very funny text");
 assert!(cured.contains("funny"));

@@ -63,18 +63,18 @@ type CuredString struct {
 	ptr C.decancer_cured_t
 }
 
+type CureSuggestion struct {
+	OldIndex    int
+	NewIndex    int
+	Translation string
+}
+
 type Match struct {
 	Start int
 	End   int
 }
 
-func CureChar(character rune, options Option) string {
-	var translation C.decancer_translation_t
-
-	C.decancer_translation_init(&translation)
-
-	C.decancer_cure_char(C.uint32_t(character), C.decancer_options_t(options), &translation)
-
+func translationToString(translation *C.decancer_translation_t) string {
 	switch translation.kind {
 	case C.DECANCER_TRANSLATION_KIND_NONE:
 		return ""
@@ -82,7 +82,7 @@ func CureChar(character rune, options Option) string {
 		return string(rune(*(*uint32)(unsafe.Pointer(&translation.contents))))
 	default:
 		{
-			defer C.decancer_translation_free(&translation)
+			defer C.decancer_translation_free(translation)
 
 			str := (*struct {
 				contents *C.uint8_t
@@ -93,6 +93,15 @@ func CureChar(character rune, options Option) string {
 			return string(C.GoBytes(unsafe.Pointer(str.contents), C.int(str.size)))
 		}
 	}
+}
+
+func CureChar(character rune, options Option) string {
+	var translation C.decancer_translation_t
+
+	C.decancer_translation_init(&translation)
+	C.decancer_cure_char(C.uint32_t(character), C.decancer_options_t(options), &translation)
+
+	return translationToString(&translation)
 }
 
 type processedString struct {
@@ -147,6 +156,33 @@ func (cured *CuredString) DisableLeetspeak(switch_ bool) {
 
 func (cured *CuredString) DisableAlphabeticalLeetspeak(switch_ bool) {
 	C.decancer_disable_alphabetical_leetspeak(cured.ptr, C.bool(switch_))
+}
+
+func (cured *CuredString) GetSuggestions() []CureSuggestion {
+	var suggestions []CureSuggestion
+
+	suggestionsLength := C.decancer_get_suggestion_length(cured.ptr)
+
+	for i := range suggestionsLength {
+		var suggestion C.decancer_suggestion_t
+
+		C.decancer_translation_init(&suggestion.translation)
+		C.decancer_get_suggestion(cured.ptr, i, &suggestion)
+
+		newIndex := -1
+
+		if suggestion.new_index != 0xffffffff {
+			newIndex = int(suggestion.new_index)
+		}
+
+		suggestions = append(suggestions, CureSuggestion{
+			OldIndex:    int(suggestion.old_index),
+			NewIndex:    newIndex,
+			Translation: translationToString(&suggestion.translation),
+		})
+	}
+
+	return suggestions
 }
 
 func (cured *CuredString) Find(other string) []Match {

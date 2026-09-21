@@ -58,6 +58,7 @@ impl Codepoint {
     )
   }
 
+  #[cfg_attr(not(feature = "options"), allow(clippy::unnecessary_wraps))]
   pub(super) const fn matches(
     self,
     other: u32,

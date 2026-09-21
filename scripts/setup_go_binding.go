@@ -119,7 +119,7 @@ func build() error {
 	goBindingPath := filepath.Join(bindingsPath, "go")
 	nativeBindingPath := filepath.Join(bindingsPath, "native")
 
-	cargoBuildArgs := []string{"build", "--release", "--no-default-features", "--features", "options,separators,leetspeak,utf8"}
+	cargoBuildArgs := []string{"build", "--release", "--no-default-features", "--features", "options,separators,suggestions,leetspeak,utf8"}
 	nativeBinaryPath := []string{nativeBindingPath, "target", "", "release", "libdecancer.a"}
 
 	if runtime.GOOS == "windows" {

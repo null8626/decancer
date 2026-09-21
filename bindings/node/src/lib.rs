@@ -106,6 +106,13 @@ impl Match {
   }
 }
 
+#[napi(object)]
+pub struct CureSuggestion {
+  pub old_index: u32,
+  pub new_index: Option<u32>,
+  pub translation: String,
+}
+
 #[napi]
 pub struct CuredString(decancer::CuredString);
 
@@ -126,6 +133,20 @@ impl CuredString {
   #[napi]
   pub const fn disable_alphabetical_leetspeak(&mut self, switch: bool) {
     self.0.disable_alphabetical_leetspeak(switch);
+  }
+
+  #[napi]
+  pub fn get_suggestions(&self) -> Vec<CureSuggestion> {
+    self
+      .0
+      .get_suggestions()
+      .into_iter()
+      .map(|suggestion| CureSuggestion {
+        old_index: suggestion.old_index as _,
+        new_index: suggestion.new_index.map(|new_index| new_index as _),
+        translation: suggestion.translation.to_string(),
+      })
+      .collect()
   }
 
   #[napi]

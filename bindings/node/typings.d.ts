@@ -6,9 +6,16 @@ export class Match {
   toString(): string
 }
 
+export interface CureSuggestion {
+  readonly oldIndex: number
+  readonly newIndex: number | null
+  readonly translation: string
+}
+
 export class CuredString {
   disableLeetspeak(switch_: boolean): void
   disableAlphabeticalLeetspeak(switch_: boolean): void
+  getSuggestions(): CureSuggestion[]
   find(other: string): Match[]
   findMultiple(other: string[]): Match[]
   censor(other: string, character: string): void

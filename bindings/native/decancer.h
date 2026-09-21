@@ -528,6 +528,50 @@ typedef struct {
  */
 typedef void* decancer_cured_t;
 
+#ifndef DECANCER_NO_SUGGESTIONS
+/**
+ * @brief An index marker that indicates that the codepoint should be removed.
+ *
+ * @see decancer_suggestion_t
+ * @since 4.1.0
+ */
+#define DECANCER_SUGGESTION_REMOVED_INDEX ((size_t)0xffffffff)
+
+/**
+ * @brief Represents a cure suggestion by decancer.
+ *
+ * ```c
+ * typedef struct {
+ *   size_t old_index;
+ *   size_t new_index;
+ *   decancer_translation_t translation;
+ * } decancer_suggestion_t;
+ * ```
+ *
+ * @see DECANCER_SUGGESTION_REMOVED_INDEX
+ * @since 4.1.0
+ */
+typedef struct {
+  /**
+   * @brief The character's UTF-8 index in the original input string.
+   * @since 4.1.0
+   */
+  size_t old_index;
+
+  /**
+   * @brief The character's UTF-8 index in the suggested cured string or DECANCER_SUGGESTION_REMOVED_INDEX if it's removed.
+   * @since 4.1.0
+   */
+  size_t new_index;
+
+  /**
+   * @brief The suggested translation.
+   * @since 4.1.0
+   */
+  decancer_translation_t translation;
+} decancer_suggestion_t;
+#endif
+
 /**
  * @brief Represents a match in UTF-8 indices.
  *
@@ -762,6 +806,7 @@ extern "C" {
    */
   DECANCER_EXPORT void decancer_cure_char(const uint32_t input, const decancer_options_t options, decancer_translation_t* translation);
 
+#ifndef DECANCER_NO_LEETSPEAK
   /**
    * @brief Prevents decancer from applying leetspeak comparisons in comparison methods.
    *
@@ -825,6 +870,7 @@ extern "C" {
    * @since 4.0.0
    */
   DECANCER_EXPORT void decancer_disable_alphabetical_leetspeak(decancer_cured_t cured, const bool switch_);
+#endif
 
 #ifndef DECANCER_UTF16_ONLY
   /**
@@ -1046,6 +1092,115 @@ extern "C" {
    * @since 3.1.1
    */
   DECANCER_EXPORT const decancer_match_t* decancer_matches_raw(decancer_matches_t matches, size_t* output_size);
+
+#ifndef DECANCER_NO_SUGGESTIONS
+  /**
+   * @brief Retrieves the number of cure suggestions by decancer.
+   *
+   * Example:
+   *
+   * ```c
+   * #include <decancer.h>
+   *
+   * #include <stdio.h>
+   *
+   * int main() {
+   *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   size_t suggestion_length;
+   *
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
+   *
+   *   if (cured == NULL) {
+   *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
+   *     return 1;
+   *   }
+   *
+   *   suggestion_length = decancer_get_suggestion_length(cured);
+   *
+   *   decancer_cured_free(cured);
+   *   return ret;
+   * }
+   * ```
+   *
+   * @param cured The cured string object.
+   * @see decancer_get_suggestion
+   * @see decancer_suggestion_t
+   * @return size_t The number of cure suggestions by decancer.
+   * @since 4.1.0
+   */
+  DECANCER_EXPORT size_t decancer_get_suggestion_length(decancer_cured_t cured);
+
+  /**
+   * @brief Retrieves a cure suggestion by decancer from its index.
+   *
+   * Example:
+   *
+   * ```c
+   * #include <decancer.h>
+   *
+   * #include <stdio.h>
+   *
+   * int main() {
+   *   int ret = 0;
+   *
+   *   // UTF-8 bytes for "vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣"
+   *   uint8_t input[] = {0x76, 0xef, 0xbc, 0xa5, 0xe2, 0x93, 0xa1, 0xf0, 0x9d, 0x94, 0x82, 0x20, 0xf0, 0x9d,
+   *                      0x94, 0xbd, 0xf0, 0x9d, 0x95, 0x8c, 0xc5, 0x87, 0xe2, 0x84, 0x95, 0xef, 0xbd, 0x99,
+   *                      0x20, 0xc5, 0xa3, 0xe4, 0xb9, 0x87, 0xf0, 0x9d, 0x95, 0x8f, 0xf0, 0x9d, 0x93, 0xa3};
+   *
+   *   decancer_cured_t cured;
+   *   decancer_error_t error;
+   *   size_t suggestion_length;
+   *   decancer_suggestion_t suggestion;
+   *
+   *   cured = decancer_cure(input, sizeof(input), DECANCER_OPTION_DEFAULT, &error);
+   *
+   *   if (cured == NULL) {
+   *     fprintf(stderr, "curing error: %.*s\n", (int)error.message_length, error.message);
+   *     return 1;
+   *   }
+   *
+   *   suggestion_length = decancer_get_suggestion_length(cured);
+   *
+   *   for (size_t i = 0; i < suggestion_length; i++) {
+   *     decancer_translation_init(&suggestion.translation);
+   *     decancer_get_suggestion(cured, i, &suggestion);
+   *
+   *     if (suggestion.new_index == DECANCER_SUGGESTION_REMOVED_INDEX) {
+   *       printf("The character at index %ld should be removed.\n", suggestion.old_index);
+   *     } else {
+   *       printf("The character at index %ld should be at index %ld.\n", suggestion.old_index, suggestion.new_index);
+   *
+   *       if (suggestion.translation.kind == DECANCER_TRANSLATION_KIND_CHARACTER) {
+   *         printf("... with the codepoint %d\n", suggestion.translation.contents.character);
+   *       }
+   *     }
+   *
+   *     decancer_translation_free(&suggestion.translation);
+   *   }
+   *
+   *   decancer_cured_free(cured);
+   *   return ret;
+   * }
+   * ```
+   *
+   * @param cured The cured string object.
+   * @param index The cure suggestion's index.
+   * @param suggestion The cure suggestion output.
+   * @see decancer_get_suggestion_length
+   * @see decancer_suggestion_t
+   * @since 4.1.0
+   */
+  DECANCER_EXPORT void decancer_get_suggestion(decancer_cured_t cured, const size_t index, decancer_suggestion_t* suggestion);
+#endif
 
 #ifndef DECANCER_UTF16_ONLY
   /**

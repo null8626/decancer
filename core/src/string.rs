@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
+#[cfg(feature = "leetspeak")]
+use super::Options;
+#[cfg(feature = "suggestions")]
+use super::Translation;
 use super::{Matcher, util::merge_ranges};
 use std::{
   borrow::Cow,
@@ -11,12 +15,29 @@ use std::{
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 
-/// A small wrapper around a [`Cow<'static, str>`] for comparison purposes.
+/// A cure suggested by decancer.
+#[cfg(feature = "suggestions")]
+#[cfg_attr(docsrs, doc(cfg(feature = "suggestions")))]
+#[derive(Clone, Eq, Hash, PartialEq)]
+pub struct CureSuggestion {
+  /// The character's UTF-8 index in the original input string.
+  pub old_index: usize,
+
+  /// The character's UTF-8 index in the suggested cured string or [`None`] if it's removed.
+  pub new_index: Option<usize>,
+
+  /// The suggested translation.
+  pub translation: Translation,
+}
+
+/// A wrapper around a [`Cow<'static, str>`] for comparison purposes.
 ///
 /// This is used because imperfections from translations can happen, thus this is used to provide comparison functions that are not as strict and can detect similar-looking characters (e.g: `i` and `l`)
 #[derive(Clone, Eq, Hash)]
 pub struct CuredString {
   pub(super) string: Cow<'static, str>,
+  #[cfg(feature = "suggestions")]
+  pub(super) suggestions: Vec<CureSuggestion>,
   #[cfg(feature = "leetspeak")]
   pub(super) disable_leetspeak: bool,
   #[cfg(feature = "leetspeak")]
@@ -24,6 +45,43 @@ pub struct CuredString {
 }
 
 impl CuredString {
+  pub(super) const fn new(
+    string: Cow<'static, str>,
+    #[cfg(feature = "suggestions")] suggestions: Vec<CureSuggestion>,
+    #[cfg(feature = "leetspeak")] options: Options,
+  ) -> Self {
+    Self {
+      string,
+      #[cfg(feature = "suggestions")]
+      suggestions,
+      #[cfg(feature = "leetspeak")]
+      disable_leetspeak: options.is(2),
+      #[cfg(feature = "leetspeak")]
+      disable_alphabetical_leetspeak: options.is(3),
+    }
+  }
+
+  /// Retrieves a list of cure suggestions by decancer.
+  ///
+  /// **NOTE**: In order to prevent infinite nesting, this list is empty if it comes from the [`CuredString`] in [`Translation::String`].
+  ///
+  /// ```rust
+  /// let cured = decancer::cure!("vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣").unwrap();
+  ///
+  /// for suggestion in cured.get_suggestions() {
+  ///   println!("old_index: {}", suggestion.old_index);
+  ///   println!("new_index: {:?}", suggestion.new_index);
+  ///   println!("translation: {}", suggestion.translation);
+  /// }
+  /// ```
+  #[inline]
+  #[must_use]
+  #[cfg(feature = "suggestions")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "suggestions")))]
+  pub fn get_suggestions(&self) -> &[CureSuggestion] {
+    &self.suggestions
+  }
+
   /// Iterates throughout this string and yields every similar-looking match.
   ///
   /// If you plan on using this method with an array of strings, use [`find_multiple`][CuredString::find_multiple].
@@ -267,12 +325,14 @@ impl CuredString {
 
   /// Prevents decancer from applying leetspeak comparisons in comparison methods.
   #[cfg(feature = "leetspeak")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "leetspeak")))]
   pub const fn disable_leetspeak(&mut self, switch: bool) {
     self.disable_leetspeak = switch;
   }
 
   /// Prevents decancer from applying alphabetical leetspeak comparisons in comparison methods.
   #[cfg(feature = "leetspeak")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "leetspeak")))]
   pub const fn disable_alphabetical_leetspeak(&mut self, switch: bool) {
     self.disable_alphabetical_leetspeak = switch;
   }

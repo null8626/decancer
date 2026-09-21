@@ -19,6 +19,8 @@ mod util;
 use bidi::{Class, Level, Paragraph};
 pub use options::Options;
 pub use similar::Matcher;
+#[cfg(feature = "suggestions")]
+pub use string::CureSuggestion;
 pub use string::CuredString;
 pub use translation::Translation;
 
@@ -130,7 +132,7 @@ fn cure_char_inner(code: u32, options: Options) -> Translation {
 
   #[cfg(not(feature = "options"))]
   options
-    .translate(code_lowercased, 6, CODEPOINTS_COUNT as _)
+    .translate(code_lowercased, 6, CODEPOINTS_COUNT.into())
     .unwrap_or_else(|| Translation::character(default_output))
 }
 
@@ -178,9 +180,23 @@ macro_rules! cure_char {
   };
 }
 
-fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
-  let mut refined_input = Vec::with_capacity(input.len());
-  let mut original_classes = Vec::with_capacity(input.len());
+pub(crate) struct Input {
+  pub(crate) code: u32,
+  pub(crate) class: Class,
+  #[cfg(feature = "suggestions")]
+  pub(crate) index: usize,
+}
+
+struct FirstPassOutput {
+  inputs: Vec<Input>,
+  paragraphs: Vec<Paragraph>,
+  #[cfg(feature = "suggestions")]
+  suggestions: Vec<CureSuggestion>,
+}
+
+#[allow(clippy::too_many_lines)]
+fn first_cure_pass(input: &str) -> FirstPassOutput {
+  let mut refined_inputs: Vec<Input> = Vec::with_capacity(input.len());
   let mut isolate_stack = vec![];
 
   let mut paragraphs = vec![];
@@ -190,8 +206,17 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
   let mut has_isolate_controls = false;
 
   let mut idx = 0;
+  #[cfg(feature = "suggestions")]
+  let mut suggestions = vec![];
 
-  for codepoint in input.chars() {
+  #[cfg(feature = "suggestions")]
+  let char_iterator = input.char_indices();
+  #[cfg(not(feature = "suggestions"))]
+  let char_iterator = input.chars();
+
+  for codepoint in char_iterator {
+    #[cfg(feature = "suggestions")]
+    let (old_index, codepoint) = codepoint;
     let mut codepoint = codepoint as u32;
 
     if !is_none(codepoint)
@@ -201,7 +226,12 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
         codepoint = 0x20;
       }
 
-      original_classes.push(class);
+      refined_inputs.push(Input {
+        code: codepoint,
+        class,
+        #[cfg(feature = "suggestions")]
+        index: old_index,
+      });
 
       match class {
         Class::B => {
@@ -228,7 +258,9 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
 
           match isolate_stack.last() {
             Some(&start_idx) => {
-              if original_classes[start_idx] == Class::FSI {
+              let input: &mut Input = &mut refined_inputs[start_idx];
+
+              if input.class == Class::FSI {
                 #[cfg(not(tarpaulin_include))]
                 let new_class = if class == Class::L {
                   Class::LRI
@@ -236,7 +268,7 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
                   Class::RLI
                 };
 
-                original_classes[start_idx] = new_class;
+                input.class = new_class;
               }
             },
 
@@ -269,9 +301,14 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
         _ => {},
       }
 
-      refined_input.push(codepoint);
-
       idx += 1;
+    } else {
+      #[cfg(feature = "suggestions")]
+      suggestions.push(CureSuggestion {
+        old_index,
+        new_index: None,
+        translation: Translation::None,
+      });
     }
   }
 
@@ -284,41 +321,114 @@ fn first_cure_pass(input: &str) -> (Vec<u32>, Vec<Class>, Vec<Paragraph>) {
     });
   }
 
-  (refined_input, original_classes, paragraphs)
+  FirstPassOutput {
+    inputs: refined_inputs,
+    paragraphs,
+    #[cfg(feature = "suggestions")]
+    suggestions,
+  }
 }
 
-fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
-  let (refined_input, original_classes, paragraphs) = first_cure_pass(input);
+/// Cures a string with the specified [`Options`].
+///
+/// To use this function with decancer's default options, use [the `cure` macro][cure!] instead.
+///
+/// # Errors
+///
+/// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
+#[allow(clippy::too_many_lines)]
+pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
+  #[cfg(feature = "options")]
+  if options.is(1) {
+    #[cfg(feature = "suggestions")]
+    let mut suggestions = vec![];
+    #[cfg(feature = "suggestions")]
+    let char_iterator = input.char_indices();
+    #[cfg(not(feature = "suggestions"))]
+    let char_iterator = input.chars();
 
-  let mut levels = Vec::with_capacity(refined_input.len());
+    let mut output = String::with_capacity(input.len());
+
+    for codepoint in char_iterator {
+      #[cfg(feature = "suggestions")]
+      let (old_index, codepoint) = codepoint;
+      let codepoint = codepoint as u32;
+
+      if is_special_rtl(codepoint) {
+        #[cfg(feature = "suggestions")]
+        suggestions.push(CureSuggestion {
+          old_index,
+          new_index: None,
+          translation: Translation::None,
+        });
+      } else {
+        let translation = cure_char(codepoint, options);
+
+        #[cfg(feature = "suggestions")]
+        suggestions.push(CureSuggestion {
+          old_index,
+          new_index: Some(output.len()),
+          translation: translation.clone(),
+        });
+
+        output += translation;
+      }
+    }
+
+    return Ok(CuredString::new(
+      output.into(),
+      #[cfg(feature = "suggestions")]
+      suggestions,
+      #[cfg(feature = "leetspeak")]
+      options,
+    ));
+  }
+
+  #[cfg(feature = "suggestions")]
+  let mut first_pass_output = first_cure_pass(input);
+  #[cfg(not(feature = "suggestions"))]
+  let first_pass_output = first_cure_pass(input);
+
+  let mut levels = Vec::with_capacity(first_pass_output.inputs.len());
   let mut level_runs = vec![];
-  let mut processing_classes = original_classes.clone();
-  let mut output = String::with_capacity(refined_input.len());
+  let mut processing_classes = first_pass_output
+    .inputs
+    .iter()
+    .map(|entry| entry.class)
+    .collect::<Vec<_>>();
+  let mut output = String::with_capacity(first_pass_output.inputs.len());
   let mut sequences = vec![];
 
-  for paragraph in &paragraphs {
+  let mut feed = |entry: &Input| {
+    let translation = cure_char_inner(entry.code, options);
+
+    #[cfg(feature = "suggestions")]
+    first_pass_output.suggestions.push(CureSuggestion {
+      old_index: entry.index,
+      new_index: Some(output.len()),
+      translation: translation.clone(),
+    });
+
+    output += translation;
+  };
+
+  for paragraph in &first_pass_output.paragraphs {
     levels.resize(levels.len() + paragraph.range.len(), paragraph.level);
 
     if paragraph.level.0 != 0 || !paragraph.pure_ltr {
-      let input = &refined_input[paragraph.range.clone()];
-      let original_classes = &original_classes[paragraph.range.clone()];
+      let inputs = &first_pass_output.inputs[paragraph.range.clone()];
       let processing_classes = &mut processing_classes[paragraph.range.clone()];
       let levels = &mut levels[paragraph.range.clone()];
       level_runs.clear();
 
-      paragraph.compute_explicit(
-        original_classes,
-        processing_classes,
-        levels,
-        &mut level_runs,
-      )?;
+      paragraph.compute_explicit(inputs, processing_classes, levels, &mut level_runs)?;
 
       sequences.clear();
-      paragraph.isolating_run_sequences(levels, &level_runs, original_classes, &mut sequences)?;
+      paragraph.isolating_run_sequences(levels, &level_runs, inputs, &mut sequences)?;
 
       for sequence in &sequences {
         sequence.resolve_implicit_weak(processing_classes);
-        sequence.resolve_implicit_neutral(input, processing_classes, levels);
+        sequence.resolve_implicit_neutral(inputs, processing_classes, levels);
       }
 
       for j in 0..levels.len() {
@@ -336,7 +446,7 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
           }
         }
 
-        if original_classes[j].removed_by_x9() {
+        if inputs[j].class.removed_by_x9() {
           levels[j] = if j > 0 {
             levels[j - 1]
           } else {
@@ -347,62 +457,31 @@ fn cure_reordered(input: &str, options: Options) -> Result<String, Error> {
     }
   }
 
-  for paragraph in paragraphs {
-    let (revised_levels, runs) = paragraph.visual_runs(&original_classes, &levels)?;
+  for paragraph in first_pass_output.paragraphs {
+    let (revised_levels, runs) = paragraph.visual_runs(&first_pass_output.inputs, &levels)?;
 
     for run in runs {
-      let text = &refined_input[run.clone()];
+      let input_slice = &first_pass_output.inputs[run.clone()];
 
       if revised_levels[run.start].is_rtl() {
-        for &c in text.iter().rev() {
-          output += cure_char_inner(c, options);
+        for entry in input_slice.iter().rev() {
+          feed(entry);
         }
       } else {
-        for &c in text {
-          output += cure_char_inner(c, options);
+        for entry in input_slice {
+          feed(entry);
         }
       }
     }
   }
 
-  Ok(output)
-}
-
-/// Cures a string with the specified [`Options`].
-///
-/// To use this function with decancer's default options, use [the `cure` macro][cure!] instead.
-///
-/// # Errors
-///
-/// Errors if the string is malformed to the point where it's not possible to apply unicode's [bidirectional algorithm](https://en.wikipedia.org/wiki/Bidirectional_text) to it. This error is possible if [`Options::disable_bidi`] is disabled.
-pub fn cure(input: &str, options: Options) -> Result<CuredString, Error> {
-  Ok(CuredString {
-    string: {
-      #[cfg(feature = "options")]
-      if options.is(1) {
-        input
-          .chars()
-          .filter(|&character| !is_special_rtl(character as _))
-          .fold(
-            String::with_capacity(input.len()),
-            |mut output, character| {
-              output += cure_char(character, options);
-              output
-            },
-          )
-      } else {
-        cure_reordered(input, options)?
-      }
-
-      #[cfg(not(feature = "options"))]
-      cure_reordered(input, options)?
-    }
-    .into(),
+  Ok(CuredString::new(
+    output.into(),
+    #[cfg(feature = "suggestions")]
+    first_pass_output.suggestions,
     #[cfg(feature = "leetspeak")]
-    disable_leetspeak: options.is(2),
-    #[cfg(feature = "leetspeak")]
-    disable_alphabetical_leetspeak: options.is(3),
-  })
+    options,
+  ))
 }
 
 /// Cures a string with decancer's default options.

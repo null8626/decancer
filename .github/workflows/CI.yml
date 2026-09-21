@@ -133,16 +133,15 @@ jobs:
         uses: dtolnay/rust-toolchain@nightly
         with:
           components: clippy
-      - name: Setup tarpaulin
-        uses: taiki-e/install-action@cargo-tarpaulin
-      - name: Ensure no default features is working
-        run: cargo c --no-default-features
+      - name: Setup Rust packages
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall cargo-feature-combinations cargo-tarpaulin
+      - name: Run clippy
+        run: cargo-fc clippy -- -D warnings
         working-directory: core
       - name: Run tests
         run: cargo-tarpaulin --engine llvm --doc --benches --all-features --out Lcov
-        working-directory: core
-      - name: Ensure there are no clippy issues
-        run: cargo clippy --all-features -- -D warnings
         working-directory: core
       - name: Upload coverage artifact
         if: ${{ github.event_name != 'pull_request' }}

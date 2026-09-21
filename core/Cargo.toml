@@ -16,18 +16,20 @@ rust-version = "1.87.0"
 serde = { version = "1", default-features = false, optional = true }
 regex = { version = "1", default-features = false, features = ["std", "perf"], optional = true }
 
-[features]
-default = ["options", "separators", "leetspeak"]
-serde = ["dep:serde"]
-options = []
-separators = []
-leetspeak = ["options", "regex"]
-
 [dev-dependencies]
 proptest = { version = "1", default-features = false, features = ["std"] }
 criterion = { version = "0.8", default-features = false }
+serde_json = "1"
 rand = "0.10"
 censor = "0.3"
+
+[features]
+default = ["options", "separators", "suggestions", "leetspeak"]
+serde = ["dep:serde"]
+options = []
+separators = []
+suggestions = []
+leetspeak = ["options", "regex"]
 
 [[bench]]
 name = "decancer_bench"
@@ -37,6 +39,9 @@ harness = false
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 rustc-args = ["--cfg", "docsrs"]
+
+[package.metadata.cargo-fc]
+exclude_features = ["regex"]
 
 [profile.release]
 lto = true

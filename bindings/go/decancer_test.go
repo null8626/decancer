@@ -132,3 +132,73 @@ func TestReplaceMultiple(t *testing.T) {
 	assert.Nil(t, cured.ReplaceMultiple([]string{"very", "funny"}, "sussy"), "ReplaceMultiple should not fail")
 	assert.True(t, cured.Equals("sussy sussy text"), "ReplaceMultiple should actually replace multiple")
 }
+
+func TestSuggestions(t *testing.T) {
+	cured := newCuredStringSample(t)
+
+	defer cured.Close()
+
+	suggestions := cured.GetSuggestions()
+
+	assert.Equal(t, 15, len(suggestions))
+
+	assert.Equal(t, suggestions[0].OldIndex, 0)
+	assert.Equal(t, suggestions[0].NewIndex, 0)
+	assert.Equal(t, suggestions[0].Translation, "v")
+
+	assert.Equal(t, suggestions[1].OldIndex, 1)
+	assert.Equal(t, suggestions[1].NewIndex, 1)
+	assert.Equal(t, suggestions[1].Translation, "e")
+
+	assert.Equal(t, suggestions[2].OldIndex, 4)
+	assert.Equal(t, suggestions[2].NewIndex, 2)
+	assert.Equal(t, suggestions[2].Translation, "r")
+
+	assert.Equal(t, suggestions[3].OldIndex, 7)
+	assert.Equal(t, suggestions[3].NewIndex, 3)
+	assert.Equal(t, suggestions[3].Translation, "y")
+
+	assert.Equal(t, suggestions[4].OldIndex, 11)
+	assert.Equal(t, suggestions[4].NewIndex, 4)
+	assert.Equal(t, suggestions[4].Translation, " ")
+
+	assert.Equal(t, suggestions[5].OldIndex, 12)
+	assert.Equal(t, suggestions[5].NewIndex, 5)
+	assert.Equal(t, suggestions[5].Translation, "f")
+
+	assert.Equal(t, suggestions[6].OldIndex, 16)
+	assert.Equal(t, suggestions[6].NewIndex, 6)
+	assert.Equal(t, suggestions[6].Translation, "u")
+
+	assert.Equal(t, suggestions[7].OldIndex, 20)
+	assert.Equal(t, suggestions[7].NewIndex, 7)
+	assert.Equal(t, suggestions[7].Translation, "n")
+
+	assert.Equal(t, suggestions[8].OldIndex, 22)
+	assert.Equal(t, suggestions[8].NewIndex, 8)
+	assert.Equal(t, suggestions[8].Translation, "n")
+
+	assert.Equal(t, suggestions[9].OldIndex, 25)
+	assert.Equal(t, suggestions[9].NewIndex, 9)
+	assert.Equal(t, suggestions[9].Translation, "y")
+
+	assert.Equal(t, suggestions[10].OldIndex, 28)
+	assert.Equal(t, suggestions[10].NewIndex, 10)
+	assert.Equal(t, suggestions[10].Translation, " ")
+
+	assert.Equal(t, suggestions[11].OldIndex, 29)
+	assert.Equal(t, suggestions[11].NewIndex, 11)
+	assert.Equal(t, suggestions[11].Translation, "t")
+
+	assert.Equal(t, suggestions[12].OldIndex, 31)
+	assert.Equal(t, suggestions[12].NewIndex, 12)
+	assert.Equal(t, suggestions[12].Translation, "e")
+
+	assert.Equal(t, suggestions[13].OldIndex, 34)
+	assert.Equal(t, suggestions[13].NewIndex, 13)
+	assert.Equal(t, suggestions[13].Translation, "x")
+
+	assert.Equal(t, suggestions[14].OldIndex, 38)
+	assert.Equal(t, suggestions[14].NewIndex, 14)
+	assert.Equal(t, suggestions[14].Translation, "t")
+}

@@ -48,6 +48,8 @@ impl Translation {
         ))
         .unwrap(),
       ),
+      #[cfg(feature = "suggestions")]
+      suggestions: vec![],
       #[cfg(feature = "leetspeak")]
       disable_leetspeak,
       #[cfg(feature = "leetspeak")]

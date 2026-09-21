@@ -70,11 +70,13 @@ server.on('message', async message => {
 
         class TestContext {
           #err
+          #input
           #object
 
-          constructor(object) {
+          constructor() {
             this.#err = null
-            this.#object = object
+            this.#input = 'vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣'
+            this.#object = decancer(this.#input)
           }
 
           #assert(received, expected, functionName) {
@@ -165,6 +167,40 @@ server.on('message', async message => {
             return this
           }
 
+          testSuggestions() {
+            if (this.#err === null) {
+              const inputs = [...this.#input]
+              const cured = this.#object.toString()
+              const suggestions = this.#object.getSuggestions()
+
+              for (
+                let i = 0, oldIndex = 0;
+                i < cured.length;
+                oldIndex += new TextEncoder().encode(inputs[i]).length, i++
+              ) {
+                const suggestion = suggestions[i]
+
+                this.#assert(
+                  suggestion.oldIndex,
+                  oldIndex,
+                  `suggestions[${i}]:oldIndex`
+                )
+                this.#assert(
+                  suggestion.newIndex,
+                  i,
+                  `suggestions[${i}]:newIndex`
+                )
+                this.#assert(
+                  suggestion.translation,
+                  cured[i],
+                  `suggestions[${i}]:translation`
+                )
+              }
+            }
+
+            return this
+          }
+
           testRetain() {
             if (this.#err === null) {
               for (const [option, testString] of Object.entries(retainData)) {
@@ -250,13 +286,14 @@ server.on('message', async message => {
             local: true
           })
 
-          return new TestContext(decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣'))
+          return new TestContext()
             .test(true, 'equals', 'very funny text')
             .test(true, 'startsWith', 'very')
             .test(true, 'endsWith', 'text')
             .test(true, 'contains', 'funny')
             .test('very funny text', 'toString')
             .testFind()
+            .testSuggestions()
             .testModifications()
             .testRetain()
             .testRetainCapitalization()

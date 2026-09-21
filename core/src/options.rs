@@ -28,6 +28,7 @@ macro_rules! options {
       $(#[$extra_meta])*
       #[must_use]
       #[cfg(feature = "options")]
+      #[cfg_attr(docsrs, doc(cfg(feature = "options")))]
       pub const fn $name(self) -> Self {
         Self(self.0 | (1 << $idx))
       }
@@ -38,10 +39,12 @@ macro_rules! options {
 impl Options {
   /// A configuration where every option is enabled.
   #[cfg(feature = "options")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "options")))]
   pub const ALL: Self = Self(0x7ff_ffff);
 
   /// A configuration that prevents decancer from curing characters from major foreign writing systems, including diacritics.
   #[cfg(feature = "options")]
+  #[cfg_attr(docsrs, doc(cfg(feature = "options")))]
   pub const PURE_HOMOGLYPH: Self = Self(0xff_fff0);
 
   options! {
@@ -75,10 +78,12 @@ impl Options {
 
     /// Prevents decancer from applying leetspeak comparisons in [`CuredString`][super::CuredString]'s comparison methods.
     #[cfg(feature = "leetspeak")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "leetspeak")))]
     2: disable_leetspeak,
 
     /// Prevents decancer from applying alphabetical leetspeak comparisons in [`CuredString`][super::CuredString]'s comparison methods.
     #[cfg(feature = "leetspeak")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "leetspeak")))]
     3: disable_alphabetical_leetspeak,
 
     /// Prevents decancer from curing characters *with* diacritics or accents.
@@ -171,6 +176,7 @@ impl Options {
       || locale > 4 && self.is(locale)
   }
 
+  #[cfg_attr(not(feature = "options"), allow(clippy::unused_self))]
   pub(super) fn translate(self, code: u32, offset: i32, mut end: i32) -> Option<Translation> {
     let mut start = 0;
 

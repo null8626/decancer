@@ -1,6 +1,6 @@
 module github.com/null8626/decancer/bindings/go
 
-go 1.17
+go 1.22
 
 require github.com/stretchr/testify v1.10.0
 

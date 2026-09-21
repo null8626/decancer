@@ -123,6 +123,10 @@ impl<'a, 'b> Matcher<'a, 'b> {
     }
   }
 
+  #[cfg_attr(
+    not(feature = "leetspeak"),
+    allow(clippy::needless_pass_by_ref_mut, clippy::unused_self)
+  )]
   fn matches(&mut self, self_char: char, other_char: char) -> Option<usize> {
     #[cfg(feature = "leetspeak")]
     #[cfg(not(tarpaulin_include))]

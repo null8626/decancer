@@ -7,10 +7,12 @@ const retainData = require('./retain_data.json')
 const decancer = require('./src/lib.js')
 
 class TestContext {
+  #input
   #inner
 
-  constructor(result) {
-    this.#inner = result
+  constructor() {
+    this.#input = 'vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣'
+    this.#inner = decancer(this.#input)
   }
 
   test(functionName, expected, ...args) {
@@ -33,16 +35,39 @@ class TestContext {
 
     return this
   }
+
+  testSuggestions() {
+    it('suggestions', () => {
+      const inputs = [...this.#input]
+      const cured = this.#inner.toString()
+      const suggestions = this.#inner.getSuggestions()
+
+      for (
+        let i = 0, oldIndex = 0;
+        i < cured.length;
+        oldIndex += Buffer.from(inputs[i], 'utf8').length, i++
+      ) {
+        const suggestion = suggestions[i]
+
+        strictEqual(suggestion.oldIndex, oldIndex)
+        strictEqual(suggestion.newIndex, i)
+        strictEqual(suggestion.translation, cured[i])
+      }
+    })
+
+    return this
+  }
 }
 
 describe('cure', () => {
-  new TestContext(decancer('vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣'))
+  new TestContext()
     .test('equals', true, 'very funny text')
     .test('startsWith', true, 'very')
     .test('endsWith', true, 'text')
     .test('contains', true, 'funny')
     .test('toString', 'very funny text')
     .testFind()
+    .testSuggestions()
 })
 
 it('retain', () => {
