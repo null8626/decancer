@@ -121,6 +121,17 @@ public class CuredString implements AutoCloseable {
   public native void disableAlphabeticalLeetspeak(boolean switch_);
 
   /**
+   * Retrieves a list of cure suggestions by decancer.
+   *
+   * @return CureSuggestion[] An array of CureSuggestion containing every cure suggestion by
+   *     decancer.
+   * @throws NullPointerException If close() has been called prior to this.
+   * @throws RuntimeException If a Rust panic occurs.
+   * @since 4.1.0
+   */
+  public native CureSuggestion[] getSuggestions();
+
+  /**
    * Iterates throughout this string and yields every similar-looking match.
    *
    * <p>This comparison is case-insensitive.

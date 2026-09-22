@@ -4,7 +4,7 @@
 use super::Error;
 use std::ops::Range;
 
-use decancer::CuredString;
+use decancer::{CureSuggestion, CuredString};
 use jni::{
   Env, JValue, JValueOwned,
   errors::Result,
@@ -116,6 +116,39 @@ macro_rules! get_string_array {
 }
 
 pub(super) use get_string_array;
+
+pub fn get_suggestions_array<'local>(
+  env: &mut Env<'local>,
+  suggestions: &[CureSuggestion],
+) -> std::result::Result<JObjectArray<'local>, Error> {
+  let array = env.new_object_array(
+    suggestions.len() as _,
+    super::CURESUGGESTION_CLASS,
+    JObject::null(),
+  )?;
+
+  for (idx, suggestion) in suggestions.into_iter().enumerate() {
+    let translation = env.new_string(&suggestion.translation.to_string())?;
+
+    let element = env.new_object(
+      super::CURESUGGESTION_CLASS,
+      jni_sig!("(JJLjava/lang/String;)V"),
+      &[
+        JValue::Long(suggestion.old_index.cast_signed() as _),
+        JValue::Long(match suggestion.new_index {
+          Some(new_index) => new_index.cast_signed() as _,
+
+          None => -1,
+        }),
+        JValue::Object(&translation.into()),
+      ],
+    )?;
+
+    array.set_element(env, idx, element)?;
+  }
+
+  Ok(array)
+}
 
 pub fn get_matches_array<'local>(
   env: &mut Env<'local>,

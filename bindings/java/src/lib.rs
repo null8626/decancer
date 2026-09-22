@@ -14,6 +14,7 @@ mod util;
 use errors::Error;
 
 const CUREDSTRING_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/CuredString");
+const CURESUGGESTION_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/CureSuggestion");
 const MATCH_CLASS: &JNIStr = jni_str!("io/github/null8626/decancer/Match");
 
 util::native_methods! {
@@ -43,6 +44,19 @@ util::native_methods! {
     inner_ref.disable_alphabetical_leetspeak(switch);
 
     Ok(())
+  }
+
+  getSuggestions(env, this: JObject<'local>) -> jobject {
+    let inner = util::get_inner!(env, this);
+    let inner_ref = unsafe { &mut *inner };
+
+    Ok(
+      util::jni_unwrap!(
+        env,
+        util::get_suggestions_array(env, inner_ref.get_suggestions())
+      )
+      .into_raw()
+    )
   }
 
   find(env, this: JObject<'local>, input: JString<'local>) -> jobject {

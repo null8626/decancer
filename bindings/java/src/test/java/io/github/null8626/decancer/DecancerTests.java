@@ -79,6 +79,73 @@ public class DecancerTests {
   }
 
   @Test
+  public void getSuggestions() {
+    final CureSuggestion[] suggestions = CURED.getSuggestions();
+
+    Assertions.assertEquals(15, suggestions.length);
+
+    Assertions.assertEquals(0, suggestions[0].oldIndex);
+    Assertions.assertEquals(0, suggestions[0].newIndex);
+    Assertions.assertEquals("v", suggestions[0].translation);
+
+    Assertions.assertEquals(1, suggestions[1].oldIndex);
+    Assertions.assertEquals(1, suggestions[1].newIndex);
+    Assertions.assertEquals("e", suggestions[1].translation);
+
+    Assertions.assertEquals(4, suggestions[2].oldIndex);
+    Assertions.assertEquals(2, suggestions[2].newIndex);
+    Assertions.assertEquals("r", suggestions[2].translation);
+
+    Assertions.assertEquals(7, suggestions[3].oldIndex);
+    Assertions.assertEquals(3, suggestions[3].newIndex);
+    Assertions.assertEquals("y", suggestions[3].translation);
+
+    Assertions.assertEquals(11, suggestions[4].oldIndex);
+    Assertions.assertEquals(4, suggestions[4].newIndex);
+    Assertions.assertEquals(suggestions[4].translation, " ");
+
+    Assertions.assertEquals(12, suggestions[5].oldIndex);
+    Assertions.assertEquals(5, suggestions[5].newIndex);
+    Assertions.assertEquals("f", suggestions[5].translation);
+
+    Assertions.assertEquals(16, suggestions[6].oldIndex);
+    Assertions.assertEquals(6, suggestions[6].newIndex);
+    Assertions.assertEquals("u", suggestions[6].translation);
+
+    Assertions.assertEquals(20, suggestions[7].oldIndex);
+    Assertions.assertEquals(7, suggestions[7].newIndex);
+    Assertions.assertEquals("n", suggestions[7].translation);
+
+    Assertions.assertEquals(22, suggestions[8].oldIndex);
+    Assertions.assertEquals(8, suggestions[8].newIndex);
+    Assertions.assertEquals("n", suggestions[8].translation);
+
+    Assertions.assertEquals(25, suggestions[9].oldIndex);
+    Assertions.assertEquals(9, suggestions[9].newIndex);
+    Assertions.assertEquals("y", suggestions[9].translation);
+
+    Assertions.assertEquals(28, suggestions[10].oldIndex);
+    Assertions.assertEquals(10, suggestions[10].newIndex);
+    Assertions.assertEquals(suggestions[10].translation, " ");
+
+    Assertions.assertEquals(29, suggestions[11].oldIndex);
+    Assertions.assertEquals(11, suggestions[11].newIndex);
+    Assertions.assertEquals("t", suggestions[11].translation);
+
+    Assertions.assertEquals(31, suggestions[12].oldIndex);
+    Assertions.assertEquals(12, suggestions[12].newIndex);
+    Assertions.assertEquals("e", suggestions[12].translation);
+
+    Assertions.assertEquals(34, suggestions[13].oldIndex);
+    Assertions.assertEquals(13, suggestions[13].newIndex);
+    Assertions.assertEquals("x", suggestions[13].translation);
+
+    Assertions.assertEquals(38, suggestions[14].oldIndex);
+    Assertions.assertEquals(14, suggestions[14].newIndex);
+    Assertions.assertEquals("t", suggestions[14].translation);
+  }
+
+  @Test
   public void find() {
     final Match[] match = CURED.find("funny");
 
