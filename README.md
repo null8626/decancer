@@ -208,7 +208,7 @@ And the binary files should be generated in the `target/release` directory.
 <!---[ end, begin DECANCER_GLOBAL ]--->
 </details>
 <details>
-<summary><b>Go (v1.17 or later)</b></summary>
+<summary><b>Go (v1.22 or later)</b></summary>
 <!---[ end, begin DECANCER_GO ]--->
 
 Building requires Rust v1.87 or later. Windows systems also require a MinGW compiler to be readily available.
