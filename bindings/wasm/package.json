@@ -2,7 +2,7 @@
   "name": "decancer",
   "private": true,
   "version": "4.0.0",
-  "description": "A library that removes common unicode confusables/homoglyphs from strings.",
+  "description": "A library that detects and filters common unicode confusables/homoglyphs.",
   "author": "null8626",
   "keywords": [
     "security",

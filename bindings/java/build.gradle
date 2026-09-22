@@ -6,7 +6,7 @@ plugins {
 
 group = 'io.github.null8626'
 version = '4.0.0'
-description = 'A library that removes common unicode confusables/homoglyphs from strings.'
+description = 'A library that detects and filters common unicode confusables/homoglyphs.'
 
 repositories {
   mavenCentral()
@@ -24,7 +24,7 @@ publishing {
       
       pom {
         name = 'decancer'
-        description = 'A library that removes common unicode confusables/homoglyphs from strings.'
+        description = 'A library that detects and filters common unicode confusables/homoglyphs.'
         url = 'https://github.com/null8626/decancer'
         inceptionYear = '2021'
         
@@ -75,8 +75,8 @@ jreleaser {
   project {
     name = 'decancer'
     version = '4.0.0'
-    description = 'A library that removes common unicode confusables/homoglyphs from strings.'
-    longDescription = 'A library that removes common unicode confusables/homoglyphs from strings. By default, the library supports filtering over 220,000 unicode codepoints and reordering right-to-left text as it were to be rendered graphically.'
+    description = 'A library that detects and filters common unicode confusables/homoglyphs.'
+    longDescription = 'A library that detects and filters common unicode confusables/homoglyphs. By default, the library supports filtering over 220,000 unicode codepoints and reordering right-to-left text as it were to be rendered graphically.'
     license = 'MIT'
     inceptionYear = '2021'
     copyright = 'Copyright (c) 2021-2026 null8626'

@@ -16,7 +16,7 @@ BEGIN
     BLOCK "040904B0"
     BEGIN
       VALUE "CompanyName", "null8626"
-      VALUE "FileDescription", "A library that removes common unicode confusables/homoglyphs from strings."
+      VALUE "FileDescription", "A library that detects and filters common unicode confusables/homoglyphs."
       VALUE "FileVersion", DECANCER_RC_VERSION
       VALUE "ProductVersion", DECANCER_RC_VERSION
       VALUE "ProductName", "decancer"

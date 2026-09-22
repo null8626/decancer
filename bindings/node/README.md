@@ -17,7 +17,7 @@
 [ko-fi-image]: https://ko-fi.com/img/githubbutton_sm.svg
 [ko-fi-brief-image]: https://img.shields.io/badge/donations-ko--fi-red?color=ff5e5b&style=flat-square
 
-A library that removes common unicode confusables/homoglyphs from strings.
+A library that detects and filters common unicode confusables/homoglyphs.
 
 - Its core is written in [Rust](https://www.rust-lang.org) and utilizes a form of [**Binary Search**](https://en.wikipedia.org/wiki/Binary_search_algorithm) to ensure speed!
 - By default, it's capable of filtering **222,585 (19.98%) different unicode codepoints** like:

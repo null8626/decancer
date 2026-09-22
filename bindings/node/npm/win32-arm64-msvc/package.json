@@ -17,7 +17,7 @@
   },
   "author": "null8626",
   "homepage": "https://github.com/null8626/decancer#readme",
-  "description": "A library that removes common unicode confusables/homoglyphs from strings. (Binary port for win32-arm64-msvc)",
+  "description": "A library that detects and filters common unicode confusables/homoglyphs. (Binary port for win32-arm64-msvc)",
   "repository": {
     "type": "git",
     "url": "https://github.com/null8626/decancer"
