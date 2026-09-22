@@ -41,10 +41,30 @@ include!("./retain_tests.rs");
 #[cfg(feature = "options")]
 fn retain_capitalization() {
   assert_eq!(
-    super::cure("decÁncer", Options::default().retain_capitalization())
-      .unwrap()
-      .to_string(),
+    super::cure("decÁncer", Options::default().retain_capitalization()).unwrap(),
     "decAncer"
+  );
+}
+
+#[test]
+#[cfg(feature = "options")]
+fn ascii_only() {
+  assert_eq!(super::cure!("decÁncer📜").unwrap(), "decancer📜");
+
+  assert_eq!(
+    super::cure("decÁncer📜", Options::default().ascii_only()).unwrap(),
+    "decancer"
+  );
+}
+
+#[test]
+#[cfg(feature = "options")]
+fn alphanumeric_only() {
+  assert_eq!(super::cure!("decÁncer$").unwrap(), "decancer$");
+
+  assert_eq!(
+    super::cure("decÁncer$", Options::default().alphanumeric_only()).unwrap(),
+    "decancer"
   );
 }
 
@@ -480,15 +500,17 @@ fn serde() {
 
   #[derive(Deserialize, Serialize)]
   struct CuredStringWrapper {
+    translation: super::Translation,
     cured: super::CuredString,
   }
 
   let wrapper: CuredStringWrapper =
-    serde_json::from_str("{\"cured\":\"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣\"}").unwrap();
+    serde_json::from_str("{\"translation\":\"Ｅ\",\"cured\":\"vＥⓡ𝔂 𝔽𝕌Ňℕｙ ţ乇𝕏𝓣\"}").unwrap();
 
+  assert_eq!(wrapper.translation, super::Translation::Character('e'));
   assert_eq!(wrapper.cured, "very funny text");
   assert_eq!(
     serde_json::to_string(&wrapper).unwrap(),
-    "{\"cured\":\"very funny text\"}"
+    "{\"translation\":\"e\",\"cured\":\"very funny text\"}"
   );
 }

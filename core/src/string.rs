@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2021-2026 null8626
 
-#[cfg(feature = "leetspeak")]
-use super::Options;
 #[cfg(feature = "suggestions")]
 use super::CureSuggestion;
+#[cfg(feature = "leetspeak")]
+use super::Options;
 use super::{Matcher, util::merge_ranges};
 use std::{
   borrow::Cow,
@@ -347,6 +347,7 @@ impl From<CuredString> for Cow<'static, str> {
   /// Coerces this cured string to a [`Cow<'static, str>`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
+  #[cfg(not(tarpaulin_include))]
   fn from(s: CuredString) -> Self {
     s.string
   }
@@ -356,6 +357,7 @@ impl From<CuredString> for String {
   /// Coerces this cured string to a [`String`].
   ///
   /// **NOTE:** It's highly **NOT** recommended to use Rust's comparison methods after calling this, and since the string output is laid out in memory the same way as it were to be displayed graphically, displaying it **may not display correctly** since some right-to-left characters are reversed.  
+  #[cfg(not(tarpaulin_include))]
   fn from(s: CuredString) -> Self {
     s.string.into_owned()
   }
@@ -382,6 +384,7 @@ where
 }
 
 impl Debug for CuredString {
+  #[cfg(not(tarpaulin_include))]
   fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
     Debug::fmt(&**self, f)
   }

@@ -79,6 +79,7 @@ impl Translation {
 
       Self::String(s) => s.string.is_ascii(),
 
+      #[cfg(not(tarpaulin_include))]
       Self::None => false,
     }
   }
@@ -119,6 +120,7 @@ impl From<Translation> for Cow<'static, str> {
 impl Add<Translation> for String {
   type Output = Self;
 
+  #[cfg(not(tarpaulin_include))]
   fn add(mut self, translation: Translation) -> Self::Output {
     self += translation;
     self
